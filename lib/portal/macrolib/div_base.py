@@ -64,7 +64,7 @@ def macro(q, args, params, self_closing=False, tag=None, additional_tag_params=N
     if tag_params:
         tag_params = tag_params_to_html_attrs(tag_params)
         if additional_tag_params:
-            tag_params = tag_params + ' ' + ' '.join('{0}="{1}"'.format(k, v) for k, v in additional_tag_params.items())
+            tag_params = tag_params + ' ' + ' '.join('{0}="{1}"'.format(k, v) for k, v in list(additional_tag_params.items()))
 
     tag_stack_entry = tag_name + tag_level
 

@@ -11,6 +11,7 @@ import re
 import shutil
 import time
 from datetime import datetime
+import collections
 
 class connector():
 	"""Connector for elFinder"""
@@ -21,8 +22,8 @@ class connector():
 		'rootAlias': 'Home',
 		'dotFiles': False,
 		'dirSize': True,
-		'fileMode': 0644,
-		'dirMode': 0755,
+		'fileMode': 0o644,
+		'dirMode': 0o755,
 		'imgLib': 'auto',
 		'tmbDir': '.tmb',
 		'tmbAtOnce': 5,
@@ -181,10 +182,10 @@ class connector():
 				if self._request['cmd'] in self._commands:
 					cmd = self._commands[self._request['cmd']]
 					func = getattr(self, '_' + self.__class__.__name__ + cmd, None)
-					if callable(func):
+					if isinstance(func, collections.Callable):
 						try:
 							func()
-						except Exception, e:
+						except Exception as e:
 							self._response['error'] = 'Command Failed'
 							self.__debug('exception', str(e))
 				else:
@@ -202,8 +203,8 @@ class connector():
 				self._response['params'] = {
 					'dotFiles': self._options['dotFiles'],
 					'uplMaxSize': str(self._options['uploadMaxSize']) + 'M',
-					'archives': self._options['archivers']['create'].keys(),
-					'extract': self._options['archivers']['extract'].keys(),
+					'archives': list(self._options['archivers']['create'].keys()),
+					'extract': list(self._options['archivers']['extract'].keys()),
 					'url': url
 				}
 
@@ -444,7 +445,7 @@ class connector():
 			total = 0
 			upSize = 0
 			maxSize = self._options['uploadMaxSize'] * 1024 * 1024
-			for name, data in upFiles.iteritems():
+			for name, data in upFiles.items():
 				if name:
 					total += 1
 					name = os.path.basename(name)
@@ -604,7 +605,7 @@ class connector():
 			im = self._im.open(curFile)
 			imResized = im.resize((width, height), self._im.ANTIALIAS)
 			imResized.save(curFile)
-		except Exception, e:
+		except Exception as e:
 			self.__debug('resizeFailed_' + path, str(e))
 			self._response['error'] = 'Unable to resize image'
 			return
@@ -1165,7 +1166,7 @@ class connector():
 				im = im.crop(box)
 			im.thumbnail(size, self._im.ANTIALIAS)
 			im.save(tmb, 'PNG')
-		except Exception, e:
+		except Exception as e:
 			self.__debug('tmbFailed_' + path, str(e))
 			return False
 		return True
@@ -1336,8 +1337,8 @@ class connector():
 		url = self.__checkUtf8(self._options['URL'] + curDir[length:]).replace(os.sep, '/')
 
 		try:
-			import urllib
-			url = urllib.quote(url, '/:~')
+			import urllib.request, urllib.parse, urllib.error
+			url = urllib.parse.quote(url, '/:~')
 		except:
 			pass
 		return url
@@ -1478,7 +1479,7 @@ class connector():
 				e.update({mime: {'cmd': p7zip, 'argc': 'e -y', 'ext': 'zip'}})
 
 		if not self._options['archiveMimes']:
-			self._options['archiveMimes'] = c.keys()
+			self._options['archiveMimes'] = list(c.keys())
 		else:
 			pass
 
@@ -1509,7 +1510,7 @@ class connector():
 		try:
 			name.decode('utf-8')
 		except UnicodeDecodeError:
-			name = unicode(name, 'utf-8', 'replace')
+			name = str(name, 'utf-8', 'replace')
 			self.__debug('invalid encoding', name)
 			#name += ' (invalid encoding)'
 		return name

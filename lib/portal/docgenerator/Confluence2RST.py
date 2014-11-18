@@ -55,11 +55,11 @@ class Confluence2RST():
                         descr = parts[0]
                         link = parts[1]
                         if len(parts) >= 3:
-                            if parts[2].strip()<>"":
+                            if parts[2].strip()!="":
                                 link_id = (parts[2].split('=')[1]).strip()
                                     
                         if len(parts) >= 4:
-                            if parts[2].strip()<>"":
+                            if parts[2].strip()!="":
                                 link_class = (parts[3].split('=')[1]).strip()
                         if len(parts) >= 5:
                             htmlelements = parts[4]
@@ -69,7 +69,7 @@ class Confluence2RST():
                     else:
                         link = match2
                         descr = link
-                except Exception,e:
+                except Exception as e:
                     return line
                     # if link.find(":")<>-1:  #@todo what was the reason for this, probly have broken something now
                     #     link=link.replace(":","___")
@@ -106,7 +106,7 @@ class Confluence2RST():
 
     def convert(self, content, page=None, doc=None, requestContext=None, paramsExtra={}):
 
-        if content.find("@rstignore")<>-1:
+        if content.find("@rstignore")!=-1:
             return ""
 
         #styled_text = r'([\w\-:_/= *.\.\/\>\<\\{},|`!]+)'

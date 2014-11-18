@@ -82,7 +82,7 @@ class PortalClientWS():
         else:
             raise ValueError("Cannot handle content type %s" % contentType)
 
-        if isinstance(decodedResult, basestring):
+        if isinstance(decodedResult, str):
             if decodedResult.find("ERROR: PLEASE SPECIFY PARAM") != -1:
                 raise RuntimeError(self.html2text(decodedResult))
             elif decodedResult.startswith("ASYNC::"):

@@ -1,7 +1,7 @@
 from JumpScale import j
-from BucketLoader import BucketLoader
-from SpacesLoader import SpacesLoader
-from ActorsLoader import ActorsLoader
+from .BucketLoader import BucketLoader
+from .SpacesLoader import SpacesLoader
+from .ActorsLoader import ActorsLoader
 
 
 class PortalLoaderFactory():

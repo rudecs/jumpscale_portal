@@ -13,7 +13,7 @@ class ActorsInfo():
             params = ["authkey"]
         else:
             params = []
-        params.extend(j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)][1].keys())
+        params.extend(list(j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)][1].keys()))
 
         for param in params:
             url += "%s=&" % param
@@ -39,7 +39,7 @@ class ActorsInfo():
         url = getActorMethodCall(appname, actorname, methodname)
 
         routekey="%s_%s_%s" % (appname, actorname, methodname)
-        if not j.core.portal.active.routes.has_key(routekey):
+        if routekey not in j.core.portal.active.routes:
             j.core.portal.active.activateActor(appname, actorname)
         routeData = j.core.portal.active.routes[routekey]
         # routedata: function,paramvalidation,paramdescription,paramoptional,description
@@ -52,9 +52,9 @@ class ActorsInfo():
         descriptions = routeData[2]
         # optional = routeData[3]
         page.addLink("%s" % (methodname), url)
-        if len(params.keys()) > 0:
+        if len(list(params.keys())) > 0:
             page.addBullet("Params:\n", 1)
-            for key in params.keys():
+            for key in list(params.keys()):
                 if key in descriptions:
                     descr = descriptions[key].strip()
                 else:

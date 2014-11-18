@@ -6,7 +6,7 @@ class auth(object):
     clients = dict()
 
     def __init__(self, groups=None, audit=True):
-        if isinstance(groups, basestring):
+        if isinstance(groups, str):
             groups = [groups]
         if groups is None:
             groups = list()

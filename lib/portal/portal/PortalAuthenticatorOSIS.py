@@ -8,7 +8,7 @@ class PortalAuthenticatorOSIS():
         self.key2user={}
         
     def existsKey(self,key):
-        return self.key2user.has_key(key)
+        return key in self.key2user
         
     def getUserFromKey(self,key):
         if not self.existsKey(key):
@@ -34,7 +34,7 @@ class PortalAuthenticatorOSIS():
     def createUser(self, username, password, email, groups, domain):
         user = self.osis.new()
         user.id=username
-        if isinstance(groups, basestring):
+        if isinstance(groups, str):
             groups = [groups]
         user.groups=groups
         user.emails=email

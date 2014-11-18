@@ -13,13 +13,13 @@ class PageGroup:
         @actions is dict with as key the name of the action, the value is the link with {params} which will be filled in with the remainder of the link
         """
         self.actions = actions
-        for key in self.pages.keys():
+        for key in list(self.pages.keys()):
             self.pages[key].actions = actions
 
     def getPages(self, types):
         pages = []
         if types == "*":
-            for key in self.pages.keys():
+            for key in list(self.pages.keys()):
                 pages.append(self.pages[key])
         for typechar in types:
             if typechar in self.pages:

@@ -1,5 +1,5 @@
 from JumpScale import j
-from LoaderBase import *
+from .LoaderBase import *
 
 
 class Bucket(LoaderBaseObject):

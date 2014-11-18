@@ -2,7 +2,7 @@
 #from ActorLoaderRemote import ActorLoaderRemote
 #from Portal6Process import Portal6Process
 
-from PortalClientWS import PortalClientWS
+from .PortalClientWS import PortalClientWS
 
 from JumpScale import j
 
