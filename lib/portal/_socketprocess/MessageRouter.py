@@ -32,7 +32,7 @@ class MessageRouter(gevent.Greenlet):
         return
 
     def start(self):
-        print "messagerouter started"
+        print("messagerouter started")
         while True:
             watchdog()
             gevent.sleep(1)
@@ -54,17 +54,17 @@ class ActorMethodQueue(gevent.Greenlet):
 
     def queue(self, message):
         self.methodQueueToActor.put(message)
-        print "queue message"
+        print("queue message")
 
     def processQueues(self):
-        print "process queue"
+        print("process queue")
         #from JumpScale.core.Shell import ipshellDebug,ipshell
-        # print "DEBUG NOW queue"
+        # print("DEBUG NOW queue"
         # ipshell()
 
     def start(self):
-        print "actor queue for %s %s %s %s %s %s %s" % (self.gid, self.nid, self.pid, self.appname, self.actorname,
-                                                        self.instance, self.methodname)
+        print("actor queue for %s %s %s %s %s %s %s" % (self.gid, self.nid, self.pid, self.appname, self.actorname,
+                                                        self.instance, self.methodname))
         while True:
             self.processQueues()
             gevent.sleep(1)

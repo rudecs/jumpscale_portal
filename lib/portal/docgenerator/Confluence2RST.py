@@ -69,7 +69,7 @@ class Confluence2RST():
                     else:
                         link = match2
                         descr = link
-                except Exception,e:
+                except Exception as e:
                     return line
                     # if link.find(":") != -1:  #@todo what was the reason for this, probly have broken something now
                     #     link=link.replace(":","___")

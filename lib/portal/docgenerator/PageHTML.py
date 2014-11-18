@@ -201,7 +201,7 @@ class PageHTML(Page):
                 headers = [""] + headers
             if l != len(headers):
                 #raise RuntimeError("Cannot process headers, wrong nr of cols")
-                print "Cannot process headers, wrong nr of cols"
+                print("Cannot process headers, wrong nr of cols")
                 self.addMessage("ERROR header wrong nr of cols:%s" % headers)
                 headers = []
 
@@ -537,7 +537,7 @@ function copyText$id() {
             # headers=[""]+headers
             if len(headers) != len(data):
                 #raise RuntimeError("headers has more items then nr columns")
-                print "Cannot process headers, wrong nr of cols"
+                print("Cannot process headers, wrong nr of cols")
                 self.addMessage("ERROR header wrong nr of cols:%s" % headers)
                 headers = []
 

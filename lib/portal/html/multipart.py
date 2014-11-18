@@ -41,13 +41,13 @@ from tempfile import TemporaryFile
 from wsgiref.headers import Headers
 import re, sys
 try:
-    from urlparse import parse_qs
+    from urllib.parse import parse_qs
 except ImportError: # pragma: no cover (fallback for Python 2.5)
     from cgi import parse_qs
 try:
     from io import BytesIO
 except ImportError: # pragma: no cover (fallback for Python 2.5)
-    from StringIO import StringIO as BytesIO
+    from io import StringIO as BytesIO
 
 ##############################################################################
 ################################ Helper & Misc ################################
@@ -63,14 +63,14 @@ class MultiDict(DictMixin):
     """ A dict that remembers old values for each key """
     def __init__(self, *a, **k):
         self.dict = dict()
-        for k, v in dict(*a, **k).iteritems():
+        for k, v in list(dict(*a, **k).items()):
             self[k] = v
 
     def __len__(self): return len(self.dict)
     def __iter__(self): return iter(self.dict)
     def __contains__(self, key): return key in self.dict
     def __delitem__(self, key): del self.dict[key]
-    def keys(self): return self.dict.keys()
+    def keys(self): return list(self.dict.keys())
     def __getitem__(self, key): return self.get(key, KeyError, -1)
     def __setitem__(self, key, value): self.append(key, value)
 
@@ -84,12 +84,12 @@ class MultiDict(DictMixin):
         return self.dict[key][index]
 
     def iterallitems(self):
-        for key, values in self.dict.iteritems():
+        for key, values in list(self.dict.items()):
             for value in values:
                 yield key, value
 
 def tob(data, enc='utf8'): # Convert strings to bytes (py2 and py3)
-    return data.encode(enc) if isinstance(data, unicode) else data
+    return data.encode(enc) if isinstance(data, str) else data
 
 def copy_file(stream, target, maxread=-1, buffer_size=2*16):
     ''' Read from :stream and write to :target until :maxread or EOF. '''
@@ -402,7 +402,7 @@ def parse_form_data(environ, charset='utf8', strict=False, **kw):
             if stream.read(1): # These is more that does not fit mem_limit
                 raise MultipartError("Request to big. Increase MAXMEM.")
             data = parse_qs(data, keep_blank_values=True)
-            for key, values in data.iteritems():
+            for key, values in list(data.items()):
                 for value in values:
                     forms[key] = value
         else:

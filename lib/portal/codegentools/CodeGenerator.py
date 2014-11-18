@@ -39,13 +39,13 @@ class CodeGenerator:
         for key2 in j.core.codegenerator.classes.keys():
             type, app, spectype, item, remaining = key2.split("_", 5)
             if app == appname and item.find(actor) == 0:
-                # print "remove code generated class %s from memory" % key
+                # print("remove code generated class %s from memory" % key
                 j.core.codegenerator.classes.pop(key2)
 
         for key2 in j.core.portal.active.taskletengines.keys():
             app, item, remaining = key2.split("_", 2)
             if app == appname and item.find(actor) == 0:
-                # print "remove tasklets %s from memory" % key
+                # print("remove tasklets %s from memory" % key
                 j.core.portal.active.taskletengines.pop(key2)
 
     def resetMemNonSystem(self):
@@ -273,9 +273,9 @@ class CodeGenerator:
             exec("import %s" % name)
         except Exception as e:
             from JumpScale.core.Shell import ipshellDebug, ipshell
-            print "DEBUG NOW exception in importing in codegenerator (see CodeGenerator.py line 239)"
-            print "codepath: %s" % codepath
-            print e
+            print("DEBUG NOW exception in importing in codegenerator (see CodeGenerator.py line 239)")
+            print("codepath: %s" % codepath)
+            print(e)
             ipshell()
             #emsg="could not import code for name:%s " % (name)
             j.errorconditionhandler.raiseBug("", "spec.import", e)
@@ -288,8 +288,8 @@ class CodeGenerator:
             # self.classes[name]=classs
             return classs
         except Exception as e:
-            print "codepath: %s" % codepath
-            print e
+            print("codepath: %s" % codepath)
+            print(e)
             raise
 
         # j.system.fs.changeDir(curpath)

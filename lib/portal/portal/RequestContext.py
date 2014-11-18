@@ -26,7 +26,7 @@ class RequestContext(object):
 
     def start_response(self, status, *args, **kwargs):
         if self._response_started:
-            print 'RESPONSE Already started ignoring'
+            print('RESPONSE Already started ignoring')
             return
         self._response_started = True
         statusm = REC.match(status)

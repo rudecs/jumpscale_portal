@@ -1,6 +1,6 @@
 from JumpScale import j
 
-from CodeGeneratorBase import CodeGeneratorBase
+from .CodeGeneratorBase import CodeGeneratorBase
 
 
 class CodeGeneratorActorLocal(CodeGeneratorBase):
@@ -74,7 +74,7 @@ else:
         s = """
 ## following code will be loaded at runtime
 from JumpScale.core.Shell import ipshellDebug,ipshell
-print "DEBUG NOW db init"
+print("DEBUG NOW db init")
 ipshell()
 
 actorObject.dbfs=self.dbclientFactory.get(self.appName,actorName,self.dbtype)

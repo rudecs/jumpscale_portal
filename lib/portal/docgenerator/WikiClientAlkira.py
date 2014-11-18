@@ -42,7 +42,7 @@ class WikiClientAlkira:  # @todo P1, implement for Alkira
     def pageDelete(self, pagename):
         page = self.pageExists(pagename)
         if page != False:
-            print "delete page %s" % page.title
+            print("delete page %s" % page.title)
             j.clients.confluence.removePage(page.id)
 
     def pageContentGet(self, pagename):
@@ -98,15 +98,15 @@ class WikiClientAlkira:  # @todo P1, implement for Alkira
             pageid = page.id
         if page != False and parent != None and page.parent.id != parentid:
             j.console.echo("Warning: page %s is connected to wrong parent %s, should be %s" % (pagename, page.parent.id, parentid))
-            # print "delete page %s" % page.title
+            # print("delete page %s" % page.title)
             # self.pageDelete(pagename)
             pageid = False
         if page != False:
             page.content = content
-            print "editpage %s" % page.title
+            print("editpage %s" % page.title)
             result = j.clients.confluence.editPage(page)
         else:
-            print "add page %s" % pagename
+            print("add page %s" % pagename)
             result = j.clients.confluence.addPage(self.spacename, pagename, parentid, content)
 
     def pageNew(self, pagename):

@@ -18,7 +18,7 @@ class DocHandler(FileSystemEventHandler):
         self.doc_processor = doc_processor
 
     def on_created(self, event):
-        print 'Document {} added'.format(event.src_path)
+        print('Document {} added'.format(event.src_path))
         path = os.path.dirname(event.src_path)
         pathItem = event.src_path
         docs = []

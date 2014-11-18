@@ -107,7 +107,7 @@ class ActorsLoader(LoaderBase):
         if key in j.core.portal.active.actors:
             return j.core.portal.active.actors[key]
 
-        print "get actor cache miss for %s %s" % (appname, actorname)
+        print("get actor cache miss for %s %s" % (appname, actorname))
 
         if key in self.actorIdToActorLoader:
             loader = self.actorIdToActorLoader[key]
@@ -158,7 +158,7 @@ class ActorLoader(LoaderBaseObject):
         self.model.actor = actor
         
     def _removeFromMem(self):
-        print "remove actor %s from memory" % self.model.id
+        print("remove actor %s from memory" % self.model.id)
         j.core.specparser.removeSpecsForActor(self.model.application, self.model.actor)
         j.core.codegenerator.removeFromMem(self.model.application, self.model.actor)
         j.core.portal.active.unloadActorFromRoutes(self.model.application, self.model.actor)
@@ -181,7 +181,7 @@ class ActorLoader(LoaderBaseObject):
 
 
     def activate(self):
-        print "activate actor: %s %s" % (self.model.application, self.model.actor)
+        print("activate actor: %s %s" % (self.model.application, self.model.actor))
 
         appname=self.model.application
         actorname=self.model.actor

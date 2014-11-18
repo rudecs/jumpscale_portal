@@ -67,7 +67,7 @@ class PortalFactory():
             try:
                 server.actorsloader.getActor(appname, actorname)
             except Exception,e:
-                print "*ERROR*: Could not load actor %s %s:\n%s" % (appname,actorname, e)
+                print("*ERROR*: Could not load actor %s %s:\n%s" % (appname,actorname, e))
 
     def getClientByInstance(self, instance=None):
         if not instance:

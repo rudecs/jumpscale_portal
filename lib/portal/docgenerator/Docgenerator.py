@@ -34,7 +34,7 @@ class DocgeneratorFactory:
                 continue
             if j.system.fs.getBaseName(path)[0]=="_":
                 continue
-            print "process:%s"%path
+            print("process:%s"%path)
             indest=j.system.fs.pathRemoveDirPart(path,src)
             dest2="%s/%s"%(dest,indest)
             C=j.system.fs.fileGetContents(path)
@@ -48,7 +48,7 @@ class DocgeneratorFactory:
             basename=basename.replace(".wiki",".rst")
 
             dest3=j.system.fs.joinPaths(ddir,basename)
-            print "dest:%s"%dest3
+            print("dest:%s"%dest3)
             j.system.fs.writeFile(filename=dest3,contents=str(C2))
 
         for path in j.system.fs.listFilesInDir(src,True,filter="*.rst"):

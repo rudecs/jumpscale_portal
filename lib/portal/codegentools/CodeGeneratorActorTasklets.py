@@ -1,6 +1,6 @@
 from JumpScale import j
 
-from CodeGeneratorBase import CodeGeneratorBase
+from .CodeGeneratorBase import CodeGeneratorBase
 
 NOTGENSTR = "##DONOTGENERATE##"
 
@@ -111,7 +111,7 @@ tasklets["modellist"] = """
 def main(j, params, service, tags, tasklet):
     #list
     from JumpScale.core.Shell import ipshellDebug,ipshell
-    print "DEBUG NOW model list"
+    print("DEBUG NOW model list")
     ipshell()
     appname="{appname}"
     actorname="{actorname}"
@@ -132,7 +132,7 @@ tasklets["modeldatatables"] = """
 def main(j, params, service, tags, tasklet):
     #list
     from JumpScale.core.Shell import ipshellDebug,ipshell
-    print "DEBUG NOW model datatables"
+    print("DEBUG NOW model datatables")
     ipshell()
     
     appname="{appname}"

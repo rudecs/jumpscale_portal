@@ -54,7 +54,7 @@ class WikiClientConfluence:
     def pageDelete(self, pagename):
         page = self.pageExists(pagename)
         if page != False:
-            print "delete page %s" % page.title
+            print("delete page %s" % page.title)
             j.clients.confluence.removePage(page.id)
 
     def pageContentGet(self, pagename):
@@ -115,10 +115,10 @@ class WikiClientConfluence:
             pageid = False
         if page != False:
             page.content = content
-            print "editpage %s" % page.title
+            print("editpage %s" % page.title)
             result = j.clients.confluence.editPage(page)
         else:
-            print "add page %s" % pagename
+            print("add page %s" % pagename)
             result = j.clients.confluence.addPage(self.spacename, pagename, parentid, content)
 
     def pageNew(self, pagename):

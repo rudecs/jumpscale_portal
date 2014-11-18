@@ -54,7 +54,7 @@ class Space(LoaderBaseObject):
                     item= j.system.fs.getDirName(item+"/", lastOnly=True)
                     item=item.lower()
                     item=item.replace(".wiki","")
-                    print item
+                    print(item)
                     if item==dirnamel:
                         return
                 
@@ -62,7 +62,7 @@ class Space(LoaderBaseObject):
                 dest= j.system.fs.joinPaths(path,"%s.wiki"%dirname)
                 j.system.fs.copyFile(source, dest)
 
-                print "NOTIFY NEW DIR %s IN SPACE %s" % (path, self.model.id)
+                print("NOTIFY NEW DIR %s IN SPACE %s" % (path, self.model.id))
             
             return True
 

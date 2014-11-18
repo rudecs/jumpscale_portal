@@ -29,7 +29,7 @@ class DocPreprocessorFactory():
             try:
                 j.system.fs.removeDirTree(outpath)
             except:
-                print "COULD NOT REMOVE %s" % outpath
+                print("COULD NOT REMOVE %s" % outpath)
 
         doc = poogen.name2doc[docname]
         doc.checkVisible(visibility)

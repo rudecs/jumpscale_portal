@@ -62,7 +62,7 @@ class LoaderBase():
             object = self._objectClass()
             result = object.loadFromDisk(path, reset)
             if result != False:
-                print "load %s %s" % (self.type,path)
+                print("load %s %s" % (self.type,path))
                 self.id2object[object.model.id.lower()] = object
 
 class Model():

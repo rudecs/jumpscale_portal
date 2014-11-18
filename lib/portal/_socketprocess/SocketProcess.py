@@ -361,7 +361,7 @@ class PortalProcess():
     def start(self, key=None, reset=False):
 
         # this is the trigger to start
-        print "STARTING applicationserver on port %s" % self.wsport
+        print("STARTING applicationserver on port %s" % self.wsport)
 
         TIMER = gevent.greenlet.Greenlet(self._timer)
         TIMER.start()

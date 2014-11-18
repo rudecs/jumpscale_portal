@@ -1,5 +1,5 @@
 from JumpScale import j
-from CodeGeneratorBase import CodeGeneratorBase
+from .CodeGeneratorBase import CodeGeneratorBase
 
 
 class CodeGeneratorActorClass(CodeGeneratorBase):
@@ -199,7 +199,7 @@ self.appname="{appname}"
             # else:
             mainMethods[method.name] = method
 
-        mainMethods_list = mainMethods.keys()
+        mainMethods_list = list(mainMethods.keys())
         # osisMethods_list = osisMethods.keys()
         mainMethods_list.sort()
         # osisMethods_list.sort()

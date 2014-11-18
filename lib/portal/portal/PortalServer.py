@@ -312,7 +312,7 @@ class PortalServer:
         return [page.getContent()]
 
     def getDoc(self, space, name, ctx, params={}):
-        print "GETDOC:%s" % space
+        print("GETDOC:%s" % space)
         space = space.lower()
         name = name.lower()
 
@@ -321,7 +321,7 @@ class PortalServer:
         if name in ["login", "error", "accessdenied", "pagenotfound"]:
             right = "r"
 
-        print "# space:%s name:%s user:%s right:%s" % (space, name, username, right)
+        print("# space:%s name:%s user:%s right:%s" % (space, name, username, right))
 
         if space == "" and name == "":
             space = "system"
@@ -347,13 +347,13 @@ class PortalServer:
         elif space not in self.spacesloader.spaces:
             if space == "system":
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
-            print "could not find space %s" % space
+            print("could not find space %s" % space)
             doc, params = self.getDoc("system", "pagenotfound", ctx, params)
             if "space" not in params:
                 params["space"] = space
             if "page" not in params:
                 params["page"] = name
-            print "could not find space %s" % space
+            print("could not find space %s" % space)
             ctx.params["error"] = "Could not find space %s\n" % space
         else:
             spaceObject = self.spacesloader.getLoaderFromId(space)
@@ -522,7 +522,7 @@ class PortalServer:
                 headers.append(('Vary', 'Accept-Encoding'))
                 headers.append(('Content-Encoding', 'gzip'))
             else:
-                print "error"
+                print("error")
                 headers = [('Content-Type', contenttype), ]
                 start_response("404 Not found", headers)
                 return ["path %s not found" % path]
@@ -633,7 +633,7 @@ class PortalServer:
             eco = j.errorconditionhandler.getErrorConditionObject()
             eco.errormessage = "only format supported = human or json, format is put with param &format=..."
             eco.type = "INPUT"
-            print "WRONG FORMAT"
+            print("WRONG FORMAT")
         else:
             if errorObject != None:
                 eco = errorObject
@@ -867,7 +867,7 @@ class PortalServer:
 
     def router(self, environ, start_response):
         path = environ["PATH_INFO"].lstrip("/")
-        print "path:%s" % path
+        print("path:%s" % path)
         pathparts = path.split('/')
         if pathparts[0] == 'wiki':
             pathparts = pathparts[1:]

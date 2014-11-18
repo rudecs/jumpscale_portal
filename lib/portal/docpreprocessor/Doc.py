@@ -245,7 +245,7 @@ class Doc(object):
     def executeMacrosDynamicWiki(self, paramsExtra={}, ctx=None):
         # print "execute dynamic %s" % self.name
         if self.docparams != {}:
-            for key in self.docparams.keys():
+            for key in list(self.docparams.keys()):
                 paramsExtra[key] = self.docparams[key]
 
         if "page" not in paramsExtra:

@@ -27,23 +27,23 @@ class TCPSession():
         self.dataleftover = ""
 
     def ready(self):
-        print "%s active %s : %s" % (self.type, self.whoami, self.sessionnr)
+        print("%s active %s : %s" % (self.type, self.whoami, self.sessionnr))
 
     def read(self):
-        print "read classic 4k block & wait"
+        print("read classic 4k block & wait")
         return self.socket.recv(4096)
 
     def kill(self):
         self.fileobj.close()
         self.socket.close()
-        print "kill\n%s" % self
+        print("kill\n%s" % self)
 
     def write(self, msg):
         try:
             self.socket.sendall(msg)
         except Exception as e:
-            print "failed to send"
-            print e
+            print("failed to send")
+            print(e)
 
     def sendread(self, msg):
         self.write(msg)
@@ -84,14 +84,14 @@ class WorkerSession(TCPSession):
         # keeps on checking for incoming messages
         # try:
         while True:
-            print "loopstart"
+            print("loopstart")
             dtype, length, epoch, gid, nid, pid, data = self.read()
-            print "loopend"
+            print("loopend")
             j.core.portal.active.messagerouter.queue(gid, nid, pid, data)
 
         # except Exception,e:
-            # print "read error in appserver6 workergreenlet %s\n" % self.sessionnr
-            # print e
+            # print("read error in appserver6 workergreenlet %s\n" % self.sessionnr
+            # print(e
             # gevent.sleep(1)
             # self.kill()
 
@@ -105,12 +105,12 @@ class WorkerSession(TCPSession):
 
         # length, we are ok
         size = j.core.messagehandler.getMessageSize(data)
-        print "rpc:%s size:%s" % (rpc, size)
+        print("rpc:%s size:%s" % (rpc, size))
 
         while len(data) < size:
-            print 1
+            print(1)
             data += self.socket.recv(4096)
-            print 2
+            print(2)
         dataOut = data[0:size]
         self.dataleftover = data[size:]
 
@@ -121,7 +121,7 @@ class WorkerSession(TCPSession):
         else:
             dtype, length, epoch, gid, nid, pid, data = j.core.messagehandler.unPackMessage(data)
 
-        print "data:%s" % data
+        print("data:%s" % data)
         return dtype, length, epoch, gid, nid, pid, data
 
     def ping(self):
@@ -144,7 +144,7 @@ class TCPSessionLog(TCPSession):
 
     def process(self, line):
         from JumpScale.core.Shell import ipshell
-        print "DEBUG NOW logger on tcpsession"
+        print("DEBUG NOW logger on tcpsession")
         ipshell()
 
 
@@ -168,14 +168,14 @@ class ManholeSession(TCPSession):
                 if result != "" and result != None:
                     if result[-1] != "\n":
                         result += "\n"
-                    # print "***%s*END*"%result
+                    # print("***%s*END*"%result
                     self.write(result)
 
     def read(self):
         return self.socket.recv(4096)
 
     def process(self, line):
-        # print line
+        # print(line
         cmd = line.strip()
         result = """\
 commands:
@@ -207,7 +207,7 @@ commands:
 
         if cmd == "ipshell":
             from JumpScale.core.Shell import ipshellDebug, ipshell
-            print "DEBUG NOW manhole local"
+            print("DEBUG NOW manhole local")
             ipshell()
 
         # if cmd.find("exec")==0:
@@ -275,7 +275,7 @@ class TCPClient():
         raise RuntimeError("Connection timed out to master server %s" % addr)
 
     def _init(self):
-        print "try to connect to %s:%s" % (self.addr, 6000)
+        print("try to connect to %s:%s" % (self.addr, 6000))
         self.socketout = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socketin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # self.sender.settimeout(2)
@@ -297,7 +297,7 @@ class TCPClient():
                 raise RuntimeError("bad result")
 
         except Exception as e:
-            print e
+            print(e)
             try:
                 self.socketout.close()
                 self.socketin.close()
@@ -305,13 +305,13 @@ class TCPClient():
                 pass
             time.sleep(5)
             return False
-        print "connected"
+        print("connected")
         return True
 
     def sendcmd(self, appName, actorName, instance, method, params, timeout=0, sync=True):
         msg = j.core.messagehandler.getRPCMessage(appName, actorName, instance, method, params, timeout, sync)
         self.send(msg)
-        print "sent"
+        print("sent")
         return self.read()
 
     def read(self):
@@ -337,7 +337,7 @@ class TCPClient():
         return type, length, epoch, gid, nid, pid, data
 
     def process(self, line):
-        print line
+        print(line)
 
     def send(self, message, maxtry=10):
         run = 1
