@@ -1019,7 +1019,7 @@ function copyText$id() {
         if self._hasSidebar:
             jsHead += "<style type='text/css'> body.sidebar-nav {padding: 9px 0;} </style> \n"
 
-        # if self.pagemirror4jscss<>None:
+        # if self.pagemirror4jscss != None:
         #     self.pagemirror4jscss.jsHead+=jsHead
         if self.documentReadyFunctions != []:
             CC = "$(document).ready(function() {\n"

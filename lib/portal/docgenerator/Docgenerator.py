@@ -30,7 +30,7 @@ class DocgeneratorFactory:
         convertor=self.getConfluence2rstConvertor()
         # j.system.fs.removeDirTree(dest)
         for path in j.system.fs.listFilesInDir(src,True,filter="*.wiki"):
-            if path.find(".space")<>-1 or path.find(".files")<>-1:
+            if path.find(".space") != -1 or path.find(".files") != -1:
                 continue
             if j.system.fs.getBaseName(path)[0]=="_":
                 continue

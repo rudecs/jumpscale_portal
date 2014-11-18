@@ -230,7 +230,7 @@ class CodeGenerator:
         if makeCopy:
             j.system.fs.writeFile(path.replace(".py", ".gen.py"), code)
 
-        # if type.find("enum")<>0:
+        # if type.find("enum") != 0:
             # getclass=True
         # else:
             # getclass=True

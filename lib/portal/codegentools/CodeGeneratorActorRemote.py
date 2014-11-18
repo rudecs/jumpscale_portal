@@ -62,7 +62,7 @@ class CodeGeneratorActorRemote(CodeGeneratorBase):
             (self.spec.appname, self.spec.actorname, method.name.replace("_", "."), params)
 
         s += """
-if resultcode<>0:
+if resultcode != 0:
     raise RuntimeError("error in calling webservice %s:%s:%s:%s" )
 else:
     if j.basetype.dictionary.check(result) and result.has_key("result"):
