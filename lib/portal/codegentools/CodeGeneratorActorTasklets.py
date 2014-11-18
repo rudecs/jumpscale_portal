@@ -37,7 +37,7 @@ def main(j, params, service, tags, tasklet):
     try:
         obj=modeldb.get(params.id)
     except Exception,e:
-        if str(e).find("Key value store doesnt have a value for key")<>-1:
+        if str(e).find("Key value store doesnt have a value for key") != -1:
             #did not find
             params.result=False
             return params
@@ -196,7 +196,7 @@ class CodeGeneratorActorTasklets(CodeGeneratorBase):
 
             if j.system.fs.exists(path):
                 # content=j.system.fs.fileGetContents(path)
-                # if content.find(NOTGENSTR)<>-1:
+                # if content.find(NOTGENSTR) != -1:
                     # path=j.system.fs.joinPaths(j.core.portal.active.codepath,spec.appname,spec.actorname,method.name,"_5_main.py")
                 path = None
 

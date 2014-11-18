@@ -83,7 +83,7 @@ class PageRST(Page):
         for i in range(level-1):
             prefix+="  "
 
-        if level<>self._bulletslevel:
+        if level != self._bulletslevel:
             self.addNewLine()
 
         out=""
@@ -150,12 +150,12 @@ class PageRST(Page):
             self.addNewLine()
             self._inBlockType="heading"
 
-        if message.find("\n")<>-1:
+        if message.find("\n") != -1:
             raise RuntimeError("cannot have enter in heading")
 
         message = str(message)
         if message != '':
-            if message[-1]<>"\n":
+            if message[-1] != "\n":
                 message+="\n"
 
         order="#*=-^\""

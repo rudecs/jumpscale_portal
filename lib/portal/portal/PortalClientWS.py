@@ -14,17 +14,17 @@ class PortalClientWS():
 
     def html2text(self, data):
         # get only the body content
-        bodyPat = re.compile(r'< body[^<>]*?>(.*?)< / body >', re.I)
+        bodyPat = re.compile(r'< body[^ != ]*?>(.*?)< / body >', re.I)
         result = re.findall(bodyPat, data)
         if len(result) > 0:
             data = result[0]
 
         # now remove the java script
-        p = re.compile(r'< script[^<>]*?>.*?< / script >')
+        p = re.compile(r'< script[^ != ]*?>.*?< / script >')
         data = p.sub('', data)
 
         # remove the css styles
-        p = re.compile(r'< style[^<>]*?>.*?< / style >')
+        p = re.compile(r'< style[^ != ]*?>.*?< / style >')
         data = p.sub('', data)
 
         # remove html comments

@@ -63,10 +63,10 @@ class Confluence2HTML():
                     descr = parts[0]
                     link = parts[1]
                     if len(parts) >= 3:
-                        if parts[2].strip()<>"":
+                        if parts[2].strip() != "":
                             link_id = (parts[2].split('=')[1]).strip()
                     if len(parts) >= 4:
-                        if parts[2].strip()<>"":
+                        if parts[2].strip() != "":
                             link_class = (parts[3].split('=')[1]).strip()
                     if len(parts) >= 5:
                         htmlelements = parts[4]
@@ -76,7 +76,7 @@ class Confluence2HTML():
                 else:
                     link = match2
                     descr = link
-                # if link.find(":")<>-1:  #@todo what was the reason for this, probly have broken something now
+                # if link.find(":") != -1:  #@todo what was the reason for this, probly have broken something now
                 #     link=link.replace(":","___")
                 if link.find(";") != -1:
                     space, pagename = link.split(";", 1)
@@ -149,7 +149,7 @@ class Confluence2HTML():
             (r'\\([^\n\r\\])',  escape_char),
             ('<',           '&lt;'),
             ('>',           '&gt;'),
-            (r'\@LF\b',     '<br>'), # This should come after <>
+            (r'\@LF\b',     '<br>'), # This should come after != 
             (limiter('`'),  limiter_replacement('code')),
             (limiter('*'),  limiter_replacement('strong')),
             (limiter('_'),  limiter_replacement('em')),
@@ -191,7 +191,7 @@ class Confluence2HTML():
         # images3=[]L
         # for image in images:
             # image2=image.lower()
-            # if image2.find(".jpg")<>-1 or image2.find(".png")<>-1:
+            # if image2.find(".jpg") != -1 or image2.find(".png") != -1:
                 # image2=image2.strip()
                 # image2=j.system.fs.getBaseName(image2.replace("\\","/"))
                 # images3.append(image2)
@@ -310,7 +310,7 @@ class Confluence2HTML():
 
                         for item in styles:
                             
-                            if len(item)==1 and item[0].find(":")<>-1: #can be tag
+                            if len(item)==1 and item[0].find(":") != -1: #can be tag
                                 tags=j.core.tags.getObject(item[0])
                                 if tags.tagExists("width"):
                                     width=tags.tagGet("width")

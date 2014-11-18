@@ -303,7 +303,7 @@ class PortalServer:
 
     def isLoggedInFromCTX(self,ctx):
         user=self.getUserFromCTX(ctx)
-        if user<>"" and user<>"guest":
+        if user != "" and user != "guest":
             return True
         return False
 
@@ -1228,7 +1228,7 @@ class PortalServer:
     def __str__(self):
         out=""
         for key,val in self.__dict__.iteritems():
-            if key[0]<>"_" and key not in ["routes"]:
+            if key[0] != "_" and key not in ["routes"]:
                 out+="%-35s :  %s\n"%(key,val)
         routes=",".join(self.routes.keys())
         out+="%-35s :  %s\n"%("routes",routes)

@@ -293,7 +293,7 @@ def match(j, args, params, actor, tags, tasklet):
                     j.system.fs.writeFile(methodtasklet, taskletContent)
                 actorobject._te[methodspec.name] = j.core.taskletengine.get(taskletpath)
 
-            if j.core.portal.active<>None:
+            if j.core.portal.active != None:
 
                 paramvalidation = {}
                 for var in methodspec.vars:
