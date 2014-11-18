@@ -1,15 +1,15 @@
 import re
-import urlparse
+import urllib.parse
 import pprint
 import os
 import sys
 import redis
 
 from beaker.middleware import SessionMiddleware
-from MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess
-from PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
-from RequestContext import RequestContext
-from PortalRest import PortalRest
+from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess
+from .PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
+from .RequestContext import RequestContext
+from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 
 from JumpScale import j
@@ -22,7 +22,7 @@ import time
 
 import mimeparse
 import mimetypes
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import cgi
 import JumpScale.grid.agentcontroller
 
@@ -236,7 +236,7 @@ class PortalServer:
         append(j.system.fs.joinPaths(appdir, "system"))
 
     def unloadActorFromRoutes(self, appname, actorname):
-        for key in self.routes.keys():
+        for key in list(self.routes.keys()):
             appn, actorn, remaining = key.split("_", 2)
             # print appn+" "+appname+" "+actorn+" "+actorname
             if appn == appname and actorn == actorname:
@@ -573,12 +573,12 @@ class PortalServer:
 
         if 'rawdata' in params:
             from JumpScale.portal.html import multipart
-            from cStringIO import StringIO
+            from io import StringIO
             ctx.env.pop('wsgi.input', None)
             stream = StringIO(ctx.params.pop('rawdata'))
             forms, files = multipart.parse_form_data(ctx.env, stream=stream)
             params.update(forms)
-            for key, value in files.iteritems():
+            for key, value in files.items():
                 if key == 'upload[]':
                     params['upload[]'] = dict()
                     params['upload[]'][value.filename] = value.file
@@ -586,7 +586,7 @@ class PortalServer:
             params.pop('target', None)
         status, header, response = con.run(params)
         status = '%s' % status
-        headers = [ (k, v) for k,v in header.iteritems() ]
+        headers = [ (k, v) for k,v in header.items() ]
         ctx.start_response(status, headers)
         if 'download' not in params:
             response = j.db.serializers.getSerializerType('j').dumps(response)
@@ -677,7 +677,7 @@ class PortalServer:
             # result["error"]=eco.obj2dict()
             def todict(obj):
                 data = {}
-                for key, value in obj.__dict__.iteritems():
+                for key, value in obj.__dict__.items():
                     try:
                         data[key] = todict(value)
                     except AttributeError:
@@ -802,7 +802,7 @@ class PortalServer:
         if "user_login_" in ctx.params:
             # user has filled in his login details, this is response on posted info
             name = ctx.params['user_login_']
-            if not ctx.params.has_key('passwd'):
+            if 'passwd' not in ctx.params:
                 secret=""
             else:
                 secret = ctx.params['passwd']
@@ -838,7 +838,7 @@ class PortalServer:
         return True, session
 
     def _getParamsFromEnv(self, env, ctx):
-        params = urlparse.parse_qs(env["QUERY_STRING"])
+        params = urllib.parse.parse_qs(env["QUERY_STRING"])
 
         # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
         # Example: a=1&b=2&a=3
@@ -851,7 +851,7 @@ class PortalServer:
         # simplified to be
         #
         #   {'a': ['1', '3'], 'b': '2'}
-        params = dict(((k, v) if len(v) > 1 else (k, v[0])) for k, v in params.items())
+        params = dict(((k, v) if len(v) > 1 else (k, v[0])) for k, v in list(params.items()))
 
         if env["REQUEST_METHOD"] in ("POST", "PUT"):
             postData = env["wsgi.input"].read()
@@ -865,7 +865,7 @@ class PortalServer:
                     params.update(postParams)
                 return params
             elif env['CONTENT_TYPE'].find("www-form-urlencoded") != -1:
-                params.update(dict(urlparse.parse_qsl(postData)))
+                params.update(dict(urllib.parse.parse_qsl(postData)))
                 return params
             else:
                 params['rawdata'] = postData
@@ -1093,7 +1093,7 @@ class PortalServer:
     def _minRepeat(self):
         while True:
             yield gen.Task(self.loop.add_timeout, time.time() + 5)
-            for key in self.schedule1min.keys():
+            for key in list(self.schedule1min.keys()):
                 item, args, kwargs = self.schedule1min[key]
                 item(*args, **kwargs)
 
@@ -1101,7 +1101,7 @@ class PortalServer:
         while True:
             yield gen.Task(self.loop.add_timeout, time.time() + 60*15)
             # gevent.sleep(60 * 15)
-            for key in self.schedule15min.keys():
+            for key in list(self.schedule15min.keys()):
                 item, args, kwargs = self.schedule15min[key]
                 item(*args, **kwargs)
 
@@ -1109,7 +1109,7 @@ class PortalServer:
         while True:
             yield gen.Task(self.loop.add_timeout, time.time() + 60*60)
             # gevent.sleep(60 * 60)
-            for key in self.schedule60min.keys():
+            for key in list(self.schedule60min.keys()):
                 item, args, kwargs = self.schedule60min[key]
                 item(*args, **kwargs)
 
@@ -1161,13 +1161,13 @@ class PortalServer:
 
 
     def getSpaces(self):
-        return self.spacesloader.id2object.keys()
+        return list(self.spacesloader.id2object.keys())
 
     def getBuckets(self):
-        return self.bucketsloader.id2object.keys()
+        return list(self.bucketsloader.id2object.keys())
 
     def getActors(self):
-        return self.actorsloader.id2object.keys()
+        return list(self.actorsloader.id2object.keys())
 
     def getSpace(self, name, ignore_doc_processor=False):
 
@@ -1227,10 +1227,10 @@ class PortalServer:
 
     def __str__(self):
         out=""
-        for key,val in self.__dict__.iteritems():
+        for key,val in self.__dict__.items():
             if key[0] != "_" and key not in ["routes"]:
                 out+="%-35s :  %s\n"%(key,val)
-        routes=",".join(self.routes.keys())
+        routes=",".join(list(self.routes.keys()))
         out+="%-35s :  %s\n"%("routes",routes)
         items=out.split("\n")
         items.sort()

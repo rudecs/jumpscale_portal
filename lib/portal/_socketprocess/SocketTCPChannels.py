@@ -1,7 +1,7 @@
 import gevent
 import sys
 
-import cPickle
+import pickle
 from JumpScale import j
 
 from gevent.server import StreamServer
@@ -117,7 +117,7 @@ class WorkerSession(TCPSession):
         if rpc:
             dtype, length, epoch, gid, nid, pid, data = j.core.messagehandler.unPackMessage(dataOut)
             if dtype == 11:
-                data = cPickle.loads(data)
+                data = pickle.loads(data)
         else:
             dtype, length, epoch, gid, nid, pid, data = j.core.messagehandler.unPackMessage(data)
 
@@ -228,7 +228,7 @@ commands:
         if cmd.find("list") == 0:
             return self.listsessions()
 
-        for key in self.cmds.keys():
+        for key in list(self.cmds.keys()):
             result += "- %s\n" % key
 
         return result
@@ -241,7 +241,7 @@ commands:
 
     def killallsessions(self):
         result = ""
-        for key in j.core.portal.active.sessions.keys():
+        for key in list(j.core.portal.active.sessions.keys()):
             session = j.core.portal.active.sessions[key]
             if session.type != "manhole":
                 session.active = False
@@ -252,7 +252,7 @@ commands:
 
     def listsessions(self):
         result = ""
-        for key in j.core.portal.active.sessions.keys():
+        for key in list(j.core.portal.active.sessions.keys()):
             session = j.core.portal.active.sessions[key]
             result += "%s" % session
         return result
@@ -332,7 +332,7 @@ class TCPClient():
         dtype, length, epoch, gid, nid, pid, data = j.core.messagehandler.unPackMessage(dataOut)
 
         if dtype == 11:
-            data = cPickle.loads(data)
+            data = pickle.loads(data)
 
         return type, length, epoch, gid, nid, pid, data
 

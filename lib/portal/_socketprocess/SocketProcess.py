@@ -272,7 +272,7 @@ class PortalProcess():
 
 
     def activateActor(self, appname, actor):
-        if not "%s_%s" % (appname, actor) in self.actors.keys():
+        if not "%s_%s" % (appname, actor) in list(self.actors.keys()):
             # need to activate
             result = self.actorsloader.getActor(appname, actor)
             if result == None:

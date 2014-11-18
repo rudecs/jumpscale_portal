@@ -1,7 +1,7 @@
 
 from JumpScale import j
-from Confluence2HTML import Confluence2HTML
-from Confluence2RST import Confluence2RST
+from .Confluence2HTML import Confluence2HTML
+from .Confluence2RST import Confluence2RST
 
 
 class DocgeneratorFactory:

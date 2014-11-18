@@ -1,5 +1,5 @@
 from JumpScale import j
-from LoaderBase import LoaderBase, LoaderBaseObject
+from .LoaderBase import LoaderBase, LoaderBaseObject
 
 from JumpScale.core.extensions.PMExtensionsGroup import PMExtensionsGroup
 from JumpScale.core.extensions.PMExtensions import PMExtensions
@@ -32,7 +32,7 @@ class ActorExtensionsGroup(PMExtensionsGroup):
         """
         Activates all extensions in the extention group
         """
-        for extensionName in self.pm_extensions.keys():
+        for extensionName in list(self.pm_extensions.keys()):
             extension = self.pm_extensions[extensionName]
             extension.activate()
 
@@ -86,15 +86,15 @@ class ActorsLoader(LoaderBase):
 
     def getApps(self):
         result = {}
-        for item in self.id2object.keys():
+        for item in list(self.id2object.keys()):
             if item.find("__") != -1:
                 app = item.split("__")[0]
                 result[app] = 1
-        return result.keys()
+        return list(result.keys())
 
     def getAppActors(self):
         result = []
-        for item in self.id2object.keys():
+        for item in list(self.id2object.keys()):
             if item.find("__") != -1:
                 app, actor = item.split("__", 2)
                 result.append([app, actor])

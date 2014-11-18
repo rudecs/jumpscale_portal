@@ -5,7 +5,7 @@ import os
 
 fs = j.system.fs
 
-from Doc import *
+from .Doc import *
 
 class DocPreprocessor():
 
@@ -44,13 +44,13 @@ class DocPreprocessor():
                             self.params[paramname.lower()] = value.strip()
         self.images = {}
 
-        from DocHandler import DocHandler
+        from .DocHandler import DocHandler
         self.file_observers = []
         self.doc_handler = DocHandler(self)
 
         if contentDirs != []:
 
-            from DocHandler import Observer
+            from .DocHandler import Observer
 
             from watchdog.events import FileSystemEventHandler
             # The default Observer on Linux (InotifyObserver) hangs in the call to `observer.schedule` because the observer uses `threading.Lock`, which is

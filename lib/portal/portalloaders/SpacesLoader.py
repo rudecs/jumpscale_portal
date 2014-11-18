@@ -1,5 +1,5 @@
 from JumpScale import j
-from LoaderBase import LoaderBaseObject, LoaderBase
+from .LoaderBase import LoaderBaseObject, LoaderBase
 
 
 class Space(LoaderBaseObject):

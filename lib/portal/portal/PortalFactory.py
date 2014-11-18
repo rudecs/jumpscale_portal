@@ -1,6 +1,6 @@
 #from ActorsLoaderRemote import ActorsLoaderRemote
-from PortalServer import PortalServer
-from PortalClient import PortalClient
+from .PortalServer import PortalServer
+from .PortalClient import PortalClient
 import time
 #from ActorLoaderLocal import *
 
@@ -62,11 +62,11 @@ class PortalFactory():
         server.actorsloader.scan(appdir)
         server.actorsloader.scan(basedir + "/base")
 
-        for actor in server.actorsloader.actors.keys():
+        for actor in list(server.actorsloader.actors.keys()):
             appname,actorname=actor.split("__",1)
             try:
                 server.actorsloader.getActor(appname, actorname)
-            except Exception,e:
+            except Exception as e:
                 print("*ERROR*: Could not load actor %s %s:\n%s" % (appname,actorname, e))
 
     def getClientByInstance(self, instance=None):

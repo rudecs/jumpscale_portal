@@ -474,7 +474,7 @@ class Confluence2HTML():
             if state == "start" and line.find("@params") == 0:
                 params = line.replace("@params", "").strip()
                 from JumpScale.core.Shell import ipshell
-                print "DEBUG NOW params, not implemented"
+                print("DEBUG NOW params, not implemented")
                 ipshell()
 
             if state == "start" and line.find("||") == 0:

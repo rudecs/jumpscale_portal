@@ -146,7 +146,7 @@ class WikiClientConfluence:
         return self.pageContentSet(page.name, page.content, parent)
 
     def generatePagegroup(self, pagegroup):
-        for key in pagegroup.pages.keys():
+        for key in list(pagegroup.pages.keys()):
             page = pagegroup.pages[key]
             self.pageContentSet(page.name, page.content, page.parent)
 

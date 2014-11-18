@@ -24,7 +24,7 @@ class PortalRest():
         paramCriteria = self.ws.routes[ctx.path][1]
         paramOptional = self.ws.routes[ctx.path][3]
 
-        for key in paramCriteria.keys():
+        for key in list(paramCriteria.keys()):
             criteria = paramCriteria[key]
             if key not in ctx.params:
                 if key in paramOptional:
@@ -303,11 +303,11 @@ class PortalRest():
                 return self.ws.raiseError(ctx, errorObject=eco)
  
     def activateActor(self, appname, actor):
-        if not "%s_%s" % (appname, actor) in self.ws.actors.keys():
+        if not "%s_%s" % (appname, actor) in list(self.ws.actors.keys()):
             # need to activate
             try:
                 result = self.ws.actorsloader.getActor(appname, actor)
-            except Exception, e:
+            except Exception as e:
                 eco = j.errorconditionhandler.parsePythonErrorObject(e)
                 eco.process()
                 print(e)

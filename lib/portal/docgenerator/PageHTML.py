@@ -1,6 +1,6 @@
 
 from JumpScale import j
-from Page import Page
+from .Page import Page
 import copy
 try:
     import ujson as json
@@ -252,7 +252,7 @@ class PageHTML(Page):
         @params aliases is dict with mapping between name in dict and name to use
         """
         if keystoshow == []:
-            keystoshow = dictobject.keys()
+            keystoshow = list(dictobject.keys())
         self.addMessage(description)
         arr = []
         for item in keystoshow:

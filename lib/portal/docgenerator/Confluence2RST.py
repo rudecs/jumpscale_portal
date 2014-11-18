@@ -55,19 +55,12 @@ class Confluence2RST():
                         descr = parts[0]
                         link = parts[1]
                         if len(parts) >= 3:
-<<<<<<< HEAD
                             if parts[2].strip()!="":
                                 link_id = (parts[2].split('=')[1]).strip()
                                     
                         if len(parts) >= 4:
-                            if parts[2].strip()!="":
-=======
                             if parts[2].strip() != "":
                                 link_id = (parts[2].split('=')[1]).strip()
-                                    
-                        if len(parts) >= 4:
-                            if parts[2].strip() != "":
->>>>>>> 34d8a42ad39e35861a2ac3eab945eb46531e5d0d
                                 link_class = (parts[3].split('=')[1]).strip()
                         if len(parts) >= 5:
                             htmlelements = parts[4]
@@ -113,12 +106,7 @@ class Confluence2RST():
 
 
     def convert(self, content, page=None, doc=None, requestContext=None, paramsExtra={}):
-
-<<<<<<< HEAD
-        if content.find("@rstignore")!=-1:
-=======
         if content.find("@rstignore") != -1:
->>>>>>> 34d8a42ad39e35861a2ac3eab945eb46531e5d0d
             return ""
 
         #styled_text = r'([\w\-:_/= *.\.\/\>\<\\{},|`!]+)'
