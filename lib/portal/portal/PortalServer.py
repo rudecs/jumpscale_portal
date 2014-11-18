@@ -13,8 +13,11 @@ from PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 
 from JumpScale import j
-from gevent.pywsgi import WSGIServer
-import gevent
+import tornado.wsgi
+from tornado.ioloop import IOLoop
+from tornado import gen
+# from gevent.pywsgi import WSGIServer
+# import gevent
 import time
 
 import mimeparse
@@ -74,7 +77,10 @@ class PortalServer:
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
         self._router = SessionMiddleware(self.router, session_opts)
-        self._webserver = WSGIServer((self.listenip, self.port), self._router)
+        self._webserver = tornado.wsgi.WSGIApplication(self._router, '%s:%s' % (self.listenip, self.port))
+        self.loop = IOLoop.current()
+
+        # self._webserver = WSGIServer((self.listenip, self.port), self._router)
 
         # wwwroot = wwwroot.replace("\\", "/")
         # while len(wwwroot) > 0 and wwwroot[-1] == "/":
@@ -1081,25 +1087,28 @@ class PortalServer:
                 self.fiveMinuteId = j.base.time.get5MinuteId(self.epoch)
                 self.hourId = j.base.time.getHourId(self.epoch)
                 self.dayId = j.base.time.getDayId(self.epoch)
-            gevent.sleep(0.5)
+            yield gen.Task(self.loop.add_timeout, time.time() + 0.5)
+            # gevent.sleep(0.5)
 
     def _minRepeat(self):
         while True:
-            gevent.sleep(5)
+            yield gen.Task(self.loop.add_timeout, time.time() + 5)
             for key in self.schedule1min.keys():
                 item, args, kwargs = self.schedule1min[key]
                 item(*args, **kwargs)
 
     def _15minRepeat(self):
         while True:
-            gevent.sleep(60 * 15)
+            yield gen.Task(self.loop.add_timeout, time.time() + 60*15)
+            # gevent.sleep(60 * 15)
             for key in self.schedule15min.keys():
                 item, args, kwargs = self.schedule15min[key]
                 item(*args, **kwargs)
 
     def _60minRepeat(self):
         while True:
-            gevent.sleep(60 * 60)
+            yield gen.Task(self.loop.add_timeout, time.time() + 60*60)
+            # gevent.sleep(60 * 60)
             for key in self.schedule60min.keys():
                 item, args, kwargs = self.schedule60min[key]
                 item(*args, **kwargs)
@@ -1127,20 +1136,24 @@ class PortalServer:
         @param routes: routes to serve, will be merged with the already added routes
         @type routes: dict(string, list(callable, dict(string, string), dict(string, string)))
         """
+        self.loop.add_callback(self._timer)
+        # TIMER = gevent.greenlet.Greenlet(self._timer)
+        # TIMER.start()
 
-        TIMER = gevent.greenlet.Greenlet(self._timer)
-        TIMER.start()
+        self.loop.add_callback(self._minRepeat)
+        # S1 = gevent.greenlet.Greenlet(self._minRepeat)
+        # S1.start()
 
-        S1 = gevent.greenlet.Greenlet(self._minRepeat)
-        S1.start()
+        self.loop.add_callback(self._15minRepeat)
+        # S2 = gevent.greenlet.Greenlet(self._15minRepeat)
+        # S2.start()
 
-        S2 = gevent.greenlet.Greenlet(self._15minRepeat)
-        S2.start()
-
-        S3 = gevent.greenlet.Greenlet(self._60minRepeat)
-        S3.start()
+        self.loop.add_callback(self._60minRepeat)
+        # S3 = gevent.greenlet.Greenlet(self._60minRepeat)
+        # S3.start()
 
         j.console.echo("webserver started on port %s" % self.port)
+        self.loop.start()
         self._webserver.serve_forever()
 
     def stop(self):

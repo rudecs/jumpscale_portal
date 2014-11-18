@@ -1,13 +1,13 @@
 from JumpScale import j
-from CodeGeneratorModel import CodeGeneratorModel
-from CodeGeneratorEnumeration import CodeGeneratorEnumeration
-from CodeGeneratorActorLocal import CodeGeneratorActorLocal
-from CodeGeneratorActorRemote import CodeGeneratorActorRemote
+from .CodeGeneratorModel import CodeGeneratorModel
+from .CodeGeneratorEnumeration import CodeGeneratorEnumeration
+from .CodeGeneratorActorLocal import CodeGeneratorActorLocal
+from .CodeGeneratorActorRemote import CodeGeneratorActorRemote
 # from CodeGeneratorActorMethodGreenlet import CodeGeneratorActorMethodGreenlet
 # from CodeGeneratorWhoosh import CodeGeneratorWhoosh
-from CodeGeneratorActorTasklets import CodeGeneratorActorTasklets
-from CodeGeneratorActorClass import CodeGeneratorActorClass
-from CodeGeneratorEveModel import CodeGeneratorEveModel
+from .CodeGeneratorActorTasklets import CodeGeneratorActorTasklets
+from .CodeGeneratorActorClass import CodeGeneratorActorClass
+from .CodeGeneratorEveModel import CodeGeneratorEveModel
 # from CodeGeneratorOSISTasklets import CodeGeneratorOSISTasklets
 import imp
 import sys
@@ -36,25 +36,25 @@ class CodeGenerator:
         appname = appname.lower()
         actor = actor.lower()
 
-        for key2 in j.core.codegenerator.classes.keys():
+        for key2 in list(j.core.codegenerator.classes.keys()):
             type, app, spectype, item, remaining = key2.split("_", 5)
             if app == appname and item.find(actor) == 0:
                 # print("remove code generated class %s from memory" % key
                 j.core.codegenerator.classes.pop(key2)
 
-        for key2 in j.core.portal.active.taskletengines.keys():
+        for key2 in list(j.core.portal.active.taskletengines.keys()):
             app, item, remaining = key2.split("_", 2)
             if app == appname and item.find(actor) == 0:
                 # print("remove tasklets %s from memory" % key
                 j.core.portal.active.taskletengines.pop(key2)
 
     def resetMemNonSystem(self):
-        for key2 in j.core.codegenerator.classes.keys():
+        for key2 in list(j.core.codegenerator.classes.keys()):
             type, app, spectype, item, remaining = key2.split("_", 5)
             if app != "system":
                 j.core.codegenerator.classes.pop(key2)
 
-        for key2 in j.core.portal.active.taskletengines.keys():
+        for key2 in list(j.core.portal.active.taskletengines.keys()):
             app, item, remaining = key2.split("_", 2)
             if app != "system":
                 j.core.portal.active.taskletengines.pop(key2)
