@@ -267,7 +267,8 @@ class CodeGenerator:
         # j.system.fs.changeDir(pp)
         if pp not in sys.path:
             sys.path.append(pp)
-        exec("import %s" % name)
+        ns = dict()
+        exec(compile("import %s" % name, '<string>', 'exec'), ns)
         try:
             #exec("from %s import %s" % (name,classname))
             exec("import %s" % name)
@@ -282,11 +283,11 @@ class CodeGenerator:
 
         # if getclass:
         try:
-            exec("imp.reload(%s)" % name)
-            exec("classs=%s.%s" % (name, classname))
+            exec(compile("import imp;imp.reload(%s)" % name, '<string>', 'exec'), ns)
+            exec(compile("classs=%s.%s" % (name, classname), '<string>', 'exec'), ns)
 
             # self.classes[name]=classs
-            return classs
+            return ns['classs']
         except Exception as e:
             print("codepath: %s" % codepath)
             print(e)

@@ -13,7 +13,10 @@ from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 
 from JumpScale import j
+import tornado.web
 import tornado.wsgi
+import tornado.httpserver
+import wsgiref.simple_server
 from tornado.ioloop import IOLoop
 from tornado import gen
 # from gevent.pywsgi import WSGIServer
@@ -35,6 +38,10 @@ CONTENT_TYPE_PLAIN = 'text/plain'
 CONTENT_TYPE_HTML = 'text/html'
 CONTENT_TYPE_PNG = 'image/png'
 
+class pageHandler(tornado.web.RequestHandler):
+    def get(self):
+        import ipdb; ipdb.set_trace()
+        PortalServer.router()
 
 class PortalServer:
 
@@ -77,7 +84,12 @@ class PortalServer:
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
         self._router = SessionMiddleware(self.router, session_opts)
-        self._webserver = tornado.wsgi.WSGIApplication(self._router, '%s:%s' % (self.listenip, self.port))
+        #self._router, '%s:%s' % (self.listenip, self.port)
+        # application = tornado.web.Application([(r"/", pageHandler),])
+        container = tornado.wsgi.WSGIContainer(self._router)
+        self._webserver = tornado.httpserver.HTTPServer(container)
+        # self.wsgi_app = tornado.wsgi.WSGIAdapter(application)
+        # self._webserver = wsgiref.simple_server.make_server('', self.port, self.wsgi_app)
         self.loop = IOLoop.current()
 
         # self._webserver = WSGIServer((self.listenip, self.port), self._router)
@@ -449,7 +461,7 @@ class PortalServer:
             page = self.getpage()
             page.addCodeBlock(content, template, edit=True)
             start_response('200 OK', [('Content-Type', contenttype), ])
-            return [str(page)]
+            return [str(page).encode('utf-8')]
 
         def processHtml(contenttype, path, start_response,ctx,space):
             content = j.system.fs.fileGetContents(path)
@@ -474,7 +486,7 @@ class PortalServer:
                     content=content.replace(match.founditem,page.body)
             
             start_response('200 OK', [('Content-Type', "text/html"), ])
-            return [content]
+            return [content.encode('utf-8')]
 
         def removePrefixes(path):
             path = path.replace("\\", "/")
@@ -531,7 +543,7 @@ class PortalServer:
                 print("error")
                 headers = [('Content-Type', contenttype), ]
                 start_response("404 Not found", headers)
-                return ["path %s not found" % path]
+                return [("path %s not found" % path).encode('utf-8')]
 
         size = os.path.getsize(pathfull)
 
@@ -559,7 +571,7 @@ class PortalServer:
         start_response(status, headers)
 
         if content != "":
-            return [content]
+            return [content.encode('utf-8')]
         else:
             return send_file(pathfull, size)
 
@@ -987,7 +999,9 @@ class PortalServer:
             ctx.params["path"] = '/'.join(pathparts)
             space, pagename = self.path2spacePagename(path)
             self.log(ctx, user, path, space, pagename)
-            return [str(self.returnDoc(ctx, start_response, space, pagename, {}))]
+            pagestring = str(self.returnDoc(ctx, start_response, space, pagename, {}))
+            pagebytes = pagestring.encode('utf-8')
+            return [pagebytes]
 
     def render(self, environ, start_response):
         path = environ["PATH_INFO"].lstrip("/")
@@ -1151,10 +1165,12 @@ class PortalServer:
         self.loop.add_callback(self._60minRepeat)
         # S3 = gevent.greenlet.Greenlet(self._60minRepeat)
         # S3.start()
-
         j.console.echo("webserver started on port %s" % self.port)
-        self.loop.start()
-        self._webserver.serve_forever()
+        # self._webserver.serve_forever()
+        # self.loop.start()
+
+        self._webserver.listen(self.port)
+        tornado.ioloop.IOLoop.instance().start()
 
     def stop(self):
         self._webserver.stop()

@@ -23,7 +23,7 @@ class HeaderTools():
         for line in content.split("\n"):
             if re.match(r"\Ah\d+\. ", line, re.IGNORECASE):
                 hnr, line = HeaderTools.getHeadnr(line)
-                if hnr < lowest or lowest == None:
+                if lowest == None or hnr < lowest:
                     lowest = hnr
         return lowest
 
