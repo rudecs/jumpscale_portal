@@ -884,7 +884,6 @@ class PortalServer:
         return params
 
     def router(self, environ, start_response):
-        import ipdb; ipdb.set_trace()
         path = environ["PATH_INFO"].lstrip("/")
         print("path:%s" % path)
         pathparts = path.split('/')
