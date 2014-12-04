@@ -1,8 +1,9 @@
 import re
-try:
-    import urllib
-except:
-    import urllib.parse as urllib
+from six.moves import urllib 
+#try:
+ #   import urllib
+#except:
+#    import urllib.parse as urllib
 
 
 # import urllib.request, urllib.error
@@ -857,7 +858,7 @@ class PortalServer:
         return True, session
 
     def _getParamsFromEnv(self, env, ctx):
-        params = urllib.parse_qs(env["QUERY_STRING"])
+        params = urllib.parse.parse_qs(env["QUERY_STRING"])
 
         # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
         # Example: a=1&b=2&a=3
@@ -884,7 +885,7 @@ class PortalServer:
                     params.update(postParams)
                 return params
             elif env['CONTENT_TYPE'].find("www-form-urlencoded") != -1:
-                params.update(dict(urllib.parse_qsl(postData)))
+                params.update(dict(urllib.parse.parse_qsl(postData)))
                 return params
             else:
                 params['rawdata'] = postData
