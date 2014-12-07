@@ -1,0 +1,70 @@
+@template defaultbootstrapthree
+
+h2. Eve Grid Macro
+
+This macro is used to show Grioview based on Eve
+Please notice that if you use eve in onother server you need to make sure that, X_DOMAINS = '*' in settings file. And spec.json file is allwoed to reach from another server like:
+{{code:
+@app.route('/docs/spec.json')
+def specs():
+    return send_response(None, [get_cfg()])
+}}
+
+h2. Example
+
+{{html:
+    <div ng-app="eveTestApp">
+}}
+
+{{code:
+{{evegrid:
+    schema.url=192.168.9.135:5000/system
+    spec.json.path=/docs/spec.json
+    entity.name=eco
+    datetime.fields=epoch
+
+    column.1.data=jid
+    column.1.header=Job ID
+    column.1.format=<a href="/jobs/{jid}">{jid}</a>
+    column.2.data=errormessage
+    column.2.header=Error message
+    column.3.data=occurrences
+    column.3.header=Occurrences
+    column.4.data=epoch
+    column.4.header=Time
+    column.5.data=state
+    column.5.header=State
+\}\}
+}}
+
+h3. Output
+
+{{evegrid:
+    schema.url=192.168.9.135:5000/system
+    spec.json.path=/docs/spec.json
+    entity.name=eco
+    datetime.fields=epoch
+
+    column.1.data=jid
+    column.1.header=Job ID
+    column.1.format=<a href="/jobs/{jid}">{jid}</a>
+    column.2.data=errormessage
+    column.2.header=Error message
+    column.3.data=occurrences
+    column.3.header=Occurrences
+    column.4.data=epoch
+    column.4.header=Time
+    column.5.data=state
+    column.5.header=State
+}}
+
+{{html:
+    </div>
+    <script>
+    var eveTestApp = angular.module('eveTestApp', ['eveModule']);
+    eveTestApp.config(['$interpolateProvider', function($interpolateProvider) {
+        $interpolateProvider.startSymbol('{[').endSymbol(']}');
+    }]);
+    </script>
+}}
+
