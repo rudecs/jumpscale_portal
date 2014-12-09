@@ -3,16 +3,15 @@ import json
 
 def main(j, args, params, tags, tasklet):
 	page = args.page
-	
 	hrd = j.core.hrd.get(content=args.cmdstr)
 
 	eveGrid = {
-		'specJsonPath': hrd.get('spec_json_path', default='/docs/spec.json'),
-		'schemaURL': hrd.get('schema_url', default=''),
-		'entityName': hrd.get('entity_name', default=''),
-		'datetimeFields': hrd.get('datetime_fields', default=''),
+		'specJsonPath': hrd.get('spec.json.path', default='/docs/spec.json'),
+		'schemaURL': hrd.getStr('schema.url', default='').replace("'", '').replace(',', ''),
+		'entityName': hrd.get('entity.name', default=''),
+		'datetimeFields': hrd.get('datetime.fields', default=''),
 	}
-
+ 
 	eveGrid['columns'] = []
 	for i in count(1):
 		column = {}
@@ -23,7 +22,6 @@ def main(j, args, params, tags, tasklet):
 		column['format'] = hrd.get('column.{}.format'.format(i), default='')
 		eveGrid['columns'].append(column)
 	
-	# import ipdb; ipdb.set_trace()
 	eveGrid['columns'] = (json.dumps(eveGrid['columns']))
 
 
@@ -41,7 +39,7 @@ def main(j, args, params, tags, tasklet):
 		page.addJS('/jslib/jquery/jqueryDataTable/js/dataTables.bootstrap.js')
 		page.addJS('/jslib/moment.js')
 		page.addJS('https://rawgit.com/Eonasdan/bootstrap-datetimepicker/master/src/js/bootstrap-datetimepicker.js')
-
+		page.addJS('/jslib/spin.min.js')
 		page.addJS('/system/.files/lib/evegrid/js/eve-grid.js')
 	
 	page.addMessage('''
