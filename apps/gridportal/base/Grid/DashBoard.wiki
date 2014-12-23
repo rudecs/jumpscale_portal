@@ -1,0 +1,46 @@
+@usedefaults
+@block
+@row
+
+{{timestamp}}
+
+@col 4
+#{{html:<center>}}
+h5. No. of Events in Last 24hours
+{{eventgauge: id:4 width:200 height:114}}
+#   {{html:</center>}}
+@divend 
+@col 4
+h5. No. of vMachines Running 
+#*From Total Deployed:45*
+{{vmgauge: id:5 width:200 height:114}}
+@divend 
+
+@divend
+
+@col 6
+h4. Links
+
+
+|Performance Dashboard|Events Dashboard|
+|[Grid Nodes|/grid/nodes]|[Failed Jobs|/grid/jobs?state=ERROR]|
+@divend 
+@col 6
+@divend 
+
+#block
+@divend 
+
+
+{{healthcheck}}
+
+
+{{cssstyle
+td {
+    max-width:500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;}
+}}
+
+

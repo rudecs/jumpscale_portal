@@ -1,0 +1,52 @@
+@usedefaults
+
+{{node_getdata: gid:$$gid id:$$id}}
+
+h2. Node: $$gridname:$$name ($$gid:$$id)
+
+{{toc: start=3}}
+
+h3. CPU Statistics
+{{html:
+
+<iframe width="1000px" height="300px" src="/jslib/grafana/iframe.html#/dashboard/script/CPUStats.js?nid=$$id&gid=$$gid" frameborder="0"></iframe>
+
+}}
+
+h3. Info
+
+|*GID:NID*|$$gid:$$id|
+|*Name*|$$name|
+|*Active*|$$active|
+|*Roles*|$$roles|
+|*Description*|$$description|
+|*IP Address*|$$ipaddr|
+
+h3. Statistics
+
+* [*Statistics*|NodeStats?id=$$id&gid=$$gid]
+#* [*Real Time Statistics*|RealTimeStatsNode?nid=$$id]
+
+h3. NICs
+{{nics: nid:$$id}}
+
+h3. Jobs
+{{jobs: nid:$$id}}
+
+
+h3. Processes
+{{processes nid:$$id}}
+
+h3. Machines
+{{machines nid:$$id}}
+
+
+h3. Logs
+{{logs: nid:$$id}}
+
+h3. ECOs
+{{ecos: nid:$$id}}
+
+
+h3. Disks
+{{disks: nid:$$id gid:$$gid}}

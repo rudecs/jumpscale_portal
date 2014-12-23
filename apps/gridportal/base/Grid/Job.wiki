@@ -1,0 +1,33 @@
+@usedefaults
+
+{{job: id:$$id }}
+
+h2. Job Details
+
+| *Grid ID* | ${gid} |
+| *Node ID* | [${nid}|/grid/node?id=${nid}&gid=${gid}] |
+| *Roles* | ${roles} | 
+| *Jumpscript* | [${organization}:${cmd}|jumpscript?organization=${organization}&name=${cmd}] | 
+| *Start* | {{div: data-ts=${timeStart}|class=jstimestamp}}{{div}} (*Timeout*: ${timeout}) |
+| *Stop* | {{div: data-ts=${timeStop}|class=jstimestamp}}{{div}} |
+| *Queue* | ${queue} |
+| *State* | ${state} |
+
+| {{tableforarg title:Args data:${args} }}
+
+h3. Result
+${resultline}
+{% if backtrace %}
+h4. Backtrace
+{{code:
+${backtrace}
+}}
+{% endif %}
+
+h4. Logs
+{{Grid.logs: jid:$$id astext}}
+
+h3. Additional Info
+|*Job Completed*| ${timestop}|
+|*Category*|${category}|
+|*Parent*|${parent}|

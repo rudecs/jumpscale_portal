@@ -1,0 +1,18 @@
+@usedefaults
+
+{{node_getdata: gid:$$gid id:$$nid}}
+{{timestamp}}
+
+h2. $$gridname: $$name ($$gid:$$id)
+
+h3. Redis Status
+{{redisstatus nid:$$nid}}
+
+h3. Heartbeat
+{{nodeheartbeat nid:$$nid}}
+
+h3. Worker Status
+{{workerstatus nid:$$nid}}
+
+h3. Disks Status
+{{diskscheck nid:$$nid}}
