@@ -7,6 +7,7 @@ try:
 except:
     import json
 import inspect
+import ExtraTools
 
 class PageHTML(Page):
 
@@ -956,7 +957,7 @@ function copyText$id() {
         C = C.replace("{dircmd}", dircmd)
         C = C.replace("{filecmd}", filecmd)
         if dockey == None:
-            dockey = j.base.byteprocessor.hashMd5(path)
+            dockey = ExtraTools.ByteProcessor.hashMd5(path)
         C = C.replace("$dockey", dockey)
         db = j.db.keyvaluestore.getMemoryStore('elfinder')
         db.cacheSet(key=dockey, value=path)
