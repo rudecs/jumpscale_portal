@@ -2,6 +2,7 @@
 __pycache__/
 *.py[co]
 *.py.bak
+*.gen.py
 
 # C extensions
 #*.so
