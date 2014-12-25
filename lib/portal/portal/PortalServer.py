@@ -435,23 +435,8 @@ class PortalServer:
         ctx.params.update(extraParams)
 
         # doc.applyParams(ctx.params)
-        content,doc = doc.executeMacrosDynamicWiki(paramsExtra=extraParams, ctx=ctx)
-
-        page = self.confluence2htmlconvertor.convert(content, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
-
-        if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
-            page.body = page.body.replace("$$space", space)
-            page.body = page.body.replace("$$page", doc.original_name)
-            page.body = page.body.replace("$$path", doc.path)
-            page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-
-        page.body = page.body.replace("$$$menuright", "")
-
-        if "todestruct" in doc.__dict__:
-            doc.destructed = True
-
         ctx.start_response('200 OK', [('Content-Type', "text/html"), ])
-        return page
+        return doc.getHtmlBody(paramsExtra=extraParams, ctx=ctx)
 
     def processor_page(self, environ, start_response, wwwroot, path, prefix="", webprefix="", index=False,includedocs=False,ctx=None,space=None):
         def indexignore(item):

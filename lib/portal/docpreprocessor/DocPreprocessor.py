@@ -241,7 +241,6 @@ class DocPreprocessor():
         """
         directory to walk over and find story, task, ... statements
         """
-
         images = fs.listFilesInDir(path, True)        
         for image in images:
             if DocPreprocessor.is_image(image):
@@ -271,11 +270,11 @@ class DocPreprocessor():
                 self._scan(ddir, defaultdir, lastDefaultPath, lastparams, lastparamsdir,
                            lastnav, lastnavdir, parent=parent2)
 
+
         return docs
 
     def add_doc(self, pathItem, path, docs, defaultdir="", lastDefaultPath="", lastparams={}, lastparamsdir="",
               lastnav="", lastnavdir="", parent="", lastBaseNameHtmlLower=''):
-
         def checkDefault(path, name):
             name2 = fs.getDirName(path, True).lower()
             if name == name2:
@@ -352,13 +351,23 @@ class DocPreprocessor():
                     C = "@usedefault\n\n{{htmlloadheader}}\n\n{{htmlloadbody}}\n"
                     fs.writeFile(wikiCorrespondingPath, C)
 
-        if fs.getFileExtension(pathItem) == "wiki":
+
+        extension = fs.getFileExtension(pathItem)
+        if extension in ('md',"wiki"):
 
             # print "lastdefaultpath:%s" % lastDefaultPath
-            doc = self.docNew()
-            doc.original_name = fs.getBaseName(pathItem).replace(".wiki", "")
+            if extension == 'md':
+                doc = DocMD(self)
+            else:
+                doc = Doc(self)
+            doc.original_name = fs.getBaseName(pathItem).replace(".%s" % extension, "")
             doc.name = doc.original_name.lower()
             print("doc:%s path:%s" % (doc.name, pathItem))
+
+            if extension == 'md':
+                doc.parent = parent
+                doc.usedefault = True
+
             if checkDefault(pathItem, doc.name):
                 # print "default %s" %lastDefaultPath
                 doc.parent = parent
@@ -369,6 +378,7 @@ class DocPreprocessor():
             doc.defaultPath = lastDefaultPath
 
             htmlpath=j.system.fs.joinPaths(fs.getDirName(path),"%s.html"%doc.original_name)
+                
             if j.system.fs.exists(path=htmlpath):                
                 lastHeaderHtml, lastBodyHtml = self.parseHtmlDoc(htmlpath)           
                 doc.htmlHeadersCustom.append(lastHeaderHtml)
@@ -389,6 +399,7 @@ class DocPreprocessor():
             doc.navigation = lastnav
             doc.path = pathItem  # .replace("\\","/")
             doc.shortpath = path3
+
             self.docAdd(doc)
             docs.append(doc)
 

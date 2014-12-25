@@ -191,8 +191,18 @@ class Doc(object):
             self.preprocess()
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
         ws = j.core.portal.active
-        page = ws.confluence2htmlconvertor.convert(content, doc=self, page=ws.getpage())
-        return page.body
+        page = ws.confluence2htmlconvertor.convert(content, doc=self, requestContext=ctx, page=ws.getpage(), paramsExtra=ctx.params)
+
+        if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
+            page.body = page.body.replace("$$space", self.getSpaceName())
+            page.body = page.body.replace("$$page", self.original_name)
+            page.body = page.body.replace("$$path", self.path)
+            page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
+
+        page.body = page.body.replace("$$$menuright", "")
+        if "todestruct" in doc.__dict__:
+            doc.destructed = True
+        return str(page)
 
     def findParams(self):
         if self.source == "":
@@ -324,4 +334,17 @@ class Doc(object):
 
     def __repr__(self):
         return self.__str__()
+
+class DocMD(Doc):
+    def getHtmlBody(self, paramsExtra={}, ctx=None):
+        if self.source == "":
+            self.loadFromDisk()
+            self.preprocess()
+        if self.dirty or (ctx != None and "reload" in ctx.params):
+            self.loadFromDisk()
+            self.preprocess()
+        content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
+        import markdown
+        html = markdown.markdown(content)
+        return html
 
