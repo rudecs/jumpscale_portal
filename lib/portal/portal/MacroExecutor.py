@@ -222,9 +222,36 @@ class MacroExecutorPage(MacroExecutorBase):
         page0 = self.executeMacroAdd2Page(macrostr, page0, doc, requestContext, paramsExtra)
         return page0.body
 
+    def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None, page=None):
+        recursivedepth = 0
+        page = j.core.portal.active.getpage()
+        page.body = content
+        def process(content):
+            if ctx != None:
+                content = doc.applyParams(ctx.params, findfresh=True, content=content)
+            if paramsExtra != {}:
+                content = doc.applyParams(paramsExtra, findfresh=True, content=content)
+            return content, self.findMacros(doc, content)
+
+        content, macros = process(content)
+        while macros:
+            recursivedepth += 1
+            if recursivedepth > 20:
+                content += 'ERROR: recursive error in executing macros'
+                return content, doc
+
+            for macroitem in macros:
+                macrostr, macrospace, macro, tags, cmdstr = macroitem
+                page.body = page.body.replace(macrostr, "", 1)
+                doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra)
+
+            content, macros = process(page.body)
+        content = str(page)
+        return content, doc
+
 class MacroExecutorWiki(MacroExecutorBase):
 
-    def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None):
+    def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None, page=None):
         recursivedepth = 0
         def process(content):
             if ctx != None:
@@ -241,12 +268,12 @@ class MacroExecutorWiki(MacroExecutorBase):
                 return content, doc
 
             for macroitem in macros:
-                content, doc = self.executeMacroOnContent(content, macroitem, doc, paramsExtra, ctx=ctx)
+                content, doc = self.executeMacroOnContent(content, macroitem, doc, paramsExtra, ctx=ctx, page=page)
 
             content, macros = process(content)
         return content, doc
 
-    def executeMacroOnContent(self, content, macroitem, doc, paramsExtra=None, ctx=None):
+    def executeMacroOnContent(self, content, macroitem, doc, paramsExtra=None, ctx=None, page=None):
         """
         find macro's in a doc & execute the macro
         a doc is a document in preprocessor phase
@@ -256,7 +283,7 @@ class MacroExecutorWiki(MacroExecutorBase):
         if taskletgroup:
             try:
                 result, doc = taskletgroup.executeV2(groupname=macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
-                                                            paramsExtra=paramsExtra, cmdstr=cmdstr, requestContext=ctx, content=content)
+                                                            paramsExtra=paramsExtra, cmdstr=cmdstr, requestContext=ctx, content=content, page=page)
             except Exception:
                 e = traceback.format_exc()
                 if str(e).find("non-sequence") != -1:

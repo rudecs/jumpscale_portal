@@ -344,7 +344,12 @@ class DocMD(Doc):
             self.loadFromDisk()
             self.preprocess()
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
+        content, doc = self.executePageMacro(content, paramsExtra, ctx)
         import markdown
         html = markdown.markdown(content)
         return html
 
+
+    def executePageMacro(self, content, paramsExtra, ctx):
+        page = j.tools.docgenerator.pageNewHTML('temp')
+        return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page)
