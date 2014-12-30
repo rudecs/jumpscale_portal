@@ -3,6 +3,7 @@ import re
 import os
 import jinja2
 import ExtraTools
+import os.path
 
 fs = j.system.fs
 
@@ -129,8 +130,15 @@ class Doc(object):
             template = fs.fileGetContents(template_path)
             self.content = template.replace('{content}', self.source)
         elif self.defaultPath and self.usedefault:
-            default = fs.fileGetTextContents(self.defaultPath)
-            self.content = default.replace("{content}", self.source)
+            extension = fs.getFileExtension(self.path)
+            if extension == 'md':
+                self.content = self.source
+            else:
+                self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
+                default = fs.fileGetTextContents(self.defaultPath)
+                self.content = default.replace("{content}", self.source)
+
+
 
         if preprocess and self.source.strip() != "":
             # print path3
@@ -192,7 +200,6 @@ class Doc(object):
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
         ws = j.core.portal.active
         page = ws.confluence2htmlconvertor.convert(content, doc=self, requestContext=ctx, page=ws.getpage(), paramsExtra=ctx.params)
-
         if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
             page.body = page.body.replace("$$space", self.getSpaceName())
             page.body = page.body.replace("$$page", self.original_name)
@@ -347,7 +354,10 @@ class DocMD(Doc):
         content, doc = self.executePageMacro(content, paramsExtra, ctx)
         import markdown
         html = markdown.markdown(content)
-        return html
+        loader = jinja2.FileSystemLoader(self.defaultPath.split('.space')[0])
+        env = jinja2.Environment(loader=loader)
+        jinja2html = env.from_string(html).render()
+        return jinja2html
 
 
     def executePageMacro(self, content, paramsExtra, ctx):

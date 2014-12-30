@@ -360,6 +360,8 @@ class DocPreprocessor():
                 doc = DocMD(self)
             else:
                 doc = Doc(self)
+
+                
             doc.original_name = fs.getBaseName(pathItem).replace(".%s" % extension, "")
             doc.name = doc.original_name.lower()
             print("doc:%s path:%s" % (doc.name, pathItem))
@@ -385,6 +387,7 @@ class DocPreprocessor():
                 doc.htmlBodiesCustom.append(lastBodyHtml)
 
             docdir = os.path.normpath(fs.getDirName(pathItem))
+
             while(docdir != ''):
                 if docdir in lastparams:
                     newparams = lastparams[docdir]
@@ -400,6 +403,7 @@ class DocPreprocessor():
             doc.path = pathItem  # .replace("\\","/")
             doc.shortpath = path3
 
+                
             self.docAdd(doc)
             docs.append(doc)
 

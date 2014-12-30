@@ -1,4 +1,6 @@
+{% extends ".space/default.md" %}
 
+{% block body %}
 # Dillinger
 
 Dillinger is a cloud-enabled, mobile-ready, offline-storage, AngularJS powered HTML5 Markdown editor.
@@ -122,71 +124,4 @@ MIT
 [AngularJS]:http://angularjs.org
 [Gulp]:http://gulpjs.com
 
-
-
-
-
-
-
-
-
-
-
-
-{{text_slider:
-
-h2. Gorilla
-
-
-
-Gorilla lives in Africa.
-
-
-
-Gorillas don't eat meat & generally
-
-
-
-frjenfrekren re
-
-
-
-fjrenfrjeln
-
-dwe
-
-fewf
-
-wefwe
-
-\-\-\-\-\-\-\-
-
-fwe
-
-fwef
-
-ewfwe
-
-fwef
-
-wef
-
-fj
-
-------------
-
-h2. Tiger
-
-
-
-Tiger lives in South America
-
---------------
-
-h2. Lion
-
-
-
-Tiger lives in Africa
-
-}}
+{% endblock %}
