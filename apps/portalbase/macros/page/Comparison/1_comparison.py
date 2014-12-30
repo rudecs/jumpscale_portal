@@ -3,79 +3,78 @@ from itertools import count
 def main(j, args, params, tags, tasklet):
 	page = args.page
 	page.addCSS(cssContent=''' 
-		.comparison-block{
-			border: 1px solid #CCE4E2;
-			margin-bottom: 10px;
-		}
-		.comparison-block:hover{
-			border: 1px solid #B0D7D5;
-		}
-		.comparison-block:hover .title{
-			background-color: #62a29e;
-			color: #fff;
-		}
-		.comparison-block:hover .title *{
-			color: #fff;
-		}
-		.comparison-footer{
-			padding: 10px 0;
-			border-top: 1px solid #CCE4E2;
-			margin-top: 10px;
-		}
-		.comparison-footer button{
-			margin-top: 8px;
-		}
-		.text-center{
-			text-align: center;
-		}
-		.comparison-block .title{
-			background: #C7E1E0;
-			padding: 15px;
-		}
-		.comparison-block .title small, .price small, .comparison-footer small{
-			color: #8D8A8A;
-		}
-		.comparison-block .title p{
-			margin-bottom: 5px;
-			color: #4F918D;
-			font-weight: bold;
-		}
-		.comparison-block .title p.small{
-			font-size: 95%;
-		}
-		.comparison-block .title p.medium{
-			font-size: 18px;
-		}
-		.comparison-block .title p.large{
-			font-size: 180%;
-		}
-		.comparison-block .price{
-			padding-top: 15px;
-			background-color: #F1F0F0;
-			border-top: 1px solid #CCE4E2;
-			border-bottom: 1px solid #CCE4E2;
-			margin-bottom: 10px;
-			padding-bottom: 10px;
-		}
-		.comparison-block .price p{
-			font-size: 30px;
-			color: #767677;
-			margin-bottom: 0;
-		}
-		.comparison-block .property{
-			padding: 3px;
-			font-size: 90%;
-			padding-left: 8px;
-			cursor: default;
-		}
-		.comparison-block .property:hover{
-			background-color: #62a29e;
-			color: #fff;
-		}
-		.comparison-block .currency{
-			font-size: 60%;
-		}
-	 ''')
+.comparison-block{
+	border: 1px solid #CCE4E2;
+	margin-bottom: 10px;
+}
+.comparison-block:hover{
+	border: 1px solid #B0D7D5;
+}
+.comparison-block:hover .title{
+	background-color: #62a29e;
+	color: #fff;
+}
+.comparison-block:hover .title *{
+	color: #fff;
+}
+.comparison-footer{
+	padding: 10px 0;
+	border-top: 1px solid #CCE4E2;
+	margin-top: 10px;
+}
+.comparison-footer button{
+	margin-top: 8px;
+}
+.text-center{
+	text-align: center;
+}
+.comparison-block .title{
+	background: #C7E1E0;
+	padding: 15px;
+}
+.comparison-block .title small, .price small, .comparison-footer small{
+	color: #8D8A8A;
+}
+.comparison-block .title p{
+	margin-bottom: 5px;
+	color: #4F918D;
+	font-weight: bold;
+}
+.comparison-block .title p.small{
+	font-size: 95%;
+}
+.comparison-block .title p.medium{
+	font-size: 18px;
+}
+.comparison-block .title p.large{
+	font-size: 180%;
+}
+.comparison-block .price{
+	padding-top: 15px;
+	background-color: #F1F0F0;
+	border-top: 1px solid #CCE4E2;
+	border-bottom: 1px solid #CCE4E2;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+.comparison-block .price p{
+	font-size: 30px;
+	color: #767677;
+	margin-bottom: 0;
+}
+.comparison-block .property{
+	padding: 3px;
+	font-size: 90%;
+	padding-left: 8px;
+	cursor: default;
+}
+.comparison-block .property:hover{
+	background-color: #62a29e;
+	color: #fff;
+}
+.comparison-block .currency{
+	font-size: 60%;
+}''')
 	hrd = j.core.hrd.get(content=args.cmdstr)
 
 	currency = hrd.getStr('currency', '')

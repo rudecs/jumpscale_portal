@@ -350,16 +350,16 @@ class DocMD(Doc):
         if self.dirty or (ctx != None and "reload" in ctx.params):
             self.loadFromDisk()
             self.preprocess()
+        loader = jinja2.FileSystemLoader(self.defaultPath.split('.space')[0])
+        env = jinja2.Environment(variable_start_string="${", variable_end_string="}", loader=loader)
+        jinja2html = env.get_or_select_template(self.name).render()
+        self.content = jinja2html
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
-        content, doc = self.executePageMacro(content, paramsExtra, ctx)
+        content, doc = self.executePageMacro(paramsExtra, ctx)
         import markdown
         html = markdown.markdown(content)
-        loader = jinja2.FileSystemLoader(self.defaultPath.split('.space')[0])
-        env = jinja2.Environment(loader=loader)
-        jinja2html = env.from_string(html).render()
-        return jinja2html
+        return html
 
-
-    def executePageMacro(self, content, paramsExtra, ctx):
+    def executePageMacro(self, paramsExtra, ctx):
         page = j.tools.docgenerator.pageNewHTML('temp')
         return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page)

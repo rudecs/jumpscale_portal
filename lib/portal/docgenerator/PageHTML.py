@@ -666,7 +666,7 @@ function copyText$id() {
             self.jscsslinks[key] = True
 
         if cssContent:
-            css = "<style type='text/css'>\n%s</style>\n" % cssContent
+            css = "\n<style type='text/css'>%s\n</style>\n" % cssContent
         else:
             css = "<link  href='%s' type='text/css' rel='Stylesheet'/>\n" % cssLink
         self.head += css
@@ -1008,7 +1008,7 @@ function copyText$id() {
         jsHead = title + self.head + self._generateChartScript()
 
         if (self.login or self._hasmenu) and (self.padding != False):
-            jsHead += "<style type='text/css'>\n"
+            jsHead += "\n<style type='text/css'>"
             if self.padding != True and self.padding.find("-") != -1:
                 top, bottomn = self.padding.split("-")
                 top = int(top.strip())
@@ -1029,7 +1029,9 @@ function copyText$id() {
             CC += "} );\n"
             jsHead += "<script type='text/javascript'>" + CC + "</script>"
 
-        return '<!DOCTYPE html>\n<html>\n \
-        <head>\n%s\n</head>\n \
-            <body %s>\n%s</body>\n</html>' % (jsHead, ' '.join(self.bodyattributes), self.body)
+        return '''<!DOCTYPE html>
+<html>
+<head>%s</head>
+<body %s>%s</body>
+</html>''' % (jsHead, ' '.join(self.bodyattributes), self.body)
  
