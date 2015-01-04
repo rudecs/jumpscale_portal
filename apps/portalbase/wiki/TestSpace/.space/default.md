@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- need to add to jslib -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/jslib/old/bootstrap/css/bootstrap-responsive.css">
 	<link rel="stylesheet" href="/jslib/flatui/css/flat-ui.css">
+	<!-- need to add to jslib -->
+	<style type="text/css">
+		.navbar{
+			border-radius: 0;
+			border-bottom-right-radius: 6px;
+			border-bottom-left-radius: 6px;
+		}
+		h1, .h1{
+			font-size: 40px;
+		}
+		h2, .h2{
+			font-size: 35px;
+		}
+		h3, .h3{
+			font-size: 30px;
+		}
+		h4, .h4{
+			font-size: 25px;
+		}
+		h5, .h5{
+			font-size: 23px;
+		}
+		h6, .h6{
+			font-size: 20px;
+		}
+	</style>
 </head>
 <body style="background: #ECF0F1;">
 	<header class="container">
-		<div class="row">
+		<div>
 			<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
 	            <div class="navbar-header">
 	              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
