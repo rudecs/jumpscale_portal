@@ -3,7 +3,11 @@ def main(j, args, params, tags, tasklet):
     import os
     page = args.page
     params.result = page
-
+    page.addCSS(cssContent=''' 
+.elfinder-contextmenu{
+    left: 39%;
+}
+''')
     path = ''
     space = args.paramsExtra.get('space')
     if space:
