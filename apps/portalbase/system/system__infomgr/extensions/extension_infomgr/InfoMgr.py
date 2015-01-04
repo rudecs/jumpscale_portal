@@ -171,6 +171,7 @@ class InfoMgr():
         result bool         
         """
         now = self.now()
+        id = None
         for line in info.split("\n"):
             if line.strip() == "":
                 continue
