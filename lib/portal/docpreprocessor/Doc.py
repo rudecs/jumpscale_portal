@@ -356,10 +356,8 @@ class DocMD(Doc):
         self.content = jinja2html
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
         content, doc = self.executePageMacro(paramsExtra, ctx)
-        import markdown
-        html = markdown.markdown(content)
-        return html
+        return content
 
     def executePageMacro(self, paramsExtra, ctx):
         page = j.tools.docgenerator.pageNewHTML('temp')
-        return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page)
+        return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page, markdown=True)

@@ -3,7 +3,6 @@ from JumpScale.portal.docgenerator.Page import Page
 from JumpScale.baselib import taskletengine
 import traceback
 
-
 class MacroExecutorBase(object):
     def __init__(self, macrodirs=[]):
         self.taskletsgroup = dict()
@@ -181,14 +180,13 @@ class MacroExecutorPreprocess(MacroExecutorBase):
 
 class MacroExecutorPage(MacroExecutorBase):
 
-    def executeMacroAdd2Page(self, macrostr, page, doc=None, requestContext=None, paramsExtra=""):
+    def executeMacroAdd2Page(self, macrostr, page, doc=None, requestContext=None, paramsExtra="", markdown=False):
         """
         @param macrostr full string like {{test something more}}
         @param page is htmlpage, rstpage, confluencepage, ...
         find macro's in a page & execute the macro
         a doc is a document in final phase whichere the final result is generated
         """
-
         if not isinstance(page, Page):
             raise RuntimeError("Page was no page object. Was for macro:%s on doc:%s" % (macrostr, doc.name))
 
@@ -199,6 +197,10 @@ class MacroExecutorPage(MacroExecutorBase):
         taskletgroup = self._getTaskletGroup(doc, macrospace, macro)
 
         if taskletgroup:
+            if markdown == True:
+                import markdown
+                page.body = markdown.markdown(page.body)
+
             page = taskletgroup.executeV2(macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                  paramsExtra=paramsExtra, cmdstr=cmdstr, page=page, requestContext=requestContext)
         else:
@@ -222,7 +224,8 @@ class MacroExecutorPage(MacroExecutorBase):
         page0 = self.executeMacroAdd2Page(macrostr, page0, doc, requestContext, paramsExtra)
         return page0.body
 
-    def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None, page=None):
+    def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None, page=None, markdown=False):
+            
         recursivedepth = 0
         page = j.core.portal.active.getpage()
         page.body = content
@@ -243,10 +246,17 @@ class MacroExecutorPage(MacroExecutorBase):
             for macroitem in macros:
                 macrostr, macrospace, macro, tags, cmdstr = macroitem
                 page.body = page.body.replace(macrostr, "", 1)
-                doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra)
+                if markdown == True:
+                    doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra, markdown)
+                else:
+                    doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra)
+
 
             content, macros = process(page.body)
         content = str(page)
+        if markdown == True:
+            import markdown
+            content = markdown.markdown(content)
         return content, doc
 
 class MacroExecutorWiki(MacroExecutorBase):
