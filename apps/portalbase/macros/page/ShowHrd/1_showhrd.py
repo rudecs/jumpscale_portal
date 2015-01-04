@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
 	hrdFile['header'] = hrd.getStr('header', '')
 
 	space = j.core.portal.active.spacesloader.spaces[args.doc.getSpaceName()]
-	hrdFile['hrdContent'] = open(space.model.path + hrdFile['filePath'] + ".hrd", 'r').read().replace(',', ',<br/>')
+	hrdFile['hrdContent'] = open(space.model.path + hrdFile['filePath'] + ".hrd", 'r').read().replace('\n', '<br/>')
 
 
 	page.addMessage('''
