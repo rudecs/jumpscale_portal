@@ -147,5 +147,4 @@ MIT
 [AngularJS]:http://angularjs.org
 [Gulp]:http://gulpjs.com
 
-
 {% endblock %}

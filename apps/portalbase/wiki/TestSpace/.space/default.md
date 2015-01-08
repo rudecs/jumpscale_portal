@@ -35,7 +35,7 @@
 	</style>
 </head>
 <body style="background: #ECF0F1;">
-	<header class="container">
+	<header class="container" style="padding: 0;">
 		<div>
 			<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
 	            <div class="navbar-header">
@@ -63,6 +63,8 @@
 	</header>
 	<div class="container" style="background: #fff;">
 {% block body %}{% endblock %}
-	</div>
+</div>
+<footer class="container">
+</footer>
 </body>
 </html>
