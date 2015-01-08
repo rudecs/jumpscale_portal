@@ -228,7 +228,7 @@ class MacroExecutorPage(MacroExecutorBase):
             
         recursivedepth = 0
         page = j.core.portal.active.getpage()
-        page.body = content
+        page.body = ""
         def process(content):
             if ctx != None:
                 content = doc.applyParams(ctx.params, findfresh=True, content=content)
@@ -246,14 +246,17 @@ class MacroExecutorPage(MacroExecutorBase):
             for macroitem in macros:
                 macrostr, macrospace, macro, tags, cmdstr = macroitem
                 page.body = page.body.replace(macrostr, "", 1)
+                
                 if markdown == True:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra, markdown)
+                    content = content.replace(macrostr, page.body, 1)
+                    page.body = ""
                 else:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra)
 
 
-            content, macros = process(page.body)
-        content = str(page)
+            content, macros = process(content)
+        content = page.head + content
         if markdown == True:
             import markdown
             content = markdown.markdown(content)

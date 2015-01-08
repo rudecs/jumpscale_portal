@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 	<!-- need to add to jslib -->
@@ -7,6 +6,9 @@
 	<link rel="stylesheet" href="/jslib/flatui/css/flat-ui.css">
 	<!-- need to add to jslib -->
 	<style type="text/css">
+		body{
+			margin-top: -15px;
+		}
 		.navbar{
 			border-radius: 0;
 			border-bottom-right-radius: 6px;

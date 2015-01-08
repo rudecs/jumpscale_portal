@@ -1029,7 +1029,8 @@ function copyText$id() {
             CC += "} );\n"
             jsHead += "<script type='text/javascript'>" + CC + "</script>"
 
-        return '''<!DOCTYPE html>
+        return '''
+<!DOCTYPE html>
 <html>
 <head>%s</head>
 <body %s>%s</body>
