@@ -249,6 +249,7 @@ class MacroExecutorPage(MacroExecutorBase):
                 
                 if markdown == True:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra, markdown)
+                    page.body = page.body.replace('\n', '')
                     content = content.replace(macrostr, page.body, 1)
                     page.body = ""
                 else:

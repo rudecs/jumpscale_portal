@@ -32,6 +32,9 @@
 		h6, .h6{
 			font-size: 20px;
 		}
+		.navbar-collapse .navbar-nav.navbar-left:first-child{
+			margin-left: 0;
+		}
 	</style>
 </head>
 <body style="background: #ECF0F1;">
@@ -46,6 +49,7 @@
 	            </div>
 	            <div class="navbar-collapse" id="navbar-collapse-01">
 	              <ul class="nav navbar-nav navbar-left">
+	              {{adminmenu}}
 	               </ul>
 	               <form class="navbar-form navbar-right" action="#" role="search">
 	                <div class="form-group">
@@ -66,5 +70,7 @@
 </div>
 <footer class="container">
 </footer>
+<script src="/jslib/jquery/jquery-2.0.3.min.js"></script>
+<script src="/jslib/flatui/js/flat-ui.min.js"></script>
 </body>
 </html>
