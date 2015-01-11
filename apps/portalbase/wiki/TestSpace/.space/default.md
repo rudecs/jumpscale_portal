@@ -35,6 +35,15 @@
 		.navbar-collapse .navbar-nav.navbar-left:first-child{
 			margin-left: 0;
 		}
+		.navigation a{
+			font-size: 14px;
+		}
+		.navigation{
+			padding-top: 3%;
+		}
+		.navbar-nav > li > a{
+			padding: 15px 21px !important;
+		}
 	</style>
 </head>
 <body style="background: #ECF0F1;">
@@ -65,8 +74,13 @@
 	          </nav>
 		</div>
 	</header>
-	<div class="container" style="background: #fff;">
+<div class="container" style="background: #fff;">
+<div class="col-md-2 navigation">
+{{navigation}}
+</div>
+<div class="col-md-10">
 {% block body %}{% endblock %}
+</div>
 </div>
 <footer class="container">
 </footer>
