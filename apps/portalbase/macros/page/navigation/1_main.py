@@ -2,8 +2,12 @@
 def main(j, args, params, tags, tasklet):
 
     page = args.page
-    if args.doc.name.split('.')[1] != "md":
+    if "." in args.doc.name:
+        if args.doc.name.split('.')[1] != "md":
+            page.addBootstrap()
+    else:
         page.addBootstrap()
+
     navStr = args.cmdstr
 
     page._hasSidebar = True

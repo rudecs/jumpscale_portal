@@ -2,8 +2,13 @@
 def main(j, args, params, tags, tasklet):
 
     page = args.page
+    if "." in args.doc.name:
+        if args.doc.name.split('.')[1] == "md":
+            page.removeCSS('bootstrap.css')
+            page.removeCSS('bootstrap-responsive.css')
+    else:
+        page.addBootstrap()
 
-    page.addBootstrap()
     page._hasmenu = True
 
     menu = args.cmdstr
@@ -18,27 +23,33 @@ def main(j, args, params, tags, tasklet):
     else:
         classtags = "navbar navbar-inverse navbar-fixed-top"
 
-    T = """
-<div class="{classtags}"  {hide-menu}>
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            </a>
-            {brand}
-            <div class="nav-collapse collapse">
-               <ul class="nav">
-               {items}
-               $$$menuright
-               </ul>
-               {login}
-               {findmenu}
+    if "." in args.doc.name:
+        if args.doc.name.split('.')[1] == "md":
+            T = """{items}{login}{findmenu}
+"""
+    else:
+        T = """
+    <div class="{classtags}"  {hide-menu}>
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                </a>
+                {brand}
+                <div class="nav-collapse collapse">
+                   <ul class="nav">
+                   {items}
+                   $$$menuright
+                   </ul>
+                   {login}
+                   {findmenu}
+                </div>
             </div>
         </div>
     </div>
-</div>
+
 """
     T = T.replace("{classtags}", classtags)
     if page.logo != "":
@@ -61,7 +72,20 @@ def main(j, args, params, tags, tasklet):
         T = T.replace("{login}", "")
 
     if page.hasfindmenu:
-        L = """
+        if "." in args.doc.name:
+            if args.doc.name.split('.')[1] == "md":
+                L = """<form class="navbar-form navbar-right" action="/system/find?page={name}&space={space}" method="post" role="search">
+<div class="form-group">
+<div class="input-group">
+<input class="form-control search-query" id="navbarInput-01" type="search" placeholder="Search">
+<span class="input-group-btn">
+<button type="submit" class="btn"><span class="fui-search"></span></button>
+</span>
+</div>
+</div>
+</form>"""
+        else:
+            L = """
 <form name="input" action="/system/find?page={name}&space={space}" method="post" class="navbar-search pull-right">
 <input name="text" type="text" class="search-query" placeholder="Search">
 </form>"""
