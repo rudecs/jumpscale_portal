@@ -11,37 +11,90 @@ id = cloudscalers_operations
 '''
 
 default_wiki = '''
-    {{title:New Portal}}
-    {{projectname:New Portal}}
-    {{menu:
-    }}
-    {{menuloggedin:
-    Home:Home
-    }}
-    {{menuadmin}}
-
-    @block
-    @row
-
-    @col 3
-    {{navigation}}
-    @divend
-
-    @col 9
-
-    {content}
-
-    @divend
-    @divend
-
-
-    {{cssstyle
-    td {
-        max-width:500px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;}
-    }}
+<html>
+<head>
+<!-- need to add to jslib -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="/jslib/old/bootstrap/css/bootstrap-responsive.css">
+<link rel="stylesheet" href="/jslib/flatui/css/flat-ui.css">
+<!-- need to add to jslib -->
+<style type="text/css">
+body{
+margin-top: -15px;
+}
+.navbar{
+border-radius: 0;
+border-bottom-right-radius: 6px;
+border-bottom-left-radius: 6px;
+}
+h1, .h1{
+font-size: 40px;
+}
+h2, .h2{
+font-size: 35px;
+}
+h3, .h3{
+font-size: 30px;
+}
+h4, .h4{
+font-size: 25px;
+}
+h5, .h5{
+font-size: 23px;
+}
+h6, .h6{
+font-size: 20px;
+}
+.navbar-collapse .navbar-nav.navbar-left:first-child{
+margin-left: 0;
+}
+.navigation a{
+font-size: 14px;
+}
+.navigation{
+padding-top: 3%;
+}
+.navbar-nav > li > a{
+padding: 15px 21px !important;
+}
+</style>
+</head>
+<body style="background: #ECF0F1;">
+<header class="container" style="padding: 0;">
+<div>
+<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+<span class="sr-only">Toggle navigation</span>
+</button>
+<a class="navbar-brand" href="#">Portal/Jumpscale7</a>
+</div>
+<div class="navbar-collapse" id="navbar-collapse-01">
+<ul class="nav navbar-nav navbar-left" style="width: 80%;">
+{{adminmenu}}{{find}}
+{{menu:
+Documentation:/Help
+Incubaid:http://www.incubaid.com
+}}
+</ul>
+</div><!-- /.navbar-collapse -->
+</nav>
+</div>
+</header>
+<div class="container" style="background: #fff;">
+<div class="col-md-2 navigation">
+{{navigation}}
+</div>
+<div class="col-md-10">
+{% block body %}{% endblock %}
+</div>
+</div>
+<footer class="container">
+</footer>
+<script src="/jslib/jquery/jquery-2.0.3.min.js"></script>
+<script src="/jslib/flatui/js/flat-ui.min.js"></script>
+</body>
+</html>
 '''
 
 def main(j, args, params, tags, tasklet):
@@ -72,11 +125,15 @@ def main(j, args, params, tags, tasklet):
         with open(os.path.join(space_path, '.space', 'nav.wiki'), 'w') as f:
             f.write('Home:Home')
 
-        with open(os.path.join(space_path, '.space', 'default.wiki'), 'w') as f:
+        with open(os.path.join(space_path, '.space', 'default.md'), 'w') as f:
             f.write(default_wiki)
 
-        with open(os.path.join(space_path, 'Home.wiki'), 'w') as f:
-            f.write('@usedefault\nWelcome to the new space\nThis space lives in `{}`'.format(space_path))
+        with open(os.path.join(space_path, 'home.md'), 'w') as f:
+            f.write('''
+{{% extends ".space/default.md" %}}{{% block body %}}
+##Welcome to the new space 
+This space lives in `{}`{{% endblock %}}
+                '''.format(space_path))
 
         
         portal.spacesloader = j.core.portalloader.getSpacesLoader()

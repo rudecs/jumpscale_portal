@@ -11,7 +11,11 @@ def main(j, args, params, tags, tasklet):
     navStr = args.cmdstr
 
     page._hasSidebar = True
-    menuStr = "<div class='well sidebar-nav'>"
+    if "." in args.doc.name:
+        if args.doc.name.split('.')[1] == "md":
+            menuStr = "<div style='list-style-type: none;'>"
+    else:
+        menuStr = "<div class='well sidebar-nav'>"
 
     if args.doc.navigation != "":
         if navStr.strip() == "":

@@ -134,12 +134,13 @@ class Doc(object):
             if extension == 'md':
                 self.content = self.source
             else:
-                self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
-                default = fs.fileGetTextContents(self.defaultPath)
-                self.content = default.replace("{content}", self.source)
-
-
-
+                try:
+                    self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
+                    default = fs.fileGetTextContents(self.defaultPath)
+                    self.content = default.replace("{content}", self.source)
+                except Exception: 
+                    pass
+                    
         if preprocess and self.source.strip() != "":
             # print path3
             j.tools.docpreprocessorparser.parseDoc(self)
