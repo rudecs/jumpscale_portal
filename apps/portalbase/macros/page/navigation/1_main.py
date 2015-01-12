@@ -51,6 +51,7 @@ def main(j, args, params, tags, tasklet):
             if line.find("{{") == 0:
                 try:
                     line, doc2 = args.doc.preprocessor.macroexecutorWiki.execMacrosOnContent(content=line, doc=args.doc)
+                    line = line.replace('.md', '')
                 except Exception:
                     import traceback
                     traceback.print_exc()
