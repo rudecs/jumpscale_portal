@@ -140,7 +140,7 @@ class Doc(object):
                     self.content = default.replace("{content}", self.source)
                 except Exception: 
                     pass
-                    
+
         if preprocess and self.source.strip() != "":
             # print path3
             j.tools.docpreprocessorparser.parseDoc(self)
@@ -356,9 +356,15 @@ class DocMD(Doc):
         jinja2html = env.get_or_select_template(self.name).render()
         self.content = jinja2html
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
+        content, doc = self.executeMarkDownMacro(paramsExtra, ctx)
+        self.content = content
         content, doc = self.executePageMacro(paramsExtra, ctx)
         return content
 
     def executePageMacro(self, paramsExtra, ctx):
         page = j.tools.docgenerator.pageNewHTML('temp')
         return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page, markdown=True)
+
+    def executeMarkDownMacro(self, paramsExtra, ctx):
+        page = j.tools.docgenerator.pageNewHTML('temp')
+        return self.preprocessor.macroexecutorMarkDown.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page)

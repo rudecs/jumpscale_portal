@@ -14,7 +14,7 @@ import sys
 import redis
 
 from beaker.middleware import SessionMiddleware
-from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess
+from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
 from .PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
 from .RequestContext import RequestContext
 from .PortalRest import PortalRest
@@ -77,9 +77,11 @@ class PortalServer:
         macroPathsPreprocessor = ["macros/preprocess"]
         macroPathsWiki = ["macros/wiki"]
         macroPathsPage = ["macros/page"]
+        macroPathsMarkDown = ["macros/markdown"]
 
         self.macroexecutorPreprocessor = MacroExecutorPreprocess(macroPathsPreprocessor)
         self.macroexecutorPage = MacroExecutorPage(macroPathsPage)
+        self.macroexecutorMarkDown = MacroexecutorMarkDown(macroPathsMarkDown)
         self.macroexecutorWiki = MacroExecutorWiki(macroPathsWiki)
 
         self.bootstrap()

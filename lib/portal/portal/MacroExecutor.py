@@ -321,3 +321,26 @@ class MacroExecutorWiki(MacroExecutorBase):
 
         return content,doc
 
+class MacroexecutorMarkDown(MacroExecutorWiki):
+
+    def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None, page=None):
+        recursivedepth = 0
+        def process(content):
+            if ctx != None:
+                content = doc.applyParams(ctx.params, findfresh=True, content=content)
+            if paramsExtra != {}:
+                content = doc.applyParams(paramsExtra, findfresh=True, content=content)
+            return content, self.findMacros(doc, content)
+
+        content, macros = process(content)
+        while macros:
+            recursivedepth += 1
+            if recursivedepth > 20:
+                content += 'ERROR: recursive error in executing macros'
+                return content, doc
+
+            for macroitem in macros:
+                content, doc = self.executeMacroOnContent(content, macroitem, doc, paramsExtra, ctx=ctx, page=page)
+
+            content, macros = process(content)
+        return content, doc

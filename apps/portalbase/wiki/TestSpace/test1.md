@@ -1,6 +1,7 @@
 {% extends ".space/default.md" %}
 
 {% block body %}
+{{markdownMacroTest}}
 
 {{showhrd:
 	file.path=tasks
