@@ -4,32 +4,32 @@ import os
 def main(j, args, params, *other_args):
     params.result = page = args.page
     page.addCSS(cssContent=''' 
-        .description h2.small{
-            font-size: 170%;
-        }
-        .description h2.medium{
-            font-size: 200%;
-        }
-        .description h2.large{
-            font-size: 250%;
-        }
-        .slides .description p{
-            line-height: 1.4em;
-        }
-        .slides .description p.small{
-            font-size: 18px;
-        }
-        .slides .description p.medium{
-            font-size: 21px;
-        }
-        .slides .description p.large{
-            font-size: 25px;
-        }
-        /* this solved a conflict with bootstrap */
-        .current.hide{ 
-            display: inherit; 
-        }
-     ''')
+.description h2.small{
+    font-size: 170%;
+}
+.description h2.medium{
+    font-size: 200%;
+}
+.description h2.large{
+    font-size: 250%;
+}
+.slides .description p{
+    line-height: 1.4em;
+}
+.slides .description p.small{
+    font-size: 18px;
+}
+.slides .description p.medium{
+    font-size: 21px;
+}
+.slides .description p.large{
+    font-size: 25px;
+}
+/* this solved a conflict with bootstrap */
+.current.hide{ 
+    display: inherit; 
+}
+''')
     page.addCSS('/jslib/titledcontentslideshow/css/normalize.css')
     page.addCSS('/jslib/titledcontentslideshow/css/component.css')
     page.addJS('/jslib/titledcontentslideshow/js/modernizr.custom.js')
@@ -101,10 +101,10 @@ def main(j, args, params, *other_args):
         ''')
 
     page.addJS(jsContent='''
-        $(function() {
-            new TiltSlider( document.getElementById( 'slideshow' ) );
-        });
-        ''')
+$(function() {
+new TiltSlider( document.getElementById( 'slideshow' ) );
+});
+''')
     return params
 
 

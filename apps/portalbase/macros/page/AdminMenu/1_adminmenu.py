@@ -2,10 +2,10 @@
 def main(j, args, params, tags, tasklet):
 	page = args.page
 	page.addCSS(cssContent=''' 
-		.admin-menu{
-			color: #fff;
-		}
-	''')
+.admin-menu{
+	color: #fff;
+}
+''')
 	spaceName = args.doc.getSpaceName()
 	pageName = args.doc.name.split('.')[0]
 	page.addMessage('''
