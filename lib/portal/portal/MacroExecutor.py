@@ -2,6 +2,7 @@ from JumpScale import j
 from JumpScale.portal.docgenerator.Page import Page
 from JumpScale.baselib import taskletengine
 import traceback
+import re
 
 class MacroExecutorBase(object):
     def __init__(self, macrodirs=[]):
@@ -199,7 +200,13 @@ class MacroExecutorPage(MacroExecutorBase):
         if taskletgroup:
             if markdown == True:
                 import markdown
-                page.body = markdown.markdown(page.body)
+                lstripContent = ""
+                def stripSpacesBetweenHTML(html):
+                    return "><"
+                for markdownLine in page.body.split('\n'):
+                    lstripContent = lstripContent + markdownLine.lstrip() + '\n'
+                lstripContent = re.sub( '[>]\s{2,}[<]', stripSpacesBetweenHTML, lstripContent)
+                page.body = markdown.markdown(lstripContent)
 
             page = taskletgroup.executeV2(macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                  paramsExtra=paramsExtra, cmdstr=cmdstr, page=page, requestContext=requestContext)
@@ -255,12 +262,17 @@ class MacroExecutorPage(MacroExecutorBase):
                 else:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra)
 
-
             content, macros = process(content)
         content = page.head + content
         if markdown == True:
             import markdown
-            content = markdown.markdown(content)
+            lstripContent = ""
+            def stripSpacesBetweenHTML(html):
+                return "><"
+            for markdownLine in content.split('\n'):
+                lstripContent = lstripContent + markdownLine.lstrip() + '\n'
+            lstripContent = re.sub( '[>]\s{2,}[<]', stripSpacesBetweenHTML, lstripContent)
+            content = markdown.markdown(lstripContent)
         return content, doc
 
 class MacroExecutorWiki(MacroExecutorBase):
