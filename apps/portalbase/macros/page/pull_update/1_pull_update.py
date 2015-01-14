@@ -1,4 +1,4 @@
-import os, subprocess
+import os
 
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
@@ -6,24 +6,12 @@ def main(j, args, params, tags, tasklet):
     space_name = args.cmdstr.strip()
     space = j.core.portal.active.getSpace(space_name)
     space_path = os.path.abspath(space.model.path)
-    current_dir = os.getcwd()
 
     try:
-        os.chdir(space_path)
-        process = subprocess.Popen(['git', 'pull'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        output, error = process.communicate()
-        if error:
-            page.addMessage(error)
-            return params
-        else:
-            page.addMessage('Pulled and Updated')
-        
-    finally:
-        os.chdir(current_dir)
+        j.system.process.execute('cd %s;git pull' % space_path)
+        page.addMessage('Pulled and Updated')
+    except Exception, error:
+        page.addMessage(error)
 
     return params
 
