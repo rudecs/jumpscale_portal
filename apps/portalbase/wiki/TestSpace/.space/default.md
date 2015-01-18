@@ -72,7 +72,7 @@ Incubaid:http://www.incubaid.com
 <div class="col-md-2 navigation">
 {{navigation}}
 </div>
-<div class="col-md-10">
+<div class="col-md-10" markdown="1">
 {% block body %}{% endblock %}
 </div>
 </div>

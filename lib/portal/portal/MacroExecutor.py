@@ -199,14 +199,11 @@ class MacroExecutorPage(MacroExecutorBase):
 
         if taskletgroup:
             if markdown == True:
-                import markdown
-                lstripContent = ""
-                def stripSpacesBetweenHTML(html):
-                    return "><"
-                for markdownLine in page.body.split('\n'):
-                    lstripContent = lstripContent + markdownLine.lstrip() + '\n'
-                lstripContent = re.sub( '[>]\s{2,}[<]', stripSpacesBetweenHTML, lstripContent)
-                page.body = markdown.markdown(lstripContent)
+                import markdown2
+                page.body = markdown2.markdown(page.body, extras=["tables", "nofollow", "cuddled-lists", "markdown-in-html"])
+                # markdown format & style fixes
+                if '<table>' in page.body:
+                    page.body = page.body.replace('<table>', '<table class="table table-striped table-bordered table-hover">')
 
             page = taskletgroup.executeV2(macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                  paramsExtra=paramsExtra, cmdstr=cmdstr, page=page, requestContext=requestContext)
@@ -257,6 +254,14 @@ class MacroExecutorPage(MacroExecutorBase):
                 if markdown == True:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra, markdown)
                     page.body = page.body.replace('\n', '')
+                    import markdown2
+                    content = markdown2.markdown(content, extras=["tables", "nofollow", "cuddled-lists", "markdown-in-html"])
+                    # markdown format & style fixes
+                    if '<p></p>' in content:
+                        content = content.replace('<p></p>', '')
+                    if '<table>' in content:
+                        content = content.replace('<table>', '<table class="table table-striped table-bordered table-hover">')
+
                     content = content.replace(macrostr, page.body, 1)
                     page.body = ""
                 else:
@@ -264,15 +269,6 @@ class MacroExecutorPage(MacroExecutorBase):
 
             content, macros = process(content)
         content = page.head + content
-        if markdown == True:
-            import markdown
-            lstripContent = ""
-            def stripSpacesBetweenHTML(html):
-                return "><"
-            for markdownLine in content.split('\n'):
-                lstripContent = lstripContent + markdownLine.lstrip() + '\n'
-            lstripContent = re.sub( '[>]\s{2,}[<]', stripSpacesBetweenHTML, lstripContent)
-            content = markdown.markdown(lstripContent)
         return content, doc
 
 class MacroExecutorWiki(MacroExecutorBase):

@@ -1,19 +1,68 @@
 {% extends ".space/default.md" %}
 
 {% block body %}
+
 {{markdownMacroTest}}
+
 
 {{showhrd:
 	file.path=tasks
 	header=Tasks
 }}
 
-- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> are supported
-- [x] list syntax is required (any unordered or ordered list supported)
-- [x] this is a complete item
-- [ ] this is an incomplete item
+I did these things:
+* bullet1
+* bullet2
+* bullet3
 
-http://example.com
+<div class="twist" markdown="1">
+#This is true markdown text.
+</div>
+
+[http://example.com](http://example.com)
+
+wow_great_stuff
+
+do_this_and_do_that_and_another_thing.
+
+@mentions, #refs, [links](), **formatting**, and <del>tags</del> are supported
+
+Table test 
+======
+
+| Header 1 | *Header* 2 |
+| -------- | -------- |
+| `Cell 1` | [Cell 2](http://example.com) link |
+| Cell 3 | **Cell 4** |
+
+| Name | Description          |
+| ------------- | ----------- |
+| Help      | Display the help window.|
+| Close     | Closes a window     |
+
+
+| Name | Description          |
+| ------------- | ----------- |
+| Help      | *Display the* help window.|
+| Close     | _Closes_ a window     |
+
+
+| Left-Aligned  | Center Aligned  | Right Aligned |
+| :------------ |:---------------:| -----:|
+| col 3 is      | some wordy text | $1600 |
+| col 2 is      | centered        |   $12 |
+| zebra stripes | are neat        |    $1 |
+
+
+Here's our logo (hover to see the title text):
+
+Inline-style: 
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
+Reference-style: 
+![alt text][logo]
+
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
 
 #Code and Syntax Highlighting
 
@@ -29,6 +78,7 @@ Blocks of code are either fenced by lines with three back-ticks <code>```</code>
 
 
 Dillinger is a cloud-enabled, mobile-ready, offline-storage, AngularJS powered HTML5 Markdown editor.
+
   - Type some Markdown on the left
   - See HTML in the right
   - Magic
@@ -52,15 +102,15 @@ This text you see here is *actually* written in Markdown! To get a feel for Mark
 
 Dillinger uses a number of open source projects to work properly:
 
-* [AngularJS] - HTML enhanced for web apps!
-* [Ace Editor] - awesome web-based text editor
-* [Marked] - a super fast port of Markdown to JavaScript
-* [Twitter Bootstrap] - great UI boilerplate for modern web apps
-* [node.js] - evented I/O for the backend
-* [Express] - fast node.js network app framework [@tjholowaychuk]
-* [Gulp] - the streaming build system
-* [keymaster.js] - awesome keyboard handler lib by [@thomasfuchs]
-* [jQuery] - duh
+* [AngularJS](http://example.com) - HTML enhanced for web apps!
+* [Ace Editor](http://example.com)- awesome web-based text editor
+* [Marked](http://example.com) - a super fast port of Markdown to JavaScript
+* [Twitter Bootstrap](http://example.com) - great UI boilerplate for modern web apps
+* [node.js](http://example.com) - evented I/O for the backend
+* [Express](http://example.com) - fast node.js network app framework [@tjholowaychuk]
+* [Gulp](http://example.com) - the streaming build system
+* [keymaster.js](http://example.com) - awesome keyboard handler lib by [@thomasfuchs]
+* [jQuery](http://example.com) - duh
 
 ### Installation
 
@@ -133,19 +183,4 @@ MIT
 
 
 **Free Software, Hell Yeah!**
-
-[john gruber]:http://daringfireball.net/
-[@thomasfuchs]:http://twitter.com/thomasfuchs
-[1]:http://daringfireball.net/projects/markdown/
-[marked]:https://github.com/chjj/marked
-[Ace Editor]:http://ace.ajax.org
-[node.js]:http://nodejs.org
-[Twitter Bootstrap]:http://twitter.github.com/bootstrap/
-[keymaster.js]:https://github.com/madrobby/keymaster
-[jQuery]:http://jquery.com
-[@tjholowaychuk]:http://twitter.com/tjholowaychuk
-[express]:http://expressjs.com
-[AngularJS]:http://angularjs.org
-[Gulp]:http://gulpjs.com
-
 {% endblock %}
