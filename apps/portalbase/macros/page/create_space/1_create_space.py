@@ -52,7 +52,7 @@ margin-left: 0;
 font-size: 14px;
 }
 .navigation{
-padding-top: 3%;
+padding-top: 1%;
 }
 .navbar-nav > li > a{
 padding: 15px 21px !important;

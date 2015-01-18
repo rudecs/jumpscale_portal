@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
 <span class="dropdown-arrow"></span>
 <ul class="dropdown-menu">
 <li><a href="/system/create">New page</a></li>
-<li><a href="/system/edit?space={spaceName}&page={pageName}">Edit Page</a></li>
+<li><a href="/system/editmarkdown?space={spaceName}&page={pageName}">Edit Page</a></li>
 <li><a href="/system/createspace">Create Space</a></li>
 <li class="divider"></li>
 <li><a href="/system/files?space={spaceName}">Files</a></li>
