@@ -25,6 +25,9 @@ if __name__ == '__main__':
             env = os.environ.copy()
             env['PORTAL_MAIN'] = 'true'
             print('Loading portal')
-            exitcode = subprocess.call([sys.executable] + sys.argv, env=env)
-            if exitcode != 3:
-                 j.application.stop(exitcode)
+            try:
+                exitcode = subprocess.call([sys.executable] + sys.argv, env=env)
+                if exitcode != 3:
+                    j.application.stop(exitcode)
+            except KeyboardInterrupt:
+                j.application.stop(0)
