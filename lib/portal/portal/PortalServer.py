@@ -12,6 +12,7 @@ import pprint
 import os
 import sys
 import redis
+import signal
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -45,6 +46,7 @@ CONTENT_TYPE_YAML = 'application/yaml'
 CONTENT_TYPE_PLAIN = 'text/plain'
 CONTENT_TYPE_HTML = 'text/html'
 CONTENT_TYPE_PNG = 'image/png'
+MAX_WAIT_SECONDS_BEFORE_SHUTDOWN = 3
 
 class pageHandler(tornado.web.RequestHandler):
     def get(self):
@@ -1165,7 +1167,13 @@ class PortalServer:
         # self.loop.start()
 
         self._webserver.listen(self.port)
+        signal.signal(signal.SIGTERM, self.sig_handler)
+        signal.signal(signal.SIGINT, self.sig_handler)
         tornado.ioloop.IOLoop.instance().start()
+
+    def sig_handler(self, sig, frame):
+        j.application.stop(sig)
+        tornado.ioloop.IOLoop.instance().add_callback(self.stop)
 
     def stop(self):
         self._webserver.stop()
