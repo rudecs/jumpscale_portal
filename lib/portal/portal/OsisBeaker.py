@@ -25,10 +25,13 @@ class OsisBeaker(NamespaceManager):
     def _remove(self, key):
         key = "%s_%s" % (self.namespace, key)
         self._client.delete(categoryname=self._category, namespace=self._namespace, key=key)
+
     def __contains__(self, key):
         key = "%s_%s" % (self.namespace, key)
-        return self._client.exists(key)
+        return self._client.exists(self._namespace, self._category, key)
 
+    def __delitem__(self, key, **kwargs):
+        self._remove(key)
 
     def acquire_read_lock(self, **kwargs):
         return True
