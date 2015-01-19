@@ -199,7 +199,7 @@ class MacroExecutorPage(MacroExecutorBase):
 
         if taskletgroup:
             if markdown == True:
-                import markdown2
+                from markdown2 import markdown2
                 page.body = markdown2.markdown(page.body, extras=["tables", "nofollow", "cuddled-lists", "markdown-in-html"])
                 # markdown format & style fixes
                 if '<table>' in page.body:
@@ -254,7 +254,7 @@ class MacroExecutorPage(MacroExecutorBase):
                 if markdown == True:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra, markdown)
                     page.body = page.body.replace('\n', '')
-                    import markdown2
+                    from markdown2 import markdown2
                     content = markdown2.markdown(content, extras=["tables", "nofollow", "cuddled-lists", "markdown-in-html"])
                     # markdown format & style fixes
                     if '<p></p>' in content:
