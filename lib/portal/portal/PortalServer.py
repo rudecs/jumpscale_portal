@@ -50,7 +50,6 @@ MAX_WAIT_SECONDS_BEFORE_SHUTDOWN = 3
 
 class pageHandler(tornado.web.RequestHandler):
     def get(self):
-        import ipdb; ipdb.set_trace()
         PortalServer.router()
 
 class PortalServer:
