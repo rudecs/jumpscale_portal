@@ -16,7 +16,7 @@ default_wiki = '''
     <link rel="stylesheet" href="/jslib/bootstrap/css/bootstrap-3-3-1.min.css">
     <link rel="stylesheet" href="/jslib/old/bootstrap/css/bootstrap-responsive.css">
     <link rel="stylesheet" href="/jslib/flatui/css/flat-ui.css">
-    <link rel="stylesheet" href="/jslib/new-ui.css">
+    <link rel="stylesheet" href="/jslib/new-ui/new-ui.css">
 </head>
 <body style="background: #ECF0F1;">
 <header class="container" style="padding: 0;">
