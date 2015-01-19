@@ -19,12 +19,14 @@ class Space(LoaderBaseObject):
             macroPathsPreprocessor = [j.system.fs.joinPaths(self.model.path, ".macros", "preprocess")]
             macroPathsWiki = [j.system.fs.joinPaths(self.model.path, ".macros", "wiki")]
             macroPathsPage = [j.system.fs.joinPaths(self.model.path, ".macros", "page")]
+            macroPathsMarkDown = [j.system.fs.joinPaths(self.model.path, ".macros", "markdown")]
 
             name = self.model.id.lower()
             webserver = j.core.portal.active
             webserver.macroexecutorPage.addMacros(macroPathsPage, name)
             webserver.macroexecutorPreprocessor.addMacros(macroPathsPreprocessor, name)
             webserver.macroexecutorWiki.addMacros(macroPathsWiki, name)
+            webserver.macroexecutorMarkDown.addMacros(macroPathsMarkDown, name)
 
             
         self.docprocessor = j.tools.docpreprocessor.get(contentDirs=[self.model.path], spacename=self.model.id)
