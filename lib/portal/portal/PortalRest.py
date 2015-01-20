@@ -310,7 +310,7 @@ class PortalRest():
             except Exception as e:
                 eco = j.errorconditionhandler.parsePythonErrorObject(e)
                 eco.process()
-                print(e)
+                print(eco)
                 return False
             if result == None:
                 # there was no actor
