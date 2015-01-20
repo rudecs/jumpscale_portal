@@ -1,5 +1,4 @@
 from JumpScale import j
-import ExtraTools
 
 class system_errorconditionhandler(j.code.classGetBase()):
 
@@ -13,8 +12,7 @@ class system_errorconditionhandler(j.code.classGetBase()):
         self._te = {}
         self.actorname = "errorconditionhandler"
         self.appname = "system"
-
-        pass
+        self.scl = j.core.osis.getClientForNamespace('system', j.core.portal.active.osis)
 
     def describeCategory(self, category, language, description, resolution_user, resolution_ops, **args):
         """
@@ -36,8 +34,8 @@ class system_errorconditionhandler(j.code.classGetBase()):
         key = eco.actorname + str(eco.level) + eco.appname +\
             eco.category + eco.description + eco.tags +\
             eco.descriptionpub
-        key = ExtraTools.ByteProcessor.hashMd5(key)
-        print("ecokey:%s" % key)
+        key = j.base.byteprocessor.hashMd5(key)
+        print "ecokey:%s" % key
         return key
 
     def processECO(self, eco):
@@ -65,3 +63,12 @@ class system_errorconditionhandler(j.code.classGetBase()):
             # no previous found
             self.dbmem.cacheSet(key, eco, expirationInSecondsFromNow=3600)
             return self.model_errorcondition_set(eco)
+    
+    def delete(self, eco, **kwargs):
+        """
+       delete alert
+        """
+        if self.scl.eco.exists(eco):
+            self.scl.eco.delete(eco)
+            return True
+        return False
