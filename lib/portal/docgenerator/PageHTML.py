@@ -27,6 +27,7 @@ class PageHTML(Page):
         self.libs = ""
         #self.body = "<div class='heading'><h1>%s</h1></div>\n" % name
         self.body = ""
+        self._timestampsAdded = set()
         self.projectname = ""
         self.logo = ""
         self.scriptBody = ""
@@ -670,6 +671,26 @@ function copyText$id() {
         else:
             css = "<link  href='%s' type='text/css' rel='Stylesheet'/>\n" % cssLink
         self.head += css
+
+    def addTimeStamp(self, classname='jstimestamp'):
+        js = """
+        $(function() {
+            var updateTime = function () {
+                $(".%s").each(function() {
+                    var $this = $(this);
+                    var timestmp = parseFloat($this.html());
+                    var time = new Date(timestmp * 1000).toLocaleString();
+                    $this.html(time);
+                });
+            };
+            updateTime()
+            window.updateTime = updateTime;
+            $(document).ajaxComplete(updateTime);
+        });
+        """ % classname
+        if classname not in self._timestampsAdded:
+            self.addJS(jsContent=js)
+            self._timestampsAdded.add(classname)
 
     def addJS(self, jsLink=None, jsContent=None, header=True):
         if self.pagemirror4jscss != None:
