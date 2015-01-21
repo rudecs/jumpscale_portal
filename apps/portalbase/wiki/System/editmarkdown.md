@@ -2,8 +2,9 @@
 
 {% block body %}
 
-###Edit $$page page
+###Edit $$page page in $$space
 
-{{edit_markdown: app:$$app actor:$$actor space:$$space bucket:$$bucket path:$$path page:$$page}}
+{{edit_markdown: path:$$path page:$$page}}
+
 
 {% endblock %}
