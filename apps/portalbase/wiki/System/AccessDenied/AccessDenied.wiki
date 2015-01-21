@@ -9,7 +9,7 @@
 
 @col 12
 
-h2. Access Denied Please Login.
+h4. Access Denied Please Login.
 
 {{login}}
 

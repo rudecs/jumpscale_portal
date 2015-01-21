@@ -2,55 +2,52 @@
 def main(j, args, params, tags, tasklet):
 
     page = args.page
-
-    page.addBootstrap()
-
+    page.addCSS("/jslib/bootstrap/css/bootstrap-3-3-1.min.css")
+    page.addCSS("/jslib/old/bootstrap/css/bootstrap-responsive.css")
+    page.addCSS("/jslib/flatui/css/flat-ui.css")
+    page.addCSS(cssContent='''
+      body{
+        background-color: #1abc9c !important;
+      }
+      .login-form:before{
+        border-width: 0;
+      }
+      .login-screen{
+        padding: 0;
+      }
+      h4{
+        color: #fff;
+        text-align: center;
+      }
+      .span12{
+        margin-top: 14%;
+      }
+      .login-field{
+        height: 40px !important;
+      }
+    ''')
     head = """
 <title>Login</title>
-<style type='text/css'>
-body {padding-top: 60px; padding-bottom: 40px;}</style>
-<style type="text/css">
-  body {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background-color: #f5f5f5;
-  }
-  .form-signin {
-    max-width: 300px;
-    padding: 19px 29px 29px;
-    margin: 0 auto 20px;
-    background-color: #fff;
-    border: 1px solid #e5e5e5;
-    -webkit-border-radius: 5px;
-       -moz-border-radius: 5px;
-            border-radius: 5px;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            box-shadow: 0 1px 2px rgba(0,0,0,.05);
-  }
-  .form-signin .form-signin-heading,
-  .form-signin .checkbox {
-    margin-bottom: 10px;
-  }
-  .form-signin input[type="text"],
-  .form-signin input[type="password"] {
-    font-size: 16px;
-    height: auto;
-    margin-bottom: 15px;
-    padding: 7px 9px;
-  }
-</style>
 	"""
 
     body = """
-<div class="container">
-      <form id="loginform" class="form-signin" method="post" action="/$$path$$querystr">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level"  name="user_login_" placeholder="Username">
-        <input type="password" class="input-block-level" name="passwd" placeholder="Password">
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
-      </form>
- </div> <!-- /container -->
+    <form id="loginform" class="form-signin" method="post" action="/$$path$$querystr">
+       <div class="col-sm-offset-3 col-md-6 login-screen">
+        <div class="login-form">
+          <div class="form-group">
+            <input type="text" class="form-control login-field" value="" name="user_login_" placeholder="Enter your username" id="login-name">
+            <label class="login-field-icon fui-user" for="login-name"></label>
+          </div>
+
+          <div class="form-group">
+            <input type="password" class="form-control login-field" value="" name="passwd" placeholder="Password" id="login-pass">
+            <label class="login-field-icon fui-lock" for="login-pass"></label>
+          </div>
+
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
+        </div>
+      </div>
+    </form>
 	"""
     if args.tags.tagExists("jumptopath"):
         jumpto = args.tags.tagGet("jumptopath")
