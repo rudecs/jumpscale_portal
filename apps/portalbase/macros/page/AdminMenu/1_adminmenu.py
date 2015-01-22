@@ -48,7 +48,7 @@ def main(j, args, params, tags, tasklet):
 				<li><a href="/{spaceName}">Home<span class="navbar-unread">1</span></a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right login-url">
-				<li><a href="/system/login">Login</a></li>
+				<li><a href="/system/login?user_logoff_=1">Login</a></li>
 			</ul>
 		'''.format(spaceName=spaceName))
 
