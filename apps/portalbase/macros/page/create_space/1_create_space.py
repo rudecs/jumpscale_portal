@@ -81,7 +81,7 @@ def main(j, args, params, tags, tasklet):
         with open(os.path.join(space_path, '.space', 'main.cfg'), 'w') as f:
             f.write(main_cfg)
 
-        with open(os.path.join(space_path, '.space', 'nav.wiki'), 'w') as f:
+        with open(os.path.join(space_path, '.space', 'nav.md'), 'w') as f:
             f.write('Home:Home')
 
         with open(os.path.join(space_path, '.space', 'default.md'), 'w') as f:
