@@ -8,8 +8,8 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    oscl = j.core.osis.getClientByInstance('main')
-    ecocl = j.core.osis.getClientForCategory(oscl, 'system', 'eco')
+    oscl = j.core.osis.getByInstance('main')
+    ecocl = j.core.osis.getCategory(oscl, 'system', 'eco')
     try:
         obj = ecocl.get(id).__dict__
     except:

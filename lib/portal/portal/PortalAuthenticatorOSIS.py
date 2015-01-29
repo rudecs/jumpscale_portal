@@ -3,8 +3,8 @@ import time
 class PortalAuthenticatorOSIS():
 
     def __init__(self, osis):
-        self.osis=j.core.osis.getClientForCategory(osis,"system","user")
-        self.osisgroups=j.core.osis.getClientForCategory(osis,"system","group")
+        self.osis=j.core.osis.getCategory(osis,"system","user")
+        self.osisgroups=j.core.osis.getCategory(osis,"system","group")
         self.key2user={user['authkey']:user['id'] for user in self.osis.simpleSearch({}, nativequery={'authkey':{'$ne': ''}})}
         
     def existsKey(self,key):

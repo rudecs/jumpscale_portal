@@ -44,7 +44,7 @@ class UserManagerHRD():
         self.load(True)
 
     def load(self,userinit=False):
-        self.hrd=j.core.hrd.getHRD(self._hrddir,prefixWithName=True,keepformat=False)
+        self.hrd=j.core.hrd.get(self._hrddir,prefixWithName=True,keepformat=False)
         #load openid to user info
         for groupid in self.hrd.prefix("group",2):
             self.groups[groupid[6:]]=self.hrd.getDictFromPrefix(groupid)["members"]

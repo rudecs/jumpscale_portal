@@ -4,7 +4,7 @@ import json
 def main(j, args, params, tags, tasklet):
     page = args.page
     
-    hrd = j.core.hrd.getHRD(content=args.cmdstr)
+    hrd = j.core.hrd.get(content=args.cmdstr)
 
     eveGrid = {
         'specJsonPath': hrd.get('spec_json_path', default='/docs/spec.json'),

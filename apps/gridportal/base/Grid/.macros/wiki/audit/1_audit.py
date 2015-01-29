@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     import datetime
 
     id = args.getTag('id')
-    client = j.core.osis.getClientForNamespace('system').audit
+    client = j.core.osis.getNamespace('system').audit
 
     if not id:
         out = "No ID given for audit"

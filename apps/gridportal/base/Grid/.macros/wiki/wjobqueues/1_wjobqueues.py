@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
 
     wclient = None
     with gevent.Timeout(3, False):
-        wclient = j.clients.agentcontroller.getClientProxy('worker')
+        wclient = j.clients.agentcontroller.getProxy('worker')
     if wclient is None:
         errmsg = 'Could not reach AgentController. Please check your services.'
         params.result = (errmsg, doc)

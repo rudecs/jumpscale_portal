@@ -36,7 +36,7 @@ class PortalFactory():
             def __init__(self):
                 import JumpScale.grid
                 self.actors = dict()
-                self.osis = j.core.osis.getClientByInstance('main')
+                self.osis = j.core.osis.getByInstance('main')
                 self.epoch = time.time()
                 self.actorsloader = j.core.portalloader.getActorsLoader()
                 self.spacesloader = j.core.portalloader.getSpacesLoader()
@@ -69,7 +69,7 @@ class PortalFactory():
             except Exception as e:
                 print("*ERROR*: Could not load actor %s %s:\n%s" % (appname,actorname, e))
 
-    def getClientByInstance(self, instance=None):
+    def getByInstance(self, instance=None):
         if not instance:
             instance = j.application.hrdinstance.get('portal.connection')
         jp = j.packages.find('jumpscale', 'portal_client')[0].getInstance(instance)
