@@ -1,14 +1,14 @@
 import JumpScale.grid.osis
 
 def main(j, args, params, tags, tasklet):
-    scl = j.core.osis.getNamespace('system')
+    scl = j.clients.osis.getNamespace('system')
     guid = args.getTag('guid')
     if not guid:
         out = 'Missing alert param "id"'
         params.result = (out, args.doc)
         return params            
 
-    syscl = j.core.osis.getNamespace('system')
+    syscl = j.clients.osis.getNamespace('system')
     alert = syscl.alert.get(guid)
     alert = alert.dump()
 

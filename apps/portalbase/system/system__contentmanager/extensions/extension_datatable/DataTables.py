@@ -15,7 +15,7 @@ class DataTables():
         key = '%s_%s' % (namespace, category)
         if key in self._catclient:
             return self._catclient[key]
-        client = j.core.osis.getCategory(self._osiscl, namespace, category)
+        client = j.clients.osis.getCategory(self._osiscl, namespace, category)
         self._catclient[key] = client
         return client
 

@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
     cl = j.core.osis.getByInstance('main')
     now = datetime.datetime.now()
     aweekago = j.base.time.getEpochAgo('-7d')
-    ecl = j.core.osis.getCategory(cl, 'system', 'eco')
+    ecl = j.clients.osis.getCategory(cl, 'system', 'eco')
     query = {'epoch': {'eq':'gt', 'value': aweekago, 'name': 'epoch'}}
     total, firsteco = ecl.simpleSearch(query, size=1, withtotal=True)
 

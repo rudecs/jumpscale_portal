@@ -11,8 +11,8 @@ def main(j, args, params, tags, tasklet):
     # tags = params.tags
 
     passwd = j.application.config.get("grid.master.superadminpasswd")
-    osis = j.core.osis.getClient(j.application.config.get("grid.master.ip"), passwd=passwd, user='root')
-    osis_test = j.core.osis.getCategory(osis,"system","test")
+    osis = j.clients.osis.get(j.application.config.get("grid.master.ip"), passwd=passwd, user='root')
+    osis_test = j.clients.osis.getCategory(osis,"system","test")
 
     tid = args.getTag('id')
     if not tid:
