@@ -15,7 +15,7 @@ class system_logs(j.code.classGetBase()):
         nip = 'localhost'
         if args.get('nip'):
             nip = args.get('nip')
-        osiscl = j.core.osis.getByInstance('main')
+        osiscl = j.clients.osis.getByInstance('main')
         client = j.clients.osis.getCategory(osiscl, 'system', 'job')
 
         params = {'ffrom': '', 'to': '', 'nid': '', 'gid': '',
@@ -71,7 +71,7 @@ class system_logs(j.code.classGetBase()):
 
     def listNodes(self, **args):
         import JumpScale.grid.osis
-        osiscl = j.core.osis.getByInstance('main')
+        osiscl = j.clients.osis.getByInstance('main')
         client = j.clients.osis.getCategory(osiscl, 'system', 'node')
         
         nodes = client.search('null')

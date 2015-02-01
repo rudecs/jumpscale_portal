@@ -68,7 +68,7 @@ class PortalServer:
 
         j.core.portal.active=self
 
-        self.osis = j.core.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+        self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
 
         self.pageKey2doc = {}
         self.routes = {}

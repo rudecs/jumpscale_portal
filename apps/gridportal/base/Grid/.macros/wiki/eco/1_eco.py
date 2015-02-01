@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    oscl = j.core.osis.getByInstance('main')
+    oscl = j.clients.osis.getByInstance('main')
     ecocl = j.clients.osis.getCategory(oscl, 'system', 'eco')
     try:
         obj = ecocl.get(id).__dict__
