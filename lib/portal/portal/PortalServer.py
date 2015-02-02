@@ -95,20 +95,8 @@ class PortalServer:
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
         self._router = SessionMiddleware(self.router, session_opts)
-        #self._router, '%s:%s' % (self.listenip, self.port)
-        # application = tornado.web.Application([(r"/", pageHandler),])
         container = tornado.wsgi.WSGIContainer(self._router)
         self._webserver = tornado.httpserver.HTTPServer(container)
-        # self.wsgi_app = tornado.wsgi.WSGIAdapter(application)
-        # self._webserver = wsgiref.simple_server.make_server('', self.port, self.wsgi_app)
-        self.loop = IOLoop.current()
-
-        # self._webserver = WSGIServer((self.listenip, self.port), self._router)
-
-        # wwwroot = wwwroot.replace("\\", "/")
-        # while len(wwwroot) > 0 and wwwroot[-1] == "/":
-        #     wwwroot = wwwroot[:-1]
-        # self.wwwroot = wwwroot
 
         self.confluence2htmlconvertor = j.tools.docgenerator.getConfluence2htmlConvertor()
         self.activejobs = list()
@@ -1138,33 +1126,23 @@ class PortalServer:
         @param routes: routes to serve, will be merged with the already added routes
         @type routes: dict(string, list(callable, dict(string, string), dict(string, string)))
         """
-        self.loop.add_callback(self._timer)
-        # TIMER = gevent.greenlet.Greenlet(self._timer)
-        # TIMER.start()
 
-        self.loop.add_callback(self._minRepeat)
-        # S1 = gevent.greenlet.Greenlet(self._minRepeat)
-        # S1.start()
+        self._webserver.bind(self.port)
+        self._webserver.start(0)
 
-        self.loop.add_callback(self._15minRepeat)
-        # S2 = gevent.greenlet.Greenlet(self._15minRepeat)
-        # S2.start()
 
-        self.loop.add_callback(self._60minRepeat)
-        # S3 = gevent.greenlet.Greenlet(self._60minRepeat)
-        # S3.start()
-        j.console.echo("webserver started on port %s" % self.port)
-        # self._webserver.serve_forever()
-        # self.loop.start()
-
-        self._webserver.listen(self.port)
         signal.signal(signal.SIGTERM, self.sig_handler)
         signal.signal(signal.SIGINT, self.sig_handler)
-        tornado.ioloop.IOLoop.instance().start()
+        self.loop = IOLoop.instance()
+        self.loop.add_callback(self._timer)
+        self.loop.add_callback(self._minRepeat)
+        self.loop.add_callback(self._15minRepeat)
+        self.loop.add_callback(self._60minRepeat)
+        self.loop.start()
 
     def sig_handler(self, sig, frame):
         j.application.stop(sig)
-        tornado.ioloop.IOLoop.instance().add_callback(self.stop)
+        self.loop.add_callback(self.stop)
 
     def stop(self):
         self._webserver.stop()
