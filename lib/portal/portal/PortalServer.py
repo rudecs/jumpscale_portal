@@ -1,18 +1,9 @@
 import re
-from six.moves import urllib 
-#try:
- #   import urllib
-#except:
-#    import urllib.parse as urllib
-
-
-# import urllib.request, urllib.error
-
+import urlparse
 import pprint
 import os
 import sys
 import redis
-import signal
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -22,19 +13,13 @@ from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 
 from JumpScale import j
-import tornado.web
-import tornado.wsgi
-import tornado.httpserver
-import wsgiref.simple_server
-from tornado.ioloop import IOLoop
-from tornado import gen
-# from gevent.pywsgi import WSGIServer
-# import gevent
+from gevent.pywsgi import WSGIServer
+import gevent
 import time
 
 import mimeparse
 import mimetypes
-
+import urllib
 import cgi
 import JumpScale.grid.agentcontroller
 
@@ -46,11 +31,7 @@ CONTENT_TYPE_YAML = 'application/yaml'
 CONTENT_TYPE_PLAIN = 'text/plain'
 CONTENT_TYPE_HTML = 'text/html'
 CONTENT_TYPE_PNG = 'image/png'
-MAX_WAIT_SECONDS_BEFORE_SHUTDOWN = 3
 
-class pageHandler(tornado.web.RequestHandler):
-    def get(self):
-        PortalServer.router()
 
 class PortalServer:
 
@@ -95,8 +76,7 @@ class PortalServer:
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
         self._router = SessionMiddleware(self.router, session_opts)
-        container = tornado.wsgi.WSGIContainer(self._router)
-        self._webserver = tornado.httpserver.HTTPServer(container)
+        self._webserver = WSGIServer((self.listenip, self.port), self._router)
 
         self.confluence2htmlconvertor = j.tools.docgenerator.getConfluence2htmlConvertor()
         self.activejobs = list()
@@ -153,7 +133,6 @@ class PortalServer:
 
         self.secret = ini.getValue("main", "secret")
         self.admingroups = ini.getValue("main", "admingroups").split(",")
-
         self.filesroot = replaceVar(ini.getValue("main", "filesroot"))
         j.system.fs.createDir(self.filesroot)
         if ini.checkParam('main', 'defaultspace'):
@@ -164,8 +143,6 @@ class PortalServer:
             self.defaultpage = ini.getValue('main', 'defaultpage') or ""
         else:
             self.defaultpage = ""
-
-
 
         self.getContentDirs()
 
@@ -353,7 +330,6 @@ class PortalServer:
         else:
             right = "r"
 
-        # print "find space:%s page:%s" % (space,name)
         if space not in self.spacesloader.spaces:
             if space == "system":
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
@@ -827,7 +803,7 @@ class PortalServer:
         return True, session
 
     def _getParamsFromEnv(self, env, ctx):
-        params = urllib.parse.parse_qs(env["QUERY_STRING"])
+        params = urlparse.parse_qs(env["QUERY_STRING"])
 
         # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
         # Example: a=1&b=2&a=3
@@ -1077,29 +1053,26 @@ class PortalServer:
                 self.fiveMinuteId = j.base.time.get5MinuteId(self.epoch)
                 self.hourId = j.base.time.getHourId(self.epoch)
                 self.dayId = j.base.time.getDayId(self.epoch)
-            yield gen.Task(self.loop.add_timeout, time.time() + 0.5)
-            # gevent.sleep(0.5)
+            gevent.sleep(0.5)
 
     def _minRepeat(self):
         while True:
-            yield gen.Task(self.loop.add_timeout, time.time() + 5)
-            for key in list(self.schedule1min.keys()):
+            gevent.sleep(5)
+            for key in self.schedule1min.keys():
                 item, args, kwargs = self.schedule1min[key]
                 item(*args, **kwargs)
 
     def _15minRepeat(self):
         while True:
-            yield gen.Task(self.loop.add_timeout, time.time() + 60*15)
-            # gevent.sleep(60 * 15)
-            for key in list(self.schedule15min.keys()):
+            gevent.sleep(60 * 15)
+            for key in self.schedule15min.keys():
                 item, args, kwargs = self.schedule15min[key]
                 item(*args, **kwargs)
 
     def _60minRepeat(self):
         while True:
-            yield gen.Task(self.loop.add_timeout, time.time() + 60*60)
-            # gevent.sleep(60 * 60)
-            for key in list(self.schedule60min.keys()):
+            gevent.sleep(60 * 60)
+            for key in self.schedule60min.keys():
                 item, args, kwargs = self.schedule60min[key]
                 item(*args, **kwargs)
 
@@ -1127,22 +1100,20 @@ class PortalServer:
         @type routes: dict(string, list(callable, dict(string, string), dict(string, string)))
         """
 
-        self._webserver.bind(self.port)
-        self._webserver.start(0)
+        TIMER = gevent.greenlet.Greenlet(self._timer)
+        TIMER.start()
 
+        S1 = gevent.greenlet.Greenlet(self._minRepeat)
+        S1.start()
 
-        signal.signal(signal.SIGTERM, self.sig_handler)
-        signal.signal(signal.SIGINT, self.sig_handler)
-        self.loop = IOLoop.instance()
-        self.loop.add_callback(self._timer)
-        self.loop.add_callback(self._minRepeat)
-        self.loop.add_callback(self._15minRepeat)
-        self.loop.add_callback(self._60minRepeat)
-        self.loop.start()
+        S2 = gevent.greenlet.Greenlet(self._15minRepeat)
+        S2.start()
 
-    def sig_handler(self, sig, frame):
-        j.application.stop(sig)
-        self.loop.add_callback(self.stop)
+        S3 = gevent.greenlet.Greenlet(self._60minRepeat)
+        S3.start()
+
+        j.console.echo("webserver started on port %s" % self.port)
+        self._webserver.serve_forever()
 
     def stop(self):
         self._webserver.stop()

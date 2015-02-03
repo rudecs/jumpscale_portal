@@ -6,8 +6,7 @@ class DataTables():
 
     def __init__(self):
         self.inited = False
-        self.cache = {}
-        self.cacheg = {}
+        self.cache = j.db.keyvaluestore.getMemoryStore('datatables')
         self._osiscl =j.core.portal.active.osis
         self._catclient = dict()
 
@@ -61,15 +60,13 @@ class DataTables():
         return actor, model, fields, fieldids, fieldnames
 
     def storInCache(self, **kwargs):
-        cache = j.db.keyvaluestore.getMemoryStore('datatables')
         cacheinfo = kwargs.copy()
         key = j.base.idgenerator.generateGUID()
-        cache.cacheSet(key, cacheinfo)
+        self.cache.cacheSet(key, cacheinfo)
         return key
 
     def getFromCache(self, key):
-        cache = j.db.keyvaluestore.getMemoryStore('datatables')
-        return cache.cacheGet(key)
+        return self.cache.cacheGet(key)
 
     def executeMacro(self, row, field):
 
