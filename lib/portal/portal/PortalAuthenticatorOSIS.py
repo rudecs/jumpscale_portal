@@ -63,5 +63,7 @@ class PortalAuthenticatorOSIS():
     def authenticate(self,login,passwd):
         """
         """
+        login = login[0] if isinstance(login, list) else login
+        passwd = passwd[0] if isinstance(passwd, list) else passwd
         result=self.osis.authenticate(name=login,passwd=passwd)
         return result['authenticated']

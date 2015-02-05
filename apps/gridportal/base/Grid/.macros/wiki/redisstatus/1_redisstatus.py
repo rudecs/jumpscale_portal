@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
     nid = args.getTag('nid')
     nidstr = str(nid)
-    rediscl = j.clients.redis.getGeventRedisClient('127.0.0.1', 9999)
+    rediscl = j.clients.redis.getByInstance('system')
 
     out = list()
 

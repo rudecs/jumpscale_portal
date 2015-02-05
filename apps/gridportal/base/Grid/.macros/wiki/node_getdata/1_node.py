@@ -13,7 +13,10 @@ def main(j, args, params, tags, tasklet):
         return params
     gid = int(gid)
     osis = j.core.portal.active.osis
-    node = osis.get('system', 'node', '%s_%s' % (gid, nid))
+
+    node = None
+    if osis.exists('system', 'node', '%s_%s' % (gid, nid)):
+        node = osis.get('system', 'node', '%s_%s' % (gid, nid))
     grid = {'name': 'N/A'}
     if osis.exists('system', 'grid', gid):
         grid = osis.get('system', 'grid', gid)
@@ -27,8 +30,10 @@ def main(j, args, params, tags, tasklet):
         node["roles"]=", ".join(node["roles"])
 
         r=""
-        for mac in node["netaddr"].keys():
-            dev,ip=node["netaddr"][mac]
+        for netitem in node["netaddr"]:
+            dev = netitem['name']
+            ip = netitem['ip']
+            mac = netitem['mac']
             r+="|%-15s | %-20s | %s| \n"%(dev,mac,ip)
 
         node["netaddr"]=r
