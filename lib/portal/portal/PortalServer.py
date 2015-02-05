@@ -804,19 +804,21 @@ class PortalServer:
 
     def _getParamsFromEnv(self, env, ctx):
         params = urlparse.parse_qs(env["QUERY_STRING"])
+        def simpleParams(params):
+            # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
+            # Example: a=1&b=2&a=3
+            #
+            # urlparse.parse_qs returns a dictionary of names & list of values. Then it's simplified
+            # for lists with only a single element, e.g.
+            #
+            #   {'a': ['1', '3'], 'b': ['2']}
+            #
+            # simplified to be
+            #
+            #   {'a': ['1', '3'], 'b': '2'}
+            return dict(((k, v) if len(v) > 1 else (k, v[0])) for k, v in list(params.items()))
 
-        # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
-        # Example: a=1&b=2&a=3
-        #
-        # urlparse.parse_qs returns a dictionary of names & list of values. Then it's simplified
-        # for lists with only a single element, e.g.
-        #
-        #   {'a': ['1', '3'], 'b': ['2']}
-        #
-        # simplified to be
-        #
-        #   {'a': ['1', '3'], 'b': '2'}
-        params = dict(((k, v) if len(v) > 1 else (k, v[0])) for k, v in list(params.items()))
+        params = simpleParams(params)
 
         if env["REQUEST_METHOD"] in ("POST", "PUT"):
             postData = env["wsgi.input"].read()
@@ -831,7 +833,7 @@ class PortalServer:
                 return params
             elif env['CONTENT_TYPE'].find("www-form-urlencoded") != -1:
                 params.update(dict(urlparse.parse_qs(postData)))
-                return params
+                return simpleParams(params)
             else:
                 params['rawdata'] = postData
         return params
