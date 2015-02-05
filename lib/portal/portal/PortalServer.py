@@ -830,7 +830,7 @@ class PortalServer:
                     params.update(postParams)
                 return params
             elif env['CONTENT_TYPE'].find("www-form-urlencoded") != -1:
-                params.update(dict(urllib.parse.parse_qsl(postData)))
+                params.update(dict(urlparse.parse_qsl(postData)))
                 return params
             else:
                 params['rawdata'] = postData
