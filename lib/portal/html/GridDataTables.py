@@ -9,12 +9,11 @@ class GridDataTables:
         if online:
             self.liblocation = "https://bitbucket.org/incubaid/jumpscale-core-6.0/raw/default/extensions/html/htmllib"
         else:
-            # extpath=inspect.getfile(self.__init__)
-            # extpath=j.system.fs.getDirName(extpath)
             self.liblocation = "/jslib"
 
         self.page.addJS("%s/old/datatables/jquery.dataTables.min.js" % self.liblocation)
         self.page.addBootstrap()
+        self.page.addTimeStamp()
 
     def makeTime(self, row, field):
         if row[field] == 0:

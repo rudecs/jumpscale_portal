@@ -681,7 +681,7 @@ function copyText$id() {
                     var timestmp = parseFloat($this.data('ts'));
                     if (timestmp > 0)
                         var time = new Date(timestmp * 1000).toLocaleString();
-                    elsevar time = "";
+                    else var time = "";
                     $this.html(time);
                 });
             };
