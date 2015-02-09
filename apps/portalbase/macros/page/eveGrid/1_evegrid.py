@@ -7,30 +7,28 @@ def main(j, args, params, tags, tasklet):
     hrd = j.core.hrd.get(content=args.cmdstr)
 
     eveGrid = {
-        'specJsonPath': hrd.get('spec_json_path', default='/docs/spec.json'),
-        'schemaURL': hrd.get('schema_url', default=''),
-        'entityName': hrd.get('entity_name', default=''),
-        'datetimeFields': hrd.get('datetime_fields', default=''),
-        'sortBy':hrd.get('sortBy', default='') # Mongo syntax : [("guid", -1), ("pid", 1),]
+        'specJsonPath': hrd.get('spec.json.path', default='/docs/spec.json'),
+        'schemaURL': hrd.getStr('schema.url', default=''),
+        'entityName': hrd.get('entity.name', default=''),
+        'datetimeFields': hrd.get('datetime.fields', default=""),
     }
+    sort = hrd.getDict('sortBy').copy() if hrd.exists('sortBy') else []
+    eveGrid['sortBy'] = list()
+    [eveGrid['sortBy'].append((item, sort.pop(item))) for item in sort]
     eveGrid['columns'] = []
     
-    hrd_data = sorted(list(hrd.prefix('column')))
-    
-    data = [e for e in hrd_data if e.endswith('data')]
+    hrd_data = hrd.getDictFromPrefix('column')
 
-    for e in data:
-            column = {}
-            prefix = e[:-5]
-            data = '%s.data' % prefix
-            header = '%s.header' % prefix
-            format = '%s.format' % prefix
-            column['data'] = hrd.get(data, default='')
-            column['header'] = hrd.get(header, default=prefix)
-            column['format'] = hrd.get(format, default='')
-            eveGrid['columns'].append(column)
+    for _,columndata in hrd_data.iteritems():
+        column = {}
+        column['data'] = columndata.get('data', '')
+        column['header'] = columndata.get('header', '')
+        column['format'] = columndata.get('format', '')
+        print '****', column
+        eveGrid['columns'].append(column)
 
-    eveGrid['columns'] = (json.dumps(eveGrid['columns']))
+    eveGrid['columns'] = (json.dumps(eveGrid['columns'])) or []
+    # eveGrid['columns'] = eveGrid['columns'].replace("'", "\'")
     # Add our static resources only once to the page
     if '/system/.files/lib/evegrid/css/eve-grid.css' not in str(page):
         page.addCSS('/jslib/jquery/jqueryDataTable/css/dataTables.bootstrap.css')
@@ -48,9 +46,9 @@ def main(j, args, params, tags, tasklet):
         page.addJS('/jslib/spin.min.js')
         page.addJS('/system/.files/lib/evegrid/js/eve-grid.js')
     
-    page.addMessage('''
+    grid = '''
         <div class="container eve-grid-container">
-        <div id="{entityName}-container" eve-grid eve-url="{schemaURL}" eve-entity="{entityName}" eve-spec-path="{specJsonPath}" datetime-fields={datetimeFields} columns='{columns}' sortBy='{sortBy}'>
+        <div id="{entityName}-container" eve-grid eve-url={schemaURL} eve-entity="{entityName}" eve-spec-path="{specJsonPath}" datetime-fields="" columns='{columns}'>
         </div>
         <div id="confirmModal" class="modal fade">
                     <div class="modal-dialog">
@@ -71,7 +69,11 @@ def main(j, args, params, tags, tasklet):
                 </div>
     </div>
 
-     '''.format(**eveGrid))
+     '''
+
+    grid = grid.format(**eveGrid)
+
+    page.addMessage(grid)
     params.result = page
     return params
 

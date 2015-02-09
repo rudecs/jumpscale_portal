@@ -5,30 +5,50 @@
 }}
 
 {{evegrid:
-    schema.url=:5000/system
+    schema.url=':5000/system'
     spec.json.path=/docs/spec.json
     entity.name=eco
     datetime.fields=epoch
-    sortBy=[("epoch", -1), ("pid", 1),]
-	column.1.data=epoch
-    column.1.header=Time Stamp
-    column.1.format=<a href="/grid/eco?id={guid}">{epoch}</a>
-    column.2.data=errormessage
-    column.2.header=Error Message
-    column.3.data=category
-    column.3.header=Category
-    column.4.data=level
-    column.4.header=Level
-    column.5.data=appname
-    column.5.header=App name
-    column.6.data=pid
-    column.6.header=PID
-    column.7.data=nid
-    column.7.header=Node ID
-    column.8.data=gid
-    column.8.header=GID
-    column.9.data=masterjid
-    column.9.header=Master JID
+    sortBy =
+        epoch: -1,
+        pid:1,
+
+    column.1 = 
+        data:epoch,
+        header:Time Stamp,
+        format:<a href="/grid/eco?id={guid}">{epoch}</a>,
+
+    column.2 = 
+        data:errormessage,
+        header:Error Message,
+
+    column.3 =
+        data:category,
+        header:Category,
+
+    column.4 =
+        data:level,
+        header:Level,
+
+    column.5 =
+        data:appname,
+        header:App name,
+
+    column.6 =
+        data:pid,
+        header:PID,
+
+    column.7 =
+        data:nid,
+        header:Node ID,
+
+    column.8 = 
+        data:gid,
+        header:GID,
+
+    column.9 =
+        data:masterjid,
+        header:Master JID,
 }}
 
 {{html:

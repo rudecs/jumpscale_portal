@@ -18,7 +18,7 @@ h2. Example
 
 {{code:
 {{evegrid:
-    schema.url=37.203.43.137:5000/system
+    schema.url=localhost:5000/system
     spec.json.path=/docs/spec.json
     entity.name=eco
     datetime.fields=epoch
