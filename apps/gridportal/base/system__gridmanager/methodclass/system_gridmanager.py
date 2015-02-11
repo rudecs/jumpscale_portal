@@ -3,7 +3,6 @@ import JumpScale.grid.geventws
 import JumpScale.grid.osis
 import JumpScale.grid.agentcontroller
 import JumpScale.baselib.serializers
-import grequests as requests
 
 def mbToKB(value):
     if not value:
