@@ -34,7 +34,7 @@ class PortalAuthenticatorOSIS():
     def createUser(self, username, password, email, groups, domain):
         user = self.osis.new()
         user.id=username
-        if isinstance(groups, str):
+        if isinstance(groups, basestring):
             groups = [groups]
         user.groups=groups
         user.emails=email
