@@ -235,10 +235,10 @@ class PortalServer:
         """
         Checks whether one of user groups is actually an admin group
         """
-        admingroups = self.admingroups
-        for g in user_groups:
-            if g in admingroups:
-                return True
+        admingroups = set(self.admingroups)
+        user_groups = set(user_groups)
+        if admingroups & user_groups:
+            return True
         return False
 
 ##################### USER RIGHTS
@@ -755,6 +755,10 @@ class PortalServer:
             if newsession:
                 session = newsession
                 ctx.env['beaker.session'] = session
+                
+            elif key == self.secret:
+                    session['user'] = 'admin'
+                    session.save()
             
             else:
                 
@@ -763,10 +767,6 @@ class PortalServer:
                     session['user'] = username
                     session.save()
                     
-                elif key == self.secret:
-                    session['user'] = 'admin'
-                    session.save()
-                
                 else:
                     ctx.start_response('419 Authentication Timeout', [])
                     return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
