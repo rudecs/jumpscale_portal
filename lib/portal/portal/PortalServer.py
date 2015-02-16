@@ -237,9 +237,7 @@ class PortalServer:
         """
         admingroups = set(self.admingroups)
         user_groups = set(user_groups)
-        if admingroups & user_groups:
-            return True
-        return False
+        return  admingroups.intersection(user_groups)
 
 ##################### USER RIGHTS
 
@@ -755,18 +753,14 @@ class PortalServer:
             if newsession:
                 session = newsession
                 ctx.env['beaker.session'] = session
-                
             elif key == self.secret:
-                    session['user'] = 'admin'
-                    session.save()
-            
+                session['user'] = 'admin'
+                session.save()
             else:
-                
                 username = self.auth.getUserFromKey(key)
                 if username != "guest":
                     session['user'] = username
                     session.save()
-                    
                 else:
                     ctx.start_response('419 Authentication Timeout', [])
                     return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
