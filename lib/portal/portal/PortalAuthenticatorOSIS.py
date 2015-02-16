@@ -1,17 +1,15 @@
 from JumpScale import j
 import time
-class PortalAuthenticatorOSIS():
+
+class PortalAuthenticatorOSIS(object):
 
     def __init__(self, osis):
         self.osis=j.clients.osis.getCategory(osis,"system","user")
         self.osisgroups=j.clients.osis.getCategory(osis,"system","group")
         self.key2user={user['authkey']:user['id'] for user in self.osis.simpleSearch({}, nativequery={'authkey':{'$ne': ''}})}
-        
-    def existsKey(self,key):
-        return key in self.key2user
-        
+    
     def getUserFromKey(self,key):
-        if not self.existsKey(key):
+        if not key in self.key2user:
             return "guest"
         return self.key2user[key]
 

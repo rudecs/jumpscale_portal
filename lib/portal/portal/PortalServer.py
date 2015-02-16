@@ -22,6 +22,7 @@ import mimetypes
 import urllib
 import cgi
 import JumpScale.grid.agentcontroller
+from PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
 
 BLOCK_SIZE = 4096
 
@@ -90,8 +91,11 @@ class PortalServer:
         self.redisprod=redis.StrictRedis(host='localhost', port=9999, db=0)
 
         self.jslibroot=j.system.fs.joinPaths(j.dirs.baseDir,"apps","portals","jslib")
-
-        self.auth=PortalAuthenticatorOSIS(self.osis)
+        
+        if self.authentication_method == 'gitlab':
+            self.auth=PortalAuthenticatorGitlab(instance=self.gitlabinstance)
+        else:
+            self.auth=PortalAuthenticatorOSIS(self.osis)
 
         self.loadSpaces()
 
@@ -143,7 +147,9 @@ class PortalServer:
             self.defaultpage = ini.getValue('main', 'defaultpage') or ""
         else:
             self.defaultpage = ""
-
+        
+        self.authentication_method = ini.getValue("main", "auth") or 'osis'
+        self.gitlabinstance = ini.getValue("main", "gitlabinstance") or ''
         self.getContentDirs()
 
     def reset(self):
@@ -224,7 +230,17 @@ class PortalServer:
             # print appn+" "+appname+" "+actorn+" "+actorname
             if appn == appname and actorn == actorname:
                 self.routes.pop(key)
- 
+    
+    def CheckAdminByUserGroups(self, user_groups):
+        """
+        Checks whether one of user groups is actually an admin group
+        """
+        admingroups = self.admingroups
+        for g in user_groups:
+            if g in admingroups:
+                return True
+        return False
+
 ##################### USER RIGHTS
 
     def getUserRight(self, ctx, space):
@@ -247,7 +263,7 @@ class PortalServer:
                 groupsusers=self.auth.getGroups(username)
 
             right = ""
-            if "admin" in groupsusers:
+            if self.CheckAdminByUserGroups(groupsusers):
                 right = "*"
             # print "groupsusers:%s"%groupsusers
             if right == "":
@@ -256,18 +272,9 @@ class PortalServer:
                         # found match
                         right = spaceobject.model.acl[groupuser]
                         break
-
-            # if right == "":
-            #     #check bitbucket
-            #     for key,acl in spaceobject.model.acl.iteritems():
-            #         if key.find("bitbucket")==0:
-            #             from IPython import embed
-            #             print "DEBUG NOW ooooooo"
-            #             embed()
-                        
         if right == "*":
             right = "rwa"
-        # print "right:%s" % right
+
         return username, right
 
     def getUserFromCTX(self,ctx):
@@ -742,20 +749,24 @@ class PortalServer:
         if "authkey" in ctx.params:
             # user is authenticated by a special key
             key = ctx.params["authkey"]
-
-            if self.auth.existsKey(key):
-                username = self.auth.getUserFromKey(key)
-                session['user'] = username
-                session.save()
-            elif key == self.secret:
-                session['user'] = 'admin'
-                session.save()
+            
+            # check if authkey is a session
+            newsession = session.get_by_id(key)
+            if newsession:
+                session = newsession
+                ctx.env['beaker.session'] = session
+            
             else:
-                # check if authkey is a session
-                newsession = session.get_by_id(key)
-                if newsession:
-                    session = newsession
-                    ctx.env['beaker.session'] = session
+                
+                username = self.auth.getUserFromKey(key)
+                if username != "guest":
+                    session['user'] = username
+                    session.save()
+                    
+                elif key == self.secret:
+                    session['user'] = 'admin'
+                    session.save()
+                
                 else:
                     ctx.start_response('419 Authentication Timeout', [])
                     return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
