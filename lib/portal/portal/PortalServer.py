@@ -231,7 +231,7 @@ class PortalServer:
             if appn == appname and actorn == actorname:
                 self.routes.pop(key)
     
-    def CheckAdminByUserGroups(self, user_groups):
+    def checkAdminByUserGroups(self, user_groups):
         """
         Checks whether one of user groups is actually an admin group
         """
@@ -261,7 +261,7 @@ class PortalServer:
                 groupsusers=self.auth.getGroups(username)
 
             right = ""
-            if self.CheckAdminByUserGroups(groupsusers):
+            if self.checkAdminByUserGroups(groupsusers):
                 right = "*"
             # print "groupsusers:%s"%groupsusers
             if right == "":
