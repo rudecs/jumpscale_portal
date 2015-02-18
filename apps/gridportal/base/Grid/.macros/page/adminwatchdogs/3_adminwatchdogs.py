@@ -21,8 +21,7 @@ def main(j, args, params, tags, tasklet):
             for field in [watchdog['category'], state, epochHR, epochEsc, watchdog['escalationstate'], grid, node, watchdog['ecoguid'], link]:
                 itemdata.append(str(field))
             aaData.append(itemdata)
-        aaData = str(aaData)
-        return aaData.replace('[[', '[ [').replace(']]', '] ]')
+        return json.dumps(aaData)
 
     cl = j.clients.redis.getGeventRedisClient("localhost", 7770)
 
