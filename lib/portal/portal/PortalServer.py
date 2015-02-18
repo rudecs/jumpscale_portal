@@ -318,78 +318,87 @@ class PortalServer:
         return [page.getContent()]
 
     def getDoc(self, space, name, ctx, params={}):
-        session = ctx.env['beaker.session']
-        loggedin = session.get('user', '') not in ['guest', '']
-        standard_pages = ["login", "error", "accessdenied", "pagenotfound"]
-        spacedocgen = None
-        
         print("GETDOC:%s" % space)
         space = space.lower()
         name = name.lower()
 
-        if not space:
+        if name in ["login", "error", "accessdenied", "pagenotfound"]:
+            right = "r"
+
+        if space == "" and name == "":
             space = self.defaultspace
             name = self.defaultpage
+
+        username, right = self.getUserRight(ctx, space)
+
+        print("# space:%s name:%s user:%s right:%s" % (space, name, username, right))
+
+        if not "r" in right:
+            space = "system"
+            name = "accessdenied"
+
+        if name != "accessdenied" and name != "pagenotfound":
+            # check security
+            if right == "":
+                params["space"] = space
+                params["page"] = name
+                doc, params = self.getDoc(space, "accessdenied", ctx, params=params)
+                return doc, params
+        else:
+            right = "r"
 
         if space not in self.spacesloader.spaces:
             if space == "system":
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
-            ctx.params["error"] = "Could not find space %s\n" % space
             print("could not find space %s" % space)
-            space = 'system'
-            name = "pagenotfound"
+            doc, params = self.getDoc("system", "pagenotfound", ctx, params)
+            if "space" not in params:
+                params["space"] = space
+            if "page" not in params:
+                params["page"] = name
+            print("could not find space %s" % space)
+            ctx.params["error"] = "Could not find space %s\n" % space
         else:
-
             spaceObject = self.spacesloader.getLoaderFromId(space)
-            if spaceObject.docprocessor is None:
+
+            if spaceObject.docprocessor == None:
                 spaceObject.loadDocProcessor(force=True)  # dynamic load of space
+
             spacedocgen = spaceObject.docprocessor
-            
-            if name in spacedocgen.name2doc:
-                pass
-            elif name in standard_pages: # One of the standard pages not found in that space, fall back to system space
-                space = "system"
-                spacedocgen = None
-            elif name == "":
-                if space in spacedocgen.name2doc:
-                    name = space
-                elif "home" in spacedocgen.name2doc:
-                    name = 'home'
+            if name != "" and name in spacedocgen.name2doc:
+                doc = spacedocgen.name2doc[name]
+            else:
+                if name == "accessdenied":
+                    # means the accessdenied page does not exist
+                    doc, params = self.getDoc("system", "accessdenied", ctx, params)
+                    return doc, params
+                if name == "pagenotfound":
+                    # means the nofound page does not exist
+                    doc, params = self.getDoc("system", "pagenotfound", ctx, params)
+                    ctx.start_response("404 Not found", [])
+                    return doc, params
+                if name == "":
+                    if space in spacedocgen.name2doc:
+                        doc = spacedocgen.name2doc[space]
+                    elif "home" in spacedocgen.name2doc:
+                        doc = spacedocgen.name2doc["home"]
+                    else:
+                        ctx.params["path"] = "space:%s pagename:%s" % (space, name)
+                        # print ctx.params["path"]
+                        if "space" not in params:
+                            params["space"] = space
+                        if "page" not in params:
+                            params["page"] = name
+                        doc, params = self.getDoc(space, "pagenotfound", ctx, params)
                 else:
                     ctx.params["path"] = "space:%s pagename:%s" % (space, name)
-                    name = "pagenotfound"
-                    spacedocgen = None
-            else:
-                ctx.params["path"] = "space:%s pagename:%s" % (space, name)
-                name = "pagenotfound"
-                spacedocgen = None
-
-        username, right = self.getUserRight(ctx, space)
-
-        if name in standard_pages:
-            if not "r" in right:
-                right = "r" + right
-
-        if not "r" in right:
-            name = "accessdenied" if loggedin else "login"
+                    doc, params = self.getDoc(space, "pagenotfound", ctx, params)
 
         ctx.params["rights"] = right
-        print("# space:%s name:%s user:%s right:%s" % (space, name, username, right))
-            
-        params['space'] = space
-        params['name'] = name
-        
-        if not spacedocgen:
-            doc, params = self.getDoc(space,name, ctx, params)
-        else:
-            doc = spacedocgen.name2doc[name]
-
         doc.loadFromDisk()
 
         if name == "pagenotfound":
             ctx.start_response("404 Not found", [])
-        elif name == 'accessdenied':
-            ctx.start_response("403 Not authorized", [])
 
         return doc, params
 
@@ -747,11 +756,6 @@ class PortalServer:
 
     def startSession(self, ctx, path):
         session = ctx.env['beaker.session']
-        # Already logged in user can't access login page again
-        if 'user_logoff_' not in ctx.params and path.endswith('system/login') and 'user' in session and session['user'] != 'guest':
-            ctx.start_response('204', [])
-            return False, []
-
         if "authkey" in ctx.params:
             # user is authenticated by a special key
             key = ctx.params["authkey"]
@@ -774,8 +778,7 @@ class PortalServer:
                     return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
 
         if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
-            if session.get('user', '') not in ['guest', '']:
-                session.delete()
+            session.delete()
             return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "login", extraParams={"path": path}))]
 
         if "user_login_" in ctx.params:
@@ -804,7 +807,7 @@ class PortalServer:
                 session['user'] = ""
                 session["querystr"] = ""
                 session.save()
-                return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "login", extraParams={"path": path}))]
+                return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
 
         if "user" not in session or session["user"] == "":
             session['user'] = "guest"
