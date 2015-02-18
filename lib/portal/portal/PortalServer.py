@@ -12,6 +12,8 @@ from .RequestContext import RequestContext
 from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 
+from JumpScale.portal.portalloaders.SpaceWatcher import SpaceWatcher
+
 from JumpScale import j
 from gevent.pywsgi import WSGIServer
 import gevent
@@ -52,6 +54,7 @@ class PortalServer:
 
         self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
 
+        self.watchedspaces = []
         self.pageKey2doc = {}
         self.routes = {}
 
@@ -100,6 +103,7 @@ class PortalServer:
         self.loadSpaces()
 
         self.rest=PortalRest(self)
+        self.spacesloader = j.core.portalloader.getSpacesLoader()
 
     def loadConfig(self):
 
@@ -115,12 +119,15 @@ class PortalServer:
         ######INIT FILE
 
         ini = j.tools.inifile.open(self.cfgdir + "/portal.cfg")
+        cwd = j.system.fs.getcwd()
 
         if ini.checkParam("main", "appdir"):
             self.appdir = replaceVar(ini.getValue("main", "appdir"))
             self.appdir=self.appdir.replace("$base",j.dirs.baseDir)
         else:
-            self.appdir = j.system.fs.getcwd()
+            self.appdir = cwd
+
+        self.cfgdir = j.system.fs.joinPaths(cwd, 'cfg')
 
         self.getContentDirs() #contentdirs need to be loaded before we go to other dir of base server
         j.system.fs.changeDir(self.appdir)            
@@ -143,13 +150,17 @@ class PortalServer:
             self.defaultspace = ini.getValue('main', 'defaultspace') or 'system'
         else:
             self.defaultspace = 'system'
-        if ini.checkParam('main', 'defaulpage'):
+        if ini.checkParam('main', 'defaultpage'):
             self.defaultpage = ini.getValue('main', 'defaultpage') or ""
         else:
             self.defaultpage = ""
         
-        self.authentication_method = ini.getValue("main", "auth") or 'osis'
-        self.gitlabinstance = ini.getValue("main", "gitlabinstance") or ''
+        self.authentication_method = 'osis'
+        if ini.checkParam('main', 'auth'):
+            self.authentication_method = ini.getValue("main", "auth") or 'osis'
+        self.gitlabinstance = ''
+        if ini.checkParam('main', 'gitlabinstance'):
+            self.gitlabinstance = ini.getValue("main", "gitlabinstance") or ''
         self.getContentDirs()
 
     def reset(self):
@@ -160,7 +171,6 @@ class PortalServer:
         j.core.specparser.resetMemNonSystem()
         # self.actorsloader.scan(path=self.contentdirs,reset=True) #do we need to load them all
         self.bucketsloader = j.core.portalloader.getBucketsLoader()
-        self.spacesloader = j.core.portalloader.getSpacesLoader()
         self.loadSpaces()
         
     def bootstrap(self):
@@ -210,8 +220,10 @@ class PortalServer:
                 if path=="" or path[0]=="#":
                     continue
                 path=path.replace("\\","/")
-                if path[0] != "/" and path.find(":") == -1:
+                if path.find(":") == -1:
                     path = j.system.fs.joinPaths(j.system.fs.getParent(self.cfgdir), path)
+                    if path not in self.watchedspaces:
+                        SpaceWatcher(path)
                 append(path)
 
         #add own base path
@@ -1145,9 +1157,9 @@ class PortalServer:
             space.loadDocProcessor()
         return space
 
-    def loadSpace(self, name):
+    def loadSpace(self, name, force=False):
         space = self.getSpace(name)
-        space.loadDocProcessor()
+        space.loadDocProcessor(force=force)
         return space
 
     def getBucket(self, name):
