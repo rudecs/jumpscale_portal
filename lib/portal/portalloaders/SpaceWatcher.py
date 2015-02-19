@@ -1,0 +1,53 @@
+from JumpScale import j
+import os
+
+from .LoaderBase import LoaderBase
+from watchdog.observers.polling import PollingObserver as Observer
+from watchdog.events import FileSystemEventHandler
+
+addedspaces = []
+
+class SpaceWatcher():
+
+    def __init__(self, contentdir='', spacename=""):
+        """
+        @param contentDirs are the dirs where we will load wiki files from & parse
+        @param varsPath is the file with fars (just multiple lines with something like customer = ABC Data)
+        @param macrosPath is dir where macro's are they are in form of tasklets
+        @param cacheDir if non std caching dir override here
+
+        """
+        self.file_observers = []
+        self.spacehandler = SpaceHandler(self)
+        self.contentdir = contentdir if contentdir.endswith('/') else '%s/' % contentdir
+
+        if contentdir.strip():
+            # Watch the contentdir for changes
+            observer = Observer()
+            self.file_observers.append(observer)
+            j.core.portal.active.watchedspaces.append(contentdir)
+            print('Monitoring', contentdir)
+            observer.schedule(self.spacehandler, contentdir, recursive=True)
+            observer.start()
+
+    def addSpace(self, spacename, spacepath):
+        if spacename not in j.core.portal.active.spacesloader.spaces:
+            print('Space %s added' % spacename)
+            j.core.portal.active.spacesloader.scan(spacepath)
+
+
+ 
+class SpaceHandler(FileSystemEventHandler):
+    def __init__(self, spacewatcher):
+        self.spacewatcher = spacewatcher
+
+
+    def on_created(self, event):
+        path = os.path.dirname(event.src_path)
+        newspace = path.replace(self.spacewatcher.contentdir, '').split('/', 1)[0]
+        newspacepath = j.system.fs.joinPaths(self.spacewatcher.contentdir, newspace)
+        if newspace:
+            self.spacewatcher.addSpace(newspace, newspacepath)
+
+    on_moved = on_created
+
