@@ -100,10 +100,9 @@ class PortalServer:
         else:
             self.auth=PortalAuthenticatorOSIS(self.osis)
 
-        self.loadSpaces()
-
         self.rest=PortalRest(self)
         self.spacesloader = j.core.portalloader.getSpacesLoader()
+        self.loadSpaces()
 
     def loadConfig(self):
 
