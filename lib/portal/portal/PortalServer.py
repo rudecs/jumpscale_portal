@@ -48,7 +48,7 @@ class PortalServer:
         self.started = False
         self.epoch = time.time()
 
-        self.cfgdir="cfg"
+        self.cfg = self.hrd.getDictFromPrefix('param.cfg')
 
         j.core.portal.active=self
 
@@ -116,50 +116,33 @@ class PortalServer:
 
 
         ######INIT FILE
+        self.portaldir = j.system.fs.getcwd()
 
-        ini = j.tools.inifile.open(self.cfgdir + "/portal.cfg")
-        cwd = j.system.fs.getcwd()
-
-        if ini.checkParam("main", "appdir"):
-            self.appdir = replaceVar(ini.getValue("main", "appdir"))
-            self.appdir=self.appdir.replace("$base",j.dirs.baseDir)
-        else:
-            self.appdir = cwd
-
-        self.cfgdir = j.system.fs.joinPaths(cwd, 'cfg')
+        self.appdir = replaceVar(self.cfg.get("appdir", self.portaldir))
+        self.appdir = self.appdir.replace("$base",j.dirs.baseDir)
 
         self.getContentDirs() #contentdirs need to be loaded before we go to other dir of base server
         j.system.fs.changeDir(self.appdir)            
 
-        self.listenip = '0.0.0.0'
-        if ini.checkSection('main') and ini.checkParam('main', 'listenip'):
-            self.listenip = ini.getValue('main', 'listenip')
+        self.listenip = self.cfg.get('listenip', '0.0.0.0')
+        self.port = int(self.cfg.get("port", 82))
+        self.addr = self.cfg.get("pubipaddr", '127.0.0.1')
+        self.secret = self.cfg.get("secret")
+        self.admingroups = self.cfg.get("admingroups").split(",")
+        
+        self.filesroot = replaceVar(self.cfg.get("filesroot"))
+        j.system.fs.createDir(self.filesroot)
+        
+        self.defaultspace = self.cfg.get('defaultspace', 'system') or 'system'
+        self.defaultpage = self.cfg.get('defaultpage', '')
 
-        self.port = int(ini.getValue("main", "webserverport"))
-        self.addr = ini.getValue("main", "pubipaddr")
+        self.authentication_method = 'osis'
+        self.authentication_method = self.cfg.get("auth", 'osis')
+        self.gitlabinstance = self.cfg.get("gitlabinstance", '')
 
         self.logdir= j.system.fs.joinPaths(j.dirs.logDir,"portal",str(self.port))
         j.system.fs.createDir(self.logdir)
 
-        self.secret = ini.getValue("main", "secret")
-        self.admingroups = ini.getValue("main", "admingroups").split(",")
-        self.filesroot = replaceVar(ini.getValue("main", "filesroot"))
-        j.system.fs.createDir(self.filesroot)
-        if ini.checkParam('main', 'defaultspace'):
-            self.defaultspace = ini.getValue('main', 'defaultspace') or 'system'
-        else:
-            self.defaultspace = 'system'
-        if ini.checkParam('main', 'defaultpage'):
-            self.defaultpage = ini.getValue('main', 'defaultpage') or ""
-        else:
-            self.defaultpage = ""
-        
-        self.authentication_method = 'osis'
-        if ini.checkParam('main', 'auth'):
-            self.authentication_method = ini.getValue("main", "auth") or 'osis'
-        self.gitlabinstance = ''
-        if ini.checkParam('main', 'gitlabinstance'):
-            self.gitlabinstance = ini.getValue("main", "gitlabinstance") or ''
         self.getContentDirs()
 
     def reset(self):
@@ -202,31 +185,28 @@ class PortalServer:
         """
         walk over known content dirs & execute loader on it
         """
-        cfgpath = j.system.fs.joinPaths(self.cfgdir, "contentdirs.cfg")
+        contentdirs = self.cfg.get('contentdirs', '')
 
         def append(path):
             path=j.system.fs.pathNormalize(path)
             if path not in self.contentdirs:
                 self.contentdirs.append(path)
 
-        if j.system.fs.exists(cfgpath):
-            wikicfg = j.system.fs.fileGetContents(cfgpath)
 
-            paths = wikicfg.split("\n")
+        paths = contentdirs.split(",")
 
-            for path in paths:
-                path = path.strip()
-                if path=="" or path[0]=="#":
-                    continue
-                path=path.replace("\\","/")
-                if path.find(":") == -1:
-                    path = j.system.fs.joinPaths(j.system.fs.getParent(self.cfgdir), path)
-                    if path not in self.watchedspaces:
-                        SpaceWatcher(path)
-                append(path)
+        for path in paths:
+            path = path.strip()
+            if path=="" or path[0]=="#":
+                continue
+            path=path.replace("\\","/")
+            if path.find(":") == -1:
+                if path not in self.watchedspaces:
+                    SpaceWatcher(path)
+            append(path)
 
         #add own base path
-        self.basepath = j.system.fs.joinPaths(j.system.fs.getParent(self.cfgdir), "base")
+        self.basepath = j.system.fs.joinPaths(self.portaldir, "base")
         j.system.fs.createDir(self.basepath)
         append(self.basepath)
 
