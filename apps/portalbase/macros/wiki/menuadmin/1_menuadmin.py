@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
             spacestxt += "%s:/%s\n" % (name, item.lower().strip("/"))
 
 
-    C = """
+    adminmenu = """
 {{menudropdown: name:Portal
 New Page:/system/create
 Edit Page:/system/edit?space=$$space&page=$$page$$querystr
@@ -30,14 +30,14 @@ ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 --------------
 """
-    C+=spacestxt
-    C+='}}'
 
-    C+='''
-    {{htmlhead:
-    <script type="text/javascript" src="/jslib/old/adminmenu/adminmenu.js"></script>
-    }}
-    '''
+    readonlymenu = """
+{{menudropdown: name:Portal
+--------------
+Logout:/system/login?user_logoff_=1
+--------------
+"""
+
 
 #was inside
 #ShowLogs:/system/ShowSpaceAccessLog?space=$$space
@@ -45,8 +45,25 @@ Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 #Spaces:/system/Spaces
 #Pages:/system/Pages?space=$$space
 
+    spacename = params.requestContext.path.split('/', 1)
+    spacename = spacename[0] if spacename else 'system'
+
+    result = ''
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
-        params.result = C
+        result = adminmenu
+    elif 'r' in j.core.portal.active.getUserRight(params.requestContext, spacename)[1].lower():
+        result = readonlymenu
+
+    result +=spacestxt
+    result+='}}'
+
+    result+='''
+    {{htmlhead:
+    <script type="text/javascript" src="/jslib/old/adminmenu/adminmenu.js"></script>
+    }}
+    '''
+
+    params.result = result
 
     params.result = (params.result, doc)
 
