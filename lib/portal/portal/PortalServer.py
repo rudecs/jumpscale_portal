@@ -195,6 +195,13 @@ class PortalServer:
 
         paths = contentdirs.split(",")
 
+        #add own base path
+        self.basepath = j.system.fs.joinPaths(self.portaldir, "base")
+        j.system.fs.createDir(self.basepath)
+        append(self.basepath)
+
+        paths.append(self.basepath)
+        paths = list(set(paths))
         for path in paths:
             path = path.strip()
             if path=="" or path[0]=="#":
@@ -204,11 +211,6 @@ class PortalServer:
                 if path not in self.watchedspaces:
                     SpaceWatcher(path)
             append(path)
-
-        #add own base path
-        self.basepath = j.system.fs.joinPaths(self.portaldir, "base")
-        j.system.fs.createDir(self.basepath)
-        append(self.basepath)
 
         #add base path of parent portal
         appdir = self.appdir
