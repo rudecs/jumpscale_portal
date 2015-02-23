@@ -9,12 +9,9 @@ addedspaces = []
 
 class SpaceWatcher():
 
-    def __init__(self, contentdir='', spacename=""):
+    def __init__(self, contentdir=''):
         """
         @param contentDirs are the dirs where we will load wiki files from & parse
-        @param varsPath is the file with fars (just multiple lines with something like customer = ABC Data)
-        @param macrosPath is dir where macro's are they are in form of tasklets
-        @param cacheDir if non std caching dir override here
 
         """
         self.file_observers = []
@@ -47,7 +44,7 @@ class SpaceHandler(FileSystemEventHandler):
         newspace = path.replace(self.spacewatcher.contentdir, '').split('/', 1)[0]
         newspacepath = j.system.fs.joinPaths(self.spacewatcher.contentdir, newspace)
         if newspace:
-            self.spacewatcher.addSpace(newspace, newspacepath)
+            self.spacewatcher.addSpace(newspace.lower(), newspacepath)
 
     on_moved = on_created
 
