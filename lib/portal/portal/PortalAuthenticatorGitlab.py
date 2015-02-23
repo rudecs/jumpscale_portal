@@ -25,3 +25,12 @@ class PortalAuthenticatorGitlab(object):
             return new_client.current_user().username
         except gitlab3.exceptions.UnauthorizedRequest:
             return "guest"
+        
+    def getUserSpaces(self, username):
+        return self.client.getUserSpaces(username)
+    
+    def getUserRight(self, username, space, **kwargs):
+        space = self.client.getSpace(space)
+        if not space:
+            return username, ''
+        return self.client.getUserSpaceRights(username, space.name)

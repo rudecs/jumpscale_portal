@@ -65,3 +65,16 @@ class PortalAuthenticatorOSIS(object):
         passwd = passwd[0] if isinstance(passwd, list) else passwd
         result=self.osis.authenticate(name=login,passwd=passwd)
         return result['authenticated']
+    
+    def getUserRight(self, username, space, **kwargs):
+        spaceobject = kwargs['spaceobject']
+        groupsusers = set(self.getGroups(username))
+        
+        for groupuser in groupsusers:
+            if groupuser in spaceobject.model.acl:
+                right = spaceobject.model.acl[groupuser]
+                if right == "*":
+                    return username, "rwa"
+                return username, right
+
+        return username, ""

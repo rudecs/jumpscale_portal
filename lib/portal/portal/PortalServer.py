@@ -100,6 +100,7 @@ class PortalServer:
         else:
             self.auth=PortalAuthenticatorOSIS(self.osis)
 
+        #  Load local spaces
         self.rest=PortalRest(self)
         self.spacesloader = j.core.portalloader.getSpacesLoader()
         self.loadSpaces()
@@ -133,12 +134,11 @@ class PortalServer:
         self.filesroot = replaceVar(self.cfg.get("filesroot"))
         j.system.fs.createDir(self.filesroot)
         
-        self.defaultspace = self.cfg.get('defaultspace', 'system') or 'system'
+        self.defaultspace = self.cfg.get('defaultspace', 'welcome')
         self.defaultpage = self.cfg.get('defaultpage', '')
 
-        self.authentication_method = 'osis'
-        self.authentication_method = self.cfg.get("auth", 'osis')
-        self.gitlabinstance = self.cfg.get("gitlabinstance", '')
+        self.authentication_method = self.cfg.get("authentication.method")
+        self.gitlabinstance = self.cfg.get("gitlab.connection")
 
         self.logdir= j.system.fs.joinPaths(j.dirs.logDir,"portal",str(self.port))
         j.system.fs.createDir(self.logdir)
@@ -224,50 +224,42 @@ class PortalServer:
             if appn == appname and actorn == actorname:
                 self.routes.pop(key)
     
-    def checkAdminByUserGroups(self, user_groups):
-        """
-        Checks whether one of user groups is actually an admin group
-        """
-        admingroups = set(self.admingroups)
-        user_groups = set(user_groups)
-        return  admingroups.intersection(user_groups)
-
 ##################### USER RIGHTS
 
+    def getUserSpaces(self, ctx):
+        spaces = []
+        if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
+            username = ctx.env['beaker.session']["user"]
+            
+            if self.authentication_method == 'gitlab':
+                return self.auth.getUserSpaces(username)
+            # osis
+            for space in [ x.model.id.lower() for x in  self.spacesloader.spaces.values()]:
+                rights = self.getUserRight(ctx, space)[1]
+                if '*' in rights or 'r' in rights:
+                    spaces.append(space)
+        return spaces
+
     def getUserRight(self, ctx, space):
-        if space == "" or space not in self.spacesloader.spaces:
-            space = "system"
+        
         spaceobject = self.spacesloader.spaces[space]
+        defaultspace = self.defaultspace
+
         # print "spaceobject"
         # print spaceobject.model
-        if "user" in ctx.env['beaker.session']:
+        if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             username = ctx.env['beaker.session']["user"]
         else:
-            username = ""
-        if username == "":
-            right = ""
-        else:
-            
-            if username=="guest":
-                groupsusers=["guest","guests"]
-            else:
-                groupsusers=self.auth.getGroups(username)
-
-            right = ""
-            if self.checkAdminByUserGroups(groupsusers):
-                right = "*"
-            # print "groupsusers:%s"%groupsusers
-            if right == "":
-                for groupuser in groupsusers:
-                    if groupuser in spaceobject.model.acl:
-                        # found match
-                        right = spaceobject.model.acl[groupuser]
-                        break
-        if right == "*":
-            right = "rwa"
-
-        return username, right
-
+            return "", ""
+        
+        if self.isAdminFromCTX(ctx):
+            return username, 'rwa'
+        
+        # default space always have readonly permissions for users other than admin
+        if space == self.defaultspace:
+            return username, "r"
+        return self.auth.getUserRight(username, space, spaceobject=spaceobject)
+        
     def getUserFromCTX(self,ctx):
         return str(ctx.env["beaker.session"]["user"])
 
@@ -276,11 +268,9 @@ class PortalServer:
         return [str(item.lower()) for item in groups]
 
     def isAdminFromCTX(self,ctx):
-        groups=self.getGroupsFromCTX(ctx)
-        for gr in groups:
-            if gr in self.admingroups:
-                return True
-        return False     
+        usergroups=set(self.getGroupsFromCTX(ctx))
+        admingroups = set(self.admingroups)
+        return  bool(admingroups.intersection(usergroups))  
 
     def isLoggedInFromCTX(self,ctx):
         user=self.getUserFromCTX(ctx)
@@ -772,6 +762,9 @@ class PortalServer:
                     ctx.env['QUERY_STRING'] = session['querystr']
                 else:
                     ctx.env['QUERY_STRING'] = ""
+                
+                session['auth_method'] = self.authentication_method
+
                 session.save()
                 # user is loging in from login page redirect him to home
                 if path.endswith('system/login'):
