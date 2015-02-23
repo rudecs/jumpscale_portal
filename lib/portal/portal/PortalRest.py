@@ -74,6 +74,33 @@ class PortalRest():
         params["paths"] = paths
         return (True, "", params)
 
+    def restextPathProcessor(self, path):
+        j.logger.log("Process path %s" % path, 9)
+        params = {}
+        while path != "" and path[0] == "/":
+            path = path[1:]
+        while path != "" and path[-1] == "/":
+            path = path[:-1]
+        if path.strip() == "":
+            return (False, "Bad input path was empty. Format of url need to be http://$ipaddr/restext/$appname/$modelname/$args", {})
+        paths = path.split("/")
+        if len(paths) < 2:
+            msginfo = "Format of url need to be http://$ipaddr/restext/$appname/$modelname/$args...\n\n"
+            if len(paths) > 0:
+                appname = paths[0]
+            else:
+                appname = ""
+                modelname = ""
+            if len(paths) > 1:
+                modelname = paths[1]
+            else:
+                modelname = ""
+            params["appname"] = appname
+            params["modelname"] = modelname
+            return (False, msginfo, params)
+        params["paths"] = paths
+        return (True, "", params)        
+
     def restRouter(self, env, start_response, path, paths, ctx, ext=False, routekey=None, human=False):
         """
         does validaton & authorization
@@ -205,7 +232,6 @@ class PortalRest():
         """
         rest processer gen 2 (not used by the original get code)
         """
-
         if ctx == False:
             raise RuntimeError("ctx cannot be empty")
         try:
@@ -216,7 +242,7 @@ class PortalRest():
                     start_response('200 OK', [('Content-Type', contentType)])
                 return msg
 
-            success, message, params = self.restPathProcessor(path)
+            success, message, params = self.restextPathProcessor(path)
 
             if not success:
                 params["error"] = message
@@ -226,71 +252,31 @@ class PortalRest():
                     return [str(page)]
                 else:
                     return self.ws.raiseError(ctx, message)
+            requestmethod = ctx.env['REQUEST_METHOD']
             paths = params['paths']
             appname = paths[0]
-            actor = paths[1]
-            actorfunction = None
-            subobject = False
-            getfind = False
-            getdatatables = False
-            if len(ctx.params) > 0:
-                if 'query' in ctx.params:
-                    getfind = True
-                elif 'datatables' in ctx.params:
-                    getdatatables = True
-            if len(paths) == 2:
-                # we have only a actor function
-                if 'function' in ctx.params:
-                    actorfunction = ctx.params.pop('function')
-            requestmethod = ctx.env['REQUEST_METHOD']
+            model = paths[1]
+            objectid = None
             if len(paths) > 2:
-                modelgroup = paths[2]
-            if len(paths) > 3:
-                objectid = paths[3]
+                objectid = int(paths[2])
                 ctx.params['id'] = objectid
-                subobject = True
-            if actorfunction:
-                routekey = "%s_%s_%s_%s" % (requestmethod, appname, actor,
-                                            actorfunction)
+
+            osiscl = j.clients.osis.getCategory(self.ws.osis, appname, model)
+            osismap = {'GET': ['get', 'list'], 'POST': [''], 'DELETE': ['delete']}
+            if objectid:
+                method = osismap[requestmethod][0]
+                result = getattr(osiscl, method)(objectid)
+                if method == 'get':
+                    result = result.dump()
             else:
-                if requestmethod == 'GET':
-                    if subobject:
-                        routekey = "%s_%s_%s_%s_get" % (requestmethod, appname, actor,
-                                                        modelgroup)
-                    elif getfind:
-                        routekey = "%s_%s_%s_%s_find" % (requestmethod,
-                                                         appname, actor, modelgroup)
-                    elif getdatatables:
-                        routekey = "%s_%s_%s_%s_datatables" % (requestmethod,
-                                                               appname, actor, modelgroup)
-                    else:
-                        routekey = "%s_%s_%s_%s_list" % (requestmethod,
-                                                         appname, actor, modelgroup)
-
-                elif requestmethod == 'OPTIONS':
-                    result = 'Allow: HEAD,GET,PUT,DELETE,OPTIONS'
-                    contentType, result = self.ws.reformatOutput(ctx, result)
-                    return respond(contentType, result)
-
-                else:
-                    routekey = "%s_%s_%s_%s" % (requestmethod,
-                                                appname, actor, modelgroup)
-            success, ctx, result = self.restRouter(env, start_response, path, paths, ctx, True, routekey, human)
-            
-
-            if not success:
-                return result
-            success, result = self.execute_rest_call(ctx, result, True)
-            if not success:
-                return result
-            
-
+                result = getattr(osiscl, osismap[requestmethod][1])()
             if human:
-                ctx.format = "json"
+                ctx.fformat = "json"
                 params = {}
                 params["result"] = result
                 return [str(self.ws.returnDoc(ctx, start_response, "system", "restresult", extraParams=params))]
             else:
+                ctx.fformat = 'jsonraw'
                 contentType, result = self.ws.reformatOutput(ctx, result)
                 return respond(contentType, result)
         except Exception as errorObject:
