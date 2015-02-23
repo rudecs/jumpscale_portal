@@ -4,8 +4,11 @@ def main(j, args, params, tags, tasklet):
 
     doc = params.doc
 
-    params.result = ""
-
+    macrostr = params.macrostr
+    macrostr = macrostr.split('\n')
+    pages = macrostr[1:-1]
+    pagesstr = '--------------\n'
+    pages = pagesstr + '\n'.join(pages).strip() if pages else ''
 
     spaces = sorted(j.core.portal.active.getSpaces())
     spacestxt=""
@@ -20,23 +23,23 @@ def main(j, args, params, tags, tasklet):
 New Page:/system/create
 Edit Page:/system/edit?space=$$space&page=$$page$$querystr
 Create Space:/system/createspace
+Logout:/system/login?user_logoff_=1
+%s
 --------------
 Files:/system/files?space=$$space
---------------
-Logout:/system/login?user_logoff_=1
 Access:/system/OverviewAccess?space=$$space
 Reload:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(function(){location.reload()});void(0);
 ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 --------------
-"""
+""" % pages
 
     readonlymenu = """
 {{menudropdown: name:Portal
 --------------
 Logout:/system/login?user_logoff_=1
---------------
-"""
+%s
+""" % pages
 
 
 #was inside

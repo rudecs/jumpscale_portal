@@ -14,7 +14,18 @@ MS1Portal:/cbgrid
 
 {{menuspaces: name:GRID class:brand marker:$$$pages}}
 
-{{menuadmin_grid}}
+{{menuadmin:
+Alerts:/grid/Alerts
+Audits:/grid/Audits
+ECOs:/grid/ECOs
+Jobs:/grid/Jobs
+Job Queues:/grid/jobqueues
+Jumpscripts:/grid/Jumpscripts
+Logs:/grid/Logs
+Nodes:/grid/Nodes
+Processes:/grid/Processes
+Status Check:/grid/checkstatus
+}}
 
 
 @block
