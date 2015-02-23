@@ -1,4 +1,7 @@
 from JumpScale import j
-from .HtmlFactory import HtmlFactory
-j.base.loader.makeAvailable(j, '')
-j.html = HtmlFactory()
+
+def cb():
+    from .HtmlFactory import HtmlFactory
+    return HtmlFactory()
+
+j._register('html', cb)

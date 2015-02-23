@@ -1,4 +1,8 @@
 from JumpScale import j
-from .Docgenerator import DocgeneratorFactory
+
+def cb():
+    from .Docgenerator import DocgeneratorFactory
+    return DocgeneratorFactory()
+
 j.base.loader.makeAvailable(j, 'tools')
-j.tools.docgenerator = DocgeneratorFactory()
+j.tools._register('docgenerator', cb)
