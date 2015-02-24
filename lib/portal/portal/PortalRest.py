@@ -260,22 +260,17 @@ class PortalRest():
 
             osiscl = j.clients.osis.getCategory(self.ws.osis, appname, model)
             osismap = {'GET': ['get', 'list', 'search'], 'POST': [''], 'DELETE': ['delete']}
-            if objectid:
-                method = osismap[requestmethod][0]
-                result = getattr(osiscl, method)(objectid)
-                if method == 'get':
-                    result = result.dump()
+            
+            if requestmethod == 'GET':
+                result = self._handle_get(ctx, osiscl, objectid)
+            elif requestmethod == 'POST':
+                result = self._handle_post(ctx, osiscl, objectid)
+            elif requestmethod == 'DELETE':
+                result = self._handle_delete(ctx, osiscl, objectid)
             else:
-                if ctx.env['QUERY_STRING']:
-                    queryparts = ctx.env['QUERY_STRING'].split('&')
-                    query = dict()
-                    for querypart in queryparts:
-                        querypart = urllib.unquote(querypart)
-                        field, value = querypart.split('=')
-                        query[field] = int(value) if value.isdigit() else value
-                    result = getattr(osiscl, osismap[requestmethod][2])(query)[1:]
-                else:
-                    result = getattr(osiscl, osismap[requestmethod][1])()
+                start_response('405 Method not allowed', [('Content-Type', 'text/html')])
+                return 'Requested method is not allowed'
+
             if human:
                 ctx.fformat = "json"
                 params = {}
@@ -293,7 +288,43 @@ class PortalRest():
                 print(eco)
             else:
                 return self.ws.raiseError(ctx, errorObject=eco)
- 
+
+    def _handle_get(self, ctx, osiscl, objectid):
+        if objectid:  # get object
+            result = osiscl.get(objectid)
+            return result.dump()
+        else:  # list or search
+            if ctx.env['QUERY_STRING']:  # search
+                query = self._get_query_string(ctx)
+                return osiscl.search(query)[1:]
+            else:  # list
+                return osiscl.list()
+
+    def _handle_delete(self, ctx, osiscl, objectid):
+        return osiscl.delete(objectid)
+
+    def _handle_post(self, ctx, osiscl, objectid):
+        fields = ctx.params
+        if objectid:  # update
+            obj = osiscl.get(objectid)
+        else:  # new
+            obj = osiscl.new()
+        if 'id' in fields:
+            fields.pop('id')
+        for field, value in fields.iteritems():
+            setattr(obj, field, value)
+        return osiscl.set(obj)
+
+    def _get_query_string(self, ctx):
+        fields = dict()
+        if ctx.env['QUERY_STRING']:
+            queryparts = ctx.env['QUERY_STRING'].split('&')
+            for querypart in queryparts:
+                querypart = urllib.unquote(querypart)
+                field, value = querypart.split('=')
+                fields[field] = int(value) if value.isdigit() else value
+        return fields
+
     def activateActor(self, appname, actor):
         if not "%s_%s" % (appname, actor) in list(self.ws.actors.keys()):
             # need to activate
