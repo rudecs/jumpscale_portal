@@ -655,21 +655,24 @@ function copyText$id() {
             key = exclude.strip().lower()
             self.jscsslinks[key] = True
 
-    def addCSS(self, cssLink=None, cssContent=None, exlcude=""):
+    def addCSS(self, cssLink=None, cssContent=None, exlcude="", media=None):
         """
         """
         if self.pagemirror4jscss != None:
             self.pagemirror4jscss.addCSS(cssLink, cssContent)
         if cssLink != None:
-            key = cssLink.strip().lower()
+            key = cssLink.strip().lower() + (media or '')
             if key in self.jscsslinks:
                 return
             self.jscsslinks[key] = True
-
+        
+        mediatag = ""
+        if media:
+            mediatag = "media='%s'" % media
         if cssContent:
-            css = "\n<style type='text/css'>%s\n</style>\n" % cssContent
+            css = "\n<style type='text/css' %s>%s\n</style>\n" % (mediatag, cssContent)
         else:
-            css = "<link  href='%s' type='text/css' rel='Stylesheet'/>\n" % cssLink
+            css = "<link  href='%s' type='text/css' rel='stylesheet' %s/>\n" % (cssLink, mediatag)
         self.head += css
 
     def addTimeStamp(self, classname='jstimestamp'):

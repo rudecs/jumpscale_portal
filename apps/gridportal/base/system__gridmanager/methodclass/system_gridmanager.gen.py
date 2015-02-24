@@ -3,17 +3,15 @@ from JumpScale import j
 class system_gridmanager(j.code.classGetBase()):
     """
     gateway to grid
-    
     """
     def __init__(self):
+        pass
         
         self._te={}
         self.actorname="gridmanager"
         self.appname="system"
         #system_gridmanager_osis.__init__(self)
-    
 
-        pass
 
     def getAgentControllerActiveJobs(self, **kwargs):
         """
@@ -22,7 +20,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getAgentControllerActiveJobs")
-    
 
     def getAgentControllerSessions(self, roles, nid, active, **kwargs):
         """
@@ -33,7 +30,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getAgentControllerSessions")
-    
 
     def getAlerts(self, id, level, descr, descrpub, nid, gid, category, tags, state, from_inittime, to_inittime, from_lasttime, to_lasttime, from_closetime, to_closetime, nrerrorconditions, errorcondition, **kwargs):
         """
@@ -58,7 +54,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getAlerts")
-    
 
     def getDisks(self, id, guid, gid, nid, fs, sizeFrom, sizeTo, freeFrom, freeTo, mounted, ssd, path, model, description, mountpoint, type, active, lastcheckFrom, lastcheckTo, **kwargs):
         """
@@ -86,7 +81,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getDisks")
-    
 
     def getErrorconditions(self, id, level, descr, descrpub, from_, to, nid, gid, category, tags, type, jid, jidparent, jsorganization, jsname, **kwargs):
         """
@@ -109,7 +103,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getErrorconditions")
-    
 
     def getGrids(self, **kwargs):
         """
@@ -118,7 +111,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getGrids")
-    
 
     def getJob(self, id, guid, includeloginfo, includechildren, **kwargs):
         """
@@ -131,7 +123,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getJob")
-    
 
     def getJobs(self, id, guid, from_, to, nid, gid, parent, roles, state, organization, name, description, category, source, **kwargs):
         """
@@ -153,19 +144,17 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getJobs")
-    
 
-    def getJumpScript(self, organization, name, **kwargs):
+    def getJumpscript(self, organization, name, **kwargs):
         """
         calls internally the agentcontroller to fetch detail for 1 jumpscript
         param:organization 
         param:name 
         """
         #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getJumpScript")
-    
+        raise NotImplementedError ("not implemented method getJumpscript")
 
-    def getJumpScripts(self, organization, active, **kwargs):
+    def getJumpscripts(self, organization, active, **kwargs):
         """
         calls internally the agentcontroller
         return: lists the jumpscripts with main fields (organization, name, category, descr)
@@ -173,8 +162,7 @@ class system_gridmanager(j.code.classGetBase()):
         param:active is session active or not
         """
         #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getJumpScripts")
-    
+        raise NotImplementedError ("not implemented method getJumpscripts")
 
     def getLogs(self, id, level, category, text, to, jid, nid, gid, pid, tags, from_='-1h', **kwargs):
         """
@@ -193,7 +181,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getLogs")
-    
 
     def getMachines(self, id, guid, otherid, gid, nid, name, description, state, roles, ipaddr, macaddr, active, cpucore, mem, type, lastcheckFrom, lastcheckTo, **kwargs):
         """
@@ -219,7 +206,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getMachines")
-    
 
     def getNodeSystemStats(self, nid, **kwargs):
         """
@@ -229,7 +215,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getNodeSystemStats")
-    
 
     def getNodes(self, id, guid, gid, name, roles, ipaddr, macaddr, active, peer_stats, peer_log, peer_backup, lastcheckFrom, lastcheckTo, **kwargs):
         """
@@ -251,7 +236,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getNodes")
-    
 
     def getProcessStats(self, nid, domain, name, **kwargs):
         """
@@ -263,7 +247,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getProcessStats")
-    
 
     def getProcesses(self, id, guid, name, nid, gid, from_, to, active, jpdomain, jpname, instance, systempid, lastcheckFrom, lastcheckTo, **kwargs):
         """
@@ -286,7 +269,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getProcesses")
-    
 
     def getProcessesActive(self, nid, name, domain, **kwargs):
         """
@@ -299,7 +281,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getProcessesActive")
-    
 
     def getStatImage(self, statKey, width, height, **kwargs):
         """
@@ -312,7 +293,6 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getStatImage")
-    
 
     def getVDisks(self, id, machineid, guid, gid, nid, disk_id, fs, sizeFrom, sizeTo, freeFrom, freeTo, sizeondiskFrom, sizeondiskTo, mounted, path, description, mountpoint, role, type, order, devicename, backup, backuplocation, backuptime, backupexpiration, active, lastcheckFrom, lastcheckTo, **kwargs):
         """
@@ -349,4 +329,3 @@ class system_gridmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getVDisks")
-    

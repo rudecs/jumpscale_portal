@@ -2,26 +2,34 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     actors = args.tags.tagGet('actors', '')
 
-    page.addCSS('/jslib/old/swagger/css/hightlight.default.css')
-    page.addCSS('/jslib/old/swagger/css/screen.css')
+    page.addCSS('/jslib/swagger/css/typography.css', media='screen')
+    page.addCSS('/jslib/swagger/css/reset.css', media='screen')
+    page.addCSS('/jslib/swagger/css/screen.css', media='screen')
 
-    page.addJS('/jslib/old/swagger/lib/jquery-1.8.0.min.js')
-    page.addJS('/jslib/old/swagger/lib/jquery.slideto.min.js')
-    page.addJS('/jslib/old/swagger/lib/jquery.wiggle.min.js')
-    page.addJS('/jslib/old/swagger/lib/jquery.ba-bbq.min.js')
-    page.addJS('/jslib/old/swagger/lib/handlebars-1.0.rc.1.js')
-    page.addJS('/jslib/old/swagger/lib/underscore-min.js')
-    page.addJS('/jslib/old/swagger/lib/backbone-min.js')
-    page.addJS('/jslib/old/swagger/lib/swagger.js')
-    page.addJS('/jslib/old/swagger/swagger-ui.js')
-    page.addJS('/jslib/old/swagger/lib/highlight.7.3.pack.js')
+    page.addCSS('/jslib/swagger/css/typography.css', media='print')
+    page.addCSS('/jslib/swagger/css/reset.css', media='print')
+    page.addCSS('/jslib/swagger/css/screen.css', media='print')
+
+    page.addJS('/jslib/swagger/lib/shred.bundle.js')
+    page.addJS('/jslib/swagger/lib/jquery-1.8.0.min.js')
+    page.addJS('/jslib/swagger/lib/jquery.slideto.min.js')
+    page.addJS('/jslib/swagger/lib/jquery.wiggle.min.js')
+    page.addJS('/jslib/swagger/lib/jquery.ba-bbq.min.js')
+    page.addJS('/jslib/swagger/lib/handlebars-2.0.0.js')
+    page.addJS('/jslib/swagger/lib/underscore-min.js')
+    page.addJS('/jslib/swagger/lib/backbone-min.js')
+    page.addJS('/jslib/swagger/lib/swagger-client.js')
+    page.addJS('/jslib/swagger/swagger-ui.min.js')
+    page.addJS('/jslib/swagger/lib/highlight.7.3.pack.js')
+    page.addJS('/jslib/swagger/lib/marked.js')
 
     head = """
     <title>Swagger UI</title>
     <script type="text/javascript">
     $(function () {
         window.swaggerUi = new SwaggerUi({
-                discoveryUrl:"/restmachine/system/docgenerator/prepareCatalog?actors=%s&format=jsonraw",
+                url:"/restmachine/system/docgenerator/prepareCatalog?actors=%s&format=jsonraw",
+                validatorUrl: null,
                 dom_id:"swagger-ui-container",
                 supportHeaderParams: false,
                 supportedSubmitMethods: ['get', 'post', 'put'],
@@ -39,7 +47,8 @@ def main(j, args, params, tags, tasklet):
                         console.log(data);
                     }
                 },
-                docExpansion: "none"
+                docExpansion: "none",
+                sorter : "alpha"
             });
 
             window.swaggerUi.load();
@@ -49,12 +58,14 @@ def main(j, args, params, tags, tasklet):
     """ % actors
 
     body = """
+    <div class="swagger-section">
     <div id="message-bar" class="swagger-ui-wrap">
         &nbsp;
     </div>
 
     <div id="swagger-ui-container" class="swagger-ui-wrap">
 
+    </div>
     </div>
     """
 

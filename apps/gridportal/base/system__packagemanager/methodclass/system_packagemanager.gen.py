@@ -3,17 +3,15 @@ from JumpScale import j
 class system_packagemanager(j.code.classGetBase()):
     """
     gateway to grid
-    
     """
     def __init__(self):
+        pass
         
         self._te={}
         self.actorname="packagemanager"
         self.appname="system"
         #system_packagemanager_osis.__init__(self)
-    
 
-        pass
 
     def action(self, nid, domain, pname, action, **kwargs):
         """
@@ -28,7 +26,6 @@ class system_packagemanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method action")
-    
 
     def getJPackageFilesInfo(self, nid, domain, pname, **kwargs):
         """
@@ -41,7 +38,6 @@ class system_packagemanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getJPackageFilesInfo")
-    
 
     def getJPackageInfo(self, nid, domain, pname, **kwargs):
         """
@@ -54,7 +50,6 @@ class system_packagemanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getJPackageInfo")
-    
 
     def getJPackages(self, nid, domain, **kwargs):
         """
@@ -66,4 +61,3 @@ class system_packagemanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getJPackages")
-    
