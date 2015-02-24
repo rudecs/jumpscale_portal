@@ -125,6 +125,19 @@ class ActorsLoader(LoaderBase):
         key = "%s__%s" % (appname.lower(), actorname.lower())
         return key in j.core.portal.active.actors
 
+    def scan(self, path, reset=False):
+        paths = path
+        if isinstance(paths, basestring):
+            paths = [paths]
+
+        for path in paths:
+            jsonfiles = j.system.fs.listFilesInDir(path, filter='*.json')
+            for jsonfile in jsonfiles:
+                j.tools.swaggerGen.loadSpecFromFile(jsonfile)
+                j.tools.swaggerGen.generateActors(path)
+
+        return super(ActorsLoader, self).scan(paths, reset)
+
     def loadOsisTasklets(self, actorobject, actorpath, modelname):
         path = j.system.fs.joinPaths(actorpath, "osis", modelname)
         if j.system.fs.exists(path):

@@ -36,5 +36,5 @@
         """
         Gets logs (for node)
         """
-        var: nid int,, @tags: optional
+        var:nid int,, @tags: optional
         result:dict

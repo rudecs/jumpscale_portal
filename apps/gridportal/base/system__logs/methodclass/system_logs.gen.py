@@ -39,10 +39,10 @@ class system_logs(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listJobs")
 
-    def listLogs(self, , **kwargs):
+    def listLogs(self, nid, **kwargs):
         """
         Gets logs (for node)
-        param: 
+        param:nid 
         result dict
         """
         #put your code here to implement this method

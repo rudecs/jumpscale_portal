@@ -377,7 +377,6 @@ class system_contentmanager(j.code.classGetBase()):
         appname = app
 
         filesroot = j.core.portal.active.filesroot
-
         actorloader = j.core.portal.active.actorsloader.id2object["%s__%s" % (appname, actorname)]
 
         path = j.system.fs.joinPaths(actorloader.model.path, "specs")

@@ -1,6 +1,6 @@
 from JumpScale import j
 
-class LoaderBase():
+class LoaderBase(object):
     """
     is loader for all objects e.g. for all actors or spaces
     """
@@ -48,22 +48,22 @@ class LoaderBase():
         """
         path can be 1 path or list of paths
         """
-        if j.basetype.list.check(path):
-            for p in path:
-                self.scan(p,reset)
-            return 
+        paths = path
+        if isinstance(path, basestring):
+            paths = [path]
 
-        items = [j.system.fs.pathNormalize(item.replace(".%s" % self.type, "") + "/") for
-                 item in j.system.fs.listDirsInDir(path, True, False, True)
-                 if j.system.fs.getDirName(item + "/", True) == ".%s" % self.type]
+        for path in paths:
+            items = [j.system.fs.pathNormalize(item.replace(".%s" % self.type, "") + "/") for
+                     item in j.system.fs.listDirsInDir(path, True, False, True)
+                     if j.system.fs.getDirName(item + "/", True) == ".%s" % self.type]
 
-        #find objects like spaces,actors,...
-        for path in items:
-            object = self._objectClass()
-            result = object.loadFromDisk(path, reset)
-            if result != False:
-                print("load %s %s" % (self.type,path))
-                self.id2object[object.model.id.lower()] = object
+            #find objects like spaces,actors,...
+            for path in items:
+                object = self._objectClass()
+                result = object.loadFromDisk(path, reset)
+                if result != False:
+                    print("load %s %s" % (self.type,path))
+                    self.id2object[object.model.id.lower()] = object
 
 class Model():
     pass
