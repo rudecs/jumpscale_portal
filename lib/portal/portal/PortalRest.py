@@ -1,15 +1,12 @@
 
 
 from JumpScale import j
-
-import mimeparse
-import mimetypes
+import urllib
 
 class PortalRest():
 
     def __init__(self, webserver):
-        self.ws=webserver
-
+        self.ws = webserver
 
     def validate(self, auth, ctx):
         if ctx.params == "":
@@ -262,14 +259,23 @@ class PortalRest():
                 ctx.params['id'] = objectid
 
             osiscl = j.clients.osis.getCategory(self.ws.osis, appname, model)
-            osismap = {'GET': ['get', 'list'], 'POST': [''], 'DELETE': ['delete']}
+            osismap = {'GET': ['get', 'list', 'search'], 'POST': [''], 'DELETE': ['delete']}
             if objectid:
                 method = osismap[requestmethod][0]
                 result = getattr(osiscl, method)(objectid)
                 if method == 'get':
                     result = result.dump()
             else:
-                result = getattr(osiscl, osismap[requestmethod][1])()
+                if ctx.env['QUERY_STRING']:
+                    queryparts = ctx.env['QUERY_STRING'].split('&')
+                    query = dict()
+                    for querypart in queryparts:
+                        querypart = urllib.unquote(querypart)
+                        field, value = querypart.split('=')
+                        query[field] = int(value) if value.isdigit() else value
+                    result = getattr(osiscl, osismap[requestmethod][2])(query)[1:]
+                else:
+                    result = getattr(osiscl, osismap[requestmethod][1])()
             if human:
                 ctx.fformat = "json"
                 params = {}
