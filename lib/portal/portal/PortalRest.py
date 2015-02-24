@@ -263,7 +263,7 @@ class PortalRest():
             
             if requestmethod == 'GET':
                 result = self._handle_get(ctx, osiscl, objectid)
-            elif requestmethod == 'POST':
+            elif requestmethod in ('POST', 'PUT'):
                 result = self._handle_post(ctx, osiscl, objectid)
             elif requestmethod == 'DELETE':
                 result = self._handle_delete(ctx, osiscl, objectid)
