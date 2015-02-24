@@ -1,0 +1,12 @@
+{{drawgraph:
+
+target =
+    function:mean,
+    divisor:10.0,
+    series:cpu.promile,
+    alias:CPU,
+    interval:1m,
+
+cfg.title = CPU Information
+
+}}
