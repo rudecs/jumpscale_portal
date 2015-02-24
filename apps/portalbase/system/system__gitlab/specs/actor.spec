@@ -6,7 +6,13 @@
 		"""		
         Update gitlab user spaces
 		"""
-		var:username str,,User name [Must be valid gitlab user]
+		result:int
+		
+	method:updateUserSpace
+		"""		
+        Update gitlab user spaces
+		"""
+		var:spacename str,,Space name [Must be valid gitlab space]
 		result:int
 
     method:checkUpdateUserSpaceJob

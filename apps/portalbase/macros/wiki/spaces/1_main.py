@@ -8,12 +8,15 @@ def main(j, args, params, tags, tasklet):
     doc = params.doc
 
     out = "{{datatables_use}}\n"
-
+    
     bullets = params.tags.labelExists("bullets")
     table = params.tags.labelExists("table")
     filterbyuser = params.tags.labelExists("filterbyuser")
+    addSpinner = False
     
     if filterbyuser:
+        if j.core.portal.active.authentication_method == 'gitlab':
+            addSpinner = True
         spaces = j.core.portal.active.getUserSpaces(params.requestContext)
     else:
         spaces = [ x.model.id.lower() for x in list(j.core.portal.active.spacesloader.spaces.values()) ]
@@ -27,15 +30,25 @@ def main(j, args, params, tags, tasklet):
     
     for item in spaces:
         if item.lower() not in excludes:
+            
             if table:
-                out += "|[%s|/%s]|\n" % (item, item.lower().strip("/"))
+                out += "|[%s|/%s]|" % (item, item.lower().strip("/"))
             else:
                 if item[0] != "_" and item.strip() != "" and item.find("space_system")==-1:
                     if bullets:
-                        out += "* [%s|/%s]\n" % (item, item.lower().strip("/"))
+                        out += "* [%s|/%s]" % (item, item.lower().strip("/"))
                     else:
-                        out += "[%s|/%s]\n" % (item, item.lower().strip("/"))
+                        out += "[%s|/%s]" % (item, item.lower().strip("/"))
+            
+            if addSpinner:
+                out += '{{div:class=loadspace}}|'
+            out += '\n'
 
+    if addSpinner:
+        out += '{{html:<script src="/jslib/spin.min.js"></script>}}'
+        out += '{{html:<script src="/jslib/gitlab/loadUserSpacesAsyncronously.js"></script>}}'
+        
+            
     params.result = (out, doc)
 
     return params
