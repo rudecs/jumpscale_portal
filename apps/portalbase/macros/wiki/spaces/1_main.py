@@ -32,7 +32,13 @@ def main(j, args, params, tags, tasklet):
         if item.lower() not in excludes:
             
             if table:
-                out += "|[%s|/%s]|" % (item, item.lower().strip("/"))
+                if j.core.portal.active.authentication_method == 'gitlab':
+                    spacesobjects = {x['name']:x['namespace']['name'] for x in j.core.portal.active.getUserSpacesObjects(params.requestContext)}
+                    gitlabspacename = spacesobjects.get(item, '')
+                    spacename = "%s_%s" % (gitlabspacename, item.lower().strip("/"))
+                    out += "|[%s|/%s]|" % (item, spacename)
+                else:
+                    out += "|[%s|/%s]|" % (item, item.lower().strip("/"))
             else:
                 if item[0] != "_" and item.strip() != "" and item.find("space_system")==-1:
                     if bullets:

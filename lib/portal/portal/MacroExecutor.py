@@ -84,7 +84,8 @@ class MacroExecutorBase(object):
     def findMacros(self, doc, content=None):
         """
         """
-        content = content or doc.content
+        if content is None:
+            content = doc.content
         text = content.strip()
         if text == "":
             return []

@@ -1,5 +1,4 @@
-@usedefault
+@usedefaults
 Welcome's space
-
 
 {{spaces: table : filterbyuser}}

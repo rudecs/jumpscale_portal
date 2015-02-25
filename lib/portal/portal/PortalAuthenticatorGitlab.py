@@ -29,6 +29,9 @@ class PortalAuthenticatorGitlab(object):
     def getUserSpaces(self, username):
         return self.client.getUserSpaces(username)
     
+    def getUserSpacesObjects(self, username):
+        return self.client.getUserSpacesObjects(username)
+    
     def getUserRight(self, username, space, **kwargs):
         space = self.client.getSpace(space)
         if not space:

@@ -240,6 +240,16 @@ class PortalServer:
                     spaces.append(space)
         return spaces
 
+    def getUserSpacesObjects(self, ctx):
+        """
+        Only used in gitlab 
+        """
+        if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
+            username = ctx.env['beaker.session']["user"]
+            if self.authentication_method == 'gitlab':
+                return self.auth.getUserSpacesObjects(username)
+    
+    
     def getUserRight(self, ctx, space):
         
         spaceobject = self.spacesloader.spaces[space]
