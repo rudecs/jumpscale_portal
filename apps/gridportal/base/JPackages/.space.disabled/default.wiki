@@ -9,7 +9,7 @@ Help:/Help
 }}
 
 {{menuspaces: class:brand name:JPackages marker:$$$spaces}}
-{{grid.menuadmin_grid}}
+{{menuadmin}}
 
 @block
 @row

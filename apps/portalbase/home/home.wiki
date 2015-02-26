@@ -1,4 +1,5 @@
 @usedefaults
-Welcome's space
+
+h3. User spaces
 
 {{spaces: table : filterbyuser}}

@@ -230,7 +230,6 @@ class PortalServer:
         spaces = []
         if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             username = ctx.env['beaker.session']["user"]
-            
             if self.authentication_method == 'gitlab':
                 return self.auth.getUserSpaces(username)
             # osis
@@ -248,13 +247,11 @@ class PortalServer:
             username = ctx.env['beaker.session']["user"]
             if self.authentication_method == 'gitlab':
                 return self.auth.getUserSpacesObjects(username)
-    
-    
+
     def getUserRight(self, ctx, space):
         
-        spaceobject = self.spacesloader.spaces[space]
+        spaceobject = self.spacesloader.spaces.get(space)
         defaultspace = self.defaultspace
-
         # print "spaceobject"
         # print spaceobject.model
         if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
@@ -265,7 +262,7 @@ class PortalServer:
         if self.isAdminFromCTX(ctx):
             return username, 'rwa'
         
-        # default space always have readonly permissions for users other than admin
+        #default space always have readonly permissions for users other than admin
         if space == self.defaultspace:
             return username, "r"
         return self.auth.getUserRight(username, space, spaceobject=spaceobject)
@@ -303,7 +300,7 @@ class PortalServer:
         loggedin = session.get('user', '') not in ['guest', '']
         standard_pages = ["login", "error", "accessdenied", "pagenotfound"]
         spacedocgen = None
-        
+
         print("GETDOC:%s" % space)
         space = space.lower()
         name = name.lower()
@@ -320,7 +317,6 @@ class PortalServer:
             space = 'system'
             name = "pagenotfound"
         else:
-
             spaceObject = self.spacesloader.getLoaderFromId(space)
             if spaceObject.docprocessor is None:
                 spaceObject.loadDocProcessor(force=True)  # dynamic load of space
@@ -353,6 +349,9 @@ class PortalServer:
 
         if not "r" in right:
             name = "accessdenied" if loggedin else "login"
+            if not spaceObject.docprocessor.docExists(name):
+                space = 'system'
+                spacedocgen = None
 
         ctx.params["rights"] = right
         print("# space:%s name:%s user:%s right:%s" % (space, name, username, right))

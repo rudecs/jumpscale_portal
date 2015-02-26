@@ -49,7 +49,7 @@ class PortalAuthenticatorOSIS(object):
     def getGroups(self,user):
         try:
             userinfo = self.getUserInfo(user).__dict__
-            return userinfo['groups']
+            return userinfo['groups'] + ["all"]
         except:
             return ["guest","guests"]
 

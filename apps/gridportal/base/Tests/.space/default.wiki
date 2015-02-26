@@ -10,7 +10,7 @@ System:/System
 
 
 {{menuspaces: class:brand name:TESTRUNS marker:$$$spaces}}
-{{grid.menuadmin_grid}}
+{{menuadmin}}
 
 
 @block

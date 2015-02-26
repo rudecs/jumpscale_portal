@@ -1,15 +1,13 @@
 
-{{title:QWiki}}
+{{title:Home}}
 
-{{projectname:TestSpace}}
-
-{{find}}
+{{projectname:JumpScale Portal}}
 
 {{menu:
-System:/System
-RestInterface:/rest
-Explorer:/System/Explorer
+
 }}
+
+{{menuadmin:}}
 
 @block
 @row

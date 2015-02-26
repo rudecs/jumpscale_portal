@@ -15,7 +15,7 @@ MS1Portal:/cbgrid
 
 {{menuspaces: name:GRID class:brand marker:$$$pages}}
 
-{{menuadmin_grid}}
+{{menuadmin}}
 
 
 @block

@@ -1,29 +1,43 @@
 
 def main(j, args, params, tags, tasklet):
     params.merge(args)
-
     doc = params.doc
 
     macrostr = params.macrostr
     macrostr = macrostr.split('\n')
     pages = macrostr[1:-1]
-    pagesstr = '--------------\n'
+
+    pagesstr = ''
     pages = pagesstr + '\n'.join(pages).strip() if pages else ''
+    if pages:
+        pages = '--------------\n%s' % pages
 
-    spaces = sorted(j.core.portal.active.getSpaces())
+    if j.core.portal.active.authentication_method == 'gitlab':
+        spaces = {s['name']: "%s_%s" % (s['namespace']['name'], s['name']) for s in j.core.portal.active.getUserSpacesObjects(params.requestContext)}
+    else:
+        spaces = {}
+        for space in j.core.portal.active.getUserSpaces(params.requestContext):
+            name = j.core.portal.active.getSpace(space, ignore_doc_processor=True).model.id
+            spaces[name] = space
     spacestxt=""
-    for item in sorted(spaces):
-        if item[0] != "_" and item.strip() != "" and item.find("space_system")==-1 and item not in ["help","system"]:
-            name = j.core.portal.active.getSpace(item, ignore_doc_processor=True).model.id
-            spacestxt += "%s:/%s\n" % (name, item.lower().strip("/"))
-
+    for name, space in spaces.iteritems():
+        if not name.startswith('_'):
+            spacestxt += "%s:/%s\n" % (name, space.lower().strip("/"))
+    if j.core.portal.active.isLoggedInFromCTX(params.requestContext):
+        loginorlogout = "Logout: /system/login?user_logoff_=1" 
+    else:
+        loginorlogout = "Login: /system/login"    
+        
+    
+    if spacestxt:
+        spacestxt = '--------------\n%s' % spacestxt
 
     adminmenu = """
-{{menudropdown: name:Portal
+{{menudropdown: name:Navigation
 New Page:/system/create
 Edit Page:/system/edit?space=$$space&page=$$page$$querystr
 Create Space:/system/createspace
-Logout:/system/login?user_logoff_=1
+%s
 %s
 --------------
 Files:/system/files?space=$$space
@@ -31,15 +45,15 @@ Access:/system/OverviewAccess?space=$$space
 Reload:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(function(){location.reload()});void(0);
 ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
---------------
-""" % pages
+""" % (loginorlogout, pages)
 
     readonlymenu = """
-{{menudropdown: name:Portal
---------------
-Logout:/system/login?user_logoff_=1
+{{menudropdown: name:Navigation
 %s
-""" % pages
+%s
+""" % (loginorlogout, pages)
+
+
 
 
 #was inside
@@ -48,13 +62,10 @@ Logout:/system/login?user_logoff_=1
 #Spaces:/system/Spaces
 #Pages:/system/Pages?space=$$space
 
-    spacename = params.requestContext.path.split('/', 1)
-    spacename = spacename[0] if spacename else 'system'
-
     result = ''
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
         result = adminmenu
-    elif 'r' in j.core.portal.active.getUserRight(params.requestContext, spacename)[1].lower():
+    else:
         result = readonlymenu
 
     result +=spacestxt
