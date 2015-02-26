@@ -298,7 +298,7 @@ class PortalRest():
                 query = self._get_query_string(ctx)
                 return osiscl.search(query)[1:]
             else:  # list
-                return osiscl.list()
+                return osiscl.search({})[1:]
 
     def _handle_delete(self, ctx, osiscl, objectid):
         return osiscl.delete(objectid)
