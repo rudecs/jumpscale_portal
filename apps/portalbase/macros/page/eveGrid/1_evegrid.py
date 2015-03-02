@@ -14,9 +14,10 @@ def main(j, args, params, tags, tasklet):
     }
     sort = hrd.getDict('sortBy').copy() if hrd.exists('sortBy') else []
     eveGrid['sortBy'] = list()
-    [eveGrid['sortBy'].append((item, sort.pop(item))) for item in sort]
+    for item in sort:
+        eveGrid['sortBy'].append((item, int(sort.pop(item))))
     eveGrid['columns'] = []
-    
+
     hrd_data = hrd.getDictFromPrefix('column')
 
     for _,columndata in hrd_data.iteritems():
@@ -48,7 +49,7 @@ def main(j, args, params, tags, tasklet):
     
     grid = '''
         <div class="container eve-grid-container">
-        <div id="{entityName}-container" eve-grid eve-url={schemaURL} eve-entity="{entityName}" eve-spec-path="{specJsonPath}" datetime-fields={datetimeFields} columns='{columns}'>
+        <div id="{entityName}-container" eve-grid eve-url={schemaURL} eve-entity="{entityName}" eve-spec-path="{specJsonPath}" datetime-fields={datetimeFields} columns='{columns}' sortBy="{sortBy}">
         </div>
         <div id="confirmModal" class="modal fade">
                     <div class="modal-dialog">
