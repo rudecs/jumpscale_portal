@@ -5,12 +5,21 @@ def main(j, args, params, tags, tasklet):
 
     macrostr = params.macrostr
     macrostr = macrostr.split('\n')
+
+    pagesmenu = None
+    spacesmenu = None
+    adminmenu = None
+
     pages = macrostr[1:-1]
 
     pagesstr = ''
     pages = pagesstr + '\n'.join(pages).strip() if pages else ''
     if pages:
-        pages = '--------------\n%s' % pages
+        pagesmenu = '''
+{{menudropdown: name:Pages
+%s
+}}
+''' % pages
 
     if j.core.portal.active.authentication_method == 'gitlab':
         spaces = {}
@@ -28,35 +37,41 @@ def main(j, args, params, tags, tasklet):
     for name, space in spaces.iteritems():
         if not name.startswith('_'):
             spacestxt += "%s:/%s\n" % (name, space.lower().strip("/"))
+    if spacestxt:
+        spacesmenu = '''
+{{menudropdown: name:Spaces
+    %s
+}}
+''' % spacestxt
+
     if j.core.portal.active.isLoggedInFromCTX(params.requestContext):
         loginorlogout = "Logout: /system/login?user_logoff_=1" 
     else:
         loginorlogout = "Login: /system/login"    
         
-    
-    if spacestxt:
-        spacestxt = '--------------\n%s' % spacestxt
 
-    adminmenu = """
-{{menudropdown: name:Navigation
+    if j.core.portal.active.isAdminFromCTX(params.requestContext):
+        adminmenu = """
+{{menudropdown: name:Admin
+%s
+--------------
 New Page:/system/create
 Edit Page:/system/edit?space=$$space&page=$$page$$querystr
 Create Space:/system/createspace
-%s
-%s
 --------------
 Files:/system/files?space=$$space
 Access:/system/OverviewAccess?space=$$space
 Reload:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(function(){location.reload()});void(0);
 ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
-""" % (loginorlogout, pages)
-
-    readonlymenu = """
-{{menudropdown: name:Navigation
+}}
+""" % loginorlogout
+    else:
+        adminmenu = """
+{{menudropdown: name:Administration
 %s
-%s
-""" % (loginorlogout, pages)
+}}
+""" % (loginorlogout)
 
 
 
@@ -68,13 +83,9 @@ Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 #Pages:/system/Pages?space=$$space
 
     result = ''
-    if j.core.portal.active.isAdminFromCTX(params.requestContext):
-        result = adminmenu
-    else:
-        result = readonlymenu
-
-    result +=spacestxt
-    result+='}}'
+    for menu in [spacesmenu, pagesmenu, adminmenu]:
+        if menu:
+            result += menu
 
     result+='''
     {{htmlhead:

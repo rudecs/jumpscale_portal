@@ -51,6 +51,7 @@ def main(j, args, params, tags, tasklet):
     ddcode = ddcode.replace("$$items", items)
     ddcode = ddcode.replace("$$name", name)
     ddcode = ddcode.replace("$$class", klass)
+    ddcode += '$$$menuright'
 
     page.body = page.body.replace(keyword, ddcode)
 
