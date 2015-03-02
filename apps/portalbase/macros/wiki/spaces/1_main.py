@@ -1,7 +1,7 @@
 
 def main(j, args, params, tags, tasklet):
     """
-    {{spaces}} or {{spaces:'filterbyuser'}}
+    {{spaces}}
     """
     params.merge(args)
 
@@ -12,42 +12,44 @@ def main(j, args, params, tags, tasklet):
     bullets = params.tags.labelExists("bullets")
     table = params.tags.labelExists("table")
     filterbyuser = params.tags.labelExists("filterbyuser")
-    addSpinner = False
+    isgitlab = j.core.portal.active.authentication_method == 'gitlab'
+    addSpinner = isgitlab
     
-    if filterbyuser:
-        if j.core.portal.active.authentication_method == 'gitlab':
-            addSpinner = True
-        spaces = j.core.portal.active.getUserSpaces(params.requestContext)
-    else:
-        spaces = [ x.model.id.lower() for x in list(j.core.portal.active.spacesloader.spaces.values()) ]
+    spaces = j.core.portal.active.getUserSpaces(params.requestContext)
+    if isgitlab:
+        gitlabnonclonedspaces = [s[s.index('portal_'):] for s in j.core.portal.active.getNonClonedGitlabSpaces(params.requestContext)]
     spaces.sort()
-
+    excludes=[]
     if params.tags.tagExists("exclude"):
         excludes=params.tags.tagGet("exclude").split(",")
         excludes=[item.strip().lower() for item in excludes]
-    else:
-        excludes=[]    
     
     for item in spaces:
-        if item.lower() not in excludes:
-            
+        item = item.lower()
+        if  item not in excludes:
+            anchor = item.strip("/")
+            if isgitlab:
+                idx = item.find('_')
+                anchor = item
+                item = item[idx+1:]
+                spacename = item[:idx]
             if table:
-                if j.core.portal.active.authentication_method == 'gitlab':
-                    spacesobjects = {x['name']:x['namespace']['name'] for x in j.core.portal.active.getUserSpacesObjects(params.requestContext)}
-                    gitlabspacename = spacesobjects.get(item, '')
-                    spacename = "%s_%s" % (gitlabspacename, item.lower().strip("/"))
-                    out += "|[%s|/%s]|" % (item, spacename)
-                else:
-                    out += "|[%s|/%s]|" % (item, item.lower().strip("/"))
+                out += "|[%s|/%s]|" % (item, anchor)
             else:
                 if item[0] != "_" and item.strip() != "" and item.find("space_system")==-1:
                     if bullets:
-                        out += "* [%s|/%s]" % (item, item.lower().strip("/"))
+                        out += "* [%s|/%s]" % (item, anchor)
                     else:
-                        out += "[%s|/%s]" % (item, item.lower().strip("/"))
-            
+                        out += "[%s|/%s]" % (item, anchor)
+
             if addSpinner:
-                out += '{{div:class=loadspace}}|'
+                if item.startswith("portal_"):
+                    classname = "loadspace"
+                    if item in gitlabnonclonedspaces:
+                        classname+= " new-repo"
+                    out += '{{div:class=%s}}|' % classname
+                else:
+                    out += '{{div}}|'
             out += '\n'
 
     if addSpinner:

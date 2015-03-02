@@ -13,7 +13,12 @@ def main(j, args, params, tags, tasklet):
         pages = '--------------\n%s' % pages
 
     if j.core.portal.active.authentication_method == 'gitlab':
-        spaces = {s['name']: "%s_%s" % (s['namespace']['name'], s['name']) for s in j.core.portal.active.getUserSpacesObjects(params.requestContext)}
+        spaces = {}
+        for s in j.core.portal.active.getUserSpacesObjects(params.requestContext):
+            if s['namespace']['name']:
+                spaces[s['name']] = "%s_%s" % (s['namespace']['name'], s['name'])
+            else:
+                spaces[s['name']] = s['name']
     else:
         spaces = {}
         for space in j.core.portal.active.getUserSpaces(params.requestContext):

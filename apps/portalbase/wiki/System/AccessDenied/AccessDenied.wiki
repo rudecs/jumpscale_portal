@@ -1,4 +1,4 @@
-@nodefault
+@usedefault
 
 {{title:AccessDenied}}
 

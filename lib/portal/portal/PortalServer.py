@@ -225,19 +225,45 @@ class PortalServer:
                 self.routes.pop(key)
     
 ##################### USER RIGHTS
-
-    def getUserSpaces(self, ctx):
-        spaces = []
-        if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
-            username = ctx.env['beaker.session']["user"]
-            if self.authentication_method == 'gitlab':
-                return self.auth.getUserSpaces(username)
-            # osis
-            for space in [ x.model.id.lower() for x in  self.spacesloader.spaces.values()]:
-                rights = self.getUserRight(ctx, space)[1]
-                if '*' in rights or 'r' in rights:
-                    spaces.append(space)
+                    
+    def getAccessibleLocalSpacesForGitlabUser(self, gitlabspaces):
+        """
+        Return Local Spaces (Non Gitlab Spaces) with guest permissions set to READ or higher
+        """
+        spaces = {}
+        localspaces = [x.model.id.lower() for x in self.spacesloader.spaces.values() if x not in gitlabspaces]
+        for space in localspaces:
+            rights = ''
+            spaceobject = self.spacesloader.spaces.get(space)
+            for groupuser in ["guest", "guests"]:
+                if groupuser in spaceobject.model.acl:
+                    r = spaceobject.model.acl[groupuser]
+                    if r == "*":
+                        rights = "rwa"
+                    else:
+                        rights = r
+            if 'r' in rights or '*' in rights:
+                spaces[space] = rights
         return spaces
+                    
+    def getUserSpaces(self, ctx):
+        if not hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
+            return []
+        username = ctx.env['beaker.session']["user"]
+        spaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
+        
+        # In case of gitlab, we want to get the local osis spaces tha user has access to
+        if self.authentication_method == 'gitlab':
+            spaces += self.getAccessibleLocalSpacesForGitlabUser(spaces).keys()
+        
+        else:
+            result = []
+            for s in spaces:
+                rights = self.getUserSpaceRights(ctx, s)
+                if 'r' in rights[1] or '*' in rights:
+                    result.append(s)
+            spaces = result
+        return list(set(spaces))
 
     def getUserSpacesObjects(self, ctx):
         """
@@ -246,14 +272,38 @@ class PortalServer:
         if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             username = ctx.env['beaker.session']["user"]
             if self.authentication_method == 'gitlab':
-                return self.auth.getUserSpacesObjects(username)
+                gitlabobjects = self.auth.getUserSpacesObjects(username)
+                keys = [x['name'] for x in gitlabobjects]
+                res = {}
+                for name in self.getAccessibleLocalSpacesForGitlabUser(keys):
+                    if username in name and name.replace("%s_" % username, '') in keys:
+                        continue
+                    gitlabobjects.append({'name':name, 'namespace':{'name':''}})
+                return gitlabobjects
 
-    def getUserRight(self, ctx, space):
+    def getNonClonedGitlabSpaces(self, ctx):
+        """
+        Return Gitlab spaces that are not (YET) cloned into local filesystem
+        This is helpful to identify non-existing spaces, so that system can disable
+        access to them until cloning is finished.
         
+        @param ctx: Context
+        """
+        if not self.authentication_method == 'gitlab':
+            raise RuntimeError("This function only works with gitlab authentication")
+        
+        if not hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
+            return []
+        username = ctx.env['beaker.session']["user"]
+        
+        clonedspaces = set([s.model.id[s.model.id.index('portal_'):] for s in self.spacesloader.spaces.values() if 'portal_' in s.model.id])
+        gitlabspaces = set([s[s.index('portal_'):] for s in self.auth.getUserSpaces(username, spaceloader=self.spacesloader)])
+        return gitlabspaces.difference(clonedspaces)
+
+    def getUserSpaceRights(self, ctx, space):
         spaceobject = self.spacesloader.spaces.get(space)
         defaultspace = self.defaultspace
-        # print "spaceobject"
-        # print spaceobject.model
+
         if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             username = ctx.env['beaker.session']["user"]
         else:
@@ -262,10 +312,19 @@ class PortalServer:
         if self.isAdminFromCTX(ctx):
             return username, 'rwa'
         
-        #default space always have readonly permissions for users other than admin
-        if space == self.defaultspace:
-            return username, "r"
-        return self.auth.getUserRight(username, space, spaceobject=spaceobject)
+        if self.authentication_method == 'gitlab':
+            gitlabspaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
+            localspaceswithguestaccess =  self.getAccessibleLocalSpacesForGitlabUser(gitlabspaces)
+            if space in localspaceswithguestaccess:
+                return username, localspaceswithguestaccess[space]
+        
+        username, rights = self.auth.getUserSpaceRights(username, space, spaceobject=spaceobject)
+
+        # default space always have readonly permissions atlease
+        if space == self.defaultspace and "r" not in rights:
+            rights = "r" + rights
+
+        return username, rights 
         
     def getUserFromCTX(self,ctx):
         return str(ctx.env["beaker.session"]["user"])
@@ -277,8 +336,8 @@ class PortalServer:
     def isAdminFromCTX(self,ctx):
         usergroups=set(self.getGroupsFromCTX(ctx))
         admingroups = set(self.admingroups)
-        return  bool(admingroups.intersection(usergroups))  
-
+        return  bool(admingroups.intersection(usergroups))
+    
     def isLoggedInFromCTX(self,ctx):
         user=self.getUserFromCTX(ctx)
         if user != "" and user != "guest":
@@ -341,7 +400,7 @@ class PortalServer:
                 name = "pagenotfound"
                 spacedocgen = None
 
-        username, right = self.getUserRight(ctx, space)
+        username, right = self.getUserSpaceRights(ctx, space)
 
         if name in standard_pages:
             if not "r" in right:

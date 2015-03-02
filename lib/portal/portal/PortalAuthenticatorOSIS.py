@@ -66,7 +66,7 @@ class PortalAuthenticatorOSIS(object):
         result=self.osis.authenticate(name=login,passwd=passwd)
         return result['authenticated']
     
-    def getUserRight(self, username, space, **kwargs):
+    def getUserSpaceRights(self, username, space, **kwargs):
         spaceobject = kwargs['spaceobject']
         groupsusers = set(self.getGroups(username))
         
@@ -76,5 +76,11 @@ class PortalAuthenticatorOSIS(object):
                 if right == "*":
                     return username, "rwa"
                 return username, right
+        
+        # No rights .. check guest
+        rights = spaceobject.model.acl.get('guest', '')
+        return username, rights
 
-        return username, ""
+    def getUserSpaces(self, username, **kwargs):
+        spaceloader = kwargs['spaceloader']
+        return [ x.model.id.lower() for x in  spaceloader.spaces.values()]
