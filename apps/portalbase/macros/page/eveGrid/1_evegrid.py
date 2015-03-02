@@ -48,7 +48,7 @@ def main(j, args, params, tags, tasklet):
     
     grid = '''
         <div class="container eve-grid-container">
-        <div id="{entityName}-container" eve-grid eve-url={schemaURL} eve-entity="{entityName}" eve-spec-path="{specJsonPath}" datetime-fields="" columns='{columns}'>
+        <div id="{entityName}-container" eve-grid eve-url={schemaURL} eve-entity="{entityName}" eve-spec-path="{specJsonPath}" datetime-fields={datetimeFields} columns='{columns}'>
         </div>
         <div id="confirmModal" class="modal fade">
                     <div class="modal-dialog">
