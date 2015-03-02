@@ -3,27 +3,24 @@ def main(j, args, params, tags, tasklet):
 
     import urlparse
     import urllib
+    import re
 
-    # import urllib.request, urllib.error
+    page = args.page
+    page_match = re.search(r"page\s*:\s*([^:}]*)", args.macrostr)
 
     querystr = args.requestContext.env['QUERY_STRING']
     querytuples = urlparse.parse_qsl(querystr)
+    args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
     for item in querytuples[:]:
         if item[0] in ['space', 'page']:
-            querytuples.remove(item)
+            args[item[0]] = item[1]
     querystr = urllib.urlencode(querytuples)
-
-    page = args.page
 
     page.addBootstrap()
     page_name = ''
 
-    import re
-    page_match = re.search(r"page\s*:\s*([^:}]*)", args.macrostr)
     if page_match:
         page_name = page_match.group(1)
-
-    args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
 
     if page_name == "" and args["path"] == "":
         page.addMessage("ERROR: path needs to be defined in: %s" % params.cmdstr)
@@ -34,12 +31,12 @@ def main(j, args, params, tags, tasklet):
         # look for path for bucket
         aloader = j.core.portal.active.actorsloader.getActorLoaderFromId("%s__%s" % (args["app"].lower(), args["actor"].lower()))
         path = j.system.fs.joinPaths(aloader.model.path, args["path"])
-    elif args["space"] != "":
+    elif args['space'] != "":
         # look for path for bucket
-        space = j.core.portal.active.getSpace(args["space"])
+        space = j.core.portal.active.getSpace(args['space'])
         if page_name != "":
-            space = j.core.portal.active.getSpace(args["space"])
-            doc = space.docprocessor.docGet(page_name)
+            space = j.core.portal.active.getSpace(args['space'])
+            doc = space.docprocessor.docGet(page_name.lower())
             path = doc.path
             args["edit"] = True
         else:
