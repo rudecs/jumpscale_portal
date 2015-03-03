@@ -2,9 +2,9 @@
 {{title:Home}}
 
 {{projectname:JumpScale Portal}}
-
+{{find}}
 {{menu:
-
+Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 }}
 
 {{menuadmin:}}

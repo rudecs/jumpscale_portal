@@ -7,7 +7,7 @@
 {{find}}
 
 {{menu:
-Help:/Help
+Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 }}
 
 {{menuadmin}}

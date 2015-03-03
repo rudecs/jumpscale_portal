@@ -1,6 +1,0 @@
-h1. JumpScale Documentation
-
-Jumpscale is an innovative automation framework developed by Incubaid NV (Belgium).
-
-For a full documentation, please check our [WIKI |https://github.com/Jumpscale/jumpscale_core7/wiki|||target='_blank']
-

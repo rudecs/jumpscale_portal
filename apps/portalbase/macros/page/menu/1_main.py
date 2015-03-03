@@ -102,8 +102,13 @@ def main(j, args, params, tags, tasklet):
         if line != "" and line[0] != "#":
             # print line
             if line.find(":") != -1:
-                name, target = line.split(":", 1)
-                line2 = "<li><a href=\"%s\">%s</a></li>" % (target, name)
+                if 'target=_blank' not in line:
+                    name, target = line.split(":", 1)
+                    line2 = "<li><a href=\"%s\">%s</a></li>" % (target, name)
+                else:
+                    line = line.replace(':target=_blank', '')
+                    name, target = line.split(":", 1)
+                    line2 = "<li><a href=\"%s\" target=\"_blank\">%s</a></li>" % (target, name)
             elif line.startswith('$$$'):
                 line2 = line
             else:
