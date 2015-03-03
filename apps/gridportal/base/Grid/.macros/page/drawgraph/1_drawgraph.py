@@ -4,22 +4,23 @@ def main(j, args, params, tags, tasklet):
     graphdata = args.cmdstr
     graphdata = j.core.hrd.get(content=graphdata)
 
-    target = graphdata.getDict('target')
+    targets = graphdata.getDictFromPrefix('target')
     cfg = graphdata.getDictFromPrefix('cfg')
-    
-    targetsstr = """
-        {
-            "target": "randomWalk('random walk')",
-            "function":"%(function)s",
-            "column": "value / %(divisor)s",
-            "series": "%(series)s",
-            "query": "",
-            "alias": "%(alias)s",
-            "interval": "%(interval)s"
-        }
-        """ % target
 
-    cfg['target'] = targetsstr
+    targetsstr = ''
+
+    for target in targets.values():
+        targetsstr += """
+                        {
+                            "target": "randomWalk('random walk')",
+                            "function":"%(function)s",
+                            "column": "value / %(divisor)s",
+                            "series": "%(series)s",
+                            "query": "",
+                            "alias": "%(alias)s",
+                            "interval": "%(interval)s"
+                        },""" % target
+    cfg['target'] = targetsstr.strip(',')
 
     configuration = """
  {
@@ -160,14 +161,14 @@ def main(j, args, params, tags, tasklet):
 }
 """ % cfg
 
-    md5 = j.tools.hash.md5_string(configuration)
-    path = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'portals', 'jslib', 'grafana', 'app', 'dashboards', '%s.json' % md5)
+    checksum = j.tools.hash.md5_string(configuration)
+    cfg['checksum'] = checksum
+    path = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'portals', 'jslib', 'grafana', 'app', 'dashboards', '%(checksum)s.json' % cfg)
     if not j.system.fs.exists(path):
         j.system.fs.writeFile(path, configuration)
 
     page.addHTML("""
-        <iframe width="1000px" height="300px" src="/jslib/grafana/iframe.html#/dashboard/file/%s.json" frameborder="0"></iframe>
-      """% md5)
+        <iframe width="%(width)s" height="%(height)s" src="/jslib/grafana/iframe.html#/dashboard/file/%(checksum)s.json" frameborder="0"></iframe>""" % cfg)
     params.result = page
     return params
 
