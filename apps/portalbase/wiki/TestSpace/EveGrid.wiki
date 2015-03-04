@@ -18,42 +18,101 @@ h2. Example
 
 {{code:
 {{evegrid:
-    schema.url=localhost:5000/system
+    schema.url=':5000/system'
     spec.json.path=/docs/spec.json
     entity.name=eco
     datetime.fields=epoch
-    column.1.data=jid
-    column.1.header=Job ID
-    column.1.format=<a href="/jobs/{jid}">{jid}</a>
-    column.2.data=errormessage
-    column.2.header=Error message
-    column.3.data=occurrences
-    column.3.header=Occurrences
-    column.4.data=epoch
-    column.4.header=Time
-    column.5.data=state
-    column.5.header=State
+    sortBy =
+        epoch: -1,
+        pid:1,
+
+    column.1 = 
+        data:epoch,
+        header:Time Stamp,
+        format:<a href="/grid/eco?id={guid}">{epoch}</a>,
+
+    column.2 = 
+        data:errormessage,
+        header:Error Message,
+
+    column.3 =
+        data:category,
+        header:Category,
+
+    column.4 =
+        data:level,
+        header:Level,
+
+    column.5 =
+        data:appname,
+        header:App name,
+
+    column.6 =
+        data:pid,
+        header:PID,
+
+    column.7 =
+        data:nid,
+        header:Node ID,
+
+    column.8 = 
+        data:gid,
+        header:GID,
+
+    column.9 =
+        data:masterjid,
+        header:Master JID,
 \}\}
+
 }}
 
 h3. Output
 
 {{evegrid:
-    schema.url=37.203.43.137:5000/system
+    schema.url=':5000/system'
     spec.json.path=/docs/spec.json
     entity.name=eco
     datetime.fields=epoch
-    column.1.data=jid
-    column.1.header=Job ID
-    column.1.format=<a href="/jobs/{jid}">{jid}</a>
-    column.2.data=errormessage
-    column.2.header=Error message
-    column.3.data=occurrences
-    column.3.header=Occurrences
-    column.4.data=epoch
-    column.4.header=Time
-    column.5.data=state
-    column.5.header=State
+    sortBy =
+        epoch: -1,
+        pid:1,
+
+    column.1 = 
+        data:epoch,
+        header:Time Stamp,
+        format:<a href="/grid/eco?id={guid}">{epoch}</a>,
+
+    column.2 = 
+        data:errormessage,
+        header:Error Message,
+
+    column.3 =
+        data:category,
+        header:Category,
+
+    column.4 =
+        data:level,
+        header:Level,
+
+    column.5 =
+        data:appname,
+        header:App name,
+
+    column.6 =
+        data:pid,
+        header:PID,
+
+    column.7 =
+        data:nid,
+        header:Node ID,
+
+    column.8 = 
+        data:gid,
+        header:GID,
+
+    column.9 =
+        data:masterjid,
+        header:Master JID,
 
 }}
 {{html:
