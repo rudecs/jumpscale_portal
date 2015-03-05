@@ -4,7 +4,7 @@
 
 {{eco: id:$$id}}
 
-  {{actions:
+{{actions:
 
 - display: Delete
   action: /restmachine/system/errorconditionhandler/delete
@@ -34,7 +34,11 @@ h3. Details
 {% if level < 3 %}|*Alerts*|[show | alerts?eco=${id}]|{% endif %}
 
 *Code* 
-{{code: ${code}}}
+{{code: 
+${code}
+}}
 
 *BackTrace*
-{{code: ${backtrace}}}
+{{code: 
+${backtrace}
+}}
