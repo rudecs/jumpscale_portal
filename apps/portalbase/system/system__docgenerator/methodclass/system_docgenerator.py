@@ -1,13 +1,24 @@
 from JumpScale import j
 
 INMAP = {'post': 'formData', 'get': 'query'}
-TYPEMAP = {'bool': 'boolean',
-           'str': 'string',
-           'string': 'string',
-           'int': 'integer',
-           'float': 'number',
-           'list': 'array',
-           'dict': 'object'}
+
+INPUTMAP = {'bool': {'type': 'boolean'},
+           'str': {'type': 'string'},
+           'string': {'type': 'string'},
+           'int': {'type': 'integer'},
+           'float': {'type': 'number'},
+           'list': {'type': 'string'},
+           'dict': {'type': 'string'},
+           }
+
+RETURNMAP = {'bool': {'type': 'boolean'},
+           'str': {'type': 'string'},
+           'string': {'type': 'string'},
+           'int': {'type': 'integer'},
+           'float': {'type': 'number'},
+           'list': {'$ref': '#/definitions/strarray'},
+           'dict': {'$ref': '#/definitions/object'},
+           }
 
 class system_docgenerator(j.code.classGetBase()):
 
@@ -40,8 +51,9 @@ class system_docgenerator(j.code.classGetBase()):
                 resulttype = 'str'
                 if method.result:
                     resulttype = method.result.type
-                methodinfo['responses'] = {'200': {"description": "Succesfull",
-                                                   "type": TYPEMAP.get(resulttype, 'string')}
+                methodinfo['responses'] = {'200': {"description": "result",
+                                                   "schema": RETURNMAP.get(resulttype, RETURNMAP['string'])
+                                                  }
                                           }
                 methodinfo['summary'] = method.description
                 methodinfo['operationId'] = "%s_%s" % (methodtype, path.replace('/', '_'))
@@ -53,7 +65,8 @@ class system_docgenerator(j.code.classGetBase()):
                         parameter = {'name': var.name, 'in': INMAP[methodtype],
                                      'description': var.description, 
                                      'required': not tagobj.labelExists('optional'),
-                                     'type': TYPEMAP.get(var.ttype, 'string')}
+                                     }
+                        parameter.update(INPUTMAP.get(var.ttype, INPUTMAP['string']))
                         if var.defaultvalue is not None:
                             parameter['default'] = var.defaultvalue
                         parameters.append(parameter)
@@ -65,6 +78,13 @@ class system_docgenerator(j.code.classGetBase()):
                            'version': '7.0',
                            'title': 'JumpScale Actors',
                            }
+        catalog['definitions'] = {'strarray': {'type': 'array', 'items': {'type': 'string'}},
+                                  'object': { "type": "object",
+                                              "additionalProperties": {
+                                                "type": "string"
+                                              }
+                                            }
+                                 }
         if 'actors' in args and args['actors']:
             actors = args['actors'].split(',')
         else:
