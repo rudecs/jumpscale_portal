@@ -38,6 +38,7 @@ def main(j, args, params, tags, tasklet):
 
         node["netaddr"]=r
         node['gridname'] = grid['name']
+        node['nodename'] = node['name']
         return node
 
     push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc

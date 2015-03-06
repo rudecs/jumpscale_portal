@@ -3,7 +3,7 @@
 {{node_getdata: gid:$$gid id:$$nid}}
 {{timestamp}}
 
-h2. $$gridname: $$name ($$gid:$$id)
+h2. $$gridname: $$nodename ([$$gid:$$id|/grid/node?id=$$nid&gid=$$gid])
 
 h3. Actions
 
