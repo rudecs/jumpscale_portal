@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
     fieldnames = ['Time', 'Grid ID', 'Node ID', 'App Name', 'Error Message', 'Type', 'Level', 'Occurences', 'Job ID']
 
     def errormessage(row, field):
-        return row[field].replace('\n', '<br>')
+        return row[field].replace('\n', '<br>').replace('[', '\[')
 
     def makeTime(row, field):
         time = modifier.makeTime(row, field) 
