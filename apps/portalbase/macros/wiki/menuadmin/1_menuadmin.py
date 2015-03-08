@@ -7,20 +7,16 @@ def main(j, args, params, tags, tasklet):
     macrostr = params.macrostr
     macrostr = macrostr.split('\n')
 
-    pagesmenu = None
-    spacesmenu = None
+    navigationmenu = None
     adminmenu = None
 
     pages = macrostr[1:-1]
 
     pagesstr = ''
-    pages = pagesstr + '\n'.join(pages).strip() if pages else ''
+    pages = pagesstr + ',\n        '.join(pages) if pages else ''
+
     if pages:
-        pagesmenu = '''
-{{menudropdown: name:Pages
-%s
-}}
-''' % pages
+        pages += ',\n'
 
     if j.core.portal.active.authentication_method == 'gitlab':
         spaces = {}
@@ -37,25 +33,24 @@ def main(j, args, params, tags, tasklet):
     spacestxt=""
     for name, space in spaces.iteritems():
         if not name.startswith('_'):
-            spacestxt += "%s:/%s\n" % (name, space.lower().strip("/"))
-    if spacestxt:
-        spacesmenu = '''
-{{menudropdown: name:Spaces
-    %s
-}}
-''' % spacestxt
+            spacestxt += "%s:/%s,\n        " % (name, space.lower().strip("/"))
 
-    if j.core.portal.active.isLoggedInFromCTX(params.requestContext):
-        loginorlogout = "Logout: /system/login?user_logoff_=1" 
-    else:
-        loginorlogout = "Login: /system/login"    
-        
+    if pages or spacestxt:
+        navigationmenu = '''
+{{megamenu: name:Navigation
+column.Spaces =
+        %s
+
+column.Pages =
+        %s
+
+}}
+    ''' % (spacestxt, pages)
+       
 
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
         adminmenu = """
 {{menudropdown: name:%s
-%s
---------------
 New Page:/system/create
 Edit Page:/system/edit?space=$$space&page=$$page$$querystr
 Create Space:/system/createspace
@@ -66,13 +61,7 @@ Reload:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(funct
 ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 }}
-""" % (username, loginorlogout)
-    else:
-        adminmenu = """
-{{menudropdown: name:%s
-%s
-}}
-""" % (username, loginorlogout)
+""" % (username)
 
 
 
@@ -84,7 +73,7 @@ Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 #Pages:/system/Pages?space=$$space
 
     result = ''
-    for menu in [spacesmenu, pagesmenu, adminmenu]:
+    for menu in [navigationmenu, adminmenu]:
         if menu:
             result += menu
 

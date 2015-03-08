@@ -2,6 +2,7 @@
 def main(j, args, params, tags, tasklet):
 
     page = args.page
+    params.extend(args)
     if "." in args.doc.name:
         if args.doc.name.split('.')[1] == "md":
             page.removeCSS('bootstrap.css')
@@ -10,6 +11,7 @@ def main(j, args, params, tags, tasklet):
         page.addBootstrap()
 
     page._hasmenu = True
+    page.login = True
 
     menu = args.cmdstr
 
@@ -61,12 +63,16 @@ def main(j, args, params, tags, tasklet):
         T = T.replace("{brand}", "")
 
     if page.login:
+        if j.core.portal.active.isLoggedInFromCTX(params.requestContext):
+            loginorlogout = "<a href='/system/login?user_logoff_=1'>Logout</a>"
+        else:
+            loginorlogout = "<a href='/system/login'>Login</a>"
         L = """
-<form action="/system/login?name={name}" method="post" class="navbar-form pull-right">
-    <input class="span2" name="text" type="text" placeholder="Email">
-    <input class="span2" name="password" type="password" placeholder="Password">
-    <button type="submit" class="btn">Sign in</button>
-</form>"""
+<ul class="nav navbar pull-right">
+    <li>
+        %s
+    </li>
+</ul>""" % loginorlogout
         T = T.replace("{login}", L)
     else:
         T = T.replace("{login}", "")
