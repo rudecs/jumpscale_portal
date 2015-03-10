@@ -19,7 +19,7 @@ h3. Statistics
 
 {{html:
 
-<iframe height="275px" frameborder="0" width="1000px" src="/jslib/grafana/iframe.html#/dashboard/script/NicStats.js?nid=$$nid&gid=$$gid&name=$$name"></iframe>
+<iframe height="275px" frameborder="0" width="1000px" src="/jslib/grafana/iframe.html#/dashboard/script/NicStats.js?nid=$$nid&gid=$$gid&name=$$name&nic=$$nic"></iframe>
 
 }}
 
