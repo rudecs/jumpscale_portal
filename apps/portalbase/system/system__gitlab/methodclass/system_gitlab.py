@@ -25,5 +25,9 @@ class system_gitlab(j.code.classGetBase()):
         return job.id
     
     def checkUpdateUserSpaceJob(self, jobid, **args):
-        job = j.clients.redisworker.getJob(jobid)
-        return job['state']
+        try:
+            job = j.clients.redisworker.getJob(jobid)
+            return job['state']
+        except KeyError:
+            # job expired means finished
+            return 'OK'
