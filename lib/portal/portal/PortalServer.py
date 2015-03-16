@@ -1,5 +1,6 @@
-import re
 import urlparse
+import collections
+import types
 import pprint
 import os
 import sys
@@ -13,6 +14,7 @@ from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 
 from JumpScale.portal.portalloaders.SpaceWatcher import SpaceWatcher
+from JumpScale.portal.html import multipart
 
 from JumpScale import j
 from gevent.pywsgi import WSGIServer
@@ -35,6 +37,16 @@ CONTENT_TYPE_PLAIN = 'text/plain'
 CONTENT_TYPE_HTML = 'text/html'
 CONTENT_TYPE_PNG = 'image/png'
 
+
+def exhaustgenerator(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        if isinstance(result, collections.Iterable):
+            for value in result:
+                yield value
+        else:
+            yield result
+    return wrapper
 
 class PortalServer:
 
@@ -583,17 +595,6 @@ class PortalServer:
         con = elFinder.connector(options)
         params = ctx.params.copy()
 
-        if 'rawdata' in params:
-            from JumpScale.portal.html import multipart
-            from io import StringIO
-            ctx.env.pop('wsgi.input', None)
-            stream = StringIO(ctx.params.pop('rawdata'))
-            forms, files = multipart.parse_form_data(ctx.env, stream=stream)
-            params.update(forms)
-            for key, value in files.items():
-                if key == 'upload[]':
-                    params['upload[]'] = dict()
-                    params['upload[]'][value.filename] = value.file
         if params.get('init') == '1':
             params.pop('target', None)
         status, header, response = con.run(params)
@@ -722,7 +723,7 @@ class PortalServer:
     def _resultyamlSerializer(self, content):
         return j.code.object2yaml({"result": content})
 
-    def getMimeType(self, contenttype, format_types):
+    def getMimeType(self, contenttype, format_types, result=None):
         supported_types = ["text/plain", "text/html", "application/yaml", "application/json"]
         CONTENT_TYPES = {
             "text/plain": str,
@@ -734,6 +735,8 @@ class PortalServer:
         if not contenttype:
             serializer = format_types["text"]["serializer"]
             return CONTENT_TYPE_HTML, serializer
+        elif isinstance(result, types.GeneratorType):
+            return 'application/octet-stream', lambda x: x
         else:
             mimeType = mimeparse.best_match(supported_types, contenttype)
             serializer = CONTENT_TYPES[mimeType]
@@ -779,7 +782,7 @@ class PortalServer:
                 returntype = ctx.env['HTTP_ACCEPT']
             else:
                 returntype = ctx.env['CONTENT_TYPE']
-            content_type, serializer = self.getMimeType(returntype, FFORMAT_TYPES)
+            content_type, serializer = self.getMimeType(returntype, FFORMAT_TYPES, result)
             return content_type, serializer(result)
 
 ##################### router
@@ -874,26 +877,36 @@ class PortalServer:
             #   {'a': ['1', '3'], 'b': '2'}
             return dict(((k, v) if len(v) > 1 else (k, v[0])) for k, v in list(params.items()))
 
+        def hasSupportedContentType(contenttype, supportedcontenttypes):
+            for supportedcontenttype in supportedcontenttypes:
+                if contenttype.find(supportedcontenttype) != 1:
+                    return True
+
         params = simpleParams(params)
 
-        if env["REQUEST_METHOD"] in ("POST", "PUT"):
-            postData = env["wsgi.input"].read()
-            if postData.strip() == "":
-                return params
-                msg = "postdata cannot be empty"
-                self.raiseError(ctx, msg)
+        if env["REQUEST_METHOD"] in ("POST", "PUT") and hasSupportedContentType(env['CONTENT_TYPE'], ('application/json', 'www-form-urlencoded', 'multipart/form-data')):
             if env['CONTENT_TYPE'].find("application/json") != -1:
+                postData = env["wsgi.input"].read()
+                if postData.strip() == "":
+                    return params
                 postParams = j.db.serializers.getSerializerType('j').loads(postData)
                 if postParams:
                     params.update(postParams)
                 return params
             elif env['CONTENT_TYPE'].find("www-form-urlencoded") != -1:
+                postData = env["wsgi.input"].read()
+                if postData.strip() == "":
+                    return params
                 params.update(dict(urlparse.parse_qs(postData)))
                 return simpleParams(params)
-            else:
-                params['rawdata'] = postData
+            elif env['CONTENT_TYPE'].find("multipart/form-data") != -1:
+                forms, files = multipart.parse_form_data(ctx.env)
+                params.update(forms)
+                for key, value in files.items():
+                    params.setdefault(key, dict())[value.filename] = value.file
         return params
 
+    @exhaustgenerator
     def router(self, environ, start_response):
         path = environ["PATH_INFO"].lstrip("/")
         print("path:%s" % path)

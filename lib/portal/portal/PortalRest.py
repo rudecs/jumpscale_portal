@@ -214,7 +214,7 @@ class PortalRest():
                 return [str(self.ws.returnDoc(ctx, start_response, "system", "restresult", extraParams=params))]
             else:
                 contentType, result = self.ws.reformatOutput(ctx, result)
-                return [respond(contentType, result)]
+                return respond(contentType, result)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             if ctx == False:
@@ -338,15 +338,3 @@ class PortalRest():
             if result == None:
                 # there was no actor
                 return False
-
-
-    # def _getActorInfoUrl(self, appname, actor):
-    #     """
-    #     used for during error show links to actor in browser
-    #     """
-    #     if actor == "":
-    #         url = "/rest/%s/" % (appname)
-    #     else:
-    #         url = "/rest/%s/%s/" % (appname, actor)
-    #     # url="<a href=\"%s\">go here for more info about actor %s in %s</a> " % (url,actor,appname)
-    #     return url                
