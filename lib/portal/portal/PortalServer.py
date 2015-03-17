@@ -879,12 +879,12 @@ class PortalServer:
 
         def hasSupportedContentType(contenttype, supportedcontenttypes):
             for supportedcontenttype in supportedcontenttypes:
-                if contenttype.find(supportedcontenttype) != 1:
+                if contenttype.find(supportedcontenttype) != -1:
                     return True
 
         params = simpleParams(params)
 
-        if env["REQUEST_METHOD"] in ("POST", "PUT") and hasSupportedContentType(env['CONTENT_TYPE'], ('application/json', 'www-form-urlencoded', 'multipart/form-data')):
+        if env["REQUEST_METHOD"] in ("POST", "PUT") and hasSupportedContentType(env.get('CONTENT_TYPE', ''), ('application/json', 'www-form-urlencoded', 'multipart/form-data')):
             if env['CONTENT_TYPE'].find("application/json") != -1:
                 postData = env["wsgi.input"].read()
                 if postData.strip() == "":
