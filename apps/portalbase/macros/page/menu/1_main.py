@@ -123,8 +123,8 @@ def main(j, args, params, tags, tasklet):
                 line2 = "<li><a href=\"%s\">%s</a></li>" % (target, name)
             items += "%s\n" % line2
     T = T.replace("{items}", items)
-
-    if args.requestContext.env['beaker.session']['user'] == "guest" and noguest:
+    user = j.core.portal.active.getUserFromCTX(args.requestContext)
+    if user == "guest" and noguest:
         T=T.replace("{hide-menu}","style=\"display:none;\"")
     else:
         T=T.replace("{hide-menu}","")

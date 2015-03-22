@@ -259,7 +259,7 @@ class PortalServer:
         return spaces
                     
     def getUserSpaces(self, ctx):
-        if not hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
+        if not hasattr(ctx, 'env') or "user" not in ctx.env['beaker.session']:
             return []
         username = ctx.env['beaker.session']["user"]
         spaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
@@ -339,11 +339,18 @@ class PortalServer:
         return username, rights 
         
     def getUserFromCTX(self,ctx):
-        return str(ctx.env["beaker.session"]["user"])
+        user = ctx.env["beaker.session"].get('user')
+        if user:
+            return str(["user"])
+        return "guest"
 
     def getGroupsFromCTX(self,ctx):
-        groups=self.auth.getGroups(ctx.env["beaker.session"]["user"])
-        return [str(item.lower()) for item in groups]
+        user = self.getUserFromCTX(ctx)
+        if user:
+            groups=self.auth.getGroups(user)
+            return [str(item.lower()) for item in groups]
+        else:
+            return []
 
     def isAdminFromCTX(self,ctx):
         usergroups=set(self.getGroupsFromCTX(ctx))

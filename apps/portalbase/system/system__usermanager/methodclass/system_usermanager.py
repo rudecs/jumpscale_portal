@@ -20,28 +20,23 @@ class system_usermanager(j.code.classGetBase()):
         if not user==ctx.env['beaker.session']["user"]:
             raise RuntimeError("Authentication Error")
 
-    def authenticate(self, name, secret, **args):
+    def authenticate(self, name, secret, **kwargs):
         """
-        param:name name
-        param:secret md5 or passwd
-        result str 
-        
+        The function evaluates the provided username and password and returns a session key.
+        The session key can be used for doing api requests. E.g this is the authkey parameter in every actor request.
+        A session key is only vallid for a limited time.
+        param:username username to validate
+        param:password password to validate
+        result str,,session
         """
-        self._authSelf(name,args)
-        if not self.userexists(name):
-            return False
-        user=self.modelUser.get("%s_%s"%(j.application.whoAmI.gid,name))
-
-        if user.authkey=="":
-            user.authkey=j.tools.hash.md5_string(j.base.idgenerator.generateGUID())
-            self.modelUser.set(user)
-
-        if user.passwd.strip() == str(secret).strip():
-            return user.authkey
-        if j.tools.hash.md5_string(secret) == user.passwd:
-            return user.authkey
-        result = False
-        return result
+        ctx = kwargs['ctx']
+        if j.core.portal.active.auth.authenticate(name, secret):
+            session = ctx.env['beaker.get_session']() #create new session
+            session['user'] = name
+            session.save()
+            return session.id
+        ctx.start_response('401 Unauthorized', [])
+        return 'Unauthorized'
 
     def userget(self, name, **kwargs):
         """
