@@ -917,7 +917,7 @@ class PortalServer:
                 content_type, parameters = parse_options_header(env.get('CONTENT_TYPE'))
                 boundary = parameters.get(b'boundary')
                 inp = env.get('wsgi.input')
-                params.update({'boundary':boundary, 'multipart_data':inp, })
+                params.update({'FILES':{'data':inp, 'boundary':boundary}})
         return params
 
     @exhaustgenerator

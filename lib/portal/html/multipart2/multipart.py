@@ -1311,8 +1311,10 @@ class MultipartParser(BaseParser):
                     # if we've just broken out of our loop since we saw the
                     # last character in our boundary)
                     i -= boundary_end
-                    c = data[i]
-
+                    try:
+                        c = data[i]
+                    except IndexError:
+                        c = data[-1]
                 # Now, we have a couple of cases here.  If our index is before
                 # the end of the boundary...
                 if index < boundary_length:
