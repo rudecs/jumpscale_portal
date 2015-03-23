@@ -915,9 +915,9 @@ class PortalServer:
             elif env.get('HTTP_TRANSFER_ENCODING') == 'chunked':
                 from JumpScale.portal.html.multipart2.multipart import parse_options_header
                 content_type, parameters = parse_options_header(env.get('CONTENT_TYPE'))
-                boundary = params.get(b'boundary')
+                boundary = parameters.get(b'boundary')
                 inp = env.get('wsgi.input')
-                params.update({'boundary':boubdary, 'multipart_data':inp, })
+                params.update({'boundary':boundary, 'multipart_data':inp, })
         return params
 
     @exhaustgenerator
