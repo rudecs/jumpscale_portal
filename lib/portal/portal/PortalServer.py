@@ -5,6 +5,7 @@ import pprint
 import os
 import sys
 import redis
+import shutil
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -906,11 +907,17 @@ class PortalServer:
                     return params
                 params.update(dict(urlparse.parse_qs(postData)))
                 return simpleParams(params)
-            elif env['CONTENT_TYPE'].find("multipart/form-data") != -1:
+            elif env['CONTENT_TYPE'].find("multipart/form-data") != -1 and env.get('HTTP_TRANSFER_ENCODING') != 'chunked':
                 forms, files = multipart.parse_form_data(ctx.env)
                 params.update(forms)
                 for key, value in files.items():
                     params.setdefault(key, dict())[value.filename] = value.file
+            elif env.get('HTTP_TRANSFER_ENCODING') == 'chunked':
+                from JumpScale.portal.html.multipart2.multipart import parse_options_header
+                content_type, parameters = parse_options_header(env.get('CONTENT_TYPE'))
+                boundary = params.get(b'boundary')
+                inp = env.get('wsgi.input')
+                params.update({'boundary':boubdary, 'multipart_data':inp, })
         return params
 
     @exhaustgenerator
