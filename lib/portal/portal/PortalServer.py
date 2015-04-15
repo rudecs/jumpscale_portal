@@ -341,9 +341,7 @@ class PortalServer:
         
     def getUserFromCTX(self,ctx):
         user = ctx.env["beaker.session"].get('user')
-        if user:
-            return str(["user"])
-        return "guest"
+        return user or "guest"
 
     def getGroupsFromCTX(self,ctx):
         user = self.getUserFromCTX(ctx)

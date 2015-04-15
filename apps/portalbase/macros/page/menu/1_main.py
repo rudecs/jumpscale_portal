@@ -27,7 +27,7 @@ def main(j, args, params, tags, tasklet):
 
     if "." in args.doc.name:
         if args.doc.name.split('.')[1] == "md":
-            T = """{items}{login}{findmenu}
+            T = """{items}{login}{username}{findmenu}
 """
     else:
         T = """
@@ -46,6 +46,7 @@ def main(j, args, params, tags, tasklet):
                    $$$menuright
                    </ul>
                    {login}
+                   {username}
                    {findmenu}
                 </div>
             </div>
@@ -62,18 +63,28 @@ def main(j, args, params, tags, tasklet):
     else:
         T = T.replace("{brand}", "")
 
-    if page.login:
-        if j.core.portal.active.isLoggedInFromCTX(params.requestContext):
-            loginorlogout = "<a href='/system/login?user_logoff_=1'>Logout</a>"
-        else:
-            loginorlogout = "<a href='/system/login'>Login</a>"
-        L = """
+    L = """
 <ul class="nav navbar pull-right">
     <li>
         %s
     </li>
-</ul>""" % loginorlogout
-        T = T.replace("{login}", L)
+</ul>"""
+
+    loggedin = j.core.portal.active.isLoggedInFromCTX(params.requestContext)
+
+    if loggedin:
+        username = params.requestContext.env['beaker.session']['user']
+        username = L % '<a href="#"> %s </a>' % username
+        T = T.replace("{username}", username)
+    else:
+        T = T.replace("{username}", "")
+
+    if page.login:
+        if loggedin:
+            loginorlogout = "<a href='/system/login?user_logoff_=1'>Logout</a>"
+        else:
+            loginorlogout = "<a href='/system/login'>Login</a>"
+        T = T.replace("{login}", L % loginorlogout)
     else:
         T = T.replace("{login}", "")
 

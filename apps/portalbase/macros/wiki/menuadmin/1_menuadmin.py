@@ -2,7 +2,6 @@
 def main(j, args, params, tags, tasklet):
     params.merge(args)
     doc = params.doc
-    username = j.core.portal.active.getUserFromCTX(params.requestContext)
 
     macrostr = params.macrostr
     macrostr = macrostr.split('\n')
@@ -47,10 +46,9 @@ column.Pages =
 }}
     ''' % (spacestxt, pages)
        
-
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
         adminmenu = """
-{{menudropdown: name:%s
+{{menudropdown: name:Administration
 New Page:/system/create
 Edit Page:/system/edit?space=$$space&page=$$page$$querystr
 Create Space:/system/createspace
@@ -61,7 +59,7 @@ Reload:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(funct
 ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 }}
-""" % (username)
+"""
 
 
 
