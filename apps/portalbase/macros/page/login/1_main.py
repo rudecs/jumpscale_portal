@@ -19,7 +19,7 @@ def main(j, args, params, tags, tasklet):
         color: #fff;
         text-align: center;
       }
-      .span12{
+      .span12, .form-signin{
         margin-top: 14%;
       }
       .login-field{
@@ -31,7 +31,8 @@ def main(j, args, params, tags, tasklet):
 	"""
 
     body = """
-    <form id="loginform" class="form-signin" method="post" action="/$$path$$querystr">
+    <form id="loginform" class="form-signin container" method="post" action="/$$path$$querystr">
+       <h4>Access Denied Please Login</h4>
        <div class="col-sm-offset-3 col-md-6 login-screen">
         <div class="login-form">
           <div class="form-group">
