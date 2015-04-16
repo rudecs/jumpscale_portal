@@ -890,8 +890,10 @@ class PortalServer:
 
         params = simpleParams(params)
 
-        if env["REQUEST_METHOD"] in ("POST", "PUT") and hasSupportedContentType(env.get('CONTENT_TYPE', ''), ('application/json', 'www-form-urlencoded', 'multipart/form-data')):
-            if env['CONTENT_TYPE'].find("application/json") != -1:
+        contentype = env.get('CONTENT_TYPE', '')
+        pragma = env.get('HTTP_PRAGMA', '')
+        if 'stream' not in pragma and env["REQUEST_METHOD"] in ("POST", "PUT") and hasSupportedContentType(contentype, ('application/json', 'www-form-urlencoded', 'multipart/form-data', '')):
+            if contentype.find("application/json") != -1:
                 postData = env["wsgi.input"].read()
                 if postData.strip() == "":
                     return params
@@ -899,13 +901,13 @@ class PortalServer:
                 if postParams:
                     params.update(postParams)
                 return params
-            elif env['CONTENT_TYPE'].find("www-form-urlencoded") != -1:
+            elif contentype.find("www-form-urlencoded") != -1:
                 postData = env["wsgi.input"].read()
                 if postData.strip() == "":
                     return params
                 params.update(dict(urlparse.parse_qs(postData)))
                 return simpleParams(params)
-            elif env['CONTENT_TYPE'].find("multipart/form-data") != -1 and env.get('HTTP_TRANSFER_ENCODING') != 'chunked':
+            elif contentype.find("multipart/form-data") != -1 and env.get('HTTP_TRANSFER_ENCODING') != 'chunked':
                 forms, files = multipart.parse_form_data(ctx.env)
                 params.update(forms)
                 for key, value in files.items():
