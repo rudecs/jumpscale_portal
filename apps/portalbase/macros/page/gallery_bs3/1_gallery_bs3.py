@@ -72,10 +72,10 @@ def main(j, args, params, tags, tasklet):
 
     out = out.replace('$$space', args.doc.getSpaceName())
 
-    args.page.addCSS("/%s/.files/css/blueimp-gallery.css" % args.doc.getSpaceName())
-    args.page.addCSS("/%s/.files/css/blueimp-gallery-indicator.css" % args.doc.getSpaceName())
-    args.page.addCSS(cssContent=".links a { margin: 12px;display: inline-block;border: 2px solid #E1E1E1;} .blueimp-gallery > .slides { padding: 30px 0;}")
-    args.page.addMessage(out)
+    params.result.addCSS("/%s/.files/css/blueimp-gallery.css" % args.doc.getSpaceName())
+    params.result.addCSS("/%s/.files/css/blueimp-gallery-indicator.css" % args.doc.getSpaceName())
+    params.result.addCSS(cssContent=".links a { margin: 12px;display: inline-block;border: 2px solid #E1E1E1;} .blueimp-gallery > .slides { padding: 30px 0;}")
+    params.result.addMessage(out)
     return params
 
 
