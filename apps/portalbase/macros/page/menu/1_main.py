@@ -81,9 +81,19 @@ def main(j, args, params, tags, tasklet):
 
     if page.login:
         if loggedin:
-            loginorlogout = "<a href='/system/login?user_logoff_=1'>Logout</a>"
+            loginorlogout = """
+    <form action="#" method="post">
+        <a href="javascript:;" onclick="parentNode.submit();">Logout</a>
+        <input type="hidden" name="user_logoff_" value="1"/>
+    </form>
+                """ 
         else:
-            loginorlogout = "<a href='/system/login'>Login</a>"
+            loginorlogout = """
+    <form action="#" method="post">
+        <a href="javascript:;" onclick="parentNode.submit();">Login</a>
+        <input type="hidden" name="user_login_" value="guest"/>
+    </form>
+                """ 
         T = T.replace("{login}", L % loginorlogout)
     else:
         T = T.replace("{login}", "")

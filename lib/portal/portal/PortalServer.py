@@ -824,7 +824,11 @@ class PortalServer:
         if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
             if session.get('user', '') not in ['guest', '']:
                 session.delete()
-            return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "login", extraParams={"path": path}))]
+                session = ctx.env['beaker.get_session']()
+                ctx.env['beaker.session'] = session
+            session['user'] = 'guest'
+            session.save()
+            return True, session
 
         if "user_login_" in ctx.params:
             # user has filled in his login details, this is response on posted info
