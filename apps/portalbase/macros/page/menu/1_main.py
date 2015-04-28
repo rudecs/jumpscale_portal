@@ -82,15 +82,15 @@ def main(j, args, params, tags, tasklet):
     if page.login:
         if loggedin:
             loginorlogout = """
-    <form action="#" method="post">
-        <a href="javascript:;" onclick="parentNode.submit();">Logout</a>
+        <a href="javascript:;" onclick="nextElementSibling.submit();">Logout</a>
+    <form action="#" method="post" class="hide">
         <input type="hidden" name="user_logoff_" value="1"/>
     </form>
                 """ 
         else:
             loginorlogout = """
-    <form action="#" method="post">
-        <a href="javascript:;" onclick="parentNode.submit();">Login</a>
+        <a href="javascript:;" onclick="nextElementSibling.submit();">Login</a>
+    <form action="#" method="post" class="hide">
         <input type="hidden" name="user_login_" value="guest"/>
     </form>
                 """ 
