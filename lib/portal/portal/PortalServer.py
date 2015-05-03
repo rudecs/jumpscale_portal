@@ -61,7 +61,7 @@ class PortalServer:
         self.started = False
         self.epoch = time.time()
 
-        self.cfg = self.hrd.getDictFromPrefix('param.cfg')
+        self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
 
         j.core.portal.active=self
 
