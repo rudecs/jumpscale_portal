@@ -75,7 +75,11 @@ def main(j, args, params, tags, tasklet):
                     name = line
                     target = ""
                     icon = ""
-                line2 = "<li><a href=\"%s\"><i class=\"%s\"></i>%s</a></li>" % (target.strip(), icon.strip(), name.strip())
+                if target.strip().split('/')[-1].lower() == args.doc.name:
+                    line2 = "<li class='nav-page-active'><a href=\"%s\"><i class=\"%s\"></i>%s</a></li>" % (target.strip(), icon.strip(), name.strip())    
+                else:
+                    line2 = "<li><a href=\"%s\"><i class=\"%s\"></i>%s</a></li>" % (target.strip(), icon.strip(), name.strip())    
+                
                 items += "%s\n" % line2
 
 

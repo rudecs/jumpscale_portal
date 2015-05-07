@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
     page.addCSS('/jslib/old/breadcrumbs/breadcrumbs.css')    
 
-    separator = '<i class="separator"></i>'
+    separator = '<i class="separator newBreadcrumbArrow"></i>'
     breadcrumbs = [doc.original_name]
     space = j.core.portal.active.getSpace(doc.getSpaceName())
     while doc.parent:

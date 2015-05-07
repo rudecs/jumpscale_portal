@@ -1,6 +1,10 @@
 
 {{title:JSPortal}}
 
+{{ApplyFlatTheme}}
+{{favicon:.files/img/favicon.png}}
+
+{{projectname:System Portal}}
 {{find}}
 
 {{menu:
@@ -9,7 +13,6 @@ Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 
 {{menuadmin}}
 {{menuspaces marker:$$$spaces name:System class:brand}}
-
 
 @block
 @row
