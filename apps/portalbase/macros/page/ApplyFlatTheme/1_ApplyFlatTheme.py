@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
 
     page.addJS(jsContent='''
         $( function () {
-
+        $('body').addClass('flatTheme');
         // fix firefox elements size on windows
         var operatingSystem = navigator.platform;
         if(operatingSystem.indexOf('Win') >= 0 && $.browser.mozilla == true){
@@ -37,7 +37,6 @@ def main(j, args, params, tags, tasklet):
         $('.navbar-inner').addClass('navbar-form');
         $('.search-query').addClass('form-control');
         $('.newBreadcrumbArrow').removeClass('newBreadcrumbArrow separator').addClass('fui-arrow-right');
-                
 
         $('.span1').removeClass('span1').addClass('col-md-1');
         $('.span2').removeClass('span2').addClass('col-md-2');
@@ -190,7 +189,7 @@ def main(j, args, params, tags, tasklet):
         color: #ffffff !important;
     }
     .nav-header, .nav-header:hover{
-        margin-left: 5px;
+            margin-left: 5px;
         color: #fff;
         background-color: transparent !important;
     }
@@ -218,7 +217,6 @@ def main(j, args, params, tags, tasklet):
         margin: 0 4px;
     }
 
-
     /* Tables */
     .table-bordered{
         border-collapse: separate;
@@ -239,6 +237,27 @@ def main(j, args, params, tags, tasklet):
     .dataTables_wrapper table{
         margin-left: 13px;
     }
+    .dataTables_wrapper table.table thead .sorting_asc{
+        background: url('/jslib/old/datatables/images/white-theme/sort_asc.png') no-repeat center right;
+    }
+    .dataTables_wrapper table.table thead .sorting_desc{
+        background: url('/jslib/old/datatables/images/white-theme/sort_desc.png') no-repeat center right;
+    }
+    div.dataTables_length select{
+        border-radius: 4px;
+        height: 35px;
+    }
+    .pagination ul li > a, .pagination ul li > span, .pagination ul li.active > a:hover{
+        color: #34495e;
+    }
+    .pagination ul li > a:hover, .pagination ul li > span:hover{
+        color: #fff;
+    }
+    .previous.disabled a:hover, .next.disabled a:hover, .previous.disabled a:focus, .next.disabled a:focus, .previous.disabled a:active, .next.disabled a:active{
+        background: #d6dbdf;
+        color: #34495e;
+        cursor: default;
+    }
 
     /* Api Page */
     .swagger-section .swagger-ui-wrap table thead tr th{
@@ -250,6 +269,12 @@ def main(j, args, params, tags, tasklet):
     .swagger-section .swagger-ui-wrap p{
         font-size: 13px;
     }
+
+    /* Explorer Page */
+    .elfinder .elfinder-button{
+        width: 25px !important;
+    }
+
     ''')
 
     params.result = page
