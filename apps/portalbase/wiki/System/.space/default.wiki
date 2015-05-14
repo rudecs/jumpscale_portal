@@ -2,7 +2,6 @@
 {{title:JSPortal}}
 
 {{ApplyFlatTheme}}
-{{favicon:.files/img/favicon.png}}
 
 {{projectname:System Portal}}
 {{find}}

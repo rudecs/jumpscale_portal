@@ -3,7 +3,7 @@ def main(j, args, params, tags, tasklet):
 
     page = args.page
     params.extend(args)
-
+    page.addHTMLHeader('''<link rel="shortcut icon" type="image/png" href="/system/.files/img/favicon.png">''')
     page.addCSS('/jslib/bootstrap/css/bootstrap-3-3-1.min.css')
     page.addCSS('/jslib/flatui/css/flat-ui.css')
     page.addCSS('/jslib/new-ui/new-ui.css')
@@ -62,10 +62,79 @@ def main(j, args, params, tags, tasklet):
         margin-left: 0;
         margin-top: 0;
     }
+
     .fixFirefoxSizing{
-        transform: scale(0.8, 0.8);
-        transform-origin: 45% 0px 0px;
+        transform: none;
+        transform-origin: 0;
     }
+    .fixFirefoxSizing *, .fixFirefoxSizing .navbar *{
+        font-size: 97%;
+    }
+    .fixFirefoxSizing .search-query{
+        margin-bottom: 0;
+        height: 25px !important;
+    }
+    .fixFirefoxSizing .dropdown-menu li{
+        max-height: 28px;
+    }
+    .fixFirefoxSizing select, .fixFirefoxSizing input{
+        max-height: 27px;
+    }
+    .fixFirefoxSizing select{
+        border: 1px solid #B1B0B0;
+    }
+    .fixFirefoxSizing .pagination ul li > a{
+        font-size: 13px;
+        padding-top: 0;
+    }
+    .fixFirefoxSizing .pagination ul li.previous > a, .fixFirefoxSizing .pagination ul li.next > a, .fixFirefoxSizing .pagination ul li.previous > span, .fixFirefoxSizing .pagination ul li.next > span{
+        padding: 7px 17px;
+        height: 32px;
+        margin-top: 0;
+        margin-right: 0;
+        margin-left: 0;
+    }
+    .fixFirefoxSizing .pagination ul{
+        max-height: 33px;
+    }
+    .fixFirefoxSizing .pagination ul li > a, .pagination ul li > span{
+        margin: 5px 2px 6px;
+    }
+    .fixFirefoxSizing table input[type="text"]{
+        max-height: 22px;
+    }
+    .fixFirefoxSizing .sidebar-nav li{
+        padding: 2px;
+    }
+    .fixFirefoxSizing .container{
+        width: 970px;
+    }
+    .fixFirefoxSizing h1, .h1{
+        font-size: 34px;
+    }
+    .fixFirefoxSizing h2, .h2{
+        font-size: 29px;
+    }
+    .fixFirefoxSizing h3, .h3{
+        font-size: 24px;
+    }
+    .fixFirefoxSizing h4, .h4{
+        font-size: 19px;
+    }
+    .fixFirefoxSizing h5, .h5{
+        font-size: 18px;
+    }
+    .fixFirefoxSizing h6, .h6{
+        font-size: 17px;
+    }
+    .fixFirefoxSizing .table-condensed > thead > tr > th{
+        padding: 6px;
+    }
+    .fixFirefoxSizing .navbar-brand{
+        line-height: 0.9em;
+    }
+
+
     .removeTransform{
         transform: none;
         transform-origin: 0;
@@ -130,7 +199,7 @@ def main(j, args, params, tags, tasklet):
     .nav a{
         font-size: 15px;
     }
-    .navbar-brand{
+    .fixFirefoxSizing .navbar-brand, .navbar-brand{
         font-size: 21px;
     }
     .sidebar-nav{
@@ -182,6 +251,9 @@ def main(j, args, params, tags, tasklet):
         font-size: 14px;
         display: block;
     }
+    .fixFirefoxSizing .dropdown-menu li a{
+        font-size: 12px;
+    }
     .dropdown-menu li:hover{
         background-color: #1abc9c;
     }
@@ -212,7 +284,9 @@ def main(j, args, params, tags, tasklet):
         border-bottom-color: #1abc9c !important;
         border-top-color: #1abc9c !important;
     }
-    .fui-arrow-right{
+
+    /* Breadcrumb */
+    .fixFirefoxSizing .fui-arrow-right, .fui-arrow-right{
         font-size: 12px;
         margin: 0 4px;
     }
@@ -258,6 +332,9 @@ def main(j, args, params, tags, tasklet):
         color: #34495e;
         cursor: default;
     }
+    .flatTheme .dataTables_wrapper.form-inline{
+        width: 100%;
+    }
 
     /* Api Page */
     .swagger-section .swagger-ui-wrap table thead tr th{
@@ -266,7 +343,7 @@ def main(j, args, params, tags, tasklet):
     .swagger-section .swagger-ui-wrap ul#resources li.resource div.heading h2{
         margin: 0;
     }
-    .swagger-section .swagger-ui-wrap p{
+    .fixFirefoxSizing .swagger-section .swagger-ui-wrap p, .swagger-section .swagger-ui-wrap p{
         font-size: 13px;
     }
 

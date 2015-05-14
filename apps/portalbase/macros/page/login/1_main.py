@@ -25,6 +25,22 @@ def main(j, args, params, tags, tasklet):
       .login-field{
         height: 40px !important;
       }
+      .fixFirefoxSizing{
+        transform: scale(0.8, 0.8);
+        transform-origin: 45% 0px 0px;
+      }
+    ''')
+    page.addJS(jsContent='''
+      $( function () {
+        $('body').addClass('flatTheme');
+        // fix firefox elements size on windows
+        var operatingSystem = navigator.platform;
+        if(operatingSystem.indexOf('Win') >= 0 && $.browser.mozilla == true){
+            $('body').addClass('fixFirefoxSizing');
+        }else{
+            $('body').addClass('removeTransform');
+        }
+      });
     ''')
     head = """
 <title>Login</title>
