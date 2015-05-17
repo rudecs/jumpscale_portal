@@ -1,4 +1,4 @@
-@template defaultbootstrapthree
+@usedefaults
 
 {{html:
     <div ng-app="eveTestApp">

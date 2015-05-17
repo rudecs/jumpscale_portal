@@ -42,10 +42,22 @@ Status Check:/grid/checkstatus
 
 {{cssstyle
 td {
-    max-width:500px;
+	min-width: 100px;
+    max-width:400px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;}
+    white-space: nowrap;
+}
+.fixFirefoxSizing td{
+	max-width: 336px;
+}
+.fixFirefoxSizing .dataTables_wrapper.form-inline{
+	width: 120% !important;
+}
+.dataTables_wrapper.form-inline{
+	width: 116% !important;
+}
+
 }}
 
 

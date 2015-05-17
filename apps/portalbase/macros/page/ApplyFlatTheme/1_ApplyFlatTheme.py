@@ -133,6 +133,9 @@ def main(j, args, params, tags, tasklet):
     .fixFirefoxSizing .navbar-brand{
         line-height: 0.9em;
     }
+    body.fixFirefoxSizing input[type="text"]{
+        font-size: 13px;
+    }
 
 
     .removeTransform{
