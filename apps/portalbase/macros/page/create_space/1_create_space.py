@@ -109,14 +109,14 @@ This space lives in `{}`{{% endblock %}}
                     <div class="control-group">
                         <label class="control-label" for="space_path">Path to space</label>
                         <div class="controls">
-                            <input name="space_path" type="text" placeholder="" class="input-xxlarge" required="" value="/opt/code/incubaid/www_<my_space>">
+                            <input name="space_path" type="text" placeholder="" class="input-xxlarge width-40" required="" value="/opt/code/incubaid/www_<my_space>">
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group margin-bottom-large">
                         <label class="control-label" for="contentdir">Content Directory</label>
                         <div class="controls" name="contentdir">
-                            <select name="contentdir" id="contentdir" class="input-xxlarge">
+                            <select name="contentdir" id="contentdir" class="input-xxlarge width-40">
                             {0}
                             </select>
                         </div>

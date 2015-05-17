@@ -7,6 +7,7 @@ def main(j, args, params, tags, tasklet):
     page.addCSS('/jslib/bootstrap/css/bootstrap-3-3-1.min.css')
     page.addCSS('/jslib/flatui/css/flat-ui.css')
     page.addCSS('/jslib/new-ui/new-ui.css')
+    page.addCSS('/jslib/new-ui/oocss.css')
 
     page.addJS(jsContent='''
         $( function () {
@@ -61,6 +62,9 @@ def main(j, args, params, tags, tasklet):
         padding-bottom: 0 !important;
         margin-left: 0;
         margin-top: 0;
+    }
+    .btn{
+        line-height: .9;
     }
 
     .fixFirefoxSizing{
@@ -353,6 +357,12 @@ def main(j, args, params, tags, tasklet):
     /* Explorer Page */
     .elfinder .elfinder-button{
         width: 25px !important;
+    }
+
+    /* Edit Page */
+    .cm-s-monokai.CodeMirror{
+        background: #34495e !important;
+        min-height: 300px;
     }
 
     ''')

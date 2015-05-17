@@ -34,7 +34,7 @@ def main(j, args, params, tags, tasklet):
                 <div class="control-group">
                   <label class="control-label" for="name">Name</label>
                   <div class="controls">
-                    <input id="page" name="page" type="text" placeholder="" class="input-xlarge" required="">
+                    <input id="page" name="page" type="text" placeholder="" class="input-xlarge margin-bottom-large width-40" required="">
                   </div>
                 </div>
 
@@ -66,7 +66,7 @@ def main(j, args, params, tags, tasklet):
                 <div class="control-group">
                   <label class="control-label" for="name">Name</label>
                   <div class="controls">
-                    <input id="page" name="page" type="text" placeholder="" class="input-xlarge" required="">
+                    <input id="page" name="page" type="text" placeholder="" class="input-xlarge margin-bottom-large width-40" required="">
                   </div>
                 </div>
 

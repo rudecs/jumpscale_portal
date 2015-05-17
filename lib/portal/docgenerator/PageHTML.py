@@ -366,11 +366,11 @@ class PageHTML(Page):
         self.head += CSS
         self._codeblockid += 1
         #rows=\"20\"
-        TA = "<textarea id=\"code%s\" name=\"code%s\" >" % (self._codeblockid, self._codeblockid)
+        TA = "<textarea id=\"code%s\" name=\"code%s\">" % (self._codeblockid, self._codeblockid)
         TA += code
         TA += "</textarea>"
         if path != "" and edit:
-            TA += "<button type=\"submit\" onclick=\"copyText%s();\">Save.</button>" % self._codeblockid
+            TA += "<button class='btn btn-primary margin-top-large' type=\"submit\" onclick=\"copyText%s();\">Save.</button>" % self._codeblockid
         self.addMessage(TA)
 
         if path != "" and edit:
