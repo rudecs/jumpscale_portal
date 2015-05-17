@@ -1,5 +1,6 @@
 
 {{title:TestSpace}}
+{{ApplyFlatTheme}}
 
 {{projectname:TestSpace}}
 
@@ -15,7 +16,7 @@ Incubaid:http://www.incubaid.com
 @block
 @row
 
-@col 2
+@col 2 well sidebar-nav
 {{navigation}}
 @divend
 

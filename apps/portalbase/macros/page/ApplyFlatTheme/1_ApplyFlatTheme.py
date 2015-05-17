@@ -140,6 +140,9 @@ def main(j, args, params, tags, tasklet):
     body.fixFirefoxSizing input[type="text"]{
         font-size: 13px;
     }
+    .fixFirefoxSizing .sidebar-nav li a, .fixFirefoxSizing .sidebar-nav a{
+        font-size: 13px;
+    }
 
 
     .removeTransform{
@@ -215,19 +218,24 @@ def main(j, args, params, tags, tasklet):
         background: #95A5A6;
         border-radius: 0;
     }
-    .sidebar-nav li a{
+    .sidebar-nav li a, .sidebar-nav a{
         color: #fff;
         display: block;
+        font-size: 15px;
     }
-    .sidebar-nav li:hover, .nav-page-active{
+    .sidebar-nav li:hover, .nav-page-active, .sidebar-nav p:hover{
         color: #fff;
         background: #34495E;
         border-left: 4px solid #16a085;
     }
-    .sidebar-nav li{
+    .sidebar-nav li, .sidebar-nav p{
         list-style: none;
         border-bottom: 1px solid #95A5A6;
         padding: 4px;
+    }
+    .sidebar-nav p{
+        margin-bottom: 0;
+        padding: 2px;
     }
     .open > .dropdown-menu{
         background-color: #34495e;
