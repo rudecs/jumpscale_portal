@@ -13,7 +13,7 @@ class Popup(object):
     def addText(self, label, name, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">
-                <label class="sr-only" for="${name}">${label}</label>
+                <label class="line-height" for="${name}">${label}</label>
                 <input type="text" class="form-control" name="${name}" {% if required %}required{% endif %}>
               </div>
         ''')
@@ -30,7 +30,7 @@ class Popup(object):
     def addTextArea(self, label, name, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">
-                <label class="sr-only" for="${name}">${label}</label>
+                <label class="line-height" for="${name}">${label}</label>
                 <textarea class="form-control" name="${name}" {% if required %}required{% endif %}>
               </div>
         ''')
@@ -40,7 +40,7 @@ class Popup(object):
     def addNumber(self, label, name, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">
-                <label class="sr-only" for="${name}">${label}</label>
+                <label class="line-height" for="${name}">${label}</label>
                 <input type="number" class="form-control" name="${name}" {% if required %}required{% endif %}>
               </div>
         ''')
@@ -50,7 +50,7 @@ class Popup(object):
     def addDropdown(self, label, name, options, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">
-                <label class="sr-only" for="${name}">${label}</label>
+                <label class="line-height" for="${name}">${label}</label>
                 <select class="form-control" name="${name}" {% if required %}required{% endif %}>
                     {% for title, value in options %}
                         <option value="${value}">${title}</option>
@@ -64,7 +64,7 @@ class Popup(object):
     def addRadio(self, label, name, options, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">
-                <label class="sr-only">${label}</label>
+                <label class="line-height">${label}</label>
                 {% for title, value in options %}
                     <label>
                         <input type="radio" name="${name}" value="${value}" {% if required %}required{% endif %}>
@@ -80,7 +80,7 @@ class Popup(object):
     def addCheckboxes(self, label, name, options):
         template = self.jinja.from_string('''
             <div class="form-group">
-                <label class="sr-only">${label}</label>
+                <label class="line-height">${label}</label>
                 {% for title, value in options %}
                     <label class="checkbox">
                       <input type="checkbox" name="${name}_${loop.index}" value="${value}" />
