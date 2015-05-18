@@ -95,21 +95,23 @@ class Popup(object):
     def write_html(self, page):
         template = self.jinja.from_string('''
             <form role="form" method="post" action="${submit_url}" class="popup_form">
-            <div id="${id}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="${id}Label" aria-hidden="true">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <div id="${id}Label" class="modal-header-text">${header}</div>
-              </div>
-              <div class="modal-body modal-body-error alert alert-error">
-                Error happened on the server
-              </div>
-              <div class="modal-body modal-body-form">
-                {% for widget in widgets %}${widget}{% endfor %}
-              </div>
-              <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                <button class="btn btn-primary" data-loading-text="Loading...">${action_button}</button>
-              </div>
+            <div id="${id}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="${id}Label" aria-hidden="true">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <div id="${id}Label" class="modal-header-text">${header}</div>
+                  </div>
+                  <div class="modal-body modal-body-error alert alert-error">
+                    Error happened on the server
+                  </div>
+                  <div class="modal-body modal-body-form">
+                    {% for widget in widgets %}${widget}{% endfor %}
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" data-loading-text="Loading...">${action_button}</button>
+                  </div>
+                </div>
             </div>
         </form>
         ''')

@@ -56,6 +56,29 @@ def main(j, args, params, tags, tasklet):
 
     page.addCSS(cssContent=''' 
     /* General styling */
+    .modal{
+        position: fixed;
+        top: 20%;
+        right: 10%;
+        bottom: 0;
+        left: 0;
+        z-index: 1050;
+        display: none;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+        outline: 0;
+        max-width: 600px;
+        left: 30%;
+    }
+    .modal-backdrop{
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1040;
+      background-color: #000;
+    }
     body{
         font-size: 15px;
         padding-top: 80px !important;
