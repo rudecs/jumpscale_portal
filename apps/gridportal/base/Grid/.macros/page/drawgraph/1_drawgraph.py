@@ -1,20 +1,21 @@
 def main(j, args, params, tags, tasklet):
     page = args.page
-
-    graphdata = args.cmdstr
+    graphdata = args.cmdstr.format(**args.doc.appliedparams)
     graphdata = j.core.hrd.get(content=graphdata)
 
     targets = graphdata.getDictFromPrefix('target')
-    cfg = graphdata.getDictFromPrefix('cfg')
+    cfg = {'stack': 'false', 'fill': '1', 'percentage': 'false', "y_format": 'short'}
+    cfg.update(graphdata.getDictFromPrefix('cfg'))
 
     targetsstr = ''
 
     for target in targets.values():
+        target['value'] = target.get('value', 'value')
         targetsstr += """
                         {
                             "target": "randomWalk('random walk')",
                             "function":"%(function)s",
-                            "column": "value / %(divisor)s",
+                            "column": "%(value)s",
                             "series": "%(series)s",
                             "query": "",
                             "alias": "%(alias)s",
@@ -44,7 +45,7 @@ def main(j, args, params, tags, tasklet):
                     "y-axis": true,
                     "scale": 1,
                     "y_formats": [
-                        "short",
+                        "%(y_format)s",
                         "short"
                     ],
                     "grid": {
@@ -61,12 +62,12 @@ def main(j, args, params, tags, tasklet):
                     },
                     "resolution": 100,
                     "lines": true,
-                    "fill": 1,
+                    "fill": %(fill)s,
                     "linewidth": 2,
                     "points": false,
                     "pointradius": 5,
                     "bars": false,
-                    "stack": true,
+                    "stack": %(stack)s,
                     "spyable": true,
                     "options": false,
                     "legend": {
@@ -81,7 +82,7 @@ def main(j, args, params, tags, tasklet):
                     "interactive": true,
                     "legend_counts": true,
                     "timezone": "browser",
-                    "percentage": false,
+                    "percentage": %(percentage)s,
                     "zerofill": true,
                     "nullPointMode": "connected",
                     "steppedLine": false,

@@ -18,6 +18,6 @@ h2. Disk $$id
 
 h3. Disk Statistics
 
-{{html:
-<iframe height="600px" frameborder="0" width="1000px" src="/jslib/grafana/iframe2.html#/dashboard/script/DiskStats.js?nid=$$nid&gid=$$gid&name=$$name"></iframe>
-}}
+
+{{include:graph_disk}}
+{{include:graph_diskusage}}
