@@ -13,7 +13,6 @@
 		Create a new cpu node
 		"""
 		var:login str,,login to connect to the node
-		var:passwd str,,password of the login given in argument
 		var:pubkey str,,public ssh key of the cpunode
 		var:hostname str,,hostname of the cpunode
 		result:str  #returns the newly generated bootstrap script
