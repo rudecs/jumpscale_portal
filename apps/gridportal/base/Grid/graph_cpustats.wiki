@@ -1,0 +1,14 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value / 10.0,
+    series:{gid}_{id}_cpu.promile.gauge,
+    alias:CPU,
+    interval:1m,
+
+cfg.title = CPU Percent
+cfg.height = 275px
+cfg.width = 500px
+
+}}

@@ -5,7 +5,7 @@ import pprint
 import os
 import sys
 import redis
-import shutil
+import requests
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -70,6 +70,7 @@ class PortalServer:
         self.watchedspaces = []
         self.pageKey2doc = {}
         self.routes = {}
+        self.proxies = {}
 
         self.loadConfig()
 
@@ -157,6 +158,10 @@ class PortalServer:
         j.system.fs.createDir(self.logdir)
 
         self.getContentDirs()
+
+        # load proxies
+        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').iteritems():
+            self.proxies[proxy['path']] = proxy
 
     def reset(self):
         self.routes={}
@@ -613,6 +618,24 @@ class PortalServer:
             response = response['content']
         return [response]
 
+    def process_proxy(self, ctx, proxy):
+        path = ctx.env['PATH_INFO']
+        method = ctx.env['REQUEST_METHOD']
+        query = ctx.env['QUERY_STRING']
+        headers = {}
+        for name, value in ctx.env.iteritems():
+            if name.startswith('HTTP_'):
+                headers[name[5:].replace('_', '-')] = value
+        desturl = proxy['dest'] + path[len(proxy['path']):]
+        if query:
+            desturl += "?%s" % query
+        req = requests.Request(method, desturl, data=ctx.env['wsgi.input'], headers=headers).prepare()
+        session = requests.Session()
+        resp = session.send(req, stream=True)
+        ctx.start_response('%s %s' % (resp.status_code, resp.reason), headers=resp.headers.items())
+        for chunk in resp.raw:
+            yield chunk
+
     def path2spacePagename(self, path):
 
         pagename = ""
@@ -938,6 +961,10 @@ class PortalServer:
         ctx = RequestContext(application="", actor="", method="", env=environ,
                              start_response=start_response, path=path, params=None)
         ctx.params = self._getParamsFromEnv(environ, ctx)
+
+        for proxypath, proxy in self.proxies.iteritems():
+            if path.startswith(proxypath.lstrip('/')):
+                return self.process_proxy(ctx, proxy)
 
         if path.find("jslib/") == 0:
             path = path[6:]
