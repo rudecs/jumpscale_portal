@@ -104,7 +104,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
 
         script = """
 #!/bin/bash
-echo %s >> ~/.ssh/authorized_keys
+echo '%s' >> ~/.ssh/authorized_keys
 autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}
 """ % sshkey.hrd.getStr('instance.key.pub')
 
