@@ -16,7 +16,8 @@ class system_cpunode(j.code.classGetBase()):
         return the init script for creating a new node
         result str
         """
-        _, portalAddrr = j.system.net.getDefaultIPConfig()
+        ctx = kwargs["ctx"]
+        host = ctx.env['HTTP_HOST']
         script = """#!/bin/bash
 
 PRIVPATH="$HOME/.ssh/id_dsa"
@@ -27,11 +28,10 @@ then
 fi
 PUBKEY=`cat $PUBPATH`
 
-curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http://%s:82/restmachine/system/cpunode/create | bash"""
-        ctx = kwargs["ctx"]
+curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http://%s/restmachine/system/cpunode/create | bash""" % host
         headers = [('Content-Type', 'text/plain'), ]
         ctx.start_response("200", headers)
-        return (script % portalAddrr).strip()
+        return script
 
     def create(self, login, pubkey, hostname, **kwargs):
         """
