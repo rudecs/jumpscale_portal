@@ -72,7 +72,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
         # remove service if already exists
         nodes = j.atyourservice.findServices(name='node.ssh', instance=hostname, parent=loc)
         for n in nodes:
-            j.system.fs.removeDirTree(n.path)
+            j.atyourservice.remove(n.domain, n.name, n.instance, n.parent)
 
         try:
             masterPort = self._findFreePort()
@@ -80,6 +80,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
             ctx.start_response("500", headers)
             return "echo %s" % e.message
 
+        # creation of the node.ssh service to connect to the node
         nodePort = 22
         masterLogin = os.environ['USER']
         _, masterAddr = j.system.net.getDefaultIPConfig()
@@ -103,8 +104,10 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
 
         script = """
 #!/bin/bash
+echo %s >> ~/.ssh/authorized_keys
 autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}
-"""
+""" % sshkey.hrd.getStr('instance.key.pub')
+
         ctx.start_response("201", headers)
         return script.format(
             masterPort=masterPort,
