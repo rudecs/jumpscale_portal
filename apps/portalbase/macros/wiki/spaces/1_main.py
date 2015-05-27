@@ -11,30 +11,35 @@ def main(j, args, params, tags, tasklet):
     
     bullets = params.tags.labelExists("bullets")
     table = params.tags.labelExists("table")
-    filterbyuser = params.tags.labelExists("filterbyuser")
     isgitlab = j.core.portal.active.authentication_method == 'gitlab'
     addSpinner = isgitlab
     
     spaces = j.core.portal.active.getUserSpaces(params.requestContext)
     if isgitlab:
         gitlabnonclonedspaces = [s[s.index('portal_'):] for s in j.core.portal.active.getNonClonedGitlabSpaces(params.requestContext)]
-    spaces.sort()
+        spaces = {}
+        for s in j.core.portal.active.getUserSpacesObjects(params.requestContext):
+            if s['namespace']['name']:
+                spaces[s['name']] = "%s_%s" % (s['namespace']['name'], s['name'])
+            else:
+                spaces[s['name']] = s['name']
+    else:
+        spaces = {}
+        for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
+            space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
+            spaces[spaceid] = space.model.name
+
     excludes=[]
     if params.tags.tagExists("exclude"):
         excludes=params.tags.tagGet("exclude").split(",")
         excludes=[item.strip().lower() for item in excludes]
-    
-    for item in spaces:
-        item = item.lower()
-        if  item not in excludes:
-            anchor = item.strip("/")
-            if isgitlab:
-                idx = item.find('_')
-                anchor = item
-                item = item[idx+1:]
-                spacename = item[:idx]
+
+    for spaceid, name in sorted(spaces.iteritems(), key=lambda x:x[1]):
+        spaceid = spaceid.lower()
+        if  spaceid not in excludes:
+            anchor = spaceid.strip("/")
             if table:
-                out += "|[%s|/%s]|" % (item, anchor)
+                out += "|[%s|/%s]|" % (name, anchor)
             else:
                 if item[0] != "_" and item.strip() != "" and item.find("space_system")==-1:
                     if bullets:
