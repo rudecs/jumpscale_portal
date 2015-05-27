@@ -99,17 +99,20 @@ class LoaderBaseObject():
         if not j.system.fs.exists(cfgpath):
             self.createDefaults(path)
 
-        # if j.system.fs.exists(cfgpath):
-            # ini=j.tools.inifile.open(cfgpath)
-        # if ini.checkParam("main","name"):
-        j.system.fs.remove(cfgpath)
-        ini = j.tools.inifile.new(cfgpath)
+        if j.system.fs.exists(cfgpath):
+            ini=j.tools.inifile.open(cfgpath)
+        else:
+            ini = j.tools.inifile.new(cfgpath)
         ini.addSection("main")
         name=j.system.fs.getDirName(path, True)
         ini.setParam("main", "id", name)
         ini.write()
 
         self.model.id = name
+        if ini.checkParam('main', 'name'):
+            self.model.name = ini.getValue('main', 'name')
+        else:
+            self.model.name = name
         self.model.path=path
         self.processAcl()
 
