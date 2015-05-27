@@ -83,7 +83,8 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
         # creation of the node.ssh service to connect to the node
         nodePort = 22
         masterLogin = os.environ['USER']
-        _, masterAddr = j.system.net.getDefaultIPConfig()
+        host = ctx.env['HTTP_HOST']
+        masterAddr = host.split(':')[0]
         data = {
             "instance.ip": "127.0.0.1",  # localhost cause we reverse ssh tunnel
             "instance.ssh.port": masterPort,
