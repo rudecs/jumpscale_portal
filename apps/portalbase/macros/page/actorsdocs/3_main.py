@@ -48,7 +48,9 @@ def main(j, args, params, tags, tasklet):
                     }
                 },
                 docExpansion: "none",
-                sorter : "alpha"
+                sorter : "alpha",
+                apisSorter : "alpha",
+                operationsSorter: "alpha"
             });
 
             window.swaggerUi.load();
