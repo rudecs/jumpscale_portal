@@ -1,0 +1,17 @@
+{{template domain:$$domain name:$$name}}
+
+{{actions:
+- display: Install
+  action: /restmachine/cloudbroker/account/disable
+  data:
+   accountname: ${name}
+  input:
+  - reason
+
+- display: New Instance
+  action: /restmachine/cloudbroker/account/enable
+  data:
+   accountname: ${name}
+  input:
+  - reason
+}}

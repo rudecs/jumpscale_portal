@@ -1,0 +1,49 @@
+@usedefault
+
+{{service domain:$$domain sname:$$sname}}
+
+{{actions:
+
+- display: Start
+  action: AYS/serviceaction
+  data:
+   domain: ${domain}
+   sname: $$sname
+   instance: ${instance}
+   action: 'start'
+
+- display: Stop
+  action: AYS/serviceaction
+  data:
+   domain: ${domain}
+   sname: $$sname
+   instance: ${instance}
+   action: 'stop'
+}}
+
+h3. Details
+|*Domain*|${domain}|
+|*Name*|${name}|
+|*Instance*|${instance}|
+|*Producers*|${producers}|
+|*Args*|${args}|
+|*No Remote*|${noremote}|
+|*Template Path*|${templatepath}|
+|*Categories*|${categories}|
+|*Command*|${cmd}|
+|*Parent*|${parent}|
+|*Path*|${path}|
+|*Priority*|${priority}|
+|*Process Dicts*|${processDicts}|
+|*TCP Ports*|${tcpPorts}|
+|*Parents*|${parents}|
+|*Is Installed*|${isInstalled}|
+|*Dependencies*|${dependencies}|
+|*Dependency Chain*|${dependencyChain}|
+|*Children*|${children}|
+|*Log Path*|${logPath}|
+|*Is Latest*|${isLatest}|
+
+{{code:
+${hrd}
+}}

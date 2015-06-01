@@ -1,0 +1,55 @@
+
+{{title:GRID}}
+{{ApplyFlatTheme}}
+
+{{find}}
+
+
+
+{{menu:
+GridPortal:/grid
+MS1Portal:/cbgrid
+}}
+
+{{menuspaces: name:GRID class:brand marker:$$$pages}}
+
+{{menuadmin:
+Services:/AYS/Services
+Templates:/AYS/Templates
+ServiceStatus:/AYS/ServiceStatus
+}}
+
+
+@block
+@row
+
+@col 10
+
+{{breadcrumbs}}
+{content}
+
+@divend
+@divend
+
+
+{{cssstyle
+td {
+	min-width: 100px;
+    max-width:400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.fixFirefoxSizing td{
+	max-width: 336px;
+}
+.fixFirefoxSizing .dataTables_wrapper.form-inline{
+	width: 120% !important;
+}
+.dataTables_wrapper.form-inline{
+	width: 116% !important;
+}
+
+}}
+
+
