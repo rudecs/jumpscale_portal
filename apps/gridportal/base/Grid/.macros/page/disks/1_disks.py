@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
         if not disksize or not diskfree:
             diskusage = 'N/A'
         else:
-            diskusage = '%s%%' % (100 - int(100.0 * diskfree / disksize))
+            diskusage = '%s%%' % (int(100.0 * diskfree / disksize))
         return diskusage
 
     def _diskSize(disk, field):
