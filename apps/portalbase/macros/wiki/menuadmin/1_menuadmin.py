@@ -50,7 +50,7 @@ column.Pages =
         adminmenu = """
 {{menudropdown: name:Administration
 New Page:/system/create
-Edit Page:/system/edit?space=$$space&page=$$page$$querystr
+Edit Page:/system/edit?space=$$space&page=$$page&$$querystr
 Create Space:/system/createspace
 --------------
 Files:/system/files?space=$$space
