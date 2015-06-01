@@ -24,7 +24,7 @@ def main(j, args, params, tags, tasklet):
             # add links
             value = jscript[field]
             if field == 'name':
-                line.append('[%s|/grid/jumpscript?organization=%s&name=%s]' % (value, jscript['organization'], value))
+                line.append('[%s|/grid/jumpscript?organization=%s&jsname=%s]' % (value, jscript['organization'], value))
             else:
                 text = str(value).replace('\n', '')
                 line.append(str(text))

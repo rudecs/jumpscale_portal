@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     actor=j.apps.actorsloader.getActor("system","gridmanager")
 
     organization = args.getTag("organization")
-    name = args.getTag("name")
+    name = args.getTag("jsname")
 
     out = ''
     missing = False
