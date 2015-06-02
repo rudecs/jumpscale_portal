@@ -18,6 +18,11 @@ todo
 - create code generation to generate swagger 2.0 specs from the eve structure
 - create code generation to generate python client which is compatible with osis (if possible) client so portal does not need to be changed
 
+macro's
+- document the eve based grid macro's
+- make sure the even based grid macro's have style in line with other macro's
+- test the macro's 
+
 why
 - this will allow easier integration for 3e party with our database structure
 - this will allow to use other databases e.g. sqlite under eve which will allow deployment for smaller environments 
