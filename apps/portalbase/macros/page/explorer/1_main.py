@@ -16,11 +16,13 @@ def main(j, args, params, tags, tasklet):
 
     if args.tags.tagExists("ppath"):
         path = args.tags.tagGet("ppath").replace("+", ":").replace("___", ":").replace("\\", "/")
+        origpath = path
+        path = j.dirs.replaceTxtDirVars(path)
         if not j.system.fs.exists(path):
             page.addMessage("ERROR:could not find file %s" % path)
         apppath = j.core.portal.active.basepath
         codepath = os.getcwd()
-        if path.startswith('/') and not (path.startswith(apppath) or path.startswith(codepath)):
+        if path.startswith('/') and not (path.startswith(apppath) or path.startswith(codepath) or origpath != path):
             path = ''
 
     if args.tags.tagExists("bucket"):
