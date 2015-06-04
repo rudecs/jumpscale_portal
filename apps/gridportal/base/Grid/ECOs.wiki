@@ -34,10 +34,6 @@
         data:appname,
         header:App name,
 
-    column.6 =
-        data:pid,
-        header:PID,
-
     column.7 =
         data:nid,
         header:Node ID,
