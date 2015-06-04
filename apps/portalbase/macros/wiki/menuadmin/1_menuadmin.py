@@ -26,11 +26,11 @@ def main(j, args, params, tags, tasklet):
                 spaces[s['name']] = s['name']
     else:
         spaces = {}
-        for space in j.core.portal.active.getUserSpaces(params.requestContext):
-            name = j.core.portal.active.getSpace(space, ignore_doc_processor=True).model.id
-            spaces[name] = space
+        for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
+            space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
+            spaces[spaceid] = space.model.name
     spacestxt=""
-    for name, space in spaces.iteritems():
+    for space, name in sorted(spaces.iteritems(), key=lambda x:x[1]):
         if not name.startswith('_'):
             spacestxt += "%s:/%s,\n        " % (name, space.lower().strip("/"))
 
@@ -50,7 +50,7 @@ column.Pages =
         adminmenu = """
 {{menudropdown: name:Administration
 New Page:/system/create
-Edit Page:/system/edit?space=$$space&page=$$page$$querystr
+Edit Page:/system/edit?space=$$space&page=$$page&$$querystr
 Create Space:/system/createspace
 --------------
 Files:/system/files?space=$$space

@@ -1,0 +1,25 @@
+{{drawgraph:
+
+target.1 =
+    function:difference,
+    value:value * 1024,
+    series:{gid}_{id}_network.kbytes.recv.gauge,
+    alias:Received,
+    interval:2m,
+
+target.2 =
+    function:difference,
+    value:value * 1024,
+    series:{gid}_{id}_network.kbytes.send.gauge,
+    alias:Sent,
+    interval:2m,
+
+
+cfg.title = Network Traffic
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = false
+cfg.fill = 0
+cfg.y_format = bytes
+
+}}

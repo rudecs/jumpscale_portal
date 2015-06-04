@@ -1,0 +1,3 @@
+@usedefault
+
+{{serviceaction domain:$$domain sname:$$sname instance:$$instance action:$$action}}

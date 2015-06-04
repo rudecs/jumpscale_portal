@@ -1,4 +1,3 @@
-
 def main(j, args, params, tags, tasklet):
 
     page = args.page
@@ -57,7 +56,7 @@ def main(j, args, params, tags, tasklet):
     T = T.replace("{classtags}", classtags)
     if page.logo != "":
         # will be logo
-        T = T.replace("{brand}", "<a class=\"brand\" href=\"#\"><img src=\"%s\" alt=\"logo\" title=\"logo\"></a>" % page.logo)
+        T = T.replace("{brand}", "<a class=\"brand\" href=\"#\"><img style=\"margin-top: -5px;\" src=\"%s\" alt=\"logo\" title=\"logo\"></a>" % page.logo)
     elif page.projectname != "":
         T = T.replace("{brand}", "<a class=\"brand\" href=\"/%s\">%s</a>" % (args.doc.getSpaceName(),page.projectname))
     else:

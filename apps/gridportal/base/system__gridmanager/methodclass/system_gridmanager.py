@@ -402,7 +402,7 @@ class system_gridmanager(j.code.classGetBase()):
         param:jsorganization
         param:jsname
         """
-        return self.osis_jumpscript.simpleSearch({'organization': organization, 'name': name})[0]
+        return self.osis_jumpscript.search({'organization': organization, 'name': name})[1]
 
     def getJumpscripts(self, organization=None, **kwargs):
         """

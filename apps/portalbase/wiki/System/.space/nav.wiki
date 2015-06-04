@@ -1,6 +1,7 @@
 
 Spaces:/system/spaces
 #Rest:/system/rest
+SystemConfig:/system/Systemconfig
 SystemMacros:/system/systemmacros
 Users:/system/userlist
 Groups:/system/groups

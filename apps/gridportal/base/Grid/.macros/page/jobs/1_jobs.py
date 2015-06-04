@@ -22,7 +22,7 @@ def main(j, args, params, tags, tasklet):
             filters['to'] = {'name': 'timeStop', 'value': j.base.time.getEpochAgo(val), 'eq': 'lte'}
         elif tag == 'organization':
             filters['category'] = val
-        elif tag == 'name':
+        elif tag == 'jsname':
             filters['cmd'] = val
         elif tag in ('nid', 'gid') and val:
             filters[tag] = int(val)

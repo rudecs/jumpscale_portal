@@ -5,8 +5,10 @@ eveModule.directive('eveGrid', function($http, $filter) {
         scope: true,
         template:'<div id="spin"></div><table style="margin-top: 10px;" class="table table-striped" cellspacing="0" width="100%"><tfoot><tr><td><button class="delete btn btn-danger" style="padding: 2px 12px;">Delete</button></td></tr></tfoot></table>',
         link: function (scope, element, attrs, ctrl) {
-            if(attrs['eveUrl'][0] == ":"){
-                attrs['eveUrl'] = window.location.hostname + attrs['eveUrl'];
+            if(attrs['eveUrl'][0] == ":" ){
+                attrs['eveUrl'] = window.location.protocol + "//" + window.location.hostname + attrs['eveUrl'];
+            } else if (attrs['eveUrl'][0] == "/") {
+                attrs['eveUrl'] = window.location.protocol + "//" + window.location.host + attrs['eveUrl'];
             }
             var selected = [];
             var notSelected = [];
@@ -35,7 +37,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
             var target = document.getElementById('spin');
             var spinner = new Spinner(opts).spin(target);
             $http({
-                url: 'http://' + attrs['eveUrl'] + attrs['eveSpecPath'],
+                url: attrs['eveUrl'] + attrs['eveSpecPath'],
                 method: 'GET',
 
             }).then(function(data) {
@@ -192,7 +194,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                             var target = document.getElementById('spin');
                             var spinner = new Spinner(opts).spin(target);
                             $http({
-                                url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"],
+                                url: attrs['eveUrl'] + '/' + attrs["eveEntity"],
                                 method: 'GET',
                                 cache: false,
                                 params: requestData
@@ -217,7 +219,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                             var target = document.getElementById('spin');
                             var spinner = new Spinner(opts).spin(target);
                             $http({
-                                url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"],
+                                url: attrs['eveUrl'] + '/' + attrs["eveEntity"],
                                 method: 'GET',
                                 cache: false,
                                 params: requestData
@@ -348,7 +350,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
             angular.element('.eve-grid-container .confirmDelete').on('click', function() {
                 var isAllChecked = angular.element('#' + attrs["eveEntity"] + '-container table').find('.allCheck').is(':checked');
                 $http({
-                    url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"],
+                    url: attrs['eveUrl'] + '/' + attrs["eveEntity"],
                     method: 'GET',
                     cache: false,
                     params: publicRequestData
@@ -359,7 +361,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                     publicRequestData.max_results = data._meta.total;
                     publicRequestData.page = "";
                     $http({
-                        url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"],
+                        url: attrs['eveUrl'] + '/' + attrs["eveEntity"],
                         method: 'GET',
                         cache: false,
                         params: publicRequestData
@@ -380,7 +382,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                                 for (var i = 0; i < data._items.length; i++) {
                                     if( _.where(notSelected,  data._items[i]._id).length == 0 ){
                                         $http({
-                                            url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/'+ data._items[i]._id,
+                                            url: attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/'+ data._items[i]._id,
                                             type: 'POST',
                                             headers: {
                                                 'X-HTTP-Method-Override': 'DELETE',
@@ -397,7 +399,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                             }else{
                                 for (var i = 0; i < data._items.length; i++) {
                                     $http({
-                                        url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/'+ data._items[i]._id,
+                                        url: attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/'+ data._items[i]._id,
                                         type: 'POST',
                                         headers: {
                                             'X-HTTP-Method-Override': 'DELETE',
@@ -415,13 +417,13 @@ eveModule.directive('eveGrid', function($http, $filter) {
                             if(selected.length > 0){
                                 for (var i = 0; i < selected.length; i++) {
                                     $http({
-                                        url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/' + selected[i],
+                                        url: attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/' + selected[i],
                                         method: 'GET',
                                         cache: false,
                                         params: publicRequestData
                                     }).then(function(data) {
                                         $http({
-                                            url: 'http://' + attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/'+ data.data._id,
+                                            url: attrs['eveUrl'] + '/' + attrs["eveEntity"] + '/'+ data.data._id,
                                             type: 'POST',
                                             headers: {
                                                 'X-HTTP-Method-Override': 'DELETE',

@@ -7,11 +7,15 @@ h2. Node: $$gridname:$$nodename ($$gid:$$id)
 {{toc: start=3}}
 
 h3. CPU Statistics
-{{html:
 
-<iframe width="1000px" height="300px" src="/jslib/grafana/iframe.html#/dashboard/script/CPUStats.js?nid=$$id&gid=$$gid" frameborder="0"></iframe>
-
-}}
+@row
+@col 6
+{{include:graph_cpustats}}
+@colend
+@col 6
+{{include:graph_systemload}}
+@colend
+@endrow
 
 h3. Info
 
