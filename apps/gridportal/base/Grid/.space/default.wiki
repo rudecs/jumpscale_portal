@@ -28,7 +28,7 @@ Status Check:/grid/checkstatus
 @block
 @row
 
-@col 10
+@col 12
 
 {{breadcrumbs}}
 {content}
@@ -38,9 +38,10 @@ Status Check:/grid/checkstatus
 
 
 {{cssstyle
+/* Specific for Grid space*/
 td {
     /*min-width: 100px;*/
-    max-width:400px;
+    /*max-width:130px;*/
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -49,36 +50,31 @@ td {
     max-width: 336px;
 }
 .fixFirefoxSizing .dataTables_wrapper.form-inline{
-    width: 120% !important;
+    width: 95% !important;
 }
 .dataTables_wrapper.form-inline{
-    width: 116% !important;
+    width: 97% !important;
 }
-
-/**/
 .bootstrap-datetimepicker-widget{
-    top: -1000px; 
-}
-.bootstrap-datetimepicker-widget.dropdown-menu{
-    opacity: 1;
-}
-.bootstrap-datetimepicker-widget thead tr:first-child th:hover{
-	background: inherit;
-}
-.bootstrap-datetimepicker-widget td, .bootstrap-datetimepicker-widget th{
-	border-radius: 0;
-}
-.bootstrap-datetimepicker-widget.dropdown-menu li:hover{
-	background-color: inherit !important;
-}
-.bootstrap-datetimepicker-widget td.active, .bootstrap-datetimepicker-widget td.active:hover {
-  	background-color: #2f4154;
-}
-.bootstrap-datetimepicker-widget table{
-	background-color: #fff;
-}
-.fixFirefoxSizing .bootstrap-datetimepicker-widget .table-condensed > thead > tr > th{
-	padding: 2px;
-}
+        top: -1000px; 
+    }
+    .bootstrap-datetimepicker-widget.dropdown-menu{
+        opacity: 1;
+    }
+    .bootstrap-datetimepicker-widget thead tr:first-child th:hover{
+        background: inherit;
+    }
+    .bootstrap-datetimepicker-widget td, .bootstrap-datetimepicker-widget th{
+        border-radius: 0;
+    }
+    .bootstrap-datetimepicker-widget.dropdown-menu li:hover{
+        background-color: inherit !important;
+    }
+    .bootstrap-datetimepicker-widget td.active, .bootstrap-datetimepicker-widget td.active:hover {
+        background-color: #2f4154;
+    }
+    .bootstrap-datetimepicker-widget table{
+        background-color: #fff;
+    }
 
 }}

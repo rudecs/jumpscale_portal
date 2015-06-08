@@ -3,7 +3,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
     return {
         restrict: 'EA',
         scope: true,
-        template:'<div id="spin"></div><table style="margin-top: 10px;" class="table table-striped" cellspacing="0" width="100%"><tfoot><tr><td><button class="delete btn btn-danger" style="padding: 2px 12px;">Delete</button></td></tr></tfoot></table>',
+        template:'<div id="spin"></div><table style="margin-top: 10px;" class="table table-striped dataTable table-bordered" cellspacing="0" width="100%"><tfoot><tr><td><button class="delete btn btn-danger" style="padding: 2px 12px;">Delete</button></td></tr></tfoot></table>',
         link: function (scope, element, attrs, ctrl) {
             if(attrs['eveUrl'][0] == ":" ){
                 attrs['eveUrl'] = window.location.protocol + "//" + window.location.hostname + attrs['eveUrl'];
@@ -389,6 +389,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                                                 'If-Match': data._items[i]._etag
                                             }
                                         }).then(function(data) {
+                                            scope.dataTable.draw();
                                             if(searchInputChanged == true){
                                                 selected.length = 0;
                                                 notSelected.length = 0;
@@ -406,6 +407,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                                             'If-Match': data._items[i]._etag
                                         }
                                     }).then(function(data) {
+                                        scope.dataTable.draw();
                                         if(searchInputChanged == true){
                                             selected.length = 0;
                                             notSelected.length = 0;
@@ -430,6 +432,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                                                 'If-Match': data.data._etag
                                             }
                                         }).then(function() {
+                                            scope.dataTable.draw();
                                             if(searchInputChanged == true){
                                                 selected.length = 0;
                                                 notSelected.length = 0;
@@ -441,9 +444,6 @@ eveModule.directive('eveGrid', function($http, $filter) {
                             }                            
                         }
                     });
-                    setTimeout(function() {
-                        scope.dataTable.draw();
-                    }, 400);
                     angular.element('#' + attrs["eveEntity"] + '-container table').find('.allCheck').prop('checked', false);
                 });                
                 $("#confirmModal").modal('hide');

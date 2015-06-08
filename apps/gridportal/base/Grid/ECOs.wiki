@@ -23,26 +23,22 @@
         header:Error Message,
 
     column.3 =
-        data:category,
-        header:Category,
-
-    column.4 =
         data:level,
         header:Level,
 
-    column.5 =
+    column.4 =
         data:appname,
         header:App name,
 
-    column.7 =
+    column.5 =
         data:nid,
         header:Node ID,
 
-    column.8 = 
+    column.6 = 
         data:gid,
         header:GID,
 
-    column.9 =
+    column.7 =
         data:masterjid,
         header:Master JID,
 }}

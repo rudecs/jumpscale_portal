@@ -1,11 +1,14 @@
-.center, table.dataTable td, table.dataTable th{
+.center{
     text-align: center !important;
+}
+table.dataTable td, table.dataTable th{
+	text-align: left;
 }
 table.dataTable tbody tr.selected td{
     /*background-color: #b0bed9;*/
     background-color: #E4F1FE;
 }
-.dataTables_filter, .dataTables_info { 
+.dataTables_filter{ 
     display: none; 
 }
 input.searchInput{
@@ -14,6 +17,7 @@ input.searchInput{
 	margin-right: 3%;
 	width: 60px;
 	font-size: 90%;
+	margin-left: 3%;
 }
 .ui-datepicker{
 	z-index: 2 !important;
@@ -29,7 +33,7 @@ input.searchInput{
 	display: none !important;
 }
 .modal{
-	left: 50% !important;
+	left: 30%;
 	overflow: visible !important;
 	background-color: transparent !important;
 	border: none !important;
