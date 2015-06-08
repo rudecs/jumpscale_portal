@@ -42,7 +42,7 @@ def main(j, args, params, tags, tasklet):
     for title, rows in columns.iteritems():
         if not isinstance(rows, dict):
             continue
-        chunkedrows = list(chunks(rows.items(), 10))
+        chunkedrows = list(chunks(rows.items(), 12))
         amountcolumns += len(chunkedrows)
         for idx, tenrow in enumerate(chunkedrows):
             items += '<li class="mega-menu-column" style="width: {colpercent}%; float: left; padding-left: 10px;">'
@@ -50,7 +50,7 @@ def main(j, args, params, tags, tasklet):
                 items += '<ul>'
                 items += '<li class="dropdown-header">%s</li>' % title
             else:
-                items += '<ul style="padding-top: 34px; min-height: 329px;">'
+                items += '<ul style="padding-top: 34px;">'
             for name, target in tenrow:
                 if name != "" and name[0] != "#":
                     name = name.strip()
