@@ -104,6 +104,9 @@ def main(j, args, params, tags, tasklet):
     .fixFirefoxSizing .dropdown-menu li{
         max-height: 28px;
     }
+    .fixFirefoxSizing .mega-menu li{
+        max-height: initial;
+    }
     .fixFirefoxSizing select, .fixFirefoxSizing input{
         max-height: 27px;
     }
@@ -263,6 +266,7 @@ def main(j, args, params, tags, tasklet):
     .open > .dropdown-menu{
         background-color: #34495e;
         padding: 3px 4px;
+        margin-top: 27px !important;
     }
     .dropdown-menu{
         border-radius: 4px;
@@ -395,6 +399,57 @@ def main(j, args, params, tags, tasklet):
         background: #34495e !important;
         min-height: 300px;
     }
+    /* Mega menu */
+    .dropdown-menu:before{
+        content: "";
+        width: 0;
+        height: 0;
+        border-left: 10px solid rgba(0,0,0,0);
+        border-right: 10px solid rgba(0,0,0,0);
+        border-bottom: 15px solid #34495E;
+        position: absolute;
+        top: -12px;
+        z-index: 100;
+        left: 30px;
+    }
+    .mega-menu{
+        min-width: 400px;
+    }
+    .dropdown-menu.mega-menu li{
+        height: initial;
+    }
+    .mega-menu ul{
+        background-color: #34495e;
+    }
+    .dropdown-menu.mega-menu li:hover, .dropdown-menu.mega-menu .dropdown-header:hover{
+        background-color: initial;
+    }
+    .mega-menu .mega-menu-column li:hover{
+        background-color: #1abc9c;
+    }
+    .mega-menu .mega-menu-column li{
+      max-height: 31px;
+    }
+    .mega-menu-column ul{
+        border-right: 1px solid rgb(94, 94, 94);
+        padding-right: 20px;
+        margin-bottom: 13px;
+    }
+    .mega-menu-column:last-child ul{
+        border-right: 0;
+    }
+    .dropdown-menu.mega-menu .dropdown-header{
+        padding: initial;
+        color: #fff;
+        font-weight: bold;
+        font-size: 96%;
+        border-bottom: 1px solid gray;
+        border-radius: 0;
+        padding-bottom: 8px;
+        margin-right: 60px;
+        margin-bottom: 10px;
+    }
+
 
     ''')
 

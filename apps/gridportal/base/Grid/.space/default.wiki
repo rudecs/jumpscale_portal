@@ -11,8 +11,6 @@ StatusOverview:/grid/checkstatus
 GridPortal:/grid
 }}
 
-{{menuspaces: name:GRID class:brand marker:$$$pages}}
-
 {{menuadmin:
 Alerts:/grid/Alerts
 Audits:/grid/Audits

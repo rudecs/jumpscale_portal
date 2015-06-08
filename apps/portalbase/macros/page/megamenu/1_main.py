@@ -1,5 +1,11 @@
 
 def main(j, args, params, tags, tasklet):
+    def chunks(l, n):
+        """ Yield successive n-sized chunks from l.
+        """
+        for i in xrange(0, len(l), n):
+            yield l[i:i+n]
+
     page = args.page
     params.result = page
 
@@ -16,10 +22,10 @@ def main(j, args, params, tags, tasklet):
 
     ddcode = """
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle pull-right $$class" data-toggle="dropdown">$$name<b class="caret"></b></a>
-  <ul class="dropdown-menu mega-menu">
-       $$items
-  </ul>
+<a href="#" class="dropdown-toggle pull-right {klass}" data-toggle="dropdown">{name}<b class="caret"></b></a>
+<ul class="dropdown-menu mega-menu" style="min-width: {widthsize}px;">
+{items}
+</ul>
 </li>
 """
 
@@ -31,21 +37,30 @@ def main(j, args, params, tags, tasklet):
     contents = j.core.hrd.get(content=args.cmdstr + '\n')
     columns = contents.getDictFromPrefix('column')
 
+    amountcolumns = 0
+
     for title, rows in columns.iteritems():
         if not isinstance(rows, dict):
             continue
-        items += '<div class="mega-menu-column">'
-        items += '<ul><li class="nav-header">%s</li>' % title
-        for name, target in rows.iteritems():
-            if name != "" and name[0] != "#":
-                name = name.strip()
-                line = "<li><a href=\"%s\">%s</a></li>" % (target, name)
-                items += "%s\n" % line
-        items += '</ul></li>'
+        chunkedrows = list(chunks(rows.items(), 10))
+        amountcolumns += len(chunkedrows)
+        for idx, tenrow in enumerate(chunkedrows):
+            items += '<li class="mega-menu-column" style="width: {colpercent}%; float: left; padding-left: 10px;">'
+            if idx == 0:
+                items += '<ul>'
+                items += '<li class="dropdown-header">%s</li>' % title
+            else:
+                items += '<ul style="padding-top: 34px; min-height: 329px;">'
+            for name, target in tenrow:
+                if name != "" and name[0] != "#":
+                    name = name.strip()
+                    line = "<li><a href=\"%s\">%s</a></li>" % (target, name)
+                    items += "%s\n" % line
+            items += '</ul></li>'
 
-    ddcode = ddcode.replace("$$items", items)
-    ddcode = ddcode.replace("$$name", header)
-    ddcode = ddcode.replace("$$class", klass)
+    colpercent = 100 / amountcolumns
+    items = items.format(colpercent=colpercent)
+    ddcode = ddcode.format(items=items, name=header, klass=klass, widthsize=180*amountcolumns)
     ddcode += '$$$menuright'
 
     page.body = page.body.replace(keyword, ddcode)
