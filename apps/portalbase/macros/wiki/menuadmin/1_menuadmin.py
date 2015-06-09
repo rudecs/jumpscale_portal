@@ -34,7 +34,7 @@ def main(j, args, params, tags, tasklet):
         spaces = {}
         for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
             space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
-            spaces[spaceid] = "/%s" % space.model.name
+            spaces[space.model.name] = "/%s" % spaceid
 
     if spaces:
         megamenu['Spaces'] = spaces
