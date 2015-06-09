@@ -1,5 +1,9 @@
+import jinja2 
+from collections import OrderedDict
 
 def main(j, args, params, tags, tasklet):
+    jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
+    hrd = j.application.instanceconfig
     params.merge(args)
     doc = params.doc
 
@@ -8,14 +12,16 @@ def main(j, args, params, tags, tasklet):
 
     navigationmenu = None
     adminmenu = None
+    megamenu = OrderedDict()
 
     pages = macrostr[1:-1]
 
-    pagesstr = ''
-    pages = pagesstr + ',\n        '.join(pages) if pages else ''
-
     if pages:
-        pages += ',\n'
+        pagedict = OrderedDict()
+        megamenu['Pages'] = pagedict
+        for page in pages:
+            pagename, pagelink = page.split(':')
+            pagedict[pagename] = pagelink
 
     if j.core.portal.active.authentication_method == 'gitlab':
         spaces = {}
@@ -23,29 +29,26 @@ def main(j, args, params, tags, tasklet):
             if s['namespace']['name']:
                 spaces[s['name']] = "%s_%s" % (s['namespace']['name'], s['name'])
             else:
-                spaces[s['name']] = s['name']
+                spaces[s['name']] = "/%s" % s['name']
     else:
         spaces = {}
         for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
             space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
-            spaces[spaceid] = space.model.name
-    spacestxt=""
-    for space, name in sorted(spaces.iteritems(), key=lambda x:x[1]):
-        if not name.startswith('_'):
-            spacestxt += "%s:/%s,\n        " % (name, space.lower().strip("/"))
+            spaces[space.model.name] = "/%s" % spaceid
 
-    if pages or spacestxt:
-        navigationmenu = '''
+    if spaces:
+        megamenu['Spaces'] = spaces
+    megamenu.update(hrd.getDictFromPrefix('instance.navigationlinks'))
+    template = jinja.from_string('''
 {{megamenu: name:Navigation
-column.Spaces =
-        %s
+{% for name, links in megamenu.iteritems() %}
+column.${name} ={% for pagename, link in links.iteritems() %}
+        ${pagename}:${link},
 
-column.Pages =
-        %s
-
-}}
-    ''' % (spacestxt, pages)
-       
+{%- endfor %}
+{% endfor %}
+''')
+    navigationmenu = template.render(megamenu=megamenu)
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
         adminmenu = """
 {{menudropdown: name:Administration
@@ -60,15 +63,6 @@ ReloadAll:javascript:reloadAll();void 0;
 Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 }}
 """
-
-
-
-
-#was inside
-#ShowLogs:/system/ShowSpaceAccessLog?space=$$space
-#ResetLogs:/system/ResetAccessLog?space=$$space
-#Spaces:/system/Spaces
-#Pages:/system/Pages?space=$$space
 
     result = ''
     for menu in [navigationmenu, adminmenu]:
