@@ -615,7 +615,7 @@ class PortalServer:
         if 'download' not in params:
             response = j.db.serializers.getSerializerType('j').dumps(response)
         else:
-            response = response['content']
+            response = response.get('content')
         return [response]
 
     def process_proxy(self, ctx, proxy):

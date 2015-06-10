@@ -6,6 +6,7 @@ SystemMacros:/system/systemmacros
 Users:/system/userlist
 Groups:/system/groups
 #Actors:/system/actors
+Code:/system/code
 API:/system/actorsdocs
 #Stats:/system/stats
 PortalLogs:/system/PortalLogs

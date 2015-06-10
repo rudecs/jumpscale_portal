@@ -6,19 +6,18 @@ def main(j, args, params, tags, tasklet):
 
     out = ""
 
-    actors = j.core.portal.active.actorsloader.actors
+    actors = j.core.portal.active.actorsloader.id2object
 
-    for ttype in ["specs", "methodtasklets", "extensions", "wikimacros"]:
-
-        out += "h3. Actor %s\n" % ttype.capitalize()
-
-        for actorname in sorted(actors.keys()):
-            model = actors[actorname].model  # @todo security breach
-            path = os.path.abspath(model.path)
+    for actorname in sorted(actors.keys()):
+        model = actors[actorname].model  # @todo security breach
+        path = os.path.abspath(model.path)
+        if not j.system.fs.exists(path):
             j.system.fs.createDir(path)
-            path = path.replace(":", "___").replace("/", "\\") + "\\%s\\" % ttype
-            # out+="|[%s | /system/Explorer/?path=%s] |[reload | /system/reloadactor/?name=%s]|\n" % (model.id,path,model.id)
-            out += "|[%s | /system/Explorer/?ppath=%s] |\n" % (model.id, path)
+        path = path.replace(":", "___")
+        # out+="|[%s | /system/Explorer/?path=%s] |[reload | /system/reloadactor/?name=%s]|\n" % (model.id,path,model.id)
+        out += "|%s|[Spec|/system/Explorer?ppath=%s]|[Actions|/system/Explorer?ppath=%s]|\n" % (actorname.capitalize(),
+                                                               j.system.fs.joinPaths(path, 'specs'),
+                                                               j.system.fs.joinPaths(path, 'methodclass'))
 
     params.result = out
 

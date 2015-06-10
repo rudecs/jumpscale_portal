@@ -958,7 +958,7 @@ class connector():
 
 		for d in os.listdir(path):
 			pd = os.path.join(path, d)
-			if os.path.isdir(pd) and not os.path.islink(pd):
+			if os.path.isdir(pd):# and not os.path.islink(pd):
 				if fhash == self.__hash(pd):
 					return pd
 				else:
@@ -1210,8 +1210,8 @@ class connector():
 			target = os.path.join(os.path.dirname(path), target)
 		target = os.path.normpath(target)
 		if os.path.exists(target):
-			if not target.find(self._options['root']) == -1:
-				return target
+			# if not target.find(self._options['root']) == -1:
+			return target
 		return False
 
 
