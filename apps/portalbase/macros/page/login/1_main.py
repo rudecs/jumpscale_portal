@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
     
     page.addCSS(cssContent='''
       body{
-        background-color: #1abc9c !important;
+        background-color: #34495e !important;
       }
       .login-form:before{
         border-width: 0;
@@ -22,7 +22,7 @@ def main(j, args, params, tags, tasklet):
         text-align: center;
       }
       .span12, .form-signin{
-        margin-top: 14%;
+        margin-top: 10%;
       }
       .login-field{
         height: 40px !important;
@@ -38,6 +38,9 @@ def main(j, args, params, tags, tasklet):
       }
       .btn-social span{
         margin-left: -20px;
+      }
+      .login-screen{
+        background-color: #34495e;
       }
     ''')
     page.addJS(jsContent='''
