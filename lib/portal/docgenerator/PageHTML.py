@@ -716,6 +716,18 @@ function copyText$id() {
         else:
             self.body += js
 
+    def removeJS(self, jsLink=None, jsContent=None):
+        out = ""
+        js = ''
+        if jsContent:
+            js = "<script type='text/javascript'>\n%s</script>\n" % jsContent
+        else:
+            js = "<script  src='%s' type='text/javascript'></script>\n" % jsLink
+        # import ipdb; ipdb.set_trace()
+        self.head = self.head.replace(js.strip(), '')
+        self.body = self.body.replace(js.strip(), '')
+       
+
     def addScriptBodyJS(self, jsContent):
         self.scriptBody = "%s%s\n" % (self.scriptBody, jsContent)
 

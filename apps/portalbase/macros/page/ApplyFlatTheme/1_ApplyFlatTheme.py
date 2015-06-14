@@ -9,6 +9,11 @@ def main(j, args, params, tags, tasklet):
     page.addCSS('/jslib/new-ui/new-ui.css')
     page.addCSS('/jslib/new-ui/oocss.css')
 
+    page.addJS('/jslib/jquery/jquery-2.0.3.min.js')
+    page.addJS('/jslib/jquery/jquery-migrate-1.2.1.js')
+    page.addJS('/jslib/old/jquery.cookie.js')
+    page.addJS('/jslib/bootstrap/js/bootstrap-3-3-2.min.js')
+
     page.addJS(jsContent='''
         $( function () {
         $('body').addClass('flatTheme');
@@ -54,6 +59,10 @@ def main(j, args, params, tags, tasklet):
     });
      ''')
     
+    page.removeJS('/jslib/old/jquery-latest.js')
+    page.removeJS('/jslib/old/bootstrap/js/bootstrap.js')
+    page.removeJS('/jslib/old/jquery.cookie.js')
+
     page.addCSS('/system/.files/css/flatTheme.css')
 
     params.result = page

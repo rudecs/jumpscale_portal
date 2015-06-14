@@ -17,7 +17,7 @@ def main(j, args, params, tags, tasklet):
     codepaths[j.system.fs.joinPaths('$jumpscriptsdir', 'jumpscripts')] = 'Jumpscripts'
 
     result = list()
-    result.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
+    result.append('''{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}''')
     for path, title in codepaths.iteritems():
         sectionid = 'collapse_%s' % title.replace(' ', '_')
         headingid = 'heading_%s' % title
