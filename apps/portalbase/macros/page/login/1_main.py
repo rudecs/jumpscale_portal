@@ -3,7 +3,9 @@ def main(j, args, params, tags, tasklet):
     page.addCSS("/jslib/bootstrap/css/bootstrap-3-3-1.min.css")
     page.addCSS("/jslib/old/bootstrap/css/bootstrap-responsive.css")
     page.addCSS("/jslib/flatui/css/flat-ui.css")
-    page.addCSS("//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
+    page.addCSS("/jslib/font-awesome/css/font-awesome.min.css")
+    page.addCSS("/jslib/bootstrap/css/bootstrap-social.css")
+    page.addHTMLHeader('''<link rel="shortcut icon" type="image/png" href="/system/.files/img/favicon.png">''')
     
     page.addCSS(cssContent='''
       body{
@@ -28,6 +30,14 @@ def main(j, args, params, tags, tasklet):
       .fixFirefoxSizing{
         transform: scale(0.8, 0.8);
         transform-origin: 45% 0px 0px;
+      }
+      .btn-social{
+        text-shadow: 0 0 0 rgba(255, 255, 255, 0.75) !important;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .btn-social span{
+        margin-left: -20px;
       }
     ''')
     page.addJS(jsContent='''
@@ -61,12 +71,15 @@ def main(j, args, params, tags, tasklet):
             <label class="login-field-icon fui-lock" for="login-pass"></label>
           </div>
 
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>"""
+          <button class="btn btn-primary btn-lg btn-block mbm" type="submit">Sign in</button>"""
     
     oauth_instances = j.application.getAppInstanceHRDs('oauth_client')
     for instance in oauth_instances:
         name = instance.get('service.instance')
-        body += '<a href=/restmachine/system/oauth/authenticate?type=%s><i glyphicon="" class="fa fa-%s"></i> Login with %s </a>' % (name, name, name.capitalize())
+        body += '''
+        <a class="btn btn-block btn-social btn-%s" href=/restmachine/system/oauth/authenticate?type=%s>
+          <i class="fa fa-%s"></i> <span>Login with %s</span>
+        </a>''' % (name, name, name, name.capitalize())
     
     body += """
         </div>
