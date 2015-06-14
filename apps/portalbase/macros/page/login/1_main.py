@@ -66,7 +66,7 @@ def main(j, args, params, tags, tasklet):
     oauth_instances = j.application.getAppInstanceHRDs('oauth_client')
     for instance in oauth_instances:
         name = instance.get('service.instance')
-        body += '<a href=/restmachine/system/oauth/authenticate?type=%s><i glyphicon="" class="fa fa-github"></i> Login with %s </a>' % (name, name.capitalize())
+        body += '<a href=/restmachine/system/oauth/authenticate?type=%s><i glyphicon="" class="fa fa-%s"></i> Login with %s </a>' % (name, name, name.capitalize())
     
     body += """
         </div>
