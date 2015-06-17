@@ -63,8 +63,9 @@ class PortalServer:
         self.epoch = time.time()
         self.force_oauth_url = None
         self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
-        
         force_oauth_instance = self.cfg.get('force_oauth_instance')
+        self.force_oauth_instance = None
+        
         if force_oauth_instance:
             # just make sure the instance is found, otherwise the line will raise exception
             hrd = hrd = j.application.getAppInstanceHRD('oauth_client', force_oauth_instance)
