@@ -38,8 +38,8 @@ class system_oauth(j.code.classGetBase()):
             return 'Not Authorized'
         
         client = j.clients.oauth.get(instance=cache_result['type'])
-        payload = {'code': code, 'client_id': client.id, 'client_secret': client.secret, 'redirect_uri': client.redirect_url}
-        result = requests.post(client.accesstokenaddress, json=payload, headers={'Accept': 'application/json'})
+        payload = {'code': code, 'client_id': client.id, 'client_secret': client.secret, 'redirect_uri': client.redirect_url, 'grant_type':'authorization_code'}
+        result = requests.post(client.accesstokenaddress, data=payload, headers={'Accept': 'application/json'})
         
         if not result.ok or 'error' in result.json():
             ctx.start_response('403 Not Authorized', [])
