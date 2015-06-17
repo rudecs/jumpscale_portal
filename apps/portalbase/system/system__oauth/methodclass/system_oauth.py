@@ -71,7 +71,7 @@ class system_oauth(j.code.classGetBase()):
         session = ctx.env['beaker.session']
         session['user'] = username
         session['email'] = email
-        session['oauth'] = {'authorized':True, 'type':str(cache_result['type'])}
+        session['oauth'] = {'authorized':True, 'type':str(cache_result['type']), 'logout_url':client.logout_url}
         session.save()
         
         ctx.start_response('302 Found', [('Location', str(cache_result['redirect']))])
