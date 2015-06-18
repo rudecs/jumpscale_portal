@@ -82,3 +82,8 @@
 		var:user str,,name of user
         result:list(str) 
 
+	method:whoami
+		"""
+		return username
+		"""
+        result:str

@@ -129,6 +129,14 @@ class system_usermanager(j.code.classGetBase()):
         
         """
         return self.modelUser.exists("%s_%s"%(j.application.whoAmI.gid,name))
+    
+    def whoami(self, **kwargs):
+        """
+        result current user 
+        """
+        ctx = kwargs["ctx"]
+        return ctx.env['beaker.session']["user"]
+
 
     def userregister(self, name, passwd, emails, reference, remarks, config, **args):
         """
