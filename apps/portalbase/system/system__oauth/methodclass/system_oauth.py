@@ -28,15 +28,24 @@ class system_oauth(j.code.classGetBase()):
     
     def authorize(self, **kwargs):
         ctx = kwargs['ctx']
-        code = kwargs['code']
-        state = kwargs['state']
+        code = kwargs.get('code')
+        if not code:
+            ctx.start_response('403 Not Authorized', [])
+            return 'Not Authorized -- Code is missing'
+        
+        state = kwargs.get('state')
+        if not state:
+            ctx.start_response('403 Not Authorized', [])
+            return 'Not Authorized -- State is missing'
+        
         cache = j.clients.redis.getByInstance('system')
-        cache_result = json.loads(cache.get(state))
+        cache_result = cache.get(state)
         
         if not cache_result:
             ctx.start_response('403 Not Authorized', [])
-            return 'Not Authorized'
+            return 'Not Authorized -- Invalid state'
         
+        cache_result = json.loads(cache_result)
         client = j.clients.oauth.get(instance=cache_result['type'])
         payload = {'code': code, 'client_id': client.id, 'client_secret': client.secret, 'redirect_uri': client.redirect_url, 'grant_type':'authorization_code'}
         result = requests.post(client.accesstokenaddress, data=payload, headers={'Accept': 'application/json'})
