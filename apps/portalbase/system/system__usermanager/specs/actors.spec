@@ -82,7 +82,7 @@
 		var:user str,,name of user
         result:list(str) 
 
-	method:whoami
+	method:whoami @noauth
 		"""
 		return username
 		"""

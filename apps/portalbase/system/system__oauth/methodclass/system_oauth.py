@@ -1,5 +1,6 @@
 import urllib
 import requests
+import urlparse
 
 from JumpScale import j
 import JumpScale.baselib.redisworker
@@ -25,6 +26,16 @@ class system_oauth(j.code.classGetBase()):
         cache.set(client.state,cache_data , ex=60)
         ctx.start_response('302 Found', [('Location', client.url)])
         return 'OK'
+    
+    def getOauthLogoutURl(self, **kwargs):
+        ctx = kwargs['ctx']
+        session = ctx.env['beaker.session']
+        if session:
+            oauth = session.get('oauth')
+            if oauth:
+                backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
+                return '%s?%s' % (str(oauth.get('logout_url')), str(urllib.urlencode({'redirect_uri':backurl})))
+        return ''
     
     def authorize(self, **kwargs):
         ctx = kwargs['ctx']

@@ -12,3 +12,8 @@
         """
         """
         result:str
+
+    method:getOauthLogoutURl
+        """
+        """
+        result:str
