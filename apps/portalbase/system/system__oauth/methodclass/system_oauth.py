@@ -1,6 +1,5 @@
 import urllib
 import requests
-import urlparse
 
 from JumpScale import j
 import JumpScale.baselib.redisworker
@@ -33,8 +32,8 @@ class system_oauth(j.code.classGetBase()):
         if session:
             oauth = session.get('oauth')
             if oauth:
-                backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
-                return '%s?%s' % (str(oauth.get('logout_url')), str(urllib.urlencode({'redirect_uri':backurl})))
+                back_uri = urllib.urlencode({'redirect_uri':'/'})
+                return str('%s?%s'% (oauth.get('logout_url'), back_uri))
         return ''
     
     def authorize(self, **kwargs):
