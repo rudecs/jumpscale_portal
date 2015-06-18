@@ -135,7 +135,7 @@ class system_usermanager(j.code.classGetBase()):
         result current user 
         """
         ctx = kwargs["ctx"]
-        return ctx.env['beaker.session']["user"]
+        return str(ctx.env['beaker.session']["user"])
 
 
     def userregister(self, name, passwd, emails, reference, remarks, config, **args):
