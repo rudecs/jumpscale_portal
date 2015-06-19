@@ -105,8 +105,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
         # start jscript that will install the node
         self._scheduleInstall(node, masterAddr)
 
-        script = """
-#!/bin/bash
+        script = """#!/bin/bash
 echo '%s' >> ~/.ssh/authorized_keys
 tmux new-session -d -s jumpscale -n autossh_%s 'autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}'
 """ % (sshkey.hrd.getStr('instance.key.pub'), hostname)
