@@ -18,6 +18,7 @@ class system_cpunode(j.code.classGetBase()):
         """
         ctx = kwargs["ctx"]
         host = ctx.env['HTTP_HOST']
+
         script = """#!/bin/bash
 
 PRIVPATH="$HOME/.ssh/id_dsa"
@@ -106,17 +107,18 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
         self._scheduleInstall(node, masterAddr)
 
         script = """#!/bin/bash
-echo '%s' >> ~/.ssh/authorized_keys
-tmux new-session -d -s jumpscale -n autossh_%s 'autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}'
-""" % (sshkey.hrd.getStr('instance.key.pub'), hostname)
+echo '{key}' >> ~/.ssh/authorized_keys
+tmux new-session -d -s jumpscale -n autossh_{hostname} 'autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}'
+""".format(
+    key=sshkey.hrd.getStr('instance.key.pub'),
+    masterPort=masterPort,
+    nodePort=nodePort,
+    masterLogin=masterLogin,
+    masterAddr=masterAddr,
+    hostname=hostname)
 
         ctx.start_response("201", headers)
-        return script.format(
-            masterPort=masterPort,
-            nodePort=nodePort,
-            masterLogin=masterLogin,
-            masterAddr=masterAddr
-        )
+        return script
 
     def _findFreePort(self):
         port_range = [i for i in xrange(2000, 2500)]
