@@ -101,14 +101,15 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
         # todo handle exeption here
         # todo make sure the key is valid
         authorized_keys_path = j.system.fs.joinPaths(os.environ['HOME'], '.ssh/authorized_keys')
-        j.system.fs.writeFile(authorized_keys_path, pubkey, append=True)
+        j.system.fs.writeFile(authorized_keys_path, pubkey+"\n", append=True)
 
         # start jscript that will install the node
         self._scheduleInstall(node, masterAddr)
 
         script = """#!/bin/bash
 echo '{key}' >> ~/.ssh/authorized_keys
-tmux new-session -d -s jumpscale -n autossh_{hostname} 'autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}'
+tmux kill-session -t jumpscale
+tmux new-session -d -s jumpscale -n autossh_{hostname} 'autossh -o StrictHostKeyChecking=no -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}'
 """.format(
     key=sshkey.hrd.getStr('instance.key.pub'),
     masterPort=masterPort,
