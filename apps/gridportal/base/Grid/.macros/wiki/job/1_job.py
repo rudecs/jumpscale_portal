@@ -42,7 +42,7 @@ def main(j, args, params, tags, tasklet):
             result = json.dumps(result, indent=4, sort_keys=True)
         except:
             pass # so no pretty json then
-        obj['result'] = j.html.escape()
+        obj['result'] = j.html.escape(result)
         obj['resultline'] = '{{successfulresult result:%s}}' % urllib.quote(obj['result'])
 
     if '/' in obj['cmd']:

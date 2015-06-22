@@ -26,20 +26,39 @@ class system_oauth(j.code.classGetBase()):
         ctx.start_response('302 Found', [('Location', client.url)])
         return 'OK'
     
+    def getOauthLogoutURl(self, **kwargs):
+        ctx = kwargs['ctx']
+        session = ctx.env['beaker.session']
+        if session:
+            oauth = session.get('oauth')
+            if oauth:
+                back_uri = urllib.urlencode({'redirect_uri':'/'})
+                return str('%s?%s'% (oauth.get('logout_url'), back_uri))
+        return ''
+    
     def authorize(self, **kwargs):
         ctx = kwargs['ctx']
-        code = kwargs['code']
-        state = kwargs['state']
+        code = kwargs.get('code')
+        if not code:
+            ctx.start_response('403 Not Authorized', [])
+            return 'Not Authorized -- Code is missing'
+        
+        state = kwargs.get('state')
+        if not state:
+            ctx.start_response('403 Not Authorized', [])
+            return 'Not Authorized -- State is missing'
+        
         cache = j.clients.redis.getByInstance('system')
-        cache_result = json.loads(cache.get(state))
+        cache_result = cache.get(state)
         
         if not cache_result:
             ctx.start_response('403 Not Authorized', [])
-            return 'Not Authorized'
+            return 'Not Authorized -- Invalid state'
         
+        cache_result = json.loads(cache_result)
         client = j.clients.oauth.get(instance=cache_result['type'])
-        payload = {'code': code, 'client_id': client.id, 'client_secret': client.secret, 'redirect_uri': client.redirect_url}
-        result = requests.post(client.accesstokenaddress, json=payload, headers={'Accept': 'application/json'})
+        payload = {'code': code, 'client_id': client.id, 'client_secret': client.secret, 'redirect_uri': client.redirect_url, 'grant_type':'authorization_code'}
+        result = requests.post(client.accesstokenaddress, data=payload, headers={'Accept': 'application/json'})
         
         if not result.ok or 'error' in result.json():
             ctx.start_response('403 Not Authorized', [])
@@ -71,7 +90,7 @@ class system_oauth(j.code.classGetBase()):
         session = ctx.env['beaker.session']
         session['user'] = username
         session['email'] = email
-        session['oauth'] = {'authorized':True, 'type':str(cache_result['type'])}
+        session['oauth'] = {'authorized':True, 'type':str(cache_result['type']), 'logout_url':client.logout_url}
         session.save()
         
         ctx.start_response('302 Found', [('Location', str(cache_result['redirect']))])

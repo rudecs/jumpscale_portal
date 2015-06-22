@@ -35,6 +35,8 @@ class PortalAuthenticatorOSIS(object):
         if isinstance(groups, basestring):
             groups = [groups]
         user.groups=groups
+        if isinstance(email, basestring):
+            email = [email]
         user.emails=email
         user.domain=domain
         user.passwd=j.tools.hash.md5_string(password)

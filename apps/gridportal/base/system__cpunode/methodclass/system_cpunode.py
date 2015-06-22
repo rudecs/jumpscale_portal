@@ -18,6 +18,7 @@ class system_cpunode(j.code.classGetBase()):
         """
         ctx = kwargs["ctx"]
         host = ctx.env['HTTP_HOST']
+
         script = """#!/bin/bash
 
 PRIVPATH="$HOME/.ssh/id_dsa"
@@ -47,18 +48,18 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
         headers = [('Content-Type', 'text/plain'), ]
 
         try:
-            loc = j.atyourservice.get(name='location', instance='dev')
+            loc = j.atyourservice.get(name='location', instance='openvc_nodes')
         except RuntimeError as e:
             if e.message.find('cannot find service') == -1:
                 ctx.start_response("500", headers)
                 return "echo %s" % e.message
 
         if loc is None:
-            loc = j.atyourservice.new(name='location', instance='dev')
+            loc = j.atyourservice.new(name='location', instance='openvc_nodes')
             loc.install()
 
         try:
-            sshkey = j.atyourservice.get(name='sshkey', instance='dev', parent=loc)
+            sshkey = j.atyourservice.get(name='sshkey', instance='openvc_nodes', parent=loc)
         except RuntimeError as e:
             if e.message.find('cannot find service') == -1:
                 ctx.start_response("500", headers)
@@ -66,7 +67,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
 
         if sshkey is None:
             data = {'instance.key.priv': ''}  # emtpy trigger autogeneration
-            sshkey = j.atyourservice.new(name='sshkey', instance='dev', args=data, parent=loc)
+            sshkey = j.atyourservice.new(name='sshkey', instance='openvc_nodes', args=data, parent=loc)
             sshkey.install(deps=True)
 
         # remove service if already exists
@@ -90,32 +91,35 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
             "instance.ssh.port": masterPort,
             'instance.sshkey': sshkey.instance,
             'instance.login': login,
-            'instance.password': ""
+            'instance.password': "",
+            'instance.jumpscale': True,
+            'instance.ssh.shell': '/bin/bash -l -c'
         }
-        node = j.atyourservice.new(name='node.ssh', instance='cpu1', args=data, parent=loc)
+        node = j.atyourservice.new(name='node.ssh', instance=hostname, args=data, parent=loc)
         node.init()
 
         # todo handle exeption here
         # todo make sure the key is valid
         authorized_keys_path = j.system.fs.joinPaths(os.environ['HOME'], '.ssh/authorized_keys')
-        j.system.fs.writeFile(authorized_keys_path, pubkey, append=True)
+        j.system.fs.writeFile(authorized_keys_path, pubkey+"\n", append=True)
 
         # start jscript that will install the node
-        self._scheduleInstall(node)
+        self._scheduleInstall(node, masterAddr)
 
-        script = """
-#!/bin/bash
-echo '%s' >> ~/.ssh/authorized_keys
-autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}
-""" % sshkey.hrd.getStr('instance.key.pub')
+        script = """#!/bin/bash
+echo '{key}' >> ~/.ssh/authorized_keys
+tmux kill-session -t jumpscale
+tmux new-session -d -s jumpscale -n autossh_{hostname} 'autossh -o StrictHostKeyChecking=no -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}'
+""".format(
+    key=sshkey.hrd.getStr('instance.key.pub'),
+    masterPort=masterPort,
+    nodePort=nodePort,
+    masterLogin=masterLogin,
+    masterAddr=masterAddr,
+    hostname=hostname)
 
         ctx.start_response("201", headers)
-        return script.format(
-            masterPort=masterPort,
-            nodePort=nodePort,
-            masterLogin=masterLogin,
-            masterAddr=masterAddr
-        )
+        return script
 
     def _findFreePort(self):
         port_range = [i for i in xrange(2000, 2500)]
@@ -127,10 +131,11 @@ autossh -f -NR {masterPort}:localhost:{nodePort} {masterLogin}@{masterAddr}
                 return p
         raise RuntimeError('no available port to connect to')
 
-    def _scheduleInstall(self, node):
+    def _scheduleInstall(self, node, masterAddr):
         args = {
             'node': str(node),
-            'parent': str(node.parent)
+            'parent': str(node.parent),
+            'masterAddr': str(masterAddr)
         }
         clients = j.atyourservice.findServices(name='agentcontroller_client')
         if len(clients) <= 0:

@@ -6,6 +6,7 @@ import os
 import sys
 import redis
 import requests
+import urlparse
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -60,8 +61,15 @@ class PortalServer:
         self.libpath = j.html.getHtmllibDir()
         self.started = False
         self.epoch = time.time()
-
+        self.force_oauth_url = None
         self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
+        force_oauth_instance = self.cfg.get('force_oauth_instance')
+        self.force_oauth_instance = None
+        
+        if force_oauth_instance:
+            # just make sure the instance is found, otherwise the line will raise exception
+            hrd = hrd = j.application.getAppInstanceHRD('oauth_client', force_oauth_instance)
+            self.force_oauth_instance = force_oauth_instance
 
         j.core.portal.active=self
 
@@ -818,6 +826,11 @@ class PortalServer:
 
     def startSession(self, ctx, path):
         session = ctx.env['beaker.session']
+        if 'user_login_' in ctx.params and ctx.params.get('user_login_') == 'guest' and  self.force_oauth_instance:
+            
+            ctx.start_response('302 Found', [('Location', '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance})))])
+            return False, []
+        
         # Already logged in user can't access login page again
         if 'user_logoff_' not in ctx.params and path.endswith('system/login') and 'user' in session and session['user'] != 'guest':
             ctx.start_response('204', [])
@@ -846,11 +859,22 @@ class PortalServer:
 
         if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
             if session.get('user', '') not in ['guest', '']:
+                # If user session is oauth session and logout url is provided, redirect user to that URL
+                # after deleting session which will invalidate the oauth server session
+                # then redirects user back to where he was in portal
+                oauth =  session.get('oauth')
+                oauth_logout_url = ''
+                if oauth:
+                    oauth_logout_url = oauth.get('logout_url')
                 session.delete()
                 session = ctx.env['beaker.get_session']()
                 ctx.env['beaker.session'] = session
             session['user'] = 'guest'
             session.save()
+            if oauth_logout_url:
+                backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
+                ctx.start_response('302 Found', [('Location', '%s?%s' % (str(oauth_logout_url), str(urllib.urlencode({'redirect_uri':backurl}))))])
+                return False, session
             return True, session
 
         if "user_login_" in ctx.params:
