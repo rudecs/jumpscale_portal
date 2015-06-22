@@ -108,3 +108,11 @@ class system_usermanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method userregister")
+
+    def whoami(self, **kwargs):
+        """
+        return username
+        result str
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method whoami")
