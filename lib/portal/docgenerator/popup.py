@@ -127,7 +127,7 @@ class Popup(object):
         if jsLink not in page.head:
             page.addJS(jsLink)
 
-        js = '''$(function(){
+        js = self.jinja.from_string('''$(function(){
             $('.popup_form').ajaxForm({
                 clearForm: true,
                 beforeSubmit: function(formData, $form, options) {
@@ -150,13 +150,15 @@ class Popup(object):
                     this.popup.find('.modal-body-error').show();
                 }
             });
-            $('.modal').on('hidden', function() {
+            $('#${id}').live('hidden', function () {
                 $(this).find("input,select,textarea").prop("disabled", false)
                 $(this).find('.modal-footer > .btn-primary').button('reset').show();
                 $(this).find('.modal-body').hide();
                 $(this).find('.modal-body-form').show();
             });
-        });'''
+        });''')
+
+        js = js.render(id=self.id)
 
         if js not in page.head:
             page.addJS(jsContent=js)
