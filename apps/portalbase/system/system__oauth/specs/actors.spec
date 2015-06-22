@@ -13,7 +13,7 @@
         """
         result:str
 
-    method:getOauthLogoutURl
+    method:getOauthLogoutURl @noauth
         """
         """
         result:str
