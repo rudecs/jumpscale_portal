@@ -151,7 +151,6 @@ class Popup(object):
                 }
             });
             $('#${id}').on('hidden.bs.modal', function () {
-                console.log("tesssst");
                 $(this).find("input,select,textarea").prop("disabled", false)
                 $(this).find('.modal-footer > .btn-primary').button('reset').show();
                 $(this).find('.modal-body').hide();
