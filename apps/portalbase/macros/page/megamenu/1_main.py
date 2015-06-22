@@ -58,7 +58,7 @@ def main(j, args, params, tags, tasklet):
                     items += "%s\n" % line
             items += '</ul></li>'
 
-    colpercent = 100 / amountcolumns
+    colpercent = 100 / (amountcolumns or 1)
     items = items.format(colpercent=colpercent)
     ddcode = ddcode.format(items=items, name=header, klass=klass, widthsize=180*amountcolumns)
     ddcode += '$$$menuright'
