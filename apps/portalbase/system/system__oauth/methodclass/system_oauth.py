@@ -28,14 +28,26 @@ class system_oauth(j.code.classGetBase()):
     
     def getOauthLogoutURl(self, **kwargs):
         ctx = kwargs['ctx']
+        redirecturi = ctx.env.get('HTTP_REFERER')
+        if not redirecturi:
+            redirecturi = 'http://%s'% ctx.env['HTTP_HOST']
         session = ctx.env['beaker.session']
         if session:
             oauth = session.get('oauth')
             if oauth:
-                back_uri = urllib.urlencode({'redirect_uri':'/'})
-                return str('%s?%s'% (oauth.get('logout_url'), back_uri))
+                back_uri = urllib.urlencode({'redirect_uri': redirecturi})
+                session.delete()
+                session.save()
+                location = str('%s?%s'% (oauth.get('logout_url'), back_uri))
+                ctx.start_response('302 Found', [('Location', location)])
+            else:
+                ctx.start_response('302 Found', [('Location', redirecturi)])
+        else:
+            ctx.start_response('302 Found', [('Location', redirecturi)])
         return ''
+	
     
+ 
     def authorize(self, **kwargs):
         ctx = kwargs['ctx']
         code = kwargs.get('code')
