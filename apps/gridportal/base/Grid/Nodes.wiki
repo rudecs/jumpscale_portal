@@ -1,6 +1,9 @@
 @usedefault
 
+h2. Bootstrap CPU Node
+execute this line on the node you want to bootstrap
+{{nodebootstrap}}
+
 h2. Nodes
 
 {{nodes: gid:$$gid name:$$name roles:$$roles ipaddr:$$ipaddr macaddr:$$macaddr active:$$active peer_stats:$$peer_stats peer_log:$$peer_log peer_backup:$$peer_backup lastcheckFrom:$$lastcheckFrom lastcheckTo:$$lastcheckTo}}
-

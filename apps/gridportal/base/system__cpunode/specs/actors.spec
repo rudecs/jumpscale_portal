@@ -2,13 +2,13 @@
 	"""
 	API Actor api for managing cpu node creation and bootstraping
 	"""    
-	method:init @noauth
+	method:init
 		"""
 		return the init script for creating a new node
 		"""
 		result:str  #returns script for creating a new node
 
-	method:create @noauth
+	method:create
 		"""
 		Create a new cpu node
 		"""

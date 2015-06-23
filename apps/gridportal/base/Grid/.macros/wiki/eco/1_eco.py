@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
     obj['epoch'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['epoch']
     obj['lasttime'] = "{{div: class=jstimestamp data-ts=%s}}{{div}}" % obj['lasttime']
     for attr in ['errormessage', 'errormessagePub']:
-        obj[attr] = obj[attr].replace('\n', '<br>').replace('[', '\[')
+        obj[attr] = j.html.escape(obj[attr])
     for attr in ['jid']:
         obj['jid'] = '[%(jid)s|job?id=%(jid)s]|' % obj if obj[attr] != 0 else 'N/A'
     obj['id'] = id

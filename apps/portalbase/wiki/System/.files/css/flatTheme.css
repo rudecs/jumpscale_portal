@@ -344,7 +344,6 @@ div.dataTables_length select{
 /* Edit Page */
 .cm-s-monokai.CodeMirror{
     background: #34495e !important;
-    min-height: 300px;
 }
 /* Mega menu */
 .dropdown-menu:before{
