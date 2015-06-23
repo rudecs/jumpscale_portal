@@ -327,7 +327,7 @@ class PageHTML(Page):
         self.addList([row])
 
     def addCodeBlock(self, code, template="python", path="", edit=True, exitpage=True, spacename='', pagename='',linenr=False,\
-        linecolor="#eee",linecolortopbottom="1px solid black",wrap=True,wrapwidth=100, querystr=None):
+        linecolor="#eee",linecolortopbottom="1px solid black",wrap=True,wrapwidth=100, querystr=None, theme='monokai'):
         """
         @todo define types of templates supported
         @template e.g. python
@@ -335,7 +335,6 @@ class PageHTML(Page):
         """
         # if codeblock no postprocessing(e.g replacing $$space, ...) should be
         # done
-        theme = 'monokai'
 
         if edit:
             self.processparameters['postprocess'] = False

@@ -2,6 +2,8 @@
 def main(j, args, params, tags, tasklet):
     page = args.page
     template = args.getTag('template', 'python')
+    theme = args.getTag('theme', 'monokai')
+    linenr = 'nolinenr' not in args.tags.labels
     wrap = 'nowrap' not in args.tags.labels
     page.addBootstrap()
     macrostr = args.macrostr.strip()
@@ -9,8 +11,8 @@ def main(j, args, params, tags, tasklet):
     content = content.replace("\{", "{")
     content = content.replace("\}", "}")
 
-    page.addCodeBlock(content, edit=False, exitpage=True, spacename='', pagename='',linenr=True,\
-        linecolor="#eee",linecolortopbottom="1px solid black", template=template, wrap=wrap)
+    page.addCodeBlock(content, edit=False, exitpage=True, spacename='', pagename='',linenr=linenr,\
+        linecolor="#eee",linecolortopbottom="1px solid black", template=template, wrap=wrap, theme=theme)
 
     params.result = page
     return params

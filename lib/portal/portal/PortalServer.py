@@ -43,7 +43,9 @@ CONTENT_TYPE_PNG = 'image/png'
 def exhaustgenerator(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
-        if isinstance(result, collections.Iterable):
+        if isinstance(result, basestring):
+            yield result
+        elif isinstance(result, collections.Iterable):
             for value in result:
                 yield value
         else:

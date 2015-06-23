@@ -13,6 +13,12 @@
 }}
 
 h3. Details
+
+*Error Message*
+{{code: template:text nolinenr theme:neat
+${errormessage}
+}}
+
 |*Application Name*|${appname}|
 |*Category*|${category}|
 |*Job*|${jid}|
@@ -23,7 +29,6 @@ h3. Details
 |*Last Time*|${lasttime}|
 |*Occurrences*|${occurrences}|
 |*Error Message Pub*|${errormessagepub}|
-|*Error Message*|${errormessage}|
 |*Function Name*|${funcname}|
 |*Function Line Number*|${funclinenr}|
 |*Function File Name*|${funcfilename}|
