@@ -21,7 +21,7 @@ class system_cpunode(j.code.classGetBase()):
         authkey = ctx.params['authkey']
 
         script = """#!/bin/bash
-
+apt-get install autossh -y
 PRIVPATH="$HOME/.ssh/id_dsa"
 PUBPATH="$PRIVPATH.pub"
 if [ ! -e "$PUBPATH" ]
