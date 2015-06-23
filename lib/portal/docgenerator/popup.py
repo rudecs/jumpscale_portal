@@ -81,9 +81,9 @@ class Popup(object):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height">${label}</label>
-                {% for title, value in options %}
+                {% for title, value, checked in options %}
                     <label class="checkbox">
-                      <input type="checkbox" name="${name}_${loop.index}" value="${value}" />
+                      <input type="checkbox" {% if checked %}checked{% endif%} name="${name}" value="${value}" />
                       ${title}
                     </label>
                 {% endfor %}

@@ -417,3 +417,6 @@ select{
 table.table{
     margin-left: 15px;
 }
+.checkbox input, .radio input{
+    display: inline;
+}
