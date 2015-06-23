@@ -97,7 +97,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
             'instance.ssh.shell': '/bin/bash -l -c'
         }
         node = j.atyourservice.new(name='node.ssh', instance=hostname, args=data, parent=loc)
-        node.init()
+        node.hrd # force creation of service.hrd and action.py
 
         # todo handle exeption here
         # todo make sure the key is valid
