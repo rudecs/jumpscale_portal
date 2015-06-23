@@ -47,6 +47,7 @@ column.${name} ={% for pagename, link in links.iteritems() %}
 
 {%- endfor %}
 {% endfor %}
+}}
 ''')
     navigationmenu = template.render(megamenu=megamenu)
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
