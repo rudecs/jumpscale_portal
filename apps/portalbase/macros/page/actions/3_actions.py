@@ -3,19 +3,29 @@ def main(j, args, params, tags, tasklet):
     from JumpScale.portal.docgenerator.popup import Popup
     import yaml
 
-
     def _showexample():
         page.addMessage("""Actions must be in yaml form.
 eg:
-- display: Start       
-  input:       
-  - reason     
-  - spacename      
+- display: Start
   action: /restmachine/cloudbroker/machine/start       
-  data:        
-   machineId: $$id     
-   accountName: $$accountname      
-         
+  input:
+  - reason
+  - spacename
+  - name: accesstype
+    type: dropdown
+    label: ACL
+    values:
+     - label: Admin
+       value: ARCXDU
+     - label: Write
+       value: RCX
+     - label: Read
+       value: R
+
+  data:
+   machineId: $$id
+   accountName: $$accountname
+
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop?machineId=$$id&reason=ops&accountName=$$accountname&spaceName=$$spacename
 }}
@@ -49,7 +59,20 @@ eg:
         popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl)
         if inputs:
             for var in inputs:
-                popup.addText(var, var)
+                if isinstance(var, basestring):
+                    popup.addText(var, var)
+                else:
+                    if var['type'] in ('dropdown', 'radio'):
+                        label = var['label']
+                        name = var['name']
+                        options = list()
+                        for value in var['values']:
+                            options.append((value['label'], value['value']))
+
+                        if var['type'] == 'dropdown':
+                            popup.addDropdown(label, name, options)
+                        elif var['type'] == 'radio':
+                            popup.addRadio(label, name, options)
 
         for name, value in data.items():
             popup.addHiddenField(name, value)
@@ -62,7 +85,11 @@ eg:
             $("#%(id)s").change(function () {
                  var actionid = $("#%(id)s").val();
                  if (actionid != '#'){
-                    $('#'+actionid).modal('show');
+                    var modal = $('#'+actionid);
+                    modal.on('hidden.bs.modal', function() {
+                        $("#%(id)s").val('#');
+                    });
+                    modal.modal('show');
                  }
             });
         });
