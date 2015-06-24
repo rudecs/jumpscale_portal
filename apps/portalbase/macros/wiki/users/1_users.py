@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
     out+="||GID||Name||Email||Active||Groups||\n"
     users = j.core.portal.active.auth.listUsers()
     for user in users:
-        user['groups'] = ', '.join(user['groups'])
+        user['groups'] = ', '.join(user['groups'] or [])
         out += "|%(gid)s|%(id)s|%(emails)s|%(active)s|%(groups)s|\n" % user
 
 
