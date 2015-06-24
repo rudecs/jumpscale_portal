@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
         page.addMessage("""Actions must be in yaml form.
 eg:
 - display: Start
-  action: /restmachine/cloudbroker/machine/start       
+  action: /restmachine/cloudbroker/machine/start
   input:
   - reason
   - spacename
@@ -68,11 +68,15 @@ eg:
                         options = list()
                         for value in var['values']:
                             options.append((value['label'], value['value']))
-
                         if var['type'] == 'dropdown':
                             popup.addDropdown(label, name, options)
                         elif var['type'] == 'radio':
                             popup.addRadio(label, name, options)
+                    elif var['type'] in ('text', 'password'):
+                        label = var['label']
+                        name = var['name']
+                        password = var['type'] == 'password'
+                        popup.addText(label, name, type=var['type'])
 
         for name, value in data.items():
             popup.addHiddenField(name, value)
@@ -85,12 +89,11 @@ eg:
             $("#%(id)s").change(function () {
                  var actionid = $("#%(id)s").val();
                  if (actionid != '#'){
-                    var modal = $('#'+actionid);
-                    modal.on('hidden.bs.modal', function() {
-                        $("#%(id)s").val('#');
-                    });
-                    modal.modal('show');
+                    $('#'+actionid).modal('show');
                  }
+            });
+            $(".popup_form > .modal").on('hidden.bs.modal', function() {
+                $("#%(id)s").val('#');
             });
         });
         """ % ({'id':id}))

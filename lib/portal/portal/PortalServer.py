@@ -67,7 +67,7 @@ class PortalServer:
         self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
         force_oauth_instance = self.cfg.get('force_oauth_instance')
         self.force_oauth_instance = None
-        
+
         if force_oauth_instance:
             # just make sure the instance is found, otherwise the line will raise exception
             hrd = hrd = j.application.getAppInstanceHRD('oauth_client', force_oauth_instance)
@@ -118,7 +118,7 @@ class PortalServer:
         self.redisprod=redis.StrictRedis(host='localhost', port=9999, db=0)
 
         self.jslibroot=j.system.fs.joinPaths(j.dirs.baseDir,"apps","portals","jslib")
-        
+
         if self.authentication_method == 'gitlab':
             self.auth=PortalAuthenticatorGitlab(instance=self.gitlabinstance)
         else:
@@ -147,17 +147,16 @@ class PortalServer:
         self.appdir = self.appdir.replace("$base",j.dirs.baseDir)
 
         self.getContentDirs() #contentdirs need to be loaded before we go to other dir of base server
-        j.system.fs.changeDir(self.appdir)            
+        j.system.fs.changeDir(self.appdir)
 
         self.listenip = self.cfg.get('listenip', '0.0.0.0')
         self.port = int(self.cfg.get("port", 82))
         self.addr = self.cfg.get("pubipaddr", '127.0.0.1')
         self.secret = self.cfg.get("secret")
         self.admingroups = self.cfg.get("admingroups").split(",")
-        
+
         self.filesroot = replaceVar(self.cfg.get("filesroot"))
         j.system.fs.createDir(self.filesroot)
-        
         self.defaultspace = self.cfg.get('defaultspace', 'welcome')
         self.defaultpage = self.cfg.get('defaultpage', '')
 
@@ -176,18 +175,18 @@ class PortalServer:
     def reset(self):
         self.routes={}
         self.loadConfig()
-        self.bootstrap()        
+        self.bootstrap()
         j.core.codegenerator.resetMemNonSystem()
         j.core.specparser.resetMemNonSystem()
         # self.actorsloader.scan(path=self.contentdirs,reset=True) #do we need to load them all
         self.bucketsloader = j.core.portalloader.getBucketsLoader()
         self.loadSpaces()
-        
+
     def bootstrap(self):
         self.actors = {}  # key is the applicationName_actorname (lowercase)
         self.actorsloader = j.core.portalloader.getActorsLoader()
         self.app_actor_dict = {}
-        self.taskletengines = {}        
+        self.taskletengines = {}
         self.actorsloader.reset()
         # self.actorsloader._generateLoadActor("system", "contentmanager", actorpath="%s/apps/portalbase/system/system__contentmanager/"%j.dirs.baseDir)
         # self.actorsloader._generateLoadActor("system", "master", actorpath="system/system__master/")
@@ -251,9 +250,9 @@ class PortalServer:
             # print appn+" "+appname+" "+actorn+" "+actorname
             if appn == appname and actorn == actorname:
                 self.routes.pop(key)
-    
+
 ##################### USER RIGHTS
-                    
+
     def getAccessibleLocalSpacesForGitlabUser(self, gitlabspaces):
         """
         Return Local Spaces (Non Gitlab Spaces) with guest permissions set to READ or higher
@@ -273,17 +272,17 @@ class PortalServer:
             if 'r' in rights or '*' in rights:
                 spaces[space] = rights
         return spaces
-                    
+
     def getUserSpaces(self, ctx):
         if not hasattr(ctx, 'env') or "user" not in ctx.env['beaker.session']:
             return []
         username = ctx.env['beaker.session']["user"]
         spaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
-        
+
         # In case of gitlab, we want to get the local osis spaces tha user has access to
         if self.authentication_method == 'gitlab':
             spaces += self.getAccessibleLocalSpacesForGitlabUser(spaces).keys()
-        
+
         else:
             result = []
             for s in spaces:
@@ -295,7 +294,7 @@ class PortalServer:
 
     def getUserSpacesObjects(self, ctx):
         """
-        Only used in gitlab 
+        Only used in gitlab
         """
         if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             username = ctx.env['beaker.session']["user"]
@@ -314,16 +313,16 @@ class PortalServer:
         Return Gitlab spaces that are not (YET) cloned into local filesystem
         This is helpful to identify non-existing spaces, so that system can disable
         access to them until cloning is finished.
-        
+
         @param ctx: Context
         """
         if not self.authentication_method == 'gitlab':
             raise RuntimeError("This function only works with gitlab authentication")
-        
+
         if not hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             return []
         username = ctx.env['beaker.session']["user"]
-        
+
         clonedspaces = set([s.model.id[s.model.id.index('portal_'):] for s in self.spacesloader.spaces.values() if 'portal_' in s.model.id])
         gitlabspaces = set([s[s.index('portal_'):] for s in self.auth.getUserSpaces(username, spaceloader=self.spacesloader)])
         return gitlabspaces.difference(clonedspaces)
@@ -336,24 +335,24 @@ class PortalServer:
             username = ctx.env['beaker.session']["user"]
         else:
             return "", ""
-        
+
         if self.isAdminFromCTX(ctx):
             return username, 'rwa'
-        
+
         if self.authentication_method == 'gitlab':
             gitlabspaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
             localspaceswithguestaccess =  self.getAccessibleLocalSpacesForGitlabUser(gitlabspaces)
             if space in localspaceswithguestaccess:
                 return username, localspaceswithguestaccess[space]
-        
+
         username, rights = self.auth.getUserSpaceRights(username, space, spaceobject=spaceobject)
 
         # default space always have readonly permissions atlease
         if space == self.defaultspace and "r" not in rights:
             rights = "r" + rights
 
-        return username, rights 
-        
+        return username, rights
+
     def getUserFromCTX(self,ctx):
         user = ctx.env["beaker.session"].get('user')
         return user or "guest"
@@ -370,7 +369,7 @@ class PortalServer:
         usergroups=set(self.getGroupsFromCTX(ctx))
         admingroups = set(self.admingroups)
         return  bool(admingroups.intersection(usergroups))
-    
+
     def isLoggedInFromCTX(self,ctx):
         user=self.getUserFromCTX(ctx)
         if user != "" and user != "guest":
@@ -413,7 +412,7 @@ class PortalServer:
             if spaceObject.docprocessor is None:
                 spaceObject.loadDocProcessor(force=True)  # dynamic load of space
             spacedocgen = spaceObject.docprocessor
-            
+
             if name in spacedocgen.name2doc:
                 pass
             elif name in standard_pages: # One of the standard pages not found in that space, fall back to system space
@@ -447,10 +446,10 @@ class PortalServer:
 
         ctx.params["rights"] = right
         print("# space:%s name:%s user:%s right:%s" % (space, name, username, right))
-            
+
         params['space'] = space
         params['name'] = name
-        
+
         if not spacedocgen:
             doc, params = self.getDoc(space,name, ctx, params)
         else:
@@ -498,7 +497,7 @@ class PortalServer:
 
         def processHtml(contenttype, path, start_response,ctx,space):
             content = j.system.fs.fileGetContents(path)
-            r = r"\[\[.*\]\]"  #@todo does not seem right to me            
+            r = r"\[\[.*\]\]"  #@todo does not seem right to me
             for match in j.codetools.regex.yieldRegexMatches(r, content):
                 docname = match.founditem.replace("[", "").replace("]", "")
                 doc, params = self.getDoc(space, docname, ctx, params=ctx.params)
@@ -514,10 +513,10 @@ class PortalServer:
                     page.body = page.body.replace("$$page", doc.original_name)
                     page.body = page.body.replace("$$path", doc.path)
                     page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-                    page.body = page.body.replace("$$$menuright", "")                
+                    page.body = page.body.replace("$$$menuright", "")
 
                     content=content.replace(match.founditem,page.body)
-            
+
             start_response('200 OK', [('Content-Type', "text/html"), ])
             return [content.encode('utf-8')]
 
@@ -566,7 +565,7 @@ class PortalServer:
 
         if path == "favicon.ico":
             pathfull = "wiki/System/favicon.ico"
-    
+
         if not j.system.fs.exists(pathfull):
             if j.system.fs.exists(pathfull + '.gz') and 'gzip' in environ.get('HTTP_ACCEPT_ENCODING'):
                 pathfull += ".gz"
@@ -585,7 +584,7 @@ class PortalServer:
         elif ext == "wiki":
             contenttype = "text/html"
             # return formatWikiContent(pathfull,start_response)
-            return formatContent(contenttype, pathfull, "python", start_response)            
+            return formatContent(contenttype, pathfull, "python", start_response)
         elif ext == "py":
             contenttype = "text/html"
             return formatContent(contenttype, pathfull, "python", start_response)
@@ -829,10 +828,10 @@ class PortalServer:
     def startSession(self, ctx, path):
         session = ctx.env['beaker.session']
         if 'user_login_' in ctx.params and ctx.params.get('user_login_') == 'guest' and  self.force_oauth_instance:
-            
+
             ctx.start_response('302 Found', [('Location', '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance})))])
             return False, []
-        
+
         # Already logged in user can't access login page again
         if 'user_logoff_' not in ctx.params and path.endswith('system/login') and 'user' in session and session['user'] != 'guest':
             ctx.start_response('204', [])
@@ -841,7 +840,7 @@ class PortalServer:
         if "authkey" in ctx.params:
             # user is authenticated by a special key
             key = ctx.params["authkey"]
-            
+
             # check if authkey is a session
             newsession = session.get_by_id(key)
             if newsession:
@@ -892,7 +891,7 @@ class PortalServer:
                     ctx.env['QUERY_STRING'] = session['querystr']
                 else:
                     ctx.env['QUERY_STRING'] = ""
-                
+
                 session['auth_method'] = self.authentication_method
 
                 session.save()
@@ -1002,7 +1001,7 @@ class PortalServer:
             space, image = pathparts[1:3]
             spaceObject = self.getSpace(space)
             image = image.lower()
-            
+
             if image in spaceObject.docprocessor.images:
                 path2 = spaceObject.docprocessor.images[image]
 
@@ -1144,7 +1143,7 @@ class PortalServer:
 
         start_response('200 OK', [('Content-Type', "text/html")])
         return str(page)
-    
+
     def addRoute(self, function, appname, actor, method, paramvalidation={}, paramdescription={}, \
         paramoptional={}, description="", auth=True, returnformat=None):
         """
@@ -1339,4 +1338,3 @@ class PortalServer:
         return out
 
     __repr__ = __str__
-

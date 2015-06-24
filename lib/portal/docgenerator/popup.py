@@ -115,8 +115,8 @@ class Popup(object):
             </div>
         </form>
         ''')
-        
-        content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout, 
+
+        content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout,
                                 widgets=self.widgets, submit_url=self.submit_url)
 
         css = '.modal-body-error { display: none } .modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
@@ -162,5 +162,5 @@ class Popup(object):
 
         if js not in page.head:
             page.addJS(jsContent=js)
-        
+
         page.addMessage(content)
