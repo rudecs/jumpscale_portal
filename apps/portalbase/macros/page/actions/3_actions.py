@@ -48,6 +48,8 @@ eg:
         actionurl = actiondata['action']
         display = actiondata['display']
         inputs = actiondata.get('input', '')
+        navigateback = actiondata.get('navigateback', False)
+        reload = actiondata.get('reload', True)
         data = actiondata.get('data', {})
         if actionurl.startswith("#"):
             actionoptions.append((display, actionurl[1:]))
@@ -56,7 +58,7 @@ eg:
             actionid = "action-%s" % display.replace(' ', '')
             actionoptions.append((display, actionid))
 
-        popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl)
+        popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl, navigateback=navigateback, reload_on_success=reload)
         if inputs:
             for var in inputs:
                 if isinstance(var, basestring):

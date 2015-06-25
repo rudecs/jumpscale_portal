@@ -1,5 +1,5 @@
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Save', form_layout='', reload_on_success=True):
+    def __init__(self, id, submit_url, header='', action_button='Save', form_layout='', reload_on_success=True, navigateback=False):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
@@ -7,6 +7,7 @@ class Popup(object):
         self.action_button = action_button
         self.submit_url = submit_url
         self.reload_on_success = reload_on_success
+        self.navigateback = navigateback
 
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
@@ -129,7 +130,7 @@ class Popup(object):
             page.addJS(jsLink)
 
         js = self.jinja.from_string('''$(function(){
-            $('.popup_form').ajaxForm({
+            $('#${id}').parent().ajaxForm({
                 clearForm: true,
                 beforeSubmit: function(formData, $form, options) {
                     this.popup = $form;
@@ -140,7 +141,9 @@ class Popup(object):
                     this.popup.find('.modal').modal('hide');
                     this.popup.find('.modal-body').hide();
                     this.popup.find('.modal-body-form').show();
-                    {% if reload %}
+                    {% if navigateback %}
+                    window.location = document.referrer;
+                    {% elif reload %}
                     location.reload();
                     {% endif %}
                 },
@@ -161,7 +164,7 @@ class Popup(object):
             });
         });''')
 
-        js = js.render(id=self.id, reload=self.reload_on_success)
+        js = js.render(id=self.id, reload=self.reload_on_success, navigateback=self.navigateback)
 
         if js not in page.head:
             page.addJS(jsContent=js)
