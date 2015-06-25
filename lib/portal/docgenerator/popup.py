@@ -1,11 +1,12 @@
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Save', form_layout=''):
+    def __init__(self, id, submit_url, header='', action_button='Save', form_layout='', reload_on_success=True):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
         self.header = header
         self.action_button = action_button
         self.submit_url = submit_url
+        self.reload_on_success = reload_on_success
 
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
@@ -139,7 +140,9 @@ class Popup(object):
                     this.popup.find('.modal').modal('hide');
                     this.popup.find('.modal-body').hide();
                     this.popup.find('.modal-body-form').show();
-
+                    {% if reload %}
+                    location.reload();
+                    {% endif %}
                 },
                 error: function(responseText, statusText, xhr, $form) {
                     if (responseText) {
@@ -158,7 +161,7 @@ class Popup(object):
             });
         });''')
 
-        js = js.render(id=self.id)
+        js = js.render(id=self.id, reload=self.reload_on_success)
 
         if js not in page.head:
             page.addJS(jsContent=js)
