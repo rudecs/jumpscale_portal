@@ -220,7 +220,7 @@ class MacroExecutorPage(MacroExecutorBase):
 
     def executeMacroReturnHTML(self, macrostr, doc=None, requestContext=None, paramsExtra="", pagemirror4jscss=None):
         """
-        macrostr is already formatted like {{....}} and only that is returned, 
+        macrostr is already formatted like {{....}} and only that is returned,
         use executeMacrosInWikiContent instead to process macros in a full text
         """
         page0 = j.core.portal.active.getpage()
@@ -230,7 +230,7 @@ class MacroExecutorPage(MacroExecutorBase):
         return page0.body
 
     def execMacrosOnContent(self, content, doc, paramsExtra={}, ctx=None, page=None, markdown=False):
-            
+
         recursivedepth = 0
         page = j.core.portal.active.getpage()
         page.body = ""
@@ -251,7 +251,7 @@ class MacroExecutorPage(MacroExecutorBase):
             for macroitem in macros:
                 macrostr, macrospace, macro, tags, cmdstr = macroitem
                 page.body = page.body.replace(macrostr, "", 1)
-                
+
                 if markdown == True:
                     doc.preprocessor.macroexecutorPage.executeMacroAdd2Page(macrostr, page, doc, ctx, paramsExtra, markdown)
                     page.body = page.body.replace('\n', '')
@@ -312,7 +312,9 @@ class MacroExecutorWiki(MacroExecutorBase):
                 if str(e).find("non-sequence") != -1:
                     result = "***ERROR***: Could not execute macro %s on %s, did not return (out,doc)." % (macro, doc.name)
                 else:
-                    result = "***ERROR***: Could not execute macro %s on %s, error in macro. Error was:\n%s " % (macro, doc.name, e)
+                    result = "***ERROR***: Could not execute macro %s on %s, error in macro." % (macro, doc.name)
+                    if j.application.debug:
+                        result += " Error was:\n%s " % (e)
                 result = j.html.escape(result)
             if result == doc:
                 # means we did manipulate the doc.content
@@ -324,7 +326,7 @@ class MacroExecutorWiki(MacroExecutorBase):
                     result = "***ERROR***: Could not execute macro %s on %s, did not return content as string (params.result=astring)" % (macro, doc.name)
                 content = content.replace(macrostr, result)
         else:
-             result="***ERROR***: Could not execute macro %s on %s, did not find the macro, was a wiki macro." % (macro, doc.name)
+            result = "***ERROR***: Could not execute macro %s on %s, did not find the macro, was a wiki macro." % (macro, doc.name)
 
         content = content.replace(macrostr,result)
 
