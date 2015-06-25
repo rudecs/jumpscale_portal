@@ -1,0 +1,18 @@
+h2. User $$id
+{{user_info: username:$$id}}
+
+
+{{actions:
+- display: Modify Groups
+  action: '#user_set_groups'
+
+- display: Delete
+  action: /restmachine/system/usermanager/delete?username=$$id
+}}
+
+|Groups|${", ".join(groups)} |
+|Emails|${", ".join(emails)} |
+|Domain|${domain} |
+|Authkey|${authkey} |
+
+{{user_set_groups: userid:$$id}}

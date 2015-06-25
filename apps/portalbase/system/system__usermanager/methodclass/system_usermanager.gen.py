@@ -24,15 +24,13 @@ class system_usermanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method authenticate")
 
-    def groupadduser(self, group, user, **kwargs):
+    def delete(self, username, **kwargs):
         """
-        add user to group
-        param:group name of group
-        param:user name of user
-        result bool
+        Delete a user
+        param:username name of the user
         """
         #put your code here to implement this method
-        raise NotImplementedError ("not implemented method groupadduser")
+        raise NotImplementedError ("not implemented method delete")
 
     def groupcreate(self, name, groups, **kwargs):
         """
@@ -44,15 +42,14 @@ class system_usermanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method groupcreate")
 
-    def groupdeluser(self, group, user, **kwargs):
+    def setGroups(self, username, groups, **kwargs):
         """
-        remove user from group
-        param:group name of group
-        param:user name of user
-        result bool
+        set Groups for a user
+        param:username name of user
+        param:groups name of groups
         """
         #put your code here to implement this method
-        raise NotImplementedError ("not implemented method groupdeluser")
+        raise NotImplementedError ("not implemented method setGroups")
 
     def usercreate(self, name, passwd, key, groups, emails, config, userid=0, reference="''", remarks="''", **kwargs):
         """

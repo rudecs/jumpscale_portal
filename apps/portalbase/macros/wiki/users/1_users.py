@@ -8,8 +8,7 @@ def main(j, args, params, tags, tasklet):
     users = j.core.portal.active.auth.listUsers()
     for user in users:
         user['groups'] = ', '.join(user['groups'] or [])
-        out += "|%(gid)s|%(id)s|%(emails)s|%(active)s|%(groups)s|\n" % user
-
+        out += "|%(gid)s|[%(id)s|/system/user?id=%(id)s]|%(emails)s|%(active)s|%(groups)s|\n" % user
 
     params.result = (out, doc)
 

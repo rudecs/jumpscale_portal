@@ -1,10 +1,11 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth
 
 class system_usermanager(j.code.classGetBase()):
 
     """
     register a user (can be done by user itself, no existing key or login/passwd is needed)
-    
+
     """
 
     def __init__(self):
@@ -49,8 +50,8 @@ class system_usermanager(j.code.classGetBase()):
         """
         return list of groups in which user is member of
         param:user name of user
-        result list(str) 
-        
+        result list(str)
+
         """
         raise NotImplementedError("not implemented method getusergroups")
         usermanager = j.apps.system.usermanager
@@ -65,38 +66,44 @@ class system_usermanager(j.code.classGetBase()):
 
         return result
 
-    def groupadduser(self, group, user, **args):
-        """
-        add user to group
-        param:group name of group
-        param:user name of user
-        result bool 
-        
-        """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method groupadduser")
+    def _getUser(self, user):
+        users = self.modelUser.search({'id': user})[1:]
+        if not users:
+            return None
+        return self.modelUser.get(users[0]['guid'])
+
+    @auth(['admin'])
+    def setGroups(self, username, groups, **kwargs):
+        ctx = kwargs['ctx']
+        user = self._getUser(username)
+        if not user:
+            ctx.start_resonpnse('404 Not Found', [('Content-Type', 'text/plain')])
+            return "User %s not found" % username
+        if not isinstance(groups, list):
+            ctx.start_resonpnse('400 Bad Request', [('Content-Type', 'text/plain')])
+            return "Groups paramter should be a list"
+        user.groups = groups
+        self.modelUser.set(user)
+        return True
+
+    @auth(['admin'])
+    def delete(self, username, **kwargs):
+        user = self._getUser(username)
+        if not user:
+            return True
+        self.modelUser.delete(user.guid)
+        return True
 
     def groupcreate(self, name, groups, **args):
         """
         create a group
         param:name name of group
         param:groups comma separated list of groups this group belongs to
-        result bool 
-        
+        result bool
+
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method groupcreate")
-
-    def groupdeluser(self, group, user, **args):
-        """
-        remove user from group
-        param:group name of group
-        param:user name of user
-        result bool 
-        
-        """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method groupdeluser")
 
     def usercreate(self, name, passwd, key, groups, emails, userid, reference, remarks, config, **args):
         """
@@ -110,8 +117,8 @@ class system_usermanager(j.code.classGetBase()):
         param:reference reference as used in other application using this API (optional)
         param:remarks free to be used field by client
         param:config free to be used field to store config information e.g. in json or xml format
-        result bool 
-        
+        result bool
+
         """
         groups = groups.split(",")
         emails = emails.split(",")
@@ -125,14 +132,14 @@ class system_usermanager(j.code.classGetBase()):
     def userexists(self, name, **args):
         """
         param:name name
-        result bool 
-        
+        result bool
+
         """
         return self.modelUser.exists("%s_%s"%(j.application.whoAmI.gid,name))
-    
+
     def whoami(self, **kwargs):
         """
-        result current user 
+        result current user
         """
         ctx = kwargs["ctx"]
         return str(ctx.env['beaker.session']["user"])
@@ -146,8 +153,8 @@ class system_usermanager(j.code.classGetBase()):
         param:reference reference as used in other application using this API (optional)
         param:remarks free to be used field by client
         param:config free to be used field to store config information e.g. in json or xml format
-        result bool 
-        
+        result bool
+
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method userregister")

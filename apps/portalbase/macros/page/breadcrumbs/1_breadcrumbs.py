@@ -3,7 +3,7 @@ import re
 def main(j, args, params, tags, tasklet):
     page = args.page
     doc = args.doc
-    page.addCSS('/jslib/old/breadcrumbs/breadcrumbs.css')    
+    page.addCSS('/jslib/old/breadcrumbs/breadcrumbs.css')
 
     separator = '<i class="separator newBreadcrumbArrow"></i>'
     breadcrumbs = [doc.original_name]
