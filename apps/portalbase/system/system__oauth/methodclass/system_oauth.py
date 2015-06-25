@@ -14,7 +14,10 @@ class system_oauth(j.code.classGetBase()):
     """
     def authenticate(self, type='', **kwargs):
         cache = j.clients.redis.getByInstance('system')
-        
+
+        if j.core.portal.active.force_oauth_instance:
+            type = j.core.portal.active.force_oauth_instance
+
         if not type:
             type = 'github'
         
