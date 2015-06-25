@@ -19,12 +19,15 @@
         """
         var:name str,,name of user
 
-    method:setGroups
+    method:editUser
         """
         set Groups for a user
         """
         var:username str,,name of user
         var:groups list,,name of groups
+        var:password str,,password for user @optional
+		var:emails str,,comma seperated list of emails or list @optional
+		var:domain str,,Domain of user @optional
 
 	method:delete
 		"""
@@ -32,19 +35,15 @@
 		"""
 		var:username str,, name of the user
 
-    method:usercreate
+    method:create
 		"""
 		create a user
 		"""
-        var:name str,,name of user
-		var:passwd str,,passwd
-		var:key str,,specific key can be empty #@optional
-		var:groups str,,comma separated list of groups this user belongs to
+        var:username str,,name of user
+		var:password str,,passwd
+		var:groups str,,comma separated list of groups this user belongs to @optional
 		var:emails str,,comma separated list of email addresses
-		var:userid int,0,optional user id; leave 0 when not used; when entered will update existing record
-        var:reference str,'',reference as used in other application using this API (optional)
-        var:remarks str,'',free to be used field by client
-        var:config str,,free to be used field to store config information e.g. in json or xml format
+		var:domain str,,domain of user
         result:bool    #True if successful, False otherwise
 
     method:authenticate @noauth

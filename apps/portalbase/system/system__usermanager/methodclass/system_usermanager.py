@@ -73,25 +73,39 @@ class system_usermanager(j.code.classGetBase()):
         return self.modelUser.get(users[0]['guid'])
 
     @auth(['admin'])
-    def setGroups(self, username, groups, **kwargs):
+    def editUser(self, username, groups, emails, domain, password, **kwargs):
         ctx = kwargs['ctx']
         user = self._getUser(username)
         if not user:
-            ctx.start_resonpnse('404 Not Found', [('Content-Type', 'text/plain')])
+            ctx.start_response('404 Not Found', [('Content-Type', 'text/plain')])
             return "User %s not found" % username
-        if not isinstance(groups, list):
-            ctx.start_resonpnse('400 Bad Request', [('Content-Type', 'text/plain')])
-            return "Groups paramter should be a list"
+        if groups:
+            if isinstance(groups, basestring):
+                groups = [x.strip() for x in groups.split(',')]
+            elif not isinstance(groups, list):
+                ctx.start_response('400 Bad Request', [('Content-Type', 'text/plain')])
+                return "Groups paramter should be a list or string"
+        else:
+            groups = []
+        if emails:
+            if isinstance(emails, basestring):
+                emails = [x.strip() for x in emails.split(',')]
+            elif not isinstance(emails, list):
+                ctx.start_resonpnse('400 Bad Request', [('Content-Type', 'text/plain')])
+                return "Emails should be a list or a comma seperated string"
+            user.emails = emails
+        if domain:
+            user.domain = domain
+        if password:
+            user.password = j.tools.hash.md5_string(password)
+
         user.groups = groups
         self.modelUser.set(user)
         return True
 
     @auth(['admin'])
     def delete(self, username, **kwargs):
-        user = self._getUser(username)
-        if not user:
-            return True
-        self.modelUser.delete(user.guid)
+        self.modelUser.delete(username)
         return True
 
     def groupcreate(self, name, groups, **args):
@@ -105,29 +119,22 @@ class system_usermanager(j.code.classGetBase()):
         # put your code here to implement this method
         raise NotImplementedError("not implemented method groupcreate")
 
-    def usercreate(self, name, passwd, key, groups, emails, userid, reference, remarks, config, **args):
-        """
-        create a user
-        param:name name of user
-        param:passwd passwd
-        param:key specific key can be empty
-        param:groups comma separated list of groups this user belongs to
-        param:emails comma separated list of email addresses
-        param:userid optional user id; leave 0 when not used; when entered will update existing record
-        param:reference reference as used in other application using this API (optional)
-        param:remarks free to be used field by client
-        param:config free to be used field to store config information e.g. in json or xml format
-        result bool
+    @auth(['admin'])
+    def create(self, username, emails, password, groups, domain, **kwargs):
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'text/plain'), ]
+        check, result = self._checkUser(username)
+        if check:
+            ctx.start_response('409', headers)
+            return "Username %s already exists" % username
+        groups = groups or []
+        return j.core.portal.active.auth.createUser(username, password, emails, groups, None)
 
-        """
-        groups = groups.split(",")
-        emails = emails.split(",")
-        if userid == 0:
-            userid = None
-        else:
-            userid = userid
-        result = j.apps.system.usermanager.extensions.usermanager.usercreate(name=name, passwd=passwd, groups=groups, emails=emails, userid=userid)
-        return result
+    def _checkUser(self, username):
+        users = self.modelUser.search({'id': username})[1:]
+        if not users:
+            return False, 'User %s does not exist' % username
+        return True, users[0]
 
     def userexists(self, name, **args):
         """
