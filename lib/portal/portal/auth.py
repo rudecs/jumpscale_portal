@@ -50,7 +50,7 @@ class auth(object):
                 groups = set(userobj.groups)
                 if not groups.intersection(self.groups):
                     self.doAudit(user, 403, pathinfo, args, kwargs, {})
-                    ctx.start_response('403 Forbidden', [])
+                    ctx.start_response('403 Forbidden', [('Content-Type', 'text/plain')])
                     return 'User %s has no access. If you would like to gain access please contact your adminstrator' % user
             if self.audit:
                 start_response = ctx.start_response
@@ -68,4 +68,3 @@ class auth(object):
                 if self.audit and statuscode:
                     self.doAudit(user, statuscode, pathinfo, args, kwargs, result)
         return wrapper
-

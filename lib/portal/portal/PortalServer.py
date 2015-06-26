@@ -44,12 +44,14 @@ def exhaustgenerator(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         if isinstance(result, basestring):
-            yield result
+            return [j.tools.text.toStr(result)]
         elif isinstance(result, collections.Iterable):
-            for value in result:
-                yield value
+            def exhaust():
+                for value in result:
+                    yield value
+            return exhaust()
         else:
-            yield result
+            return result
     return wrapper
 
 class PortalServer:
