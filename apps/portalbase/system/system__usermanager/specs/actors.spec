@@ -24,7 +24,7 @@
         set Groups for a user
         """
         var:username str,,name of user
-        var:groups list,,name of groups
+        var:groups list,,name of groups @optional
         var:password str,,password for user @optional
 		var:emails str,,comma seperated list of emails or list @optional
 		var:domain str,,Domain of user @optional

@@ -6,7 +6,6 @@ import os
 import sys
 import redis
 import requests
-import urlparse
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -56,7 +55,7 @@ def exhaustgenerator(func):
 
 class PortalServer:
 
-##################### INIT
+    ##################### INIT
     def __init__(self):
 
         self.hrd = j.application.instanceconfig
