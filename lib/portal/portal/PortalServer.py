@@ -49,6 +49,8 @@ def exhaustgenerator(func):
                 for value in result:
                     yield value
             return exhaust()
+        elif not result:
+            return ['']
         else:
             return result
     return wrapper
