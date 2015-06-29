@@ -1,4 +1,5 @@
-# jumpscale_portal
+# JumpScale Portal
 portal based on confluence format
 
-is for jumpscale 7.x
+For documentation please see https://github.com/Jumpscale/jumpscale_portal
+
