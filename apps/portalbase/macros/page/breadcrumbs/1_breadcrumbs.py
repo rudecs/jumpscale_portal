@@ -5,16 +5,21 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
     page.addCSS('/jslib/old/breadcrumbs/breadcrumbs.css')
 
-    separator = '<i class="separator newBreadcrumbArrow"></i>'
-    breadcrumbs = [doc.original_name]
+    data = "<ul class='breadcrumb'>%s</ul>"
+    breadcrumbs = [(doc.original_name, doc.original_name)]
     space = j.core.portal.active.getSpace(doc.getSpaceName())
     while doc.parent:
         doc = space.docprocessor.name2doc.get(doc.parent)
         if not doc:
             break
-        breadcrumbs.insert(0, doc.original_name)
+        breadcrumbs.insert(0, (doc.original_name, doc.original_name))
 
-    page.addMessage(separator.join('<a href="/$$space/{0}">{0}</a>'.format(b) for b in breadcrumbs))
+    innerdata = ""
+    for link, title in breadcrumbs[:-1]:
+        innerdata += "<li><a href='%s'>%s</a><span style='opacity: 0.5; margin-right: 8px; margin-left: 2px;' class='icon-chevron-right'></span></li>" % (link, title)
+    innerdata += "<li class='active'>%s</li>" % breadcrumbs[-1][1]
+
+    page.addMessage(data % innerdata)
     params.result = page
     return params
 
