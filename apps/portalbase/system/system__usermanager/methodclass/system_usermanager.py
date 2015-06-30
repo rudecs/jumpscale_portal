@@ -97,7 +97,7 @@ class system_usermanager(j.code.classGetBase()):
         if domain:
             user.domain = domain
         if password:
-            user.password = j.tools.hash.md5_string(password)
+            user.passwd = j.tools.hash.md5_string(password)
 
         user.groups = groups
         self.modelUser.set(user)
