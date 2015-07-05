@@ -1147,8 +1147,7 @@ class PortalServer:
         start_response('200 OK', [('Content-Type', "text/html")])
         return str(page)
 
-    def addRoute(self, function, appname, actor, method, paramvalidation={}, paramdescription={}, \
-        paramoptional={}, description="", auth=True, returnformat=None):
+    def addRoute(self, function, appname, actor, method, params, description="", auth=True, returnformat=None):
         """
         @param function is the function which will be called as follows: function(webserver,path,params):
             function can also be a string, then only the string will be returned
@@ -1156,8 +1155,6 @@ class PortalServer:
         @appname e.g. system is 1e part of url which is routed http://localhost/appname/actor/method/
         @actor e.g. system is 2nd part of url which is routed http://localhost/appname/actor/method/
         @method e.g. "test" is part of url which is routed e.g. http://localhost/appname/actor/method/
-        @paramvalidation e.g. {"name":"\w+","color":""}   the values are regexes
-        @paramdescription is optional e.g. {"name":"this is the description for name"}
         @auth is for authentication if false then there will be no auth key checked
 
         example function called
@@ -1180,8 +1177,8 @@ class PortalServer:
 
         methoddict = {'get': 'GET', 'set': 'PUT', 'new': 'POST', 'delete': 'DELETE',
                       'find': 'GET', 'list': 'GET', 'datatables': 'GET', 'create': 'POST'}
-        self.routes["%s_%s_%s_%s" % ('GET', appname, actor, method)] = [function, paramvalidation, paramdescription, paramoptional, \
-                                                                        description, auth, returnformat]
+        route = {'func': function, 'params': params, 'description': description, 'auth': auth, 'returnformat': returnformat}
+        self.routes["%s_%s_%s_%s" % ('GET', appname, actor, method)] = route
 
 ##################### SCHEDULING
 
