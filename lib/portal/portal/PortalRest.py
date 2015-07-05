@@ -19,7 +19,7 @@ class PortalRest():
             return False, msg
 
         params = self.ws.routes[ctx.path]['params']
-        
+
         for key, param in params.iteritems():
             if key not in ctx.params:
                 if param['optional']:
@@ -32,6 +32,13 @@ class PortalRest():
             elif param['type'] == 'int':
                 try:
                     ctx.params[key] = int(ctx.params[key])
+                except ValueError:
+                    ctx.start_response('400 Bad Request', [])
+                    msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])
+                    return False, msg
+            elif param['type'] == 'bool':
+                try:
+                    ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
                 except ValueError:
                     ctx.start_response('400 Bad Request', [])
                     msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])

@@ -24,6 +24,10 @@ class RequestContext(object):
         self.httpMessage = "OK"
         self.fformat = fformat.strip().lower()
 
+    @property
+    def response_started(self):
+        return self._response_started
+
     def start_response(self, status, *args, **kwargs):
         force = kwargs.pop('forceheaders', False)
         if self._response_started and not force:
