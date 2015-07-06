@@ -1,5 +1,6 @@
 from JumpScale import j
 import urllib
+import types
 from .exceptions import BaseError
 
 class PortalRest():
@@ -28,14 +29,14 @@ class PortalRest():
                     ctx.start_response('400 Bad Request', [])
                     message = 'Param with name:%s is missing.' % key
                     return False, message
-            elif param['type'] == 'int' and not isinstance(ctx.params[key], int):
+            elif param['type'] == 'int' and not isinstance(ctx.params[key], (int, types.NoneType)):
                 try:
                     ctx.params[key] = int(ctx.params[key])
                 except ValueError:
                     ctx.start_response('400 Bad Request', [])
                     msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])
                     return False, msg
-            elif param['type'] == 'bool' and not isinstance(ctx.params[key], bool):
+            elif param['type'] == 'bool' and not isinstance(ctx.params[key], (bool, types.NoneType)):
                 try:
                     ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
                 except ValueError:
