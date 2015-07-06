@@ -6,9 +6,9 @@ def main(j, args, params, tags, tasklet):
     host = ctx.env['HTTP_HOST']
     authKey = ctx.env['beaker.session'].id
 
-    url = "http://%s/restmachine/system/cpunode/init?authkey=%s" % (host, authKey)
+    url = "https://%s/restmachine/system/cpunode/init?authkey=%s" % (host, authKey)
     out = """{{code: template:text nolinenr theme:neat
-curl %s | bash
+curl -L %s | bash
 }}""" % url
     params.result = (out, doc)
 

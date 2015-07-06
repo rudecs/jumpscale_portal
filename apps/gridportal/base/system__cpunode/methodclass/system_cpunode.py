@@ -30,7 +30,7 @@ then
 fi
 PUBKEY=`cat $PUBPATH`
 
-curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http://%s/restmachine/system/cpunode/create?authkey=%s | bash""" % (host, authkey)
+curl -L -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" https://%s/restmachine/system/cpunode/create?authkey=%s | bash""" % (host, authkey)
         headers = [('Content-Type', 'text/plain'), ]
         ctx.start_response("200", headers)
         return script
