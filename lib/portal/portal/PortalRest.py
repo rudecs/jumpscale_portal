@@ -1,7 +1,6 @@
-
-
 from JumpScale import j
 import urllib
+from .exceptions import BaseError
 
 class PortalRest():
 
@@ -168,6 +167,9 @@ class PortalRest():
             method = routes[routekey]['func']
             result = method(ctx=ctx, **ctx.params)
             return (True, result)
+        except BaseError, e:
+            ctx.start_response("%s %s" % (e.code, e.status), e.headers)
+            return (True, e.msg)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             msg = "Execute method %s failed." % (routekey)
