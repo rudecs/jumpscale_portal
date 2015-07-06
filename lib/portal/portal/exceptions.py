@@ -23,8 +23,18 @@ class Error(BaseError):
         BaseError.__init__(self, self.CODE, [('Content-Type', 'application/json')], msg)
 
 
+class Redirect(BaseError):
+    def __init__(self, location):
+        headers = [('Location', location)]
+        BaseError.__init__(self, 302, headers, "")
+
+
 class BadRequest(Error):
     CODE = 400
+
+
+class Forbidden(Error):
+    CODE = 403
 
 
 class NotFound(Error):

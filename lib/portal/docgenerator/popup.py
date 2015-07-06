@@ -149,7 +149,8 @@ class Popup(object):
                 },
                 error: function(responseText, statusText, xhr, $form) {
                     if (responseText) {
-                        this.popup.find('.modal-body-error').text(responseText.responseText);
+                        var response = responseText.responseJSON || responseText.responseText;
+                        this.popup.find('.modal-body-error').text(response);
                     }
                     this.popup.find('.modal-body').hide();
                     this.popup.find('.modal-footer > .btn-primary').hide();

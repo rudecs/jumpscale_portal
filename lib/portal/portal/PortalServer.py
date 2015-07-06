@@ -13,6 +13,8 @@ from .PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
 from .RequestContext import RequestContext
 from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
+from . import exceptions
+from .auth import AuditMiddleWare
 
 from JumpScale.portal.portalloaders.SpaceWatcher import SpaceWatcher
 from JumpScale.portal.html import multipart
@@ -40,8 +42,12 @@ CONTENT_TYPE_PNG = 'image/png'
 
 
 def exhaustgenerator(func):
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
+    def wrapper(self, env, start_response):
+        try:
+            result = func(self, env, start_response)
+        except exceptions.BaseError, e:
+            start_response("%s %s" % (e.code, e.status), e.headers)
+            return [e.msg]
         if isinstance(result, basestring):
             return [j.tools.text.toStr(result)]
         elif isinstance(result, collections.Iterable):
@@ -68,13 +74,7 @@ class PortalServer:
         self.epoch = time.time()
         self.force_oauth_url = None
         self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
-        force_oauth_instance = self.cfg.get('force_oauth_instance')
-        self.force_oauth_instance = None
-
-        if force_oauth_instance:
-            # just make sure the instance is found, otherwise the line will raise exception
-            hrd = hrd = j.application.getAppInstanceHRD('oauth_client', force_oauth_instance)
-            self.force_oauth_instance = force_oauth_instance
+        self.force_oauth_instance = self.cfg.get('force_oauth_instance', "")
 
         j.core.portal.active=self
 
@@ -106,7 +106,7 @@ class PortalServer:
             'session.namespace_args': {'client': self.osis},
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
-        self._router = SessionMiddleware(self.router, session_opts)
+        self._router = SessionMiddleware(AuditMiddleWare(self.router), session_opts)
         self._webserver = WSGIServer((self.listenip, self.port), self._router)
 
         self.confluence2htmlconvertor = j.tools.docgenerator.getConfluence2htmlConvertor()
@@ -442,6 +442,10 @@ class PortalServer:
                 right = "r" + right
 
         if not "r" in right:
+            if self.force_oauth_instance:
+                location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance}))
+                raise exceptions.Redirect(location)
+
             name = "accessdenied" if loggedin else "login"
             if not spaceObject.docprocessor.docExists(name):
                 space = 'system'
@@ -831,9 +835,8 @@ class PortalServer:
     def startSession(self, ctx, path):
         session = ctx.env['beaker.session']
         if 'user_login_' in ctx.params and ctx.params.get('user_login_') == 'guest' and  self.force_oauth_instance:
-
-            ctx.start_response('302 Found', [('Location', '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance})))])
-            return False, []
+            location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance}))
+            raise exceptions.Redirect(location)
 
         # Already logged in user can't access login page again
         if 'user_logoff_' not in ctx.params and path.endswith('system/login') and 'user' in session and session['user'] != 'guest':
@@ -989,6 +992,7 @@ class PortalServer:
         ctx = RequestContext(application="", actor="", method="", env=environ,
                              start_response=start_response, path=path, params=None)
         ctx.params = self._getParamsFromEnv(environ, ctx)
+        ctx.env['JS_CTX'] = ctx
 
         for proxypath, proxy in self.proxies.iteritems():
             if path.startswith(proxypath.lstrip('/')):
