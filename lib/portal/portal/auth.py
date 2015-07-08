@@ -2,6 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import ujson as json
 import time
+import types
 
 clients = dict()
 
@@ -23,7 +24,11 @@ def doAudit(user, path, kwargs, responsetime, statuscode, result):
     auditkwargs = kwargs.copy()
     auditkwargs.pop('ctx', None)
     audit.kwargs = json.dumps(auditkwargs)
-    audit.result = json.dumps(result)
+    if not isinstance(result, types.GeneratorType):
+        audit.result = json.dumps(result)
+    else:
+        audit.result = json.dumps('Result of type generator')
+
     audit.responsetime = responsetime
     client.audit.set(audit)
 
@@ -33,7 +38,7 @@ class AuditMiddleWare(object):
         self.app = app
 
     def __call__(self, env, start_response):
-        statinfo = {}
+        statinfo = {'status': 200}
         def my_response(status, headers, exc_info=None):
             statinfo['status'] = int(status.split(" ", 1)[0])
             return start_response(status, headers, exc_info)
