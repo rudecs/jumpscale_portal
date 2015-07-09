@@ -33,6 +33,10 @@ class BadRequest(Error):
     CODE = 400
 
 
+class Unauthorized(Error):
+    CODE = 401
+
+
 class Forbidden(Error):
     CODE = 403
 

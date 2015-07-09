@@ -1,5 +1,5 @@
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Save', form_layout='', reload_on_success=True, navigateback=False):
+    def __init__(self, id, submit_url, header='', action_button='Save', form_layout='', reload_on_success=True, navigateback=False, clearForm=True):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
@@ -8,18 +8,19 @@ class Popup(object):
         self.submit_url = submit_url
         self.reload_on_success = reload_on_success
         self.navigateback = navigateback
+        self.clearForm = clearForm
 
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
 
-    def addText(self, label, name, required=False, type='text'):
+    def addText(self, label, name, required=False, type='text', value=''):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height" for="${name}">${label}</label>
-                <input type="${type}" class="form-control" name="${name}" {% if required %}required{% endif %}>
+                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %}>
               </div>
         ''')
-        content = template.render(label=label, name=name, type=type)
+        content = template.render(label=label, name=name, type=type, value=value)
         self.widgets.append(content)
 
     def addHiddenField(self, name, value):
@@ -131,7 +132,7 @@ class Popup(object):
 
         js = self.jinja.from_string('''$(function(){
             $('#${id}').parent().ajaxForm({
-                clearForm: true,
+                clearForm: ${'true' if clearform else 'false' },
                 beforeSubmit: function(formData, $form, options) {
                     this.popup = $form;
                     $form.find('.modal-footer > .btn-primary').button('loading');
@@ -141,6 +142,11 @@ class Popup(object):
                     this.popup.find('.modal').modal('hide');
                     this.popup.find('.modal-body').hide();
                     this.popup.find('.modal-body-form').show();
+
+                    //in case we reload we need to reset the form here
+                    this.popup.find("input,select,textarea").prop("disabled", false)
+                    this.popup.find('.modal-footer > .btn-primary').button('reset').show();
+
                     {% if navigateback %}
                     window.location = document.referrer;
                     {% elif reload %}
@@ -165,7 +171,7 @@ class Popup(object):
             });
         });''')
 
-        js = js.render(id=self.id, reload=self.reload_on_success, navigateback=self.navigateback)
+        js = js.render(id=self.id, reload=self.reload_on_success, navigateback=self.navigateback, clearform=self.clearForm)
 
         if js not in page.head:
             page.addJS(jsContent=js)

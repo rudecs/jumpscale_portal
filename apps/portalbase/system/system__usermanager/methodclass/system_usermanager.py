@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 from JumpScale.portal.portal.auth import auth
 
 class system_usermanager(j.code.classGetBase()):
@@ -15,11 +16,7 @@ class system_usermanager(j.code.classGetBase()):
         self.appname = "system"
         self.osiscl = j.core.portal.active.osis
         self.modelUser = j.clients.osis.getCategory(self.osiscl, 'system', 'user')
-
-    def _authSelf(self,user,kwargs):
-        ctx=kwargs["ctx"]
-        if not user==ctx.env['beaker.session']["user"]:
-            raise RuntimeError("Authentication Error")
+        self.modelGroup = j.clients.osis.getCategory(self.osiscl, 'system', 'group')
 
     def authenticate(self, name, secret, **kwargs):
         """
@@ -32,13 +29,13 @@ class system_usermanager(j.code.classGetBase()):
         """
         ctx = kwargs['ctx']
         if j.core.portal.active.auth.authenticate(name, secret):
-            session = ctx.env['beaker.get_session']() #create new session
+            session = ctx.env['beaker.get_session']()  # create new session
             session['user'] = name
             session.save()
             return session.id
-        ctx.start_response('401 Unauthorized', [])
-        return 'Unauthorized'
+        raise exceptions.Unauthorized("Unauthorized")
 
+    @auth(['admin'])
     def userget(self, name, **kwargs):
         """
         get a user
@@ -54,7 +51,6 @@ class system_usermanager(j.code.classGetBase()):
 
         """
         raise NotImplementedError("not implemented method getusergroups")
-        usermanager = j.apps.system.usermanager
         user = self._userGet(user)
 
         if user == None:
@@ -108,16 +104,52 @@ class system_usermanager(j.code.classGetBase()):
         self.modelUser.delete(username)
         return True
 
-    def groupcreate(self, name, groups, **args):
+    @auth(['admin'])
+    def deleteGroup(self, id, **kwargs):
+        self.modelGroup.delete(id)
+
+    @auth(['admin'])
+    def createGroup(self, name, domain, description, **args):
         """
         create a group
         param:name name of group
-        param:groups comma separated list of groups this group belongs to
+        param:domain of group
+        param:description of group
         result bool
 
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method groupcreate")
+        if self.modelGroup.search({'id': name})[1:]:
+            raise exceptions.Conflict("Group with name %s already exists" % name)
+        group = self.modelGroup.new()
+        group.id = name
+        group.domain = domain
+        group.description = description
+        self.modelGroup.set(group)
+        return True
+
+    @auth(['admin'])
+    def editGroup(self, name, domain, description, users, **args):
+        """
+        edit a group
+        param:name name of group
+        param:domain of group
+        param:description of group
+        result bool
+
+        """
+        groups = self.modelGroup.search({'id': name})[1:]
+        if not groups:
+            raise exceptions.NotFound("Group with name %s does not exists" % name)
+        else:
+            group = groups[0]
+        if users and isinstance(users, basestring):
+            users = users.split(',')
+        group['id'] = name
+        group['domain'] = domain
+        group['description'] = description
+        group['users'] = users
+        self.modelGroup.set(group)
+        return True
 
     @auth(['admin'])
     def create(self, username, emails, password, groups, domain, **kwargs):

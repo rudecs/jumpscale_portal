@@ -37,6 +37,17 @@ class system_usermanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method create")
 
+    def createGroup(self, name, domain, description, **kwargs):
+        """
+        create a group
+        param:name name of group
+        param:domain domain of group
+        param:description description of group
+        result bool
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method createGroup")
+
     def delete(self, username, **kwargs):
         """
         Delete a user
@@ -44,6 +55,27 @@ class system_usermanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method delete")
+
+    def deleteGroup(self, id, **kwargs):
+        """
+        delete a group
+        param:id id/name of group
+        result bool
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method deleteGroup")
+
+    def editGroup(self, name, domain, description, users, **kwargs):
+        """
+        edit a group
+        param:name name of group
+        param:domain domain of group
+        param:description description of group
+        param:users list or comma seperate string of users
+        result bool
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method editGroup")
 
     def editUser(self, username, groups, password, emails, domain, **kwargs):
         """
@@ -56,16 +88,6 @@ class system_usermanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method editUser")
-
-    def groupcreate(self, name, groups, **kwargs):
-        """
-        create a group
-        param:name name of group
-        param:groups comma separated list of groups this group belongs to
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method groupcreate")
 
     def userexists(self, name, **kwargs):
         """

@@ -63,12 +63,30 @@
         result:bool
 
 
-    method:groupcreate
+    method:createGroup
 		"""
 		create a group
 		"""
         var:name str,,name of group
-		var:groups str,,comma separated list of groups this group belongs to
+        var:domain str,,domain of group
+        var:description str,,description of group
+        result:bool    #True if successful, False otherwise
+
+    method:editGroup
+		"""
+		edit a group
+		"""
+        var:name str,,name of group
+        var:domain str,,domain of group
+        var:description str,,description of group
+        var:users str,,list or comma seperate string of users @optional
+        result:bool    #True if successful, False otherwise
+
+    method:deleteGroup
+		"""
+		delete a group
+		"""
+        var:id str,,id/name of group
         result:bool    #True if successful, False otherwise
 
 	method:usergroupsget

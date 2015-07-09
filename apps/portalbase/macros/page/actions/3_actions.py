@@ -77,8 +77,9 @@ eg:
                     elif var['type'] in ('text', 'password'):
                         label = var['label']
                         name = var['name']
-                        password = var['type'] == 'password'
                         popup.addText(label, name, type=var['type'])
+                    elif var['type'] == 'hidden':
+                        popup.addHiddenField(var['name'], var['value'])
 
         for name, value in data.items():
             popup.addHiddenField(name, value)
@@ -90,12 +91,10 @@ eg:
         $(document).ready(function() {
             $("#%(id)s").change(function () {
                  var actionid = $("#%(id)s").val();
+                 $("#%(id)s").val('#');
                  if (actionid != '#'){
                     $('#'+actionid).modal('show');
                  }
-            });
-            $(".popup_form > .modal").on('hidden.bs.modal', function() {
-                $("#%(id)s").val('#');
             });
         });
         """ % ({'id':id}))

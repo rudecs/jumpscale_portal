@@ -4,10 +4,10 @@ def main(j, args, params, tags, tasklet):
     doc = params.doc
     out="{{datatables_use}}}}\n\n"
 
-    out+="||GID||Name||Description||Domain||Active||\n"
-    users = j.core.portal.active.auth.listUsers()
+    out+="||Name||Description||Domain||Active||\n"
+    users = j.core.portal.active.auth.listGroups()
     for user in users:
-        out += "|%(gid)s|%(id)s|%(description)s|%(domain)s|%(active)s|\n" % user
+        out += "|[%(id)s|/system/group?id=%(id)s]|%(description)s|%(domain)s|%(active)s|\n" % user
 
     params.result = (out, doc)
 
