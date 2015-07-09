@@ -8,12 +8,12 @@ class ActorsInfo():
         """
         url = "/rest/%s/%s/%s?" % (appname, actor, method)
 
-        auth = j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)][5]
+        auth = j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)]['auth']
         if auth:
             params = ["authkey"]
         else:
             params = []
-        params.extend(list(j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)][1].keys()))
+        params.extend(list(j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)]['params'].keys()))
 
         for param in params:
             url += "%s=&" % param

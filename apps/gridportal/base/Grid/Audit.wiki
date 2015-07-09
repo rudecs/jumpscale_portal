@@ -7,8 +7,10 @@ h2. Audit:
 |*User*|${user}|
 |*Call*|${call}|
 |*Statuscode*|${statuscode}|
+|*ResponseTime*|${'%0.2f' % ((responsetime or 0) * 1000)} ms|
 
 h3. Arguments:
+
 {{code: 
 ${args}
 }}

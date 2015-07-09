@@ -56,7 +56,7 @@ td {
     width: 97% !important;
 }
 .bootstrap-datetimepicker-widget{
-        top: -1000px; 
+        top: -1000px;
     }
     .bootstrap-datetimepicker-widget.dropdown-menu{
         opacity: 1;

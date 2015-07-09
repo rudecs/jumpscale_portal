@@ -1,11 +1,13 @@
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Save', form_layout=''):
+    def __init__(self, id, submit_url, header='', action_button='Save', form_layout='', reload_on_success=True, navigateback=False):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
         self.header = header
         self.action_button = action_button
         self.submit_url = submit_url
+        self.reload_on_success = reload_on_success
+        self.navigateback = navigateback
 
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
@@ -81,9 +83,9 @@ class Popup(object):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height">${label}</label>
-                {% for title, value in options %}
+                {% for title, value, checked in options %}
                     <label class="checkbox">
-                      <input type="checkbox" name="${name}_${loop.index}" value="${value}" />
+                      <input type="checkbox" {% if checked %}checked{% endif%} name="${name}" value="${value}" />
                       ${title}
                     </label>
                 {% endfor %}
@@ -115,8 +117,8 @@ class Popup(object):
             </div>
         </form>
         ''')
-        
-        content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout, 
+
+        content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout,
                                 widgets=self.widgets, submit_url=self.submit_url)
 
         css = '.modal-body-error { display: none } .modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
@@ -128,7 +130,7 @@ class Popup(object):
             page.addJS(jsLink)
 
         js = self.jinja.from_string('''$(function(){
-            $('.popup_form').ajaxForm({
+            $('#${id}').parent().ajaxForm({
                 clearForm: true,
                 beforeSubmit: function(formData, $form, options) {
                     this.popup = $form;
@@ -139,11 +141,16 @@ class Popup(object):
                     this.popup.find('.modal').modal('hide');
                     this.popup.find('.modal-body').hide();
                     this.popup.find('.modal-body-form').show();
-
+                    {% if navigateback %}
+                    window.location = document.referrer;
+                    {% elif reload %}
+                    location.reload();
+                    {% endif %}
                 },
                 error: function(responseText, statusText, xhr, $form) {
                     if (responseText) {
-                        this.popup.find('.modal-body-error').text(responseText.responseText);
+                        var response = responseText.responseJSON || responseText.responseText;
+                        this.popup.find('.modal-body-error').text(response);
                     }
                     this.popup.find('.modal-body').hide();
                     this.popup.find('.modal-footer > .btn-primary').hide();
@@ -158,9 +165,9 @@ class Popup(object):
             });
         });''')
 
-        js = js.render(id=self.id)
+        js = js.render(id=self.id, reload=self.reload_on_success, navigateback=self.navigateback)
 
         if js not in page.head:
             page.addJS(jsContent=js)
-        
+
         page.addMessage(content)

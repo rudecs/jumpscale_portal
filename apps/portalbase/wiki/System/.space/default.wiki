@@ -1,5 +1,5 @@
 
-{{title:JSPortal}}
+{{title:System Portal}}
 
 {{ApplyFlatTheme}}
 
@@ -12,7 +12,6 @@ Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 }}
 
 {{menuadmin}}
-{{menuspaces marker:$$$spaces name:System class:brand}}
 
 @block
 @row
@@ -27,4 +26,3 @@ Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 
 @divend
 @divend
-

@@ -1,7 +1,6 @@
-
-
 from JumpScale import j
 import urllib
+import types
 
 class PortalRest():
 
@@ -18,24 +17,32 @@ class PortalRest():
             ctx.start_response('401 Unauthorized', [])
             return False, msg
 
-        paramCriteria = self.ws.routes[ctx.path][1]
-        paramOptional = self.ws.routes[ctx.path][3]
+        params = self.ws.routes[ctx.path]['params']
 
-        for key in list(paramCriteria.keys()):
-            criteria = paramCriteria[key]
+        for key, param in params.iteritems():
             if key not in ctx.params:
-                if key in paramOptional:
+                if param['optional']:
                     # means is optional
-                    ctx.params[key] = None
+                    ctx.params[key] = param['default']
                 else:
                     ctx.start_response('400 Bad Request', [])
-                    message = 'get param with name:%s is missing.' % key
+                    message = 'Param with name:%s is missing.' % key
                     return False, message
-            elif (criteria != "" and ctx.params[key] == "")\
-                    or (criteria != "" and not j.codetools.regex.matchAllText(criteria, ctx.params[key])):
-                ctx.start_response('400 Bad Request', [])
-                msg = 'value of param %s not correct needs to comform to regex %s' % (key, criteria)
-                return False, msg
+            elif param['type'] == 'int' and not isinstance(ctx.params[key], (int, types.NoneType)):
+                try:
+                    ctx.params[key] = int(ctx.params[key])
+                except ValueError:
+                    ctx.start_response('400 Bad Request', [])
+                    msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])
+                    return False, msg
+            elif param['type'] == 'bool' and not isinstance(ctx.params[key], (bool, types.NoneType)):
+                try:
+                    ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
+                except ValueError:
+                    ctx.start_response('400 Bad Request', [])
+                    msg = 'Value of param %s not correct needs to be of type %s' % (key, param['type'])
+                    return False, msg
+
         return True, ""
 
     def restPathProcessor(self, path):
@@ -96,7 +103,7 @@ class PortalRest():
             params["modelname"] = modelname
             return (False, msginfo, params)
         params["paths"] = paths
-        return (True, "", params)        
+        return (True, "", params)
 
     def restRouter(self, env, start_response, path, paths, ctx, ext=False, routekey=None, human=False):
         """
@@ -109,7 +116,7 @@ class PortalRest():
         routes = self.ws.routes
         if routekey not in routes:
             self.activateActor(paths[0], paths[1])
-        
+
         if routekey not in routes:
             routekey="GET_%s"%routekey
 
@@ -117,17 +124,17 @@ class PortalRest():
             if human:
                 ctx.fformat = "human"
             elif("format" not in ctx.params):
-                ctx.fformat = routes[routekey][6]
+                ctx.fformat = routes[routekey]['returnformat']
             else:
                 ctx.fformat = ctx.params["format"]
             ctx.path = routekey
             ctx.fullpath = path
             ctx.application = paths[0]
-            ctx.actor = paths[1]            
+            ctx.actor = paths[1]
             ctx.method = paths[2]
-            auth = routes[routekey][5]
+            auth = routes[routekey]['auth']
             resultcode, msg = self.validate(auth, ctx) #validation & authorization (but user needs to be known)
-            if resultcode == False:                
+            if resultcode == False:
                 if human:
                     params = {}
                     params["error"] = "Incorrect Request: %s" % msg
@@ -157,7 +164,7 @@ class PortalRest():
     def execute_rest_call(self, ctx, routekey, ext=False):
         routes = self.ws.routes
         try:
-            method = routes[routekey][0]
+            method = routes[routekey]['func']
             result = method(ctx=ctx, **ctx.params)
             return (True, result)
         except Exception as errorObject:
@@ -225,7 +232,7 @@ class PortalRest():
                 return self.ws.raiseError(ctx, errorObject=eco)
 
     def processor_restext(self, env, start_response, path, human=True, ctx=False):
-        
+
         """
         rest processer gen 2 (not used by the original get code)
         """
@@ -260,7 +267,7 @@ class PortalRest():
 
             osiscl = j.clients.osis.getCategory(self.ws.osis, appname, model)
             osismap = {'GET': ['get', 'list', 'search'], 'POST': [''], 'DELETE': ['delete']}
-            
+
             if requestmethod == 'GET':
                 result = self._handle_get(ctx, osiscl, objectid)
             elif requestmethod in ('POST', 'PUT'):

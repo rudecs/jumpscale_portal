@@ -38,7 +38,7 @@ class ActorExtensionsGroup(PMExtensionsGroup):
 
 class Class():
     pass
-    
+
 class GroupAppsClass(object):
     def __init__(self, actorsloader):
         self.actorsloader = actorsloader
@@ -169,7 +169,7 @@ class ActorLoader(LoaderBaseObject):
         self._loadFromDisk(path, reset=False)
         self.model.application = app
         self.model.actor = actor
-        
+
     def _removeFromMem(self):
         print("remove actor %s from memory" % self.model.id)
         j.core.specparser.removeSpecsForActor(self.model.application, self.model.actor)
@@ -221,9 +221,9 @@ class ActorLoader(LoaderBaseObject):
         args["tags"] = tags
         classpath = j.system.fs.joinPaths(actorpath, "methodclass", "%s_%s.py" % (spec.appname, spec.actorname))
         modelNames = j.core.specparser.getModelNames(appname, actorname)
-        
+
         actorobject = j.core.codegenerator.generate(spec, "actorclass", codepath=actorpath, classpath=classpath,
-                                                    args=args, makeCopy=True)()             
+                                                    args=args, makeCopy=True)()
 
         if len(modelNames) > 0:
             actorobject.models = Class()
@@ -308,24 +308,20 @@ def match(j, args, params, actor, tags, tasklet):
 
             if j.core.portal.active != None:
 
-                paramvalidation = {}
+                params = {}
                 for var in methodspec.vars:
-                    paramvalidation[var.name] = ""  # @todo
-
-                paramoptional = {}
-                for var in methodspec.vars:
+                    param = {'optional': False, 'description': '', 'default': None, 'type': None}
                     tags = j.core.tags.getObject(var.tags)
                     if tags.labelExists("optional"):
-                        paramoptional[var.name] = ""
-
-                paramdescription = {}
-                for var in methodspec.vars:
-                    tags = j.core.tags.getObject(var.tags)
-                    if tags.labelExists("optional"):
+                        param['optional'] = True
                         descr = var.description + " (optional)"
                     else:
                         descr = var.description
-                    paramdescription[var.name] = self._descrTo1Line(descr)
+                    param['description'] = descr
+                    param['type'] = var.ttype
+                    if var.defaultvalue:
+                        param['default'] = var.defaultvalue
+                    params[var.name] = param
 
                 tags = j.core.tags.getObject(methodspec.tags)
                 if tags.tagExists("returnformat"):
@@ -335,16 +331,8 @@ def match(j, args, params, actor, tags, tasklet):
 
                 auth = not tags.labelExists("noauth")
                 methodcall = getattr(actorobject, methodspec.name)
-                j.core.portal.active.addRoute(methodcall, appname, actorname, methodspec.name,
-                                                               paramvalidation=paramvalidation, paramdescription=paramdescription, paramoptional=paramoptional,
-                                                               description=methodspec.description, auth=auth, returnformat=returnformat)
-                # actorobjects = modelNames
-                # j.core.portal.active.addExtRoute(methodcall, appname, actorname, methodspec.name,
-                #                                                   actorobjects,
-                #                                                   paramvalidation=paramvalidation, 
-                #                                                   paramdescription=paramdescription, 
-                #                                                   paramoptional=paramoptional, 
-                #                                                   description=methodspec.description, auth=auth, returnformat=returnformat)
+                j.core.portal.active.addRoute(methodcall, appname, actorname, methodspec.name, params=params,
+                                              description=methodspec.description, auth=auth, returnformat=returnformat)
 
         # load taskletengines if they do exist
         tepath = j.system.fs.joinPaths(actorpath, "taskletengines")

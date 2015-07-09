@@ -1,9 +1,60 @@
 from JumpScale import j
-import JumpScale.grid.osis
+from JumpScale.portal.portal import exceptions
 import ujson as json
+import time
+import types
+
+clients = dict()
+
+
+def getClient(namespace):
+    if namespace not in clients:
+        client = j.clients.osis.getNamespace(namespace, j.core.portal.active.osis)
+        clients[namespace] = client
+    return clients[namespace]
+
+
+def doAudit(user, path, kwargs, responsetime, statuscode, result):
+    client = getClient('system')
+    audit = client.audit.new()
+    audit.user = user
+    audit.call = path
+    audit.statuscode = statuscode
+    audit.args = json.dumps([])  # we dont want to log self
+    auditkwargs = kwargs.copy()
+    auditkwargs.pop('ctx', None)
+    audit.kwargs = json.dumps(auditkwargs)
+    if not isinstance(result, types.GeneratorType):
+        audit.result = json.dumps(result)
+    else:
+        audit.result = json.dumps('Result of type generator')
+
+    audit.responsetime = responsetime
+    client.audit.set(audit)
+
+
+class AuditMiddleWare(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, env, start_response):
+        statinfo = {'status': 200}
+        def my_response(status, headers, exc_info=None):
+            statinfo['status'] = int(status.split(" ", 1)[0])
+            return start_response(status, headers, exc_info)
+
+        start = time.time()
+        result = self.app(env, my_response)
+        responsetime = time.time() - start
+        audit = env.get('JS_AUDIT')
+        if audit or statinfo['status'] >= 400:
+            ctx = env.get('JS_CTX')
+            user = env['beaker.session'].get('user', 'Unknown')
+            kwargs = ctx.params.copy() if ctx else {}
+            doAudit(user, env['PATH_INFO'], kwargs, responsetime, statinfo['status'], result)
+        return result
 
 class auth(object):
-    clients = dict()
 
     def __init__(self, groups=None, audit=True):
         if isinstance(groups, str):
@@ -13,27 +64,6 @@ class auth(object):
         self.groups = set(groups)
         self.audit = audit
 
-
-    def getClient(self, namespace):
-        client = self.clients.get(namespace)
-        if not client:
-            client = j.clients.osis.getNamespace(namespace,j.core.portal.active.osis)
-            self.clients[namespace] = client
-        return client
-
-    def doAudit(self, user, statuscode, pathinfo, args, kwargs, result):
-        client = self.getClient('system')
-        audit = client.audit.new()
-        audit.user = user
-        audit.call = pathinfo
-        audit.statuscode = statuscode
-        audit.args = json.dumps(args[1:]) # we dont want to log self
-        auditkwargs = kwargs.copy()
-        auditkwargs.pop('ctx')
-        audit.kwargs = json.dumps(auditkwargs)
-        audit.result = json.dumps(result)
-        client.audit.set(audit)
-
     def __call__(self, func):
         def wrapper(*args, **kwargs):
             if 'ctx' not in kwargs:
@@ -41,31 +71,12 @@ class auth(object):
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
-            pathinfo = ctx.env['PATH_INFO']
-            result = None
-            resultcalled = False
-            statuscode = None
             if self.groups:
                 userobj = j.core.portal.active.auth.getUserInfo(user)
                 groups = set(userobj.groups)
                 if not groups.intersection(self.groups):
-                    self.doAudit(user, 403, pathinfo, args, kwargs, {})
-                    ctx.start_response('403 Forbidden', [])
-                    return 'User %s has no access. If you would like to gain access please contact your adminstrator' % user
-            if self.audit:
-                start_response = ctx.start_response
-                def patched_start_response(status, *pargs, **pkwargs):
-                    statuscode = int(status[0:3])
-                    if resultcalled:
-                        self.doAudit(user, statuscode, pathinfo, args, kwargs, result)
-                    return start_response(status, *pargs, **pkwargs)
-                ctx.start_response = patched_start_response
-            try:
-                result = func(*args, **kwargs)
-                resultcalled = True
-                return result
-            finally:
-                if self.audit and statuscode:
-                    self.doAudit(user, statuscode, pathinfo, args, kwargs, result)
-        return wrapper
+                    raise exceptions.Forbidden('User %s has no access. If you would like to gain access please contact your adminstrator' % user)
 
+            ctx.env['JS_AUDIT'] = self.audit
+            return func(*args, **kwargs)
+        return wrapper

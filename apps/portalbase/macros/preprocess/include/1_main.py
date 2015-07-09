@@ -9,6 +9,7 @@ def main(j, args, params,  tags, tasklet):
         raise RuntimeError("include command not found in %s" % tags)
 
     name = tags.tagGet("include")
+    spacename = params.getTag("space")
 
     if tags.tagExists("type"):
         type = tags.tagGet("type")
@@ -21,13 +22,21 @@ def main(j, args, params,  tags, tasklet):
         headinglevel = None
 
     name = name.lower()
-    if type != "":
 
+    if spacename:
+        space = j.core.portal.active.getSpace(spacename)
+        if name in space.docprocessor.name2doc:
+            doc2 = space.docprocessor.name2doc[name]
+        else:
+            msg = "**ERROR**: include %s not found in %s" % (name, tags)
+            print(msg)
+            params.result = (msg, doc)
+            return params
+    elif type != "":
         if "%s_%s" % (name, type) in doc.preprocessor.nametype2doc:
             # found the page to include
             doc2 = doc.preprocessor.nametype2doc["%s_%s" % (name, type)]
         else:
-            #doc.preprocessor.errorTrap("include %s not found in %s" % (name,tags))
             msg = "**ERROR**: include %s not found in %s" % (name, tags)
             print(msg)
             params.result = (msg, doc)
@@ -58,7 +67,7 @@ def main(j, args, params,  tags, tasklet):
             params.result = ("h%s. %s\n%s" % (headinglevel, doc2.title, doc2.source), doc)
     else:
         params.result = ("", doc)
-    
+
 
     return params
 

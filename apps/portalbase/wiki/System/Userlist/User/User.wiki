@@ -1,0 +1,20 @@
+h2. User ${id}
+{{user_info: guid:$$id}}
+
+
+{{actions:
+- display: Edit User
+  action: '#user_edit'
+
+- display: Delete
+  action: /restmachine/system/usermanager/delete?username=$$id
+  navigateback: true
+}}
+
+|*Groups*|${", ".join(groups)} |
+|*Emails*|${", ".join(emails)} |
+|*Domain*|${domain} |
+|*Grid ID*|[${gid}|/Grid/grid?id=${gid}]|
+|*Authkey*|${authkey} |
+
+{{user_edit: guid:$$id}}

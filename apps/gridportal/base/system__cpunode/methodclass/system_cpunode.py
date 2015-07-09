@@ -21,7 +21,7 @@ class system_cpunode(j.code.classGetBase()):
         authkey = ctx.params['authkey']
 
         script = """#!/bin/bash
-
+apt-get install autossh -y
 PRIVPATH="$HOME/.ssh/id_dsa"
 PUBPATH="$PRIVPATH.pub"
 if [ ! -e "$PUBPATH" ]
@@ -30,7 +30,7 @@ then
 fi
 PUBKEY=`cat $PUBPATH`
 
-curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http://%s/restmachine/system/cpunode/create?authkey=%s | bash""" % (host, authkey)
+curl -L -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" https://%s/restmachine/system/cpunode/create?authkey=%s | bash""" % (host, authkey)
         headers = [('Content-Type', 'text/plain'), ]
         ctx.start_response("200", headers)
         return script
@@ -97,7 +97,7 @@ curl -X POST -F "pubkey=$PUBKEY" -F "login=$USER" -F "hostname=$HOSTNAME" http:/
             'instance.ssh.shell': '/bin/bash -l -c'
         }
         node = j.atyourservice.new(name='node.ssh', instance=hostname, args=data, parent=loc)
-        node.init()
+        node.hrd # force creation of service.hrd and action.py
 
         # todo handle exeption here
         # todo make sure the key is valid
