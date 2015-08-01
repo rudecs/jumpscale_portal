@@ -82,6 +82,7 @@ class LoaderBaseObject():
         self.model.path=""
         self.model.acl={} #dict with key the group or username; and the value is a string
         self.type = type
+        self.model.hidden = False
         # self._osis=None
 
     def _createDefaults(self, path):
@@ -113,6 +114,9 @@ class LoaderBaseObject():
             self.model.name = ini.getValue('main', 'name')
         else:
             self.model.name = name
+
+        if ini.checkParam('main', 'hidden'):
+            self.model.hidden = ini.getBooleanValue('main', 'hidden')
         self.model.path=path
         self.processAcl()
 

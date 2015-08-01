@@ -27,6 +27,8 @@ def main(j, args, params, tags, tasklet):
         spaces = {}
         for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
             space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
+            if space.model.hidden:
+                continue
             spaces[spaceid] = space.model.name
 
     excludes=[]

@@ -34,6 +34,8 @@ def main(j, args, params, tags, tasklet):
         spaces = {}
         for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
             space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
+            if space.model.hidden:
+                continue
             spaces[space.model.name] = "/%s" % spaceid
 
     if spaces:
@@ -42,7 +44,7 @@ def main(j, args, params, tags, tasklet):
     template = jinja.from_string('''
 {{megamenu: name:Navigation
 {% for name, links in megamenu.iteritems() %}
-column.${name} ={% for pagename, link in links.iteritems() %}
+column.${name} ={% for pagename, link in links|dictsort %}
         ${pagename}:${link},
 
 {%- endfor %}

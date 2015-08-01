@@ -1,21 +1,13 @@
-
-
-{{title:JSPortal}}
+{{title:System Portal}}
 {{ApplyFlatTheme}}
 
-{{projectname:System}}
-
+{{projectname:System Portal}}
 {{find}}
-
 {{menu:
 Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 }}
 
 {{menuadmin}}
-{{menuspaces}}
-
-
-
 
 @block
 @row
