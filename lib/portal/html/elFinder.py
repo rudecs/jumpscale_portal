@@ -47,6 +47,7 @@ class connector():
 			'create': {},
 			'extract': {}
 		},
+		'filters': [re.compile("\.pyc$")],
 		'disabled': [],
 		'debug': False
 	}
@@ -1294,6 +1295,9 @@ class connector():
 			return False
 		if target[0:1] == '.' and not self._options['dotFiles']:
 			return False
+		for rec in self._options['filters']:
+			if rec.search(target):
+				return False
 		return True
 
 
