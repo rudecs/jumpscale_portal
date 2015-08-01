@@ -20,7 +20,6 @@ Job Queues:/grid/jobqueues
 Jumpscripts:/grid/Jumpscripts
 Logs:/grid/Logs
 Nodes:/grid/Nodes
-Processes:/grid/Processes
 Status Check:/grid/checkstatus
 }}
 

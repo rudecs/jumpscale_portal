@@ -37,10 +37,6 @@ h3. NICs
 h3. Jobs
 {{jobs: nid:$$id}}
 
-
-h3. Processes
-{{processes nid:$$id}}
-
 h3. Machines
 {{machines nid:$$id}}
 
