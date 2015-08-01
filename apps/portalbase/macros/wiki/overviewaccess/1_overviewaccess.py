@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
 
     params.result = ""
 
-    out = ""
+    out = "{{datatables_use}}\n"
     singlespace = False
     if space != 'system':
         spaces = [space] if space else [params.paramsExtra['space']]
