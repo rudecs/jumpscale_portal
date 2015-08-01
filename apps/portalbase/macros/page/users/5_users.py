@@ -7,6 +7,7 @@ def main(j, args, params, tags, tasklet):
     userdetails = '/system/user?id'
 
     filters = dict()
+
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
         if tag == 'userdetails':

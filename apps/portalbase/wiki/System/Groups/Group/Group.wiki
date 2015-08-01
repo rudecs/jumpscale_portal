@@ -27,6 +27,4 @@ h1. Group $$id
 
 h2. Users:
 
-{% for user in users -%}
-* [${user}|/system/user?id=${user}]
-{% endfor %}
+{{users: groups:$$id}}
