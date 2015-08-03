@@ -60,7 +60,7 @@ def run(port=5000, mongo_host='localhost', mongo_port=27017, pagination_limit=10
         firstapp = apps.values()[0]
         application = DispatcherMiddleware(firstapp, apps)
     # let's roll
-        run_simple('0.0.0.0', port, application, use_reloader=True)
+        run_simple('0.0.0.0', port, application, use_reloader=False)
 
 if __name__ == "__main__":
     parser = cmdutils.ArgumentParser()
