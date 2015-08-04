@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
     space = args.paramsExtra.get('space')
     if space:
         space = j.core.portal.active.getSpace(space)
-        path = os.path.join(j.core.portal.active.basepath, 'wiki', space.model.id)
+        path = space.model.path
 
     if args.tags.tagExists("ppath"):
         path = args.tags.tagGet("ppath").replace("+", ":").replace("___", ":").replace("\\", "/")
