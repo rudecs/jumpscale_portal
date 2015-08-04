@@ -1,14 +1,14 @@
 {{drawgraph:
 
 target.1 =
-    function:difference,
+    function:derivative,
     value:value,
     series:{gid}_{id}_network.error.in.gauge,
     alias:In,
     interval:2m,
 
 target.2 =
-    function:difference,
+    function:derivative,
     value:value,
     series:{gid}_{id}_network.error.out.gauge,
     alias:Out,
@@ -20,6 +20,6 @@ cfg.height = 275px
 cfg.width = 500px
 cfg.stack = false
 cfg.fill = 1
-cfg.y_format = bytes
+cfg.y_format = kbytes
 
 }}

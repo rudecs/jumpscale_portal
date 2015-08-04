@@ -1,14 +1,14 @@
 {{drawgraph:
 
 target.1 =
-    function:difference,
+    function:derivative,
     value:value,
     series:{gid}_{id}_network.kbytes.recv.gauge,
     alias:Received,
     interval:2m,
 
 target.2 =
-    function:difference,
+    function:derivative,
     value:value,
     series:{gid}_{id}_network.kbytes.send.gauge,
     alias:Sent,
