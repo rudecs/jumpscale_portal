@@ -2,21 +2,21 @@
 
 target.1 =
     function:mean,
-    value:value / 100.0,
+    value:value,
     series:{gid}_{id}_load.avg1min.gauge,
     alias:Avg 1 Min,
     interval:1m,
 
 target.2 =
     function:mean,
-    value:value / 100.0,
+    value:value,
     series:{gid}_{id}_load.avg5min.gauge,
     alias:Avg 5 Min,
     interval:1m,
 
 target.3 =
     function:mean,
-    value:value / 100.0,
+    value:value,
     series:{gid}_{id}_load.avg15min.gauge,
     alias:Avg 15 Min,
     interval:1m,

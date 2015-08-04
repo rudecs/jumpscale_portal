@@ -1,129 +1,132 @@
+import json
 def main(j, args, params, tags, tasklet):
     page = args.page
     graphdata = args.cmdstr.format(**args.doc.appliedparams)
+    checksum = j.tools.hash.md5_string(graphdata)
     graphdata = j.core.hrd.get(content=graphdata)
 
     targets = graphdata.getDictFromPrefix('target')
-    cfg = {'stack': 'false', 'fill': '1', 'percentage': 'false', "y_format": 'short'}
+    cfg = {'stack': 'false', 'fill': '1', 'percentage': 'false', "y_format": 'short', 'checksum': checksum}
     cfg.update(graphdata.getDictFromPrefix('cfg'))
 
     targetsstr = ''
+    grafanatargets = []
 
     for target in targets.values():
         target['value'] = target.get('value', 'value')
-        targetsstr += """
-                        {
+        targetvalue = {
                             "target": "randomWalk('random walk')",
-                            "function":"%(function)s",
-                            "column": "%(value)s",
-                            "series": "%(series)s",
-                            "query": "",
-                            "alias": "%(alias)s",
-                            "interval": "%(interval)s"
-                        },""" % target
+                            "fields": [
+                                {
+                                    "func": target['function'],
+                                    "name": target['value']
+                                }
+                            ],
+                            "measurement": target['series'],
+                            "alias": target['alias'],
+                            "interval": target['interval']
+                        }
+        grafanatargets.append(targetvalue)
     cfg['target'] = targetsstr.strip(',')
 
-    configuration = """
- {
-    "title": "Grafana",
+    dashboard = {
+    "title": checksum,
     "tags": [],
     "style": "light",
     "timezone": "browser",
-    "editable": false,
+    "editable": False,
     "rows": [
         {
-            "title": "%(title)s",
+            "title": cfg['title'],
             "height": "250px",
-            "editable": false,
-            "collapse": false,
-            "collapsable": true,
+            "editable": False,
+            "collapse": False,
+            "collapsable": True,
             "panels": [
                 {
-                    "editable": false,
+                    "editable": False,
                     "type": "graph",
-                    "x-axis": true,
-                    "y-axis": true,
+                    "x-axis": True,
+                    "y-axis": True,
                     "scale": 1,
                     "y_formats": [
-                        "%(y_format)s",
+                        cfg['y_format'],
                         "short"
                     ],
                     "grid": {
-                        "max": null,
-                        "min": null,
-                        "leftMax": null,
-                        "rightMax": null,
-                        "leftMin": null,
-                        "rightMin": null,
-                        "threshold1": null,
-                        "threshold2": null,
+                        "max": None,
+                        "min": None,
+                        "leftMax": None,
+                        "rightMax": None,
+                        "leftMin": None,
+                        "rightMin": None,
+                        "threshold1": None,
+                        "threshold2": None,
                         "threshold1Color": "rgba(216,200,27,0.27)",
                         "threshold2Color": "rgba(234,112,112,0.22)"
                     },
                     "resolution": 100,
-                    "lines": true,
-                    "fill": %(fill)s,
+                    "lines": True,
+                    "fill": cfg['fill'],
                     "linewidth": 2,
-                    "points": false,
+                    "points": False,
                     "pointradius": 5,
-                    "bars": false,
-                    "stack": %(stack)s,
-                    "spyable": true,
-                    "options": false,
+                    "bars": False,
+                    "stack": cfg['stack'],
+                    "spyable": True,
+                    "options": False,
                     "legend": {
-                        "show": true,
-                        "values": false,
-                        "min": false,
-                        "max": false,
-                        "current": false,
-                        "total": false,
-                        "avg": false
+                        "show": True,
+                        "values": False,
+                        "min": False,
+                        "max": False,
+                        "current": False,
+                        "total": False,
+                        "avg": False
                     },
-                    "interactive": true,
-                    "legend_counts": true,
+                    "interactive": True,
+                    "legend_counts": True,
                     "timezone": "browser",
-                    "percentage": %(percentage)s,
-                    "zerofill": true,
+                    "percentage": cfg['percentage'],
+                    "zerofill": True,
                     "nullPointMode": "connected",
-                    "steppedLine": false,
+                    "steppedLine": False,
                     "tooltip": {
                         "value_type": "cumulative",
-                        "query_as_alias": true
+                        "query_as_alias": True
                     },
-                    "targets": [
-                        %(target)s
-                    ],
+                    "targets": grafanatargets,
                     "aliasColors": {},
                     "aliasYAxis": {},
-                    "title": "%(title)s",
-                    "datasource": null,
+                    "title": cfg['title'],
+                    "datasource": "influxdb_main",
                     "renderer": "flot",
                     "annotate": {
-                        "enable": false
+                        "enable": False
                     }
                 }
             ],
-            "notice": false
+            "notice": False
         }
     ],
     "pulldowns": [
         {
             "type": "filtering",
-            "collapse": false,
-            "notice": false,
-            "enable": false
+            "collapse": False,
+            "notice": False,
+            "enable": False
         },
         {
             "type": "annotations",
-            "enable": false
+            "enable": False
         }
     ],
     "nav": [
         {
             "type": "timepicker",
-            "collapse": false,
-            "notice": false,
-            "enable": true,
+            "collapse": False,
+            "notice": False,
+            "enable": True,
             "status": "Stable",
             "time_options": [
                 "5m",
@@ -148,7 +151,7 @@ def main(j, args, params, tags, tasklet):
                 "2h",
                 "1d"
             ],
-            "now": true
+            "now": True
         }
     ],
     "time": {
@@ -160,16 +163,11 @@ def main(j, args, params, tags, tasklet):
     },
     "version": 2
 }
-""" % cfg
 
-    checksum = j.tools.hash.md5_string(configuration)
-    cfg['checksum'] = checksum
-    path = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'portals', 'jslib', 'grafana', 'app', 'dashboards', '%(checksum)s.json' % cfg)
-    if not j.system.fs.exists(path):
-        j.system.fs.writeFile(path, configuration)
-
+    grafclient = j.clients.grafana.get()
+    grafclient.updateDashboard(dashboard)
     page.addHTML("""
-        <iframe width="%(width)s" height="%(height)s" src="/jslib/grafana/iframe.html#/dashboard/file/%(checksum)s.json" frameborder="0"></iframe>""" % cfg)
+        <iframe width="%(width)s" height="%(height)s" src="/proxy/grafana/dashboard-solo/db/%(checksum)s?panelId=1&fullscreen&theme=light" frameborder="0"></iframe>""" % cfg)
     params.result = page
     return params
 

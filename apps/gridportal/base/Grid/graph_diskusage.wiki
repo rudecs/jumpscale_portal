@@ -2,14 +2,14 @@
 
 target.1 =
     function:mean,
-    value:value * 1024 * 1024,
+    value:value,
     series:{gid}_{nid}_disk_{bpath}_space_used_mb.gauge,
     alias:Used,
     interval:5m,
 
 target.2 =
     function:difference,
-    value:value * 1024 * 1024,
+    value:value,
     series:{gid}_{nid}_disk_{bpath}_space_free_mb.gauge,
     alias:Free,
     interval:5m,

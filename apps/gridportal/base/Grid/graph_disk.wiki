@@ -2,14 +2,14 @@
 
 target.1 =
     function:difference,
-    value:value * 1024 / 600.,
+    value:value,
     series:{gid}_{nid}_disk_{bpath}_kbytes_read.gauge,
     alias:Read,
     interval:10m,
 
 target.2 =
     function:difference,
-    value:value * 1024 / 600.,
+    value:value,
     series:{gid}_{nid}_disk_{bpath}_kbytes_write.gauge,
     alias:Write,
     interval:10m,

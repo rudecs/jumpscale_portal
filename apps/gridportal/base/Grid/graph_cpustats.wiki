@@ -2,8 +2,8 @@
 
 target.1 =
     function:mean,
-    value:value / 10.0,
-    series:{gid}_{id}_cpu.promile.gauge,
+    value:value,
+    series:{gid}_{id}_cpu.percent.gauge,
     alias:CPU,
     interval:1m,
 
