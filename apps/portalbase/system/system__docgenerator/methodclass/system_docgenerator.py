@@ -91,5 +91,8 @@ class system_docgenerator(j.code.classGetBase()):
             actors = j.core.portal.active.getActors()
 
         for actor in sorted(actors):
-            self.getDocForActor(actor, catalog)
+            try:
+                self.getDocForActor(actor, catalog)
+            except Exception as e:
+                catalog['info']['description'] += "<p class='alert alert-danger'>Failed to load actor %s error was %s</p>" % (actor, e)
         return catalog
