@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     graphdata = j.core.hrd.get(content=graphdata)
 
     targets = graphdata.getDictFromPrefix('target')
-    cfg = {'stack': 'false', 'fill': '1', 'percentage': 'false', "y_format": 'short', 'checksum': checksum}
+    cfg = {'stack': False, 'fill': '1', 'percentage': False, "y_format": 'short', 'checksum': checksum}
     cfg.update(graphdata.getDictFromPrefix('cfg'))
 
     targetsstr = ''
@@ -15,7 +15,6 @@ def main(j, args, params, tags, tasklet):
     for target in targets.values():
         target['value'] = target.get('value', 'value')
         targetvalue = {
-                            "target": "randomWalk('random walk')",
                             "fields": [
                                 {
                                     "func": target['function'],
@@ -51,7 +50,7 @@ def main(j, args, params, tags, tasklet):
                     "scale": 1,
                     "y_formats": [
                         cfg['y_format'],
-                        "short"
+                        cfg['y_format'],
                     ],
                     "grid": {
                         "max": None,
@@ -65,7 +64,6 @@ def main(j, args, params, tags, tasklet):
                         "threshold1Color": "rgba(216,200,27,0.27)",
                         "threshold2Color": "rgba(234,112,112,0.22)"
                     },
-                    "resolution": 100,
                     "lines": True,
                     "fill": cfg['fill'],
                     "linewidth": 2,

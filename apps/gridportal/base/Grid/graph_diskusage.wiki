@@ -21,7 +21,7 @@ cfg.width = 1000px
 cfg.stack = true
 cfg.stack = true
 cfg.fill = 20
-cfg.y_format = bytes
+cfg.y_format = mbytes
 
 
 }}

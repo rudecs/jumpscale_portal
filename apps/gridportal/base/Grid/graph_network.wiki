@@ -20,6 +20,6 @@ cfg.height = 275px
 cfg.width = 500px
 cfg.stack = false
 cfg.fill = 0
-cfg.y_format = bytes
+cfg.y_format = kbytes
 
 }}
