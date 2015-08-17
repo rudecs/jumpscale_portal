@@ -138,7 +138,7 @@ body input[type=text]{
     transition: border .25s linear, color .25s linear, background-color .25s linear;        
 }
 body input[type=text]:focus{
-    border-color: #1abc9c;
+    border-color: #5dade2;
     outline: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -161,12 +161,12 @@ body input[type=text]:focus{
     border-top-color: #fff;
 }
 .navbar .nav > li a:hover, .navbar .nav > li a:focus, .navbar .nav > li a:active{
-    color: #1abc9c;
+    color: #bdc3c7;
     background-color: transparent;
 }
 .dropdown-toggle:hover .caret, .dropdown-toggle:focus .caret{
-    border-bottom-color: #1abc9c !important;
-    border-top-color: #1abc9c !important;
+    border-bottom-color: #bdc3c7 !important;
+    border-top-color: #bdc3c7 !important;
 }
 .nav>li>a, .navbar-brand{
     padding: 0px 15px;
@@ -199,7 +199,7 @@ body input[type=text]:focus{
 .sidebar-nav li:hover, .nav-page-active, .sidebar-nav p:hover{
     color: #fff;
     background: #34495E;
-    border-left: 4px solid #16a085;
+    border-left: 4px solid #3498db;
 }
 .sidebar-nav li, .sidebar-nav p{
     list-style: none;
@@ -267,11 +267,11 @@ body input[type=text]:focus{
     margin-right: -4px;
 }
 .dropdown.open .dropdown-toggle{
-    color: #1abc9c !important;
+    color: #bdc3c7 !important;
 }
 .dropdown.open .caret{
-    border-bottom-color: #1abc9c !important;
-    border-top-color: #1abc9c !important;
+    border-bottom-color: #bdc3c7 !important;
+    border-top-color: #bdc3c7 !important;
 }
 
 /* Breadcrumb */
@@ -294,7 +294,7 @@ table input[type=text]{
     height: 25px !important;
 }
 table thead {
-    background: #16A085;
+    background: #3498db;
     color: #fff;
 }
 .dataTables_wrapper table.table thead .sorting_asc{
@@ -371,7 +371,7 @@ div.dataTables_length select{
     background-color: initial;
 }
 .mega-menu .mega-menu-column li:hover{
-    background-color: #1abc9c;
+    background-color: #717577;
 }
 .mega-menu .mega-menu-column li{
   max-height: 31px;
@@ -415,8 +415,27 @@ select{
     color: #000 !important;
 }
 table.table{
-    margin-left: 15px;
+    margin-left: 15px !important;
 }
 .checkbox input, .radio input{
     display: inline;
+}
+a{
+    color: #3498db;
+}
+a:hover, a:active, a:focus{
+    color: #5dade2;
+}
+.pagination ul li > a:hover, .pagination ul li > span:hover, .pagination ul li > a:focus, .pagination ul li > span:focus, .pagination ul li.active > a, .pagination ul li.active > span{
+    background-color: #3498db;
+    border-color: #3498db;
+}
+.btn-primary{
+    background-color: #3498db;
+}
+.btn-primary:hover{
+    background-color: #5dade2;
+}
+.title span{
+    color: #34495e !important;
 }
