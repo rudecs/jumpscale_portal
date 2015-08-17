@@ -124,7 +124,7 @@ body.fixFirefoxSizing input[type="text"]{
 }
 body input[type=text]{
     border: 2px solid #bdc3c7;
-    color: #34495e;
+    color: #34495e !important;
     font-family: "Lato", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.467;
@@ -138,7 +138,8 @@ body input[type=text]{
     transition: border .25s linear, color .25s linear, background-color .25s linear;        
 }
 body input[type=text]:focus{
-    border-color: #5dade2;
+    border-color: #5D88B3 !important;
+    color: #5D88B3 !important
     outline: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -199,7 +200,7 @@ body input[type=text]:focus{
 .sidebar-nav li:hover, .nav-page-active, .sidebar-nav p:hover{
     color: #fff;
     background: #34495E;
-    border-left: 4px solid #3498db;
+    border-left: 4px solid #5D88B3;
 }
 .sidebar-nav li, .sidebar-nav p{
     list-style: none;
@@ -244,7 +245,7 @@ body input[type=text]:focus{
     font-size: 12px;
 }
 .dropdown-menu li:hover{
-    background-color: #1abc9c;
+    background-color: #717577;
 }
 .dropdown-menu li:hover a{
     color: #ffffff !important;
@@ -294,7 +295,7 @@ table input[type=text]{
     height: 25px !important;
 }
 table thead {
-    background: #3498db;
+    background: #5D88B3;
     color: #fff;
 }
 .dataTables_wrapper table.table thead .sorting_asc{
@@ -405,8 +406,8 @@ select{
     -webkit-appearance: menulist !important;
 }
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus{
-    background-color: #16A085 !important;
-    border-color: #5FAC9D !important;
+    background-color: #5D88B3 !important;
+    border-color: #5D88B3 !important;
 }
 .pagination>li>a, .pagination>li>span, .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus{
     color: #34495E;
@@ -421,21 +422,25 @@ table.table{
     display: inline;
 }
 a{
-    color: #3498db;
+    color: #5D88B3;
 }
 a:hover, a:active, a:focus{
     color: #5dade2;
 }
 .pagination ul li > a:hover, .pagination ul li > span:hover, .pagination ul li > a:focus, .pagination ul li > span:focus, .pagination ul li.active > a, .pagination ul li.active > span{
-    background-color: #3498db;
-    border-color: #3498db;
+    background-color: #5D88B3;
+    border-color: #5D88B3;
 }
 .btn-primary{
-    background-color: #3498db;
+    background-color: #5D88B3;
 }
 .btn-primary:hover{
     background-color: #5dade2;
 }
 .title span{
     color: #34495e !important;
+}
+.navbar-inverse .navbar-form .form-control:focus{
+    border-color: #5D88B3 !important;
+    color: #5D88B3 !important;
 }

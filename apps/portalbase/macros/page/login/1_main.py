@@ -42,6 +42,18 @@ def main(j, args, params, tags, tasklet):
       .login-screen{
         background-color: #34495e;
       }
+      .login-form .login-field:focus{
+        border-color: #5D88B3;
+      }
+      .login-form .login-field:focus + .login-field-icon{
+        color: #5D88B3;
+      }
+      .btn-primary{
+        background-color: #5D88B3;
+      }
+      .btn-primary:hover{
+        background-color: #4A7198;
+      }
     ''')
     page.addJS(jsContent='''
       $( function () {
