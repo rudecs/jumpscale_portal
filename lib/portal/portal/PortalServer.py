@@ -205,7 +205,7 @@ class PortalServer:
             space = self.spacesloader.spaces.pop(spacename)
             space.deleteOnDisk()
         else:
-            raise RuntimeError("could not find system space")
+            raise RuntimeError("Could not find space %s to delete" % spacename)
 
     def loadSpaces(self):
 
