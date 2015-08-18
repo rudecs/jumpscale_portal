@@ -18,8 +18,8 @@ def main(j, args, params, tags, tasklet):
         path = os.path.abspath(model.path)
         querystr = urllib.urlencode({'ppath': path})
 
-        out += "| [%s | /system/Explorer?%s] | [Reload | /system/ReloadSpace?name=%s]|\n" % \
-            (model.id, querystr, model.id)
+        out += "| [%s | /system/Explorer?%s] | [Reload | /system/ReloadSpace?name=%s] | [Delete | /system/DeleteSpace?spacename=%s]|\n" % \
+            (model.id, querystr, model.id, model.id)
 
     params.result = (out, params.doc)
 

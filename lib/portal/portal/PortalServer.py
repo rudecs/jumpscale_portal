@@ -198,6 +198,15 @@ class PortalServer:
         self.actorsloader.getActor("system", "contentmanager")
         self.actorsloader.getActor("system", "usermanager")
 
+    def deleteSpace(self, spacename):
+        self.loadSpaces()
+        spacename = spacename.lower()
+        if spacename in self.spacesloader.spaces:
+            space = self.spacesloader.spaces.pop(spacename)
+            space.deleteOnDisk()
+        else:
+            raise RuntimeError("could not find system space")
+
     def loadSpaces(self):
 
         self.bucketsloader = j.core.portalloader.getBucketsLoader()
