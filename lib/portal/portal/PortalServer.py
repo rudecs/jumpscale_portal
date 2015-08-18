@@ -377,10 +377,6 @@ class PortalServer:
 
         username, rights = self.auth.getUserSpaceRights(username, space, spaceobject=spaceobject)
 
-        # default space always have readonly permissions atlease
-        if space == self.defaultspace and "r" not in rights:
-            rights = "r" + rights
-
         return username, rights
 
     def getUserFromCTX(self,ctx):
