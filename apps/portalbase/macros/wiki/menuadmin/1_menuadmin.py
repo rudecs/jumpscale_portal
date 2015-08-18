@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
 
     if pages:
         pagedict = OrderedDict()
-        megamenu['Pages'] = pagedict
+        megamenu['Topics'] = pagedict
         for page in pages:
             pagename, pagelink = page.split(':')
             pagedict[pagename] = pagelink
