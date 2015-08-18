@@ -61,9 +61,8 @@ Create Space:/system/createspace
 --------------
 Files:/system/files?space=$$space
 Access:/system/OverviewAccess?space=$$space
-Reload:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(function(){location.reload()});void(0);
+Reload Space:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(function(){location.reload()});void(0);
 ReloadAll:javascript:reloadAll();void 0;
-Pull latest changes & update:javascript:pullUpdate('$$space');void 0;
 }}
 """
 
