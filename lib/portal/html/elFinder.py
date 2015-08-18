@@ -79,6 +79,7 @@ class connector():
 		'conf': 'text/plain',
 		'cfg': 'text/plain',
 		'wiki': 'text/plain',
+		'spec': 'text/plain',
 		'md': 'text/plain',
 		'asc': 'text/plain',
 		'hrd': 'text/plain',
