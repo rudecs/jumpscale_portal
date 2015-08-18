@@ -11,9 +11,13 @@ def main(j, args, params, tags, tasklet):
     querystr = args.requestContext.env['QUERY_STRING']
     querytuples = urlparse.parse_qsl(querystr)
     args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
-    for item in querytuples[:]:
-        if item[0] in ['space', 'page']:
-            args[item[0]] = item[1]
+    for name, value in querytuples[:]:
+        if name in ['space', 'page']:
+            if not args.get(name):
+                args[name] = value
+        if name in ('edit_page', 'edit_space'):
+            querytuples.remove((name, value))
+
     querystr = urllib.urlencode(querytuples)
 
     page.addBootstrap()

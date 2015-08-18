@@ -21,7 +21,7 @@ More Info on [WIKI syntax|https://github.com/Jumpscale/jumpscale_portal/wiki/Wik
 @rowend
 
 @col 11
-{{edit: app:$$app actor:$$actor space:$$space bucket:$$bucket path:$$path page:$$page}}
+{{edit: app:$$app actor:$$actor space:$$edit_space bucket:$$bucket path:$$path page:$$edit_page}}
 @colend
 @blockend
 

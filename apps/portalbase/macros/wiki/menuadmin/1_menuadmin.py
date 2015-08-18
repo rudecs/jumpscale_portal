@@ -56,7 +56,7 @@ column.${name} ={% for pagename, link in links|dictsort %}
         adminmenu = """
 {{menudropdown: name:Administration
 New Page:/system/create
-Edit Page:/system/edit?space=$$space&page=$$page&$$querystr
+Edit Page:/system/edit?edit_space=$$space&edit_page=$$page&$$querystr
 Create Space:/system/createspace
 --------------
 Files:/system/files?space=$$space
