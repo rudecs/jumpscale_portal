@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
 
     if not nid:
         nid = j.application.whoAmI.nid
-    result = j.apps.system.packagemanager.getJPackageInfo(nid=nid, domain=domain, pname=name, version=version)
+    result = j.apps.system.servicemanager.getServiceInfo(nid=nid, domain=domain, pname=name, version=version)
     
     if result == False:
         page.addHTML("<script>window.open('/jpackages/jpackages', '_self', '');</script>" )

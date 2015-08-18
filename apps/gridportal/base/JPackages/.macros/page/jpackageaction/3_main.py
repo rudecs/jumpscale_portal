@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
 
     if not nid:
         nid = j.application.whoAmI.nid
-    message = j.apps.system.packagemanager.action(nid=nid, domain=domain, pname=name, version=version, action=action)
+    message = j.apps.system.servicemanager.action(nid=nid, domain=domain, pname=name, version=version, action=action)
 
     page.addHTML(message)
 

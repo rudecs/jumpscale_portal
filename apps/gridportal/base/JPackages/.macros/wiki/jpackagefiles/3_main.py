@@ -5,11 +5,11 @@ def main(j, args, params, tags, tasklet):
     version = args.requestContext.params.get('version')
     nid = args.requestContext.params.get('nid')
 
-    j.core.portal.active.actorsloader.getActor('system', 'packagemanager')
+    j.core.portal.active.actorsloader.getActor('system', 'servicemanager')
 
     if not nid:
         nid = j.application.whoAmI.nid
-    result = j.apps.system.packagemanager.getJPackageFilesInfo(nid=nid, domain=domain, pname=name, version=version)
+    result = j.apps.system.servicemanager.getServiceFileInfo(nid=nid, domain=domain, pname=name, version=version)
 
     if not result:
         out = 'Could not find jpackage files'

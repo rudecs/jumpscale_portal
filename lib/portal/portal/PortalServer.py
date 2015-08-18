@@ -9,10 +9,10 @@ import requests
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
-from .PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
 from .RequestContext import RequestContext
 from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
+from .MinimalBeaker import MinimalBeaker
 from . import exceptions
 from .auth import AuditMiddleWare
 
@@ -30,6 +30,8 @@ import urllib
 import cgi
 import JumpScale.grid.agentcontroller
 from PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
+from PortalAuthenticatorMinimal import PortalAuthenticatorMinimal
+from PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
 
 BLOCK_SIZE = 4096
 
@@ -78,12 +80,37 @@ class PortalServer:
 
         j.core.portal.active=self
 
-        self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
-
         self.watchedspaces = []
         self.pageKey2doc = {}
         self.routes = {}
         self.proxies = {}
+
+        self.authentication_method = self.cfg.get("authentication.method")
+        session_opts = {
+            'session.cookie_expires': False,
+            'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
+        }
+
+        if not self.authentication_method:
+            minimalsession = {
+                'session.type': 'MinimalBeaker',
+                'session.namespace_class': MinimalBeaker,
+                'session.namespace_args': {'client': None}
+            }
+            session_opts.update(minimalsession)
+            self.auth = PortalAuthenticatorMinimal()
+        else:
+            if self.authentication_method == 'gitlab':
+                self.auth = PortalAuthenticatorGitlab(instance=self.gitlabinstance)
+            else:
+                self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+                osissession = {
+                    'session.type': 'OsisBeaker',
+                    'session.namespace_class': OsisBeaker,
+                    'session.namespace_args': {'client': self.osis}
+                }
+                session_opts.update(osissession)
+                self.auth = PortalAuthenticatorOSIS(self.osis)
 
         self.loadConfig()
 
@@ -99,13 +126,6 @@ class PortalServer:
 
         self.bootstrap()
 
-        session_opts = {
-            'session.cookie_expires': False,
-            'session.type': 'OsisBeaker',
-            'session.namespace_class': OsisBeaker,
-            'session.namespace_args': {'client': self.osis},
-            'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
-        }
         self._router = SessionMiddleware(AuditMiddleWare(self.router), session_opts)
         self._webserver = WSGIServer((self.listenip, self.port), self._router)
 
@@ -121,11 +141,6 @@ class PortalServer:
         self.redisprod=redis.StrictRedis(host='localhost', port=9999, db=0)
 
         self.jslibroot=j.system.fs.joinPaths(j.dirs.baseDir,"apps","portals","jslib")
-
-        if self.authentication_method == 'gitlab':
-            self.auth=PortalAuthenticatorGitlab(instance=self.gitlabinstance)
-        else:
-            self.auth=PortalAuthenticatorOSIS(self.osis)
 
         #  Load local spaces
         self.rest=PortalRest(self)
@@ -156,14 +171,13 @@ class PortalServer:
         self.port = int(self.cfg.get("port", 82))
         self.addr = self.cfg.get("pubipaddr", '127.0.0.1')
         self.secret = self.cfg.get("secret")
-        self.admingroups = self.cfg.get("admingroups").split(",")
+        self.admingroups = self.cfg.get("admingroups","").split(",")
 
         self.filesroot = replaceVar(self.cfg.get("filesroot"))
         j.system.fs.createDir(self.filesroot)
         self.defaultspace = self.cfg.get('defaultspace', 'welcome')
         self.defaultpage = self.cfg.get('defaultpage', '')
 
-        self.authentication_method = self.cfg.get("authentication.method")
         self.gitlabinstance = self.cfg.get("gitlab.connection")
 
         self.logdir= j.system.fs.joinPaths(j.dirs.logDir,"portal",str(self.port))
@@ -195,8 +209,10 @@ class PortalServer:
         # self.actorsloader._generateLoadActor("system", "master", actorpath="system/system__master/")
         # self.actorsloader._generateLoadActor("system", "usermanager", actorpath="system/system__usermanager/")
         self.actorsloader.scan(self.contentdirs)
-        self.actorsloader.getActor("system", "contentmanager")
-        self.actorsloader.getActor("system", "usermanager")
+
+        if self.authentication_method:
+            self.actorsloader.getActor("system", "contentmanager")
+            self.actorsloader.getActor("system", "usermanager")
 
     def deleteSpace(self, spacename):
         self.loadSpaces()
@@ -215,10 +231,11 @@ class PortalServer:
 
         self.spacesloader.scan(self.contentdirs)
 
-        if "system" not in self.spacesloader.spaces:
-            raise RuntimeError("could not find system space")
+        if self.authentication_method:
+            if "system" not in self.spacesloader.spaces:
+                raise RuntimeError("could not find system space")
 
-        self.spacesloader.spaces["system"].loadDocProcessor() #need to make sure we have content for the systemspace
+            self.spacesloader.spaces["system"].loadDocProcessor() #need to make sure we have content for the systemspace
 
     def getContentDirs(self):
         """
@@ -252,9 +269,10 @@ class PortalServer:
             append(path)
 
         #add base path of parent portal
-        appdir = self.appdir
-        append(j.system.fs.joinPaths(appdir, "wiki"))
-        append(j.system.fs.joinPaths(appdir, "system"))
+        if self.authentication_method:
+            appdir = self.appdir
+            append(j.system.fs.joinPaths(appdir, "wiki"))
+            append(j.system.fs.joinPaths(appdir, "system"))
 
     def unloadActorFromRoutes(self, appname, actorname):
         for key in list(self.routes.keys()):
@@ -1067,6 +1085,11 @@ class PortalServer:
             return self.process_elfinder(path, ctx)
 
         elif match == "restextmachine":
+            if not self.authentication_method:
+                try:
+                    j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+                except Exception, e:                
+                    raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)
 
         elif match == "rest":

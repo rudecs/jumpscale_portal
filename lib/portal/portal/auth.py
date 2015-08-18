@@ -51,7 +51,8 @@ class AuditMiddleWare(object):
             ctx = env.get('JS_CTX')
             user = env['beaker.session'].get('user', 'Unknown')
             kwargs = ctx.params.copy() if ctx else {}
-            doAudit(user, env['PATH_INFO'], kwargs, responsetime, statinfo['status'], result)
+            if j.core.portal.active.authentication_method:
+                doAudit(user, env['PATH_INFO'], kwargs, responsetime, statinfo['status'], result)
         return result
 
 class auth(object):

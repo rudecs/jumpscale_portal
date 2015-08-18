@@ -5,12 +5,12 @@ def main(j, args, params, tags, tasklet):
     version = args.getTag('version')
     nid = args.getTag('nid')
 
-    actor = j.apps.actorsloader.getActor('system', 'packagemanager')
+    actor = j.apps.actorsloader.getActor('system', 'servicemanager')
 
     if not nid:
         nid = j.application.whoAmI.nid
 
-    jp = actor.getJPackages(nid=nid, domain=domain, pname=name, version=version)
+    jp = actor.getServices(nid=nid, domain=domain, pname=name, version=version)
     out = ''
     if not jp:
         out= "h3. Could not find package:%s %s (%s) installed on node:%s"%(domain,name,version,nid)
@@ -22,7 +22,7 @@ def main(j, args, params, tags, tasklet):
     #     params.result = page
     #     return params
    
-    jp = actor.getJPackageInfo(nid=nid, domain=domain, pname=name, version=version)
+    jp = actor.getServiceInfo(nid=nid, domain=domain, pname=name, version=version)
     
     out += "h2. JPackage: %s\n"%jp['name']
     # for i in info:

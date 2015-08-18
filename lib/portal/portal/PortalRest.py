@@ -112,10 +112,8 @@ class PortalRest():
         routes = self.ws.routes
         if routekey not in routes:
             self.activateActor(paths[0], paths[1])
-
         if routekey not in routes:
             routekey="GET_%s"%routekey
-
         if routekey in routes:
             if human:
                 ctx.fformat = "human"
@@ -162,6 +160,7 @@ class PortalRest():
         try:
             method = routes[routekey]['func']
             result = method(ctx=ctx, **ctx.params)
+
             return (True, result)
         except RemoteException as error:
             if error.eco.get('exceptionclassname') == 'KeyError':
