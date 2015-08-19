@@ -1,7 +1,7 @@
 @usedefault
 
 h2. Bootstrap CPU Node
-execute this line on the node you want to bootstrap
+Run this command to add node to this environment.
 {{nodebootstrap}}
 
 h2. Nodes
