@@ -13,6 +13,7 @@ GridPortal:/grid
 
 {{menuadmin:
 Alerts:/grid/Alerts
+AgentController2Jobs:/grid/AgentController2Jobs
 Audits:/grid/Audits
 ECOs:/grid/ECOs
 Jobs:/grid/Jobs
