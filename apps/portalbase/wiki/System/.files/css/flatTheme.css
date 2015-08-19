@@ -375,7 +375,7 @@ div.dataTables_length select{
     background-color: #717577;
 }
 .mega-menu .mega-menu-column li{
-  max-height: 31px;
+  /*max-height: 31px;*/
 }
 .mega-menu-column ul{
     border-right: 1px solid rgb(94, 94, 94);
