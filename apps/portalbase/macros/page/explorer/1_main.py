@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
 }
 ''')
     path = ''
-    space = args.paramsExtra.get('space')
+    space = args.paramsExtra.get('explorerspace')
     if space:
         space = j.core.portal.active.getSpace(space)
         path = space.model.path

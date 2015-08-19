@@ -59,7 +59,7 @@ New Page:/system/create
 Edit Page:/system/edit?edit_space=$$space&edit_page=$$page&$$querystr
 Create Space:/system/createspace
 --------------
-Files:/system/files?space=$$space
+Files:/system/files?explorerspace=$$space
 Access:/system/OverviewAccess?space=$$space
 Reload Space:javascript:$.ajax({'url': '/system/ReloadSpace?name=$$space'}).done(function(){location.reload()});void(0);
 ReloadAll:javascript:reloadAll();void 0;
