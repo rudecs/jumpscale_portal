@@ -1,0 +1,21 @@
+@usedefaults
+
+{{agentcontroller2job: jobid:$$jobid }}
+
+h2. Job Details
+
+| *Grid ID* | [${gid}] |
+| *Node ID* | [${nid}|/grid/node?id=${nid}&gid=${gid}] |
+| *Roles* | ${roles} | 
+| *Start Time* | ${starttime}|
+| *Time* | ${time} |
+| *Command* | ${cmd} |
+| *State* | ${state} |
+| *Data* | ${data} |
+
+
+h4. Args:
+{% for key, value in args.items() -%}
+	|${key}|${value}|
+{% endfor %}
+
