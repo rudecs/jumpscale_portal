@@ -4,18 +4,27 @@
 
 h2. Job Details
 
-| *Grid ID* | [${gid}] |
-| *Node ID* | [${nid}|/grid/node?id=${nid}&gid=${gid}] |
-| *Roles* | ${roles} | 
-| *Start Time* | ${starttime}|
-| *Time* | ${time} |
-| *Command* | ${cmd} |
-| *State* | ${state} |
-| *Data* | ${data} |
+{% for result in results %}
+
+    | *Grid ID* | [${result.gid}] |
+    | *Node ID* | [${result.nid}|/grid/node?id=${result.nid}&gid=${result.gid}] |
+    | *Roles* | ${result.roles} | 
+    | *Start Time* | ${result.starttime}|
+    | *Time* | ${result.time} |
+    | *Command* | ${result.cmd} |
+    | *State* | ${result.state} |
+    | *Data* | ${result.data} |
 
 
-h4. Args:
-{% for key, value in args.items() -%}
-	|${key}|${value}|
+    h4. Args:
+    {% for key, value in result.args.items() -%}
+        |${key}|${value}|
+    {% endfor %}
+
+    h4. Messages:
+    {% for msg in result.msgs -%}
+        |${msg.level} | ${msg.data}|
+    {% endfor %}
+
+
 {% endfor %}
-

@@ -10,29 +10,32 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    instances = j.application.getAppHRDInstanceNames('agentcontroller2')
-    if not instances:
+    clients = j.atyourservice.findServices('jumpscale', 'agentcontroller2_client')
+    if not clients:
         page = args.page
         page.addMessage('* no agentcontroller2client installed. Use "ays install agentcontroller2_client"')
         params.result = page
         return params
 
-    hrd = j.application.getAppInstanceHRD('agentcontroller2', instance=instances[0], parent=None)
-    redispasswd = hrd.get('instance.param.redis.password')
-
-    acclient = j.clients.ac.get(password=redispasswd)
-    jobresult = acclient.get_job(jobid)
+    instance = clients[0].instance
+    acclient = j.clients.ac.getByInstance(instance)
+    job = acclient.get_by_id(None, None, jobid)
  
-    if not jobresult:
-        params.result = ('jobresult with jobid %s not found' % jobid, args.doc)
+    if not job:
+        params.result = ('Job with jobid %s not found' % jobid, args.doc)
         return params
 
+    jobresult = {'id': jobid}
+    results = job.noblock_get_result()
 
-    jobresult['nid'] = jobresult.get('nid', 0)
-    jobresult['starttime'] = j.base.time.epoch2HRDateTime(jobresult['starttime'])
-    jobresult['time'] = jobresult['time']/1000
+    for result in results:
+        cmd = acclient.get_by_id(result['gid'], result['nid'], jobid)
+        result['msgs'] = cmd.get_msgs()
+        result['msgs'].reverse()
+        result['starttime'] = j.base.time.epoch2HRDateTime(result['starttime'])
+        result['time'] = result['time']/1000
 
-    print jobresult
+    jobresult['results'] = results
     args.doc.applyTemplate(jobresult)
 
     params.result = (args.doc, args.doc)
