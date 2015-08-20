@@ -360,7 +360,7 @@ div.dataTables_length select{
     left: 30px;
 }
 .mega-menu{
-    min-width: 400px;
+    min-width: 400px !important;
 }
 .dropdown-menu.mega-menu li{
     height: initial;
@@ -395,6 +395,7 @@ div.dataTables_length select{
     padding-bottom: 8px;
     margin-right: 60px;
     margin-bottom: 10px;
+    text-transform: capitalize;
 }
 .fixFirefoxSizing .bootstrap-datetimepicker-widget .table-condensed > thead > tr > th{
     padding: 2px;

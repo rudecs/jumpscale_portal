@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     page.addCSS('/jslib/old/breadcrumbs/breadcrumbs.css')
 
     data = "<ul class='breadcrumb'>%s</ul>"
-    breadcrumbs = [(doc.original_name, doc.original_name)]
+    breadcrumbs = [(doc.original_name, doc.appliedparams.get('breadcrumbname', doc.original_name))]
     space = j.core.portal.active.getSpace(doc.getSpaceName())
     while doc.parent:
         doc = space.docprocessor.name2doc.get(doc.parent)
@@ -15,6 +15,7 @@ def main(j, args, params, tags, tasklet):
         breadcrumbs.insert(0, (doc.original_name, doc.original_name))
 
     innerdata = ""
+    breadcrumbs.insert(0, ('/%s' % space.model.id, space.model.name))
     for link, title in breadcrumbs[:-1]:
         innerdata += "<li><a href='%s'>%s</a><span style='opacity: 0.5; margin-right: 8px; margin-left: 2px;' class='icon-chevron-right'></span></li>" % (link, title)
     innerdata += "<li class='active'>%s</li>" % breadcrumbs[-1][1]

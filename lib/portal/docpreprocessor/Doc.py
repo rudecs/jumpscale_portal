@@ -253,6 +253,7 @@ class Doc(object):
 
     def applyTemplate(self, params):
         template = self.jenv.from_string(self.content)
+        self.appliedparams.update(params)
         self.content = template.render(**params)
 
     def executeMacrosPreprocess(self):

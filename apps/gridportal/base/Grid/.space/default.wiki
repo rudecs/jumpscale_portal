@@ -7,8 +7,8 @@
 
 
 {{menu:
-StatusOverview:/grid/checkstatus
-GridPortal:/grid
+Status Overview:/grid/checkstatus
+Grid Portal:/grid
 }}
 
 {{menuadmin:

@@ -4,14 +4,23 @@
 {{ApplyFlatTheme}}
 
 
-{{projectname:System Portal}}
 {{find}}
 
 {{menu:
-Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
+System Portal:/system
 }}
 
-{{menuadmin}}
+{{menuadmin:
+Spaces:/system/spaces
+SystemConfig:/system/Systemconfig
+SystemMacros:/system/systemmacros
+Users:/system/userlist
+Groups:/system/groups
+Code:/system/code
+API:/system/actorsdocs
+PortalLogs:/system/PortalLogs
+AccessOverview:/system/overviewaccess
+}}
 
 @block
 @row
