@@ -32,6 +32,7 @@ def main(j, args, params, tags, tasklet):
 
         out.append('\n{{code:\n%s\n}}' % obj['source'])
         out = '\n'.join(out)
+        doc.appliedparams['breadcrumbname'] = obj['name']
 
     params.result = (out, doc)
     return params

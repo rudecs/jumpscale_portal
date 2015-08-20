@@ -37,6 +37,7 @@ def main(j, args, params, tags, tasklet):
             r+="|%-15s | %-20s | %s| \n"%(dev,mac,ip)
 
         node["netaddr"]=r
+        node['breadcrumbname'] = node['name']
         node['gridname'] = grid['name']
         node['nodename'] = node['name']
         return node
