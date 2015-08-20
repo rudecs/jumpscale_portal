@@ -25,7 +25,7 @@ def main(j, args, params,  tags, tasklet):
 
     if spacename:
         space = j.core.portal.active.getSpace(spacename)
-        if name in space.docprocessor.name2doc:
+        if space.docprocessor and name in space.docprocessor.name2doc:
             doc2 = space.docprocessor.name2doc[name]
         else:
             msg = "**ERROR**: include %s not found in %s" % (name, tags)
