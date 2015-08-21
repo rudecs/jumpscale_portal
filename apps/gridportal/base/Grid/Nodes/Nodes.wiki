@@ -1,9 +1,5 @@
 @usedefault
 
-h2. Bootstrap Grid Node
-Run this command to add node to this environment.
-{{nodebootstrap}}
-
 h2. Grid Nodes
 
 {{nodes: gid:$$gid name:$$name roles:$$roles ipaddr:$$ipaddr macaddr:$$macaddr active:$$active peer_stats:$$peer_stats peer_log:$$peer_log peer_backup:$$peer_backup lastcheckFrom:$$lastcheckFrom lastcheckTo:$$lastcheckTo}}
