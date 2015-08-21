@@ -5,6 +5,7 @@
 
 
 {{find}}
+{{logo:/cbgrid/.files/green.png}}
 
 {{menu:
 System Portal:/system

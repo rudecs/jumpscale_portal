@@ -1,6 +1,6 @@
 @usedefault
 
-h3. AgentController Queues
+h3. Agent Controller Queues
 {{acjobqueues}}
 
 
