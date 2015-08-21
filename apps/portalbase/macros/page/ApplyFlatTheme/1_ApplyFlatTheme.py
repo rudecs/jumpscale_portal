@@ -56,6 +56,22 @@ def main(j, args, params, tags, tasklet):
         $('.span10').removeClass('span10').addClass('col-md-10');
         $('.span11').removeClass('spa11').addClass('col-md-11');
         $('.span12').removeClass('span12').addClass('col-md-12');
+
+        var toggles = document.querySelectorAll(".c-hamburger");
+        for (var i = toggles.length - 1; i >= 0; i--) {
+            var toggle = toggles[i];
+            toggleHandler(toggle);
+        };
+        function toggleHandler(toggle) {
+            toggle.addEventListener( "click", function(e) {
+              e.preventDefault();
+              (this.classList.contains("is-active") === true) ? this.classList.remove("is-active") : this.classList.add("is-active");
+              $('.page-content').find('.sidebar-nav').toggleClass('hide');
+              $('.page-content').find('.content').toggleClass('less-wide');
+              $('.page-content').find('.naviation').toggleClass('wide-sidebar');
+            });
+        }
+
     });
      ''')
     

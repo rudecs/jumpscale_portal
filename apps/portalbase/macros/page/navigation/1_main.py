@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
         if args.doc.name.split('.')[1] == "md":
             menuStr = "<div style='list-style-type: none;'>"
     else:
-        menuStr = "<div class='well sidebar-nav'>"
+        menuStr = "<button class='c-hamburger c-hamburger--htla' title='Topics'><span>toggle hamburger</span></button><div class='well sidebar-nav hide'>"
 
     if args.doc.navigation != "":
         if navStr.strip() == "":

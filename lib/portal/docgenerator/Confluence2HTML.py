@@ -451,7 +451,7 @@ class Confluence2HTML():
                 # divlower(divauto,page,"row")
                 arg = line.replace("@row", "").strip()
                 if arg == "":
-                    arg = "row-fluid"
+                    arg = "row-fluid page-content"
                 page.addMessage("<div class=\"%s\">" % arg)
                 page.divlevel.append("row")
                 continue
