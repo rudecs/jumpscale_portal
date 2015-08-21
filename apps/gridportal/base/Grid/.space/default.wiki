@@ -7,7 +7,6 @@
 
 
 {{menu:
-Status Overview:/grid/checkstatus
 Grid Portal:/grid
 }}
 
