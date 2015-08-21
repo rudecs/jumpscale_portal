@@ -16,12 +16,12 @@ def main(j, args, params, tags, tasklet):
 
     pages = macrostr[1:-1]
 
-    if pages:
-        pagedict = OrderedDict()
-        megamenu['Topics'] = pagedict
-        for page in pages:
-            pagename, pagelink = page.split(':')
-            pagedict[pagename] = pagelink
+    # if pages:
+    #     pagedict = OrderedDict()
+    #     megamenu['Topics'] = pagedict
+    #     for page in pages:
+    #         pagename, pagelink = page.split(':')
+    #         pagedict[pagename] = pagelink
 
     megamenu.update(hrd.getDictFromPrefix('instance.navigationlinks'))
     template = jinja.from_string('''

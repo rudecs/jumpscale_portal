@@ -12,15 +12,6 @@ System Portal:/system
 }}
 
 {{menuadmin:
-Spaces:/system/spaces
-SystemConfig:/system/Systemconfig
-SystemMacros:/system/systemmacros
-Users:/system/userlist
-Groups:/system/groups
-Code:/system/code
-API:/system/actorsdocs
-PortalLogs:/system/PortalLogs
-AccessOverview:/system/overviewaccess
 }}
 
 @block

@@ -1,0 +1,4 @@
+
+Services:/AYS/Services
+Templates:/AYS/Templates
+ServiceStatus:/AYS/ServiceStatus

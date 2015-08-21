@@ -85,7 +85,7 @@ def main(j, args, params, tags, tasklet):
 
     menuStr += items
     menuStr += "</div>"
-
+    
     # Add the sidebar only when there are items to show
     if items:
         page.addMessage(menuStr)

@@ -195,7 +195,7 @@ body input[type=text]:focus{
 .sidebar-nav li a, .sidebar-nav a{
     color: #fff;
     display: block;
-    font-size: 15px;
+    font-size: 14px;
 }
 .sidebar-nav li:hover, .nav-page-active, .sidebar-nav p:hover{
     color: #fff;
@@ -361,7 +361,7 @@ div.dataTables_length select{
     left: 30px;
 }
 .mega-menu{
-    min-width: 400px !important;
+    /*min-width: 400px !important;*/
 }
 .dropdown-menu.mega-menu li{
     height: initial;

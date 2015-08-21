@@ -12,24 +12,17 @@ Grid Portal:/grid
 }}
 
 {{menuadmin:
-Alerts:/grid/Alerts
-AgentController2Jobs:/grid/AgentController2Jobs
-Audits:/grid/Audits
-Error Conditions:/grid/ECOs
-Jobs:/grid/Jobs
-Job Queues:/grid/jobqueues
-Jumpscripts:/grid/Jumpscripts
-Logs:/grid/Logs
-Nodes:/grid/Nodes
-Status Overview:/grid/checkstatus
 }}
 
 
 @block
 @row
 
-@col 12
+@col 2 naviation
+{{navigation}}
+@divend
 
+@col 10 content
 {{breadcrumbs}}
 {content}
 
