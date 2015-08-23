@@ -66,10 +66,6 @@ def main(j, args, params, tags, tasklet):
                 convertor.convert(line, args.page, args.doc)
             # out+=line+"\n"
             else:
-                external = ""
-                if line.startswith('external:'):
-                    external = "target=\"_blank\""
-                    line.replace('external:', '', 1)
                 if len(line.split(":")) > 2:
                     name, target, icon = line.split(":", 2)
                 elif len(line.split(":")) > 1:
@@ -80,9 +76,9 @@ def main(j, args, params, tags, tasklet):
                     target = ""
                     icon = ""
                 if target.strip().split('/')[-1].lower() == args.doc.name:
-                    line2 = "<li class='nav-page-active'><a href=\"%s\" %s %s><i class=\"%s\"></i>%s</a></li>" % (target.strip(), external, icon.strip(), name.strip())    
+                    line2 = "<li class='nav-page-active'><a href=\"%s\"><i class=\"%s\"></i>%s</a></li>" % (target.strip(), icon.strip(), name.strip())    
                 else:
-                    line2 = "<li><a href=\"%s\" %s><i class=\"%s\"></i>%s</a></li>" % (target.strip(), external, icon.strip(), name.strip())    
+                    line2 = "<li><a href=\"%s\"><i class=\"%s\"></i>%s</a></li>" % (target.strip(), icon.strip(), name.strip())    
                 
                 items += "%s\n" % line2
 
