@@ -5,9 +5,7 @@ def main(j, args, params, tags, tasklet):
 
     clients = j.atyourservice.findServices('jumpscale', 'agentcontroller2_client')
     if not clients:
-        page = args.page
-        page.addMessage('* no agentcontroller2client installed. Use "ays install agentcontroller2_client"')
-        params.result = page
+        params.result = ('* no agentcontroller2client installed. Use "ays install agentcontroller2_client"', doc)
         return params
 
     instance = clients[0].instance
