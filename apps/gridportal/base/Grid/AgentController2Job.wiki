@@ -4,27 +4,42 @@
 
 h2. Job Details
 
+{{html
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+}}
 {% for result in results %}
 
-    | *Grid ID* | [${result.gid}] |
-    | *Node ID* | [${result.nid}|/grid/node?id=${result.nid}&gid=${result.gid}] |
-    | *Roles* | ${result.roles} | 
-    | *Start Time* | ${result.starttime}|
-    | *Time* | ${result.time} |
-    | *Command* | ${result.cmd} |
-    | *State* | ${result.state} |
-    | *Data* | ${result.data} |
+    h3. Job Results of ${result.gid}:[${result.nid}|/grid/node?id=${result.nid}&gid=${result.gid}]
 
+    {{html: 
+            <div class="panel panel-default">
+<div id="${result.gid}:${result.nid}" class="panel-collapse" role="tabpanel" aria-labelledby="heading_${result.gid}:${result.nid}">
+  <div class="panel-body">}}
+       
+    h5. Job Details
+        | *Roles* | ${result.roles} |
+        | *Start Time* | ${result.starttime}|
+        | *Time* | ${result.time} |
+        | *Command* | ${result.cmd} |
+        | *State* | ${result.state} |
+        | *Data* | ${result.data} |
 
-    h4. Args:
-    {% for key, value in result.args.items() -%}
-        |${key}|${value}|
-    {% endfor %}
+    h5. Args
+        {% for key, value in result.args.items() -%}
+            |*${key}*|${value}|
+        {% endfor %}
 
-    h4. Messages:
-    {% for msg in result.msgs -%}
-        |${msg.level} | ${msg.data}|
-    {% endfor %}
-
+    h5. Messages
+        ||Level||Message||
+        {% for msg in result.msgs -%}
+            |${msg.level} | ${msg.data}|
+        {% endfor %}
+{{html
+    </div></div></div>
+}}
 
 {% endfor %}
+
+{{html
+        </div>
+        }}
