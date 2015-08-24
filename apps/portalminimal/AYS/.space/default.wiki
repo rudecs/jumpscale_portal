@@ -1,0 +1,10 @@
+@block
+@row
+
+
+@col 9
+
+{content}
+
+@divend
+@divend

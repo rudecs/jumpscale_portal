@@ -1,0 +1,3 @@
+@usedefault
+
+{{aysaction action:$$action aysid:$$aysid}}

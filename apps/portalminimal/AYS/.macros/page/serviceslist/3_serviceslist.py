@@ -15,8 +15,8 @@ def main(j, args, params, tags, tasklet):
 
     if not serviceslist:
         j.atyourservice.loadServicesInSQL()
+        serviceslist = sql.session.query(AYSdb.Service).all()
 
-    serviceslist = sql.session.query(AYSdb.Service).all()
     if not serviceslist:
         page.addMessage('No services to display.')
         params.result = page
@@ -31,7 +31,7 @@ def main(j, args, params, tags, tasklet):
     for domain in sorted(services.keys()):
         page.addHeading(domain, 2)
         for ays in sorted(services[domain], key=lambda x: x.name.lower()):
-            href = '/services/serviceshow?domain=%s&name=%s&instance=%s' % (domain, ays.name, ays.instance)
+            href = '/AYS/service?domain=%s&name=%s&instance=%s&aysid=%s' % (domain, ays.name, ays.instance, ays.id)
             icon = 'icon-ok' if ays.isInstalled else 'icon-remove'
             page.addBullet("<a href='%s'><i class='%s'></i> %s</a>" % (href, icon, ays.name), attributes=attributes)
 

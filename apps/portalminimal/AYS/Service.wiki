@@ -1,0 +1,3 @@
+@usedefault
+
+{{ServiceShow domain:$$domain name:$$name instance:$$instance aysid:$$aysid}}

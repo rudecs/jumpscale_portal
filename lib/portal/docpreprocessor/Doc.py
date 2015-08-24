@@ -273,6 +273,8 @@ class Doc(object):
         if "space" not in paramsExtra:
             paramsExtra["space"] = self.getSpaceName()
 
+        self.content = self.content or self.source
+
         return self.preprocessor.macroexecutorWiki.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx)
 
     def generate2disk(self, outpath):

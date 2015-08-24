@@ -431,7 +431,7 @@ class PortalServer:
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
             ctx.params["error"] = "Could not find space %s\n" % space
             print("could not find space %s" % space)
-            space = 'system'
+            space = self.defaultspace or 'system'
             name = "pagenotfound"
         else:
             spaceObject = self.spacesloader.getLoaderFromId(space)
