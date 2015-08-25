@@ -3,7 +3,7 @@
 
 {{projectname:JumpScale Portal}}
 {{find}}
-{{logo:/cbgrid/.files/green.png}}
+{{logo:/system/.files/img/green.png}}
 {{menu:
 Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 }}
