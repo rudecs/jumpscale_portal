@@ -52,9 +52,13 @@ def main(j, args, params, tags, tasklet):
             else:
                 items += '<ul style="padding-top: 34px;">'
             for name, target in tenrow:
+                external = ""
+                if target.endswith(':external'):
+                    external = "target=\"_blank\""
+                    target = target.rstrip(':external')
                 if name != "" and name[0] != "#":
                     name = name.strip()
-                    line = "<li><a href=\"%s\">%s</a></li>" % (target, name)
+                    line = "<li><a href=\"%s\" %s>%s</a></li>" % (target, external, name)
                     items += "%s\n" % line
             items += '</ul></li>'
 
