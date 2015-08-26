@@ -29,7 +29,7 @@ def main(j, args, params, tags, tasklet):
         out.append('h5. {color:red}Something on node(s) %s is not running.{color}' % ', '.join(nodenames))
     else:
         out.append('h5. {color:green}Everything seems to be OK{color}')
-    out.append('For more details, check [here|/grid/checkstatus]')
+    out.append('For more details, check [here|/grid/Status Overview]')
 
     out = '\n'.join(out)
 
