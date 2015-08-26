@@ -16,7 +16,7 @@
     column.1 = 
         data:epoch,
         header:Time Stamp,
-        format:<a href="/grid/eco?id={guid}">{epoch}</a>,
+        format:<a href="/grid/Error Condition?id={guid}">{epoch}</a>,
 
     column.2 = 
         data:errormessage,
