@@ -2,9 +2,9 @@
 Alerts:/grid/Alerts
 AgentController2Jobs:/grid/AgentController2Jobs
 Audits:/grid/Audits
-Error Conditions:/grid/ECOs
+Error Conditions:/grid/Error Conditions
 Jobs:/grid/Jobs
-Job Queues:/grid/jobqueues
+Job Queues:/grid/job queues
 Jumpscripts:/grid/Jumpscripts
 Logs:/grid/Logs
 Nodes:/grid/Nodes
