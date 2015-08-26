@@ -1,3 +1,7 @@
-{{listservices}}
+@usedefault
 
-{{listtemplates}}
+h3. Services List
+{{serviceslist}}
+
+h3. Templates List
+{{templateslist}}
