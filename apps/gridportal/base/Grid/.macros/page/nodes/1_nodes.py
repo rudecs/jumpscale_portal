@@ -3,7 +3,7 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    fieldnames = ['GID', 'Name', 'Node ID', 'IP Address', 'Roles']
+    fieldnames = ['Grid ID', 'Name', 'Grid Node ID', 'IP Address', 'Roles']
     filters = dict()
     for tag, val in args.tags.tags.iteritems():
         if tag in ('gid', ) and val and not val.startswith("$$"):
