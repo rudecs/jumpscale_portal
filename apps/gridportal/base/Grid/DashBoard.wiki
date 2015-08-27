@@ -10,7 +10,7 @@ h5. No. of Events in Last 24hours
 #   {{html:</center>}}
 @divend
 @col 4
-h5. No. of vMachines Running
+h5. No. of Virtual Machines Running
 #*From Total Deployed:45*
 {{vmgauge: id:5 width:200 height:114}}
 @divend
