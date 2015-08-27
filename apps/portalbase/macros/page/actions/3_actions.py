@@ -51,6 +51,12 @@ eg:
         navigateback = actiondata.get('navigateback', False)
         reload = actiondata.get('reload', True)
         data = actiondata.get('data', {})
+        hideon = actiondata.get('hideon', [])
+        if hideon:
+            hideon_input = actiondata.get('hideonInput', '')
+            if hideon_input in hideon:
+                continue
+
         if actionurl.startswith("#"):
             actionoptions.append((display, actionurl[1:]))
             continue
