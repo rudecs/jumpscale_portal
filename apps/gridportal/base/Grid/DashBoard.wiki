@@ -21,7 +21,7 @@ h5. No. of Virtual Machines Running
 @col 6
 h4. Links
 |Performance Dashboard|Events Dashboard|
-|[Grid Nodes|/grid/nodes]|[Failed Jobs|/grid/jobs?state=ERROR]|
+|[Grid Nodes|/grid/Grid Nodes]|[Failed Jobs|/grid/jobs?state=ERROR]|
 @divend
 @divend
 
