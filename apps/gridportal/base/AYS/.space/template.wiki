@@ -1,4 +1,2 @@
 
-h2. a title
-
-#{{pageexplorer}}
+h2. $$page

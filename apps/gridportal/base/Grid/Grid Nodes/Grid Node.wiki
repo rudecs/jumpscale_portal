@@ -2,7 +2,8 @@
 
 {{node_getdata: gid:$$gid id:$$id}}
 
-h2. Node: $$gridname:$$nodename ($$gid:$$id)
+h2. Grid Node: $$nodename (Reference ID: $$id)
+h2. Grid ID: $$gid 
 
 {{toc: start=3}}
 

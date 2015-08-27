@@ -4,13 +4,13 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
-    for tag, val in args.tags.tags.iteritems():
-        val = args.getTag(tag)
-        if val:
-            if val.isdigit():
-                filters[tag] = int(val)
-            else:
-                filters[tag] = val
+#     for tag, val in args.tags.tags.iteritems():
+#         val = args.getTag(tag)
+#         if val:
+#             if val.isdigit():
+#                 filters[tag] = int(val)
+#             else:
+#                 filters[tag] = val
 
     def _getDiskUsage(disk, field):
         diskfree = disk[field]

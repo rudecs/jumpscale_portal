@@ -25,6 +25,7 @@ def main(j, args, params, tags, tasklet):
         obj['netaddr'] = netinfo
 
         obj['lastcheck'] = datetime.datetime.fromtimestamp(obj['lastcheck']).strftime('%Y-%m-%d %H:%M:%S')
+        obj['breadcrumbname'] = obj['name']
         return obj
 
     push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc

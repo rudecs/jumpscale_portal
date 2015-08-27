@@ -10,7 +10,7 @@ h5. No. of Events in Last 24hours
 #   {{html:</center>}}
 @divend
 @col 4
-h5. No. of vMachines Running
+h5. No. of Virtual Machines Running
 #*From Total Deployed:45*
 {{vmgauge: id:5 width:200 height:114}}
 @divend
@@ -21,7 +21,7 @@ h5. No. of vMachines Running
 @col 6
 h4. Links
 |Performance Dashboard|Events Dashboard|
-|[Grid Nodes|/grid/nodes]|[Failed Jobs|/grid/jobs?state=ERROR]|
+|[Grid Nodes|/grid/Grid Nodes]|[Failed Jobs|/grid/jobs?state=ERROR]|
 @divend
 @divend
 

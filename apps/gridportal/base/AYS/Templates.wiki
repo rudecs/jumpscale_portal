@@ -1,2 +1,3 @@
 @usedefault
-{{templates}}
+
+{{templateslist}}

@@ -3,16 +3,13 @@
 {{ApplyFlatTheme}}
 
 {{find}}
-{{logo:/cbgrid/.files/green.png}}
+{{logo:/system/.files/img/green.png}}
 
 
 
 {{menu:
-GridPortal:/grid
-MS1Portal:/cbgrid
+At Your Sercvice:/AYS
 }}
-
-{{menuspaces: name:GRID class:brand marker:$$$pages}}
 
 {{menuadmin:
 }}
@@ -31,26 +28,5 @@ MS1Portal:/cbgrid
 
 @divend
 @divend
-
-
-{{cssstyle
-td {
-	min-width: 100px;
-    max-width:400px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.fixFirefoxSizing td{
-	max-width: 336px;
-}
-.fixFirefoxSizing .dataTables_wrapper.form-inline{
-	width: 120% !important;
-}
-.dataTables_wrapper.form-inline{
-	width: 116% !important;
-}
-
-}}
 
 
