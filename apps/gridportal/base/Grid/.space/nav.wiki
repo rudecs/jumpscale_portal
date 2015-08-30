@@ -7,5 +7,5 @@ Jobs:/grid/Jobs
 Job Queues:/grid/job queues
 Jumpscripts:/grid/Jumpscripts
 Logs:/grid/Logs
-Nodes:/grid/Grid Nodes
+Grid Nodes:/grid/Grid Nodes
 Status Overview:/grid/Status Overview
