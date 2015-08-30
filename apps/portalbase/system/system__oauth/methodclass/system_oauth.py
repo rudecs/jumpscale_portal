@@ -25,7 +25,7 @@ class system_oauth(j.code.classGetBase()):
         redirect = kwargs.get('redirect', '/')
         client = j.clients.oauth.get(instance=type)
         cache_data = json.dumps({'type' : type, 'redirect' : redirect})
-        cache.set(client.state,cache_data , ex=60)
+        cache.set(client.state,cache_data , ex=180)
         ctx.start_response('302 Found', [('Location', client.url)])
         return 'OK'
     
@@ -67,8 +67,11 @@ class system_oauth(j.code.classGetBase()):
         cache_result = cache.get(state)
         
         if not cache_result:
-            ctx.start_response('403 Not Authorized', [])
-            return 'Not Authorized -- Invalid state'
+            unauthorized_redirect_url = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type': j.core.portal.active.force_oauth_instance or 'github'}))
+            msg = 'Not Authorized -- Invalid or expired state'
+            j.logger.log(msg)
+            ctx.start_response('302 Found', [('Location', unauthorized_redirect_url)])
+            return msg
         
         cache_result = json.loads(cache_result)
         client = j.clients.oauth.get(instance=cache_result['type'])
@@ -76,8 +79,10 @@ class system_oauth(j.code.classGetBase()):
         result = requests.post(client.accesstokenaddress, data=payload, headers={'Accept': 'application/json'})
         
         if not result.ok or 'error' in result.json():
+            msg = 'Not Authorized -- %s' % result.json()['error']
+            j.logger.log(msg)
             ctx.start_response('403 Not Authorized', [])
-            return 'Not Authorized'
+            return msg
         
         result = result.json()
         access_token = result['access_token']
