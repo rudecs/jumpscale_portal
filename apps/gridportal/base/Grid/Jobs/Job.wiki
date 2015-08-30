@@ -13,9 +13,20 @@ h2. Job Details
 | *Queue* | ${queue} |
 | *State* | ${state} |
 
-| {{tableforarg title:Args data:${args} }}
+
+h3. Job Params
+
+{% for key, value in args.iteritems() %}
+
+*${key}*:
+
+{{code:
+${value}
+}}
+{% endfor %}
 
 h3. Result
+
 ${resultline}
 {% if backtrace %}
 h4. Backtrace

@@ -19,7 +19,14 @@ def main(j, args, params, tags, tasklet):
 
     obj['nid'] = obj.get('nid', 0)
     obj['roles'] = ', '.join(obj['roles'])
-    obj['args'] = urllib.quote(obj['args'])
+    try:
+        obj['args'] = json.loads(obj['args'])
+        for key, value in obj['args'].iteritems():
+            if isinstance(value, (list, dict)):
+                obj['args'][key] = json.dumps(value, indent=4, sort_keys=True)
+
+    except:
+        obj['args'] = {}
 
     if obj["state"] == "ERROR":
         obj['state'] = "FAILED"
