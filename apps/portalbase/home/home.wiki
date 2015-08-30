@@ -1,11 +1,6 @@
 @usedefaults
 {{ApplyFlatTheme}}
 
-h3. Operator Portal
+h3. User spaces
 
-[Cloud Broker Portal|https://demo1.demo.greenitglobe.com/cbgrid]
-[Grid Portal|https://demo1.demo.greenitglobe.com/grid]
-[AYS Portal|https://demo1.demo.greenitglobe.com/ays]
-[DCPM Portal|https://dcpm1.demo.greenitglobe.com/dcpm/]
-[OpenvStorage Portal|https://ovs1.demo.greenitglobe.com/]
-[System Portal|https://demo1.demo.greenitglobe.com/system]
+{{spaces: table : filterbyuser}}

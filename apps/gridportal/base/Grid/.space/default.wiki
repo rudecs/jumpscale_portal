@@ -3,7 +3,6 @@
 {{ApplyFlatTheme}}
 
 {{find}}
-{{logo:/system/.files/img/green.png}}
 
 
 
