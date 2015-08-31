@@ -12,7 +12,7 @@ h3. Details
 |*MAC Address*|$$mac|
 |*IP Address*|$$ipaddr|
 |*Last Checked*|$$lastcheck|
-|*Node*|[$$nid|node?id=$$nid&gid=$$gid]|
+|*Node*|[$$nid|grid node?id=$$nid&gid=$$gid]|
 
 h3. Statistics
 

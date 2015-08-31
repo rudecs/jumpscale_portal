@@ -17,7 +17,7 @@ def main(j, args, params, tags, tasklet):
         name = row['sname'] or row['pname']
         return '[%s|/grid/process?id=%s&name=%s]' % (name, row['id'], name)
 
-    nidstr = '[%(nid)s|/grid/node?id=%(nid)s&%(gid)s]'
+    nidstr = '[%(nid)s|/grid/grid node?id=%(nid)s&%(gid)s]'
     fieldvalues = [pidFormat, nidstr, 'jpname', 'jpdomain', modifier.makeTime]
     tableid = modifier.addTableForModel('system', 'process', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)

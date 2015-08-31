@@ -38,7 +38,7 @@ def main(j, args, params, tags, tasklet):
             gid = j.core.grid.healthchecker.getGID(nid)
             link = '[Details|nodestatus?nid=%s&gid=%s]' % (nid, gid) 
             row = {'level': level, 'gid': gid, 'nid': nid}
-            row['message'] = '|%s|[%s|node?id=%s&gid=%s]|%s|%s|%s|' % (gid, nid, nid, gid, j.core.grid.healthchecker.getName(nid), runningstring, link)
+            row['message'] = '|%s|[%s|grid node?id=%s&gid=%s]|%s|%s|%s|' % (gid, nid, nid, gid, j.core.grid.healthchecker.getName(nid), runningstring, link)
             rows.append(row)
 
     if len(errors) > 0:
@@ -51,7 +51,7 @@ def main(j, args, params, tags, tasklet):
                 gid = j.core.grid.healthchecker.getGID(nid)
                 row = {'level': level, 'gid': gid, 'nid': nid}
                 link = '[Details|nodestatus?nid=%s&gid=%s]' % (nid, gid)
-                row['message'] = "|%s|[%s|node?id=%s&gid=%s]|%s|{color:red}*HALTED*{color}|%s|" % (gid, nid, nid, gid, j.core.grid.healthchecker.getName(nid), link)
+                row['message'] = "|%s|[%s|grid node?id=%s&gid=%s]|%s|{color:red}*HALTED*{color}|%s|" % (gid, nid, nid, gid, j.core.grid.healthchecker.getName(nid), link)
                 rows.append(row)
 
     def sorter(row1, row2):

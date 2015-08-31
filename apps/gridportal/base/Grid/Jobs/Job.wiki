@@ -5,7 +5,7 @@
 h2. Job Details
 
 | *Grid ID* | ${gid} |
-| *Node ID* | [${nid}|/grid/node?id=${nid}&gid=${gid}] |
+| *Node ID* | [${nid}|/grid/grid node?id=${nid}&gid=${gid}] |
 | *Roles* | ${roles} | 
 | *Jumpscript* | [${organization}:${cmd}|jumpscript?organization=${organization}&jsname=${cmd}] | 
 | *Start* | {{div: data-ts=${timeStart}|class=jstimestamp}}{{div}} (*Timeout*: ${timeout}) |

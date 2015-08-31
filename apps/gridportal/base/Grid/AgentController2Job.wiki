@@ -9,7 +9,7 @@ h2. Job Details
 }}
 {% for result in results %}
 
-    h3. Job Results of ${result.gid}:[${result.nid}|/grid/node?id=${result.nid}&gid=${result.gid}]
+    h3. Job Results of ${result.gid}:[${result.nid}|/grid/grid node?id=${result.nid}&gid=${result.gid}]
 
     {{html: 
             <div class="panel panel-default">

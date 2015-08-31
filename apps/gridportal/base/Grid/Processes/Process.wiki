@@ -13,7 +13,7 @@ h3. Details
 |*Started*| $$epochstart|
 |*Stopped*| $$epochstop|
 |*AYS*| $$jpname|
-|*Node*| [$$nid|node?id=$$nid&gid=$$gid|]|
+|*Node*| [$$nid|grid node?id=$$nid&gid=$$gid|]|
 # |*Statistics*| [Go to statistics page|ProcessStats?id=$$id]|
 
 h3. logs from last 1h

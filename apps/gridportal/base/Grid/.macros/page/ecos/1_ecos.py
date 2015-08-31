@@ -37,7 +37,7 @@ def main(j, args, params, tags, tasklet):
     def appName(row, field):
         return row[field].split(':')[-1]
 
-    nidstr = '[%(nid)s|node?id=%(nid)s&gid=%(gid)s]'
+    nidstr = '[%(nid)s|grid node?id=%(nid)s&gid=%(gid)s]'
 
     fieldids = ["lasttime", "gid", "nid", "appname", "errormessage", 'type', 'level', 'occurrences', "jid"]
     fieldvalues = [makeTime, 'gid', nidstr, appName, errormessage, 'type', level, 'occurrences', makeJob]

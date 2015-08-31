@@ -12,7 +12,7 @@ h2. Log Details
 |*Level*|$$level|
 |*Parent Job ID*|$$parentjid|
 |*Process ID*|[$$pid|process?id=$$pid]|
-|*Node ID*|[$$nid|node?id=$$nid&gid=$$gid]|
+|*Node ID*|[$$nid|grid node?id=$$nid&gid=$$gid]|
 |*Order*|$$order|
 |*Master Job ID*|[$$masterjid|
 |*Grid ID*|[$$gid|grid?id=$$gid]|

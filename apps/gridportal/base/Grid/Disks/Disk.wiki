@@ -2,7 +2,7 @@
 {{disk: id:$$id nid:$$nid gid:$$gid}}
 
 h2. Disk $$id
-|*Node*|[$$nid|node?id=$$nid|]|
+|*Node*|[$$nid|grid node?id=$$nid|]|
 |*Active*|$$active|
 |*SSD*|$$ssd|
 |*Model*|$$model|
