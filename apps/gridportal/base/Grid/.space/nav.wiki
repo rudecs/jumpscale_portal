@@ -10,3 +10,4 @@ Logs:/grid/Logs
 Grid Nodes:/grid/Grid Nodes
 Status Overview:/grid/Status Overview
 Virtual Machines:/grid/Virtual Machines
+Disks:/grid/Disks
