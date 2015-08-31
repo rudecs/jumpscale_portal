@@ -6,16 +6,15 @@ def main(j, args, params, tags, tasklet):
     nid = args.getTag('nid')
 
     actor = j.apps.actorsloader.getActor("system", "gridmanager")
-    
+
     out = []
 
-    #this makes sure bootstrap datatables functionality is used
+    # this makes sure bootstrap datatables functionality is used
     out.append("{{datatables_use}}\n")
 
-    #[u'otherid', u'description', u'roles', u'mem', u'netaddr', u'ipaddr', u'nid', u'lastcheck', u'state', u'gid', u'active', u'cpucore', u'type', u'id', u'name']
-    fields = ["name", "nid", "description", "active", "state", "mem", "netaddr", "cpucore"]
+    fields = ["name", "state", "active", "mem", "netaddr", "nid", "cpucore"]
 
-    out.append('||Name||Node||Description||Active||State||Mem||Macaddr||IP||CPUCore||')
+    out.append('||Name||Status||Active||Memory||MAC Address||IP||Node||CPU Cores||')
     machines = actor.getMachines(nid=nid)
     if not machines:
         out = 'No machines available'
@@ -26,7 +25,7 @@ def main(j, args, params, tags, tasklet):
         line = [""]
 
         for field in fields:
-        # add links
+            # add links
             if field == 'name':
                 line.append('[%(name)s|/grid/Virtual Machine?id=%(id)s&gid=%(gid)s]' % machine)
             elif field == 'nid':
