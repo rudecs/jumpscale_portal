@@ -1,6 +1,8 @@
 @usedefaults
 
-h5. Jumpscript Details
+@@title JumpScript: ${name}
+
+h5. JumpScript Details
 {{jumpscript: organization:$$organization jsname:$$jsname}}
 
 

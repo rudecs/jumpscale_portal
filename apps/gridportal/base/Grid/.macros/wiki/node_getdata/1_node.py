@@ -24,27 +24,24 @@ def main(j, args, params, tags, tasklet):
         params.result = ('Node with and id %s_%s not found' % (gid, nid), args.doc)
         return params
 
-    def objFetchManipulate(id):
-        #obj is a dict
-        node["ipaddr"]=", ".join(node["ipaddr"])
-        node["roles"]=", ".join(node["roles"])
+    #obj is a dict
+    node["ipaddr"]=", ".join(node["ipaddr"])
+    node["roles"]=", ".join(node["roles"])
 
-        r=""
-        for netitem in node["netaddr"]:
-            dev = netitem['name']
-            ip = netitem['ip']
-            mac = netitem['mac']
-            r+="|%-15s | %-20s | %s| \n"%(dev,mac,ip)
+    r=""
+    for netitem in node["netaddr"]:
+        dev = netitem['name']
+        ip = netitem['ip']
+        mac = netitem['mac']
+        r+="|%-15s | %-20s | %s| \n"%(dev,mac,ip)
 
-        node["netaddr"]=r
-        node['breadcrumbname'] = node['name']
-        node['gridname'] = grid['name']
-        node['nodename'] = node['name']
-        return node
+    node["netaddr"]=r
+    node['gridname'] = grid['name']
+    node['nodename'] = node['name']
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
-
-    return push2doc(args,params,objFetchManipulate)
+    args.doc.applyTemplate(node)
+    params.result = (args.doc, args.doc)
+    return params
 
 
 def match(j, args, params, tags, tasklet):

@@ -1,4 +1,6 @@
-h2. User ${id}
+@@title User: ${id}
+
+h2. User: ${id}
 {{user_info: guid:$$id}}
 
 

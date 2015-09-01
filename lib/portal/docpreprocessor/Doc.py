@@ -252,9 +252,9 @@ class Doc(object):
         return content
 
     def applyTemplate(self, params):
-        template = self.jenv.from_string(self.content)
         self.appliedparams.update(params)
-        self.content = template.render(**params)
+        self.content = self.jenv.from_string(self.content).render(**params)
+        self.title = self.jenv.from_string(self.title).render(**params)
 
     def executeMacrosPreprocess(self):
         if self.source == "":
