@@ -1,6 +1,6 @@
 @usedefaults
-
 @@title Grid Node: ${name}
+@@requiredargs: id gid
 
 {{node_getdata: gid:$$gid id:$$id}}
 

@@ -37,6 +37,7 @@ class Doc(object):
         self.alias = []
         self.pagename = ""
         self.source = ""
+        self.requiredargs = []
         self.author = []
         self.products = []
         self.visibility = ["public"]  # std PUBLIC,INTERNAL

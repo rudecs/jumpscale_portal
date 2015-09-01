@@ -15,6 +15,8 @@ class DocParser():
         content, doc.type = self._findItem(content, "@@type")
         content, doc.pagename = self._findItem(content, "@@pagename")
         content, doc.title = self._findItem(content, "@@title", removecolon=False)
+        content, requiredargs = self._findItem(content, "@@requiredargs")
+        doc.requiredargs = requiredargs.split()
         if doc.title == "":
             doc.title = j.system.fs.getBaseName(doc.path).replace(".wiki", "")
         content, order = self._findItem(content, "@@order")
