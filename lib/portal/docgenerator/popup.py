@@ -13,14 +13,14 @@ class Popup(object):
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
 
-    def addText(self, label, name, required=False, type='text', value=''):
+    def addText(self, label, name, required=False, type='text', value='', placeholder=''):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height" for="${name}">${label}</label>
-                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %}>
+                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
               </div>
         ''')
-        content = template.render(label=label, name=name, type=type, value=value)
+        content = template.render(label=label, name=name, type=type, value=value, placeholder=placeholder)
         self.widgets.append(content)
 
     def addHiddenField(self, name, value):
@@ -30,14 +30,14 @@ class Popup(object):
         content = template.render(value=value, name=name)
         self.widgets.append(content)
 
-    def addTextArea(self, label, name, required=False):
+    def addTextArea(self, label, name, required=False, placeholder=''):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height" for="${name}">${label}</label>
-                <textarea class="form-control" name="${name}" {% if required %}required{% endif %}>
+                <textarea class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
               </div>
         ''')
-        content = template.render(label=label, name=name)
+        content = template.render(label=label, name=name, placeholder=placeholder)
         self.widgets.append(content)
 
     def addNumber(self, label, name, required=False):

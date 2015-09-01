@@ -12,7 +12,6 @@ def main(j, args, params, tags, tasklet):
         return params
 
     obj = group.dump()
-    obj['breadcrumbname'] = obj['id']
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)
     return params

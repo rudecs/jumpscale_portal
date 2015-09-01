@@ -1,8 +1,10 @@
 @usedefaults
+@@title Grid Node: ${name}
+@@requiredargs: id gid
 
 {{node_getdata: gid:$$gid id:$$id}}
 
-h2. Grid Node: $$nodename (Reference ID: $$id)
+h2. Grid Node: ${nodename} (Reference ID: $$id)
 h2. Grid ID: $$gid 
 
 {{toc: start=3}}
@@ -21,15 +23,15 @@ h3. CPU Statistics
 h3. Info
 
 |*GID:NID*|$$gid:$$id|
-|*Name*|$$name|
-|*Active*|$$active|
-|*Roles*|$$roles|
-|*Description*|$$description|
-|*IP Address*|$$ipaddr|
+|*Name*|${name}|
+|*Active*|${active}|
+|*Roles*|${roles}|
+|*Description*|${description}|
+|*IP Address*|${ipaddr}|
 
 h3. Statistics
 
-* [*Statistics*|NodeStats?id=$$id&gid=$$gid]
+* [*Statistics*|Node Stats?id=$$id&gid=$$gid]
 #* [*Real Time Statistics*|RealTimeStatsNode?nid=$$id]
 
 h3. NICs

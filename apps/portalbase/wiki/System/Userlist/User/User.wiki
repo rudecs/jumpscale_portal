@@ -1,4 +1,6 @@
-h2. User ${id}
+@@title User: ${id}
+
+h2. User: ${id}
 {{user_info: guid:$$id}}
 
 
@@ -14,7 +16,6 @@ h2. User ${id}
 |*Groups*|${", ".join(groups)} |
 |*Emails*|${", ".join(emails)} |
 |*Domain*|${domain} |
-|*Grid ID*|[${gid}|/Grid/grid?id=${gid}]|
 |*Authkey*|${authkey} |
 
 {{user_edit: guid:$$id}}
