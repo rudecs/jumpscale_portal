@@ -7,7 +7,7 @@ class PortalAuthenticatorOSIS(object):
         self.osis=j.clients.osis.getCategory(osis,"system","user")
         self.osisgroups=j.clients.osis.getCategory(osis,"system","group")
         self.key2user={user['authkey']:user['id'] for user in self.osis.simpleSearch({}, nativequery={'authkey':{'$ne': ''}})}
-    
+
     def getUserFromKey(self,key):
         if not key in self.key2user:
             return "guest"
@@ -31,16 +31,17 @@ class PortalAuthenticatorOSIS(object):
 
     def createUser(self, username, password, email, groups, domain):
         user = self.osis.new()
-        user.id=username
+        user.id = username
         if isinstance(groups, basestring):
             groups = [groups]
-        user.groups=groups
+        user.groups = groups
         if isinstance(email, basestring):
             email = [email]
-        user.emails=email
-        user.domain=domain
-        user.passwd=j.tools.hash.md5_string(password)
-        self.osis.set(user)
+        user.emails = email
+        user.domain = domain
+        user.passwd = j.tools.hash.md5_string(password)
+        return self.osis.set(user)
+
 
     def listUsers(self):
         return self.osis.simpleSearch({})
@@ -67,18 +68,18 @@ class PortalAuthenticatorOSIS(object):
         passwd = passwd[0] if isinstance(passwd, list) else passwd
         result=self.osis.authenticate(name=login,passwd=passwd)
         return result['authenticated']
-    
+
     def getUserSpaceRights(self, username, space, **kwargs):
         spaceobject = kwargs['spaceobject']
         groupsusers = set(self.getGroups(username))
-        
+
         for groupuser in groupsusers:
             if groupuser in spaceobject.model.acl:
                 right = spaceobject.model.acl[groupuser]
                 if right == "*":
                     return username, "rwa"
                 return username, right
-        
+
         # No rights .. check guest
         rights = spaceobject.model.acl.get('guest', '')
         return username, rights
