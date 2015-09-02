@@ -1,4 +1,5 @@
 import re
+import urllib
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -6,17 +7,23 @@ def main(j, args, params, tags, tasklet):
     page.addCSS('/jslib/old/breadcrumbs/breadcrumbs.css')
 
     data = "<ul class='breadcrumb'>%s</ul>"
-    breadcrumbs = [(doc.original_name, doc.appliedparams.get('breadcrumbname', doc.original_name))]
+    breadcrumbs = [(doc.original_name, doc.title, {})]
     space = j.core.portal.active.getSpace(doc.getSpaceName())
     while doc.parent:
         doc = space.docprocessor.name2doc.get(doc.parent)
         if not doc:
             break
-        breadcrumbs.insert(0, (doc.original_name, doc.original_name))
+        args = {}
+        for arg in doc.requiredargs:
+            if arg in doc.appliedparams:
+                args[arg] = doc.appliedparams[arg]
+        breadcrumbs.insert(0, (doc.original_name, doc.title, args))
 
     innerdata = ""
-    breadcrumbs.insert(0, ('/%s' % space.model.id, space.model.name))
-    for link, title in breadcrumbs[:-1]:
+    breadcrumbs.insert(0, ('/%s' % space.model.id, space.model.name, {}))
+    for link, title, args in breadcrumbs[:-1]:
+        if args:
+            link = "%s?%s" % (link, urllib.urlencode(args))
         innerdata += "<li><a href='%s'>%s</a><span style='opacity: 0.5; margin-right: 8px; margin-left: 2px;' class='icon-chevron-right'></span></li>" % (link, title)
     innerdata += "<li class='active'>%s</li>" % breadcrumbs[-1][1]
 

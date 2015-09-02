@@ -1,5 +1,7 @@
 @usedefaults
 
+@@title Group: ${id}
+
 h1. Group $$id
 
 

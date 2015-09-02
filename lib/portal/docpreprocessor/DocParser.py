@@ -1,4 +1,5 @@
 from JumpScale import j
+import re
 
 
 class DocParser():
@@ -13,7 +14,9 @@ class DocParser():
         doc.author = [item.lower().strip() for item in authorstr.split(",")]
         content, doc.type = self._findItem(content, "@@type")
         content, doc.pagename = self._findItem(content, "@@pagename")
-        content, doc.title = self._findItem(content, "@@title")
+        content, doc.title = self._findItem(content, "@@title", removecolon=False)
+        content, requiredargs = self._findItem(content, "@@requiredargs")
+        doc.requiredargs = requiredargs.split()
         if doc.title == "":
             doc.title = j.system.fs.getBaseName(doc.path).replace(".wiki", "")
         content, order = self._findItem(content, "@@order")
@@ -44,11 +47,11 @@ class DocParser():
                 tags2 += " %s:%s" % (items[0].strip(), items[1].strip())
         doc.tags = tags2.strip()
 
-    def _findItem(self, text, item="@owner", maxitems=1, removecolon=True):
+    def _findItem(self, text, item="@owner", maxitems=1, removecolon=True, lower=True):
         result = []
 
         def process(arg, line):
-            line = line.lower().replace(item.lower(), "").strip()
+            line = re.sub(item.lower(), "", line, flags=re.IGNORECASE)
             if line.find("##") == 0:
                 line = ""
             if line.find("##") != -1:
