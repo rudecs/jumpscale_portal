@@ -5,18 +5,15 @@ def main(j, args, params, tags, tasklet):
     instance = args.getTag('instance')
     aysid = args.getTag('aysid')
 
-    from JumpScale.baselib.atyourservice import AYSdb
-
-    # TODO ---> get out of factory
-    sql = j.db.sqlalchemy.get(sqlitepath=j.dirs.varDir+"/AYS.db", tomlpath=None, connectionstring='')
-
-    ays = sql.session.query(AYSdb.Service).get(aysid)
+    ays = j.atyourservice.getServicefromSQL(serviceid=aysid, reload=False)
 
     out = ''
     if not ays:
         out = "h3. Could not find service:%s %s (%s)" % (domain, name, instance)
         params.result = (out, args.doc)
         return params
+
+    ays = ays[0]
 
     out += "h2. Service: %s\n" % ays.name
 

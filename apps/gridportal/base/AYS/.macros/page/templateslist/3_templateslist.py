@@ -3,18 +3,14 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     attributes = "class='nav nav-list' style='-moz-column-count: 3; -webkit-column-count:3; column-count:3;'"
 
-    domain = args.tags.tagGet('domain', '')
+    refresh = j.tools.text.getBool(args.tags.tagGet('refresh', False))
 
-    from JumpScale.baselib.atyourservice import AYSdb
+    page.addLink(description='Reload templates', link='/AYS/templates?refresh=True')
 
-    # TODO ---> get out of factory
-    sql = j.db.sqlalchemy.get(sqlitepath=j.dirs.varDir+"/AYS.db", tomlpath=None, connectionstring='')
+    templateslist = j.atyourservice.getTemplatefromSQL(reload=refresh)
 
-    templateslist = sql.session.query(AYSdb.Template).all()
-
-    if not templateslist:
-        j.atyourservice.loadServicesInSQL()
-        templateslist = sql.session.query(AYSdb.Template).all()
+    if not templateslist and not refresh:
+        templateslist = j.atyourservice.getTemplatefromSQL(reload=True)
 
     if not templateslist:
         page.addMessage('No templates to display.')
@@ -23,15 +19,17 @@ def main(j, args, params, tags, tasklet):
 
     templates = dict()
     for ays in templateslist:
-        if ays.domain not in templates:
-            templates[ays.domain] = list()
-        templates[ays.domain].append(ays)
-
-    for domain in sorted(templates.keys()):
-        page.addHeading(domain, 2)
-        for temp in sorted(templates[domain], key=lambda x: x.name.lower()):
-            href = '/AYS/Template?domain=%s&name=%s&aysid=%s' % (domain, temp.name, temp.id)
-            page.addBullet("<a href='%s'>%s</a>" % (href, temp.name), attributes=attributes)
+        templates.setdefault(ays.type, dict())
+        templates[ays.type].setdefault(ays.domain, list())
+        templates[ays.type][ays.domain].append(ays)
+  
+    for type in sorted(templates.keys()):
+        page.addHeading(type, 2)
+        for domain in sorted(templates[type].keys()):
+            page.addHeading(domain, 3)
+            for ays in sorted(templates[type][domain], key=lambda x: x.name.lower()):
+                href = '/AYS/template?domain=%s&name=%s&aysid=%s' % (domain, ays.name, ays.id)
+                page.addBullet("<a href='%s'></i> %s</a>" % (href, ays.name), attributes=attributes)
 
     params.result = page
     return params
