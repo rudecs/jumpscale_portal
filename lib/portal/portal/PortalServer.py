@@ -32,6 +32,8 @@ import JumpScale.grid.agentcontroller
 from PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
 from PortalAuthenticatorMinimal import PortalAuthenticatorMinimal
 from PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
+from PortalTemplate import PortalTemplate
+
 
 BLOCK_SIZE = 4096
 
@@ -123,7 +125,7 @@ class PortalServer:
         self.macroexecutorPage = MacroExecutorPage(macroPathsPage)
         self.macroexecutorMarkDown = MacroexecutorMarkDown(macroPathsMarkDown)
         self.macroexecutorWiki = MacroExecutorWiki(macroPathsWiki)
-
+        self.templates = PortalTemplate(j.system.fs.joinPaths(self.portaldir, 'templates'))
         self.bootstrap()
 
         self._router = SessionMiddleware(AuditMiddleWare(self.router), session_opts)
@@ -1084,7 +1086,7 @@ class PortalServer:
             if not self.authentication_method:
                 try:
                     j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
-                except Exception, e:                
+                except Exception, e:
                     raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)
 
