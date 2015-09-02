@@ -3,6 +3,7 @@ import json # pretty printer require native json
 
 def main(j, args, params, tags, tasklet):    
     import urllib
+    scl = j.clients.osis.getNamespace('system')
 
     id = args.getTag('id')
     if not id:
@@ -18,6 +19,10 @@ def main(j, args, params, tags, tasklet):
     obj = job[0]
 
     obj['nid'] = obj.get('nid', 0)
+    if obj['nid']:
+        obj['node'] = scl.node.get(obj['nid']).dump()
+    else:
+        obj['node'] = {'name': 'N/A'}
     obj['roles'] = ', '.join(obj['roles'])
     try:
         obj['args'] = json.loads(obj['args'])
