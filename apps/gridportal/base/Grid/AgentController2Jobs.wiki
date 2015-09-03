@@ -1,4 +1,0 @@
-@usedefaults
-
-h2. Jobs
-{{agentcontroller2jobs}}

@@ -1,8 +1,24 @@
 @usedefaults
 
-{{agentcontroller2job: jobid:$$jobid }}
+{{agentcontroller2job: job:$$job }}
 
 h2. Job Details
+
+| *Command* | ${job.cmd} |
+| *Grid ID* | ${job.gid} |
+| *Node* | ${job.nid} |
+| *Role* | ${job.role} |
+| *Fanout* | ${job.fanout} |
+
+h3. Run Arguments
+{{code:
+${job.args}
+}}
+
+h3. Job Input
+{{code:
+${job.data}
+}}
 
 {{html
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -11,25 +27,22 @@ h2. Job Details
 
     h3. Job Results of ${result.gid}:[${result.nid}|/grid/grid node?id=${result.nid}&gid=${result.gid}]
 
-    {{html: 
+    {{html:
             <div class="panel panel-default">
 <div id="${result.gid}:${result.nid}" class="panel-collapse" role="tabpanel" aria-labelledby="heading_${result.gid}:${result.nid}">
   <div class="panel-body">}}
-       
-    h5. Job Details
-        | *Roles* | ${result.roles} |
+
+    h5. Result Details
         | *Start Time* | ${result.starttime}|
         | *Time* | ${result.time} |
-        | *Command* | ${result.cmd} |
         | *State* | ${result.state} |
-        | *Data* | ${result.data} |
+        | *Result Level* | ${result.level} |
+    h6. Result
 
-    h5. Args
-        {% for key, value in result.args.items() -%}
-            |*${key}*|${value}|
-        {% endfor %}
-
-    h5. Messages
+{{code:
+${result.data}
+}}
+    h6. Log Messages
         ||Level||Message||
         {% for msg in result.msgs -%}
             |${msg.level} | ${msg.data}|
