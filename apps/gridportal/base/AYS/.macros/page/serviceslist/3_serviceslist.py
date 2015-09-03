@@ -5,7 +5,12 @@ def main(j, args, params, tags, tasklet):
 
     refresh = j.tools.text.getBool(args.tags.tagGet('refresh', False))
 
-    page.addLink(description='Reload services', link='/AYS/services?refresh=True')
+    page.addHTML("""
+        <a class="right margin-right-medium" href="/AYS/services?refresh=True">
+        <i class="glyphicon glyphicon-refresh"></i>
+        Reload Services
+    </a>
+        """)
 
     serviceslist = j.atyourservice.getServicefromSQL(reload=refresh)
 
@@ -26,7 +31,7 @@ def main(j, args, params, tags, tasklet):
     for type in sorted(services.keys()):
         page.addHeading(type, 2)
         for domain in sorted(services[type].keys()):
-            page.addHeading(domain, 3)
+            page.addHeading(domain, 4)
             for ays in sorted(services[type][domain], key=lambda x: x.name.lower()):
                 href = '/AYS/service?domain=%s&name=%s&instance=%s&aysid=%s' % (domain, ays.name, ays.instance, ays.id)
                 icon = 'icon-ok' if ays.isInstalled else 'icon-remove'

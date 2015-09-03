@@ -24,6 +24,9 @@ def main(j, args, params, tags, tasklet):
 
     for representation, field in fields:
         out += '|*%s*|%s|\n' % (representation, ays.__getattribute__(field))
+    template = j.atyourservice.getTemplatefromSQL(metapath=ays.templatepath)
+    if template:
+        out += '|*Template*|[%s template|/AYS/Template?domain=%s&name=%s&aysid=%s]|\n' % (template[0].name, template[0].domain, template[0].name, template[0].id)  
 
 
     dependencies = sorted(ays.dependencies, key=lambda x: x.order)

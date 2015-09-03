@@ -5,7 +5,12 @@ def main(j, args, params, tags, tasklet):
 
     refresh = j.tools.text.getBool(args.tags.tagGet('refresh', False))
 
-    page.addLink(description='Reload templates', link='/AYS/templates?refresh=True')
+    page.addHTML("""
+        <a class="right margin-right-medium" href="/AYS/templates?refresh=True">
+        <i class="glyphicon glyphicon-refresh"></i>
+        Reload Templates
+    </a>
+        """)
 
     templateslist = j.atyourservice.getTemplatefromSQL(reload=refresh)
 
@@ -26,7 +31,7 @@ def main(j, args, params, tags, tasklet):
     for type in sorted(templates.keys()):
         page.addHeading(type, 2)
         for domain in sorted(templates[type].keys()):
-            page.addHeading(domain, 3)
+            page.addHeading(domain, 4)
             for ays in sorted(templates[type][domain], key=lambda x: x.name.lower()):
                 href = '/AYS/template?domain=%s&name=%s&aysid=%s' % (domain, ays.name, ays.id)
                 page.addBullet("<a href='%s'></i> %s</a>" % (href, ays.name), attributes=attributes)
