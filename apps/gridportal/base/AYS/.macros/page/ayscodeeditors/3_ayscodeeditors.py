@@ -17,7 +17,7 @@ def main(j, args, params, tags, tasklet):
         if not path or not j.system.fs.exists(path):
             continue
         page.addHeading("%s" % representation, 3)
-        page.addExplorer(path, readonly=True, tree=True, height=300)
+        page.addExplorer(path, readonly=False, tree=True, height=300)
 
     params.result = page
     return params
