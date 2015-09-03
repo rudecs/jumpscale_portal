@@ -23,6 +23,12 @@ ${job.data}
 {{html
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 }}
+{% if not results %}
+{{html:
+<div class='alert alert-warning margin-top-medium'>This job is not beeing processed by any agent yet.</div>
+}}
+{% endif %}
+
 {% for result in results %}
 
     h3. Job Results of ${result.gid}:[${result.nid}|/grid/grid node?id=${result.nid}&gid=${result.gid}]
