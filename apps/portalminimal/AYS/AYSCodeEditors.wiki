@@ -1,4 +1,0 @@
-@usedefault
-
-{{ayscodeeditors: logpath:$$logpath templatepath:$$templatepath installedpath:$$installedpath domain:$$domain servicename:$$servicename instance:$$instance}}
-

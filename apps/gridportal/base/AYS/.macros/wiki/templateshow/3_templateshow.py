@@ -4,18 +4,15 @@ def main(j, args, params, tags, tasklet):
     name = args.getTag('name')
     aysid = args.getTag('aysid')
 
-    from JumpScale.baselib.atyourservice import AYSdb
-
-    # TODO ---> get out of factory
-    sql = j.db.sqlalchemy.get(sqlitepath=j.dirs.varDir+"/AYS.db", tomlpath=None, connectionstring='')
-
-    ays = sql.session.query(AYSdb.Template).get(aysid)
+    ays = j.atyourservice.getTemplatefromSQL(templateid=aysid, reload=False)
 
     out = ''
     if not ays:
         out = "h3. Could not find template:%s %s" % (domain, name)
         params.result = (out, args.doc)
         return params
+
+    ays = ays[0]
 
     out += "h2. Template: %s\n" % ays.name
 
@@ -28,9 +25,9 @@ def main(j, args, params, tags, tasklet):
     if instances:
         out += "h3. Installed Instances\n"
         for instance in instances:
-            service = sql.session.query(AYSdb.Service).filter_by(domain=ays.domain, name=ays.name, instance=instance.instance).first()
+            service = j.atyourservice.getServicefromSQL(domain=ays.domain, name=ays.name, instance=instance.instance)
             if service:
-                href = '/AYS/Service?domain=%s&name=%s&instance=%s&aysid=%s' % (ays.domain, ays.name, instance.instance, service.id)
+                href = '/AYS/Service?domain=%s&name=%s&instance=%s&aysid=%s' % (ays.domain, ays.name, instance.instance, service[0].id)
             else:
                 # TODO find closest match?
                 href = instance
@@ -62,15 +59,6 @@ def main(j, args, params, tags, tasklet):
 h3. Files\n
 |[Template Code Editors|/AYS/AYSCodeEditors?metapath=%(metapath)s&domain=%(domain)s&servicename=%(name)s]|
 """ % ays.__dict__
-
-    out += """
-h3. Actions
-
-|[Start|/AYS/ServiceAction?action=start&aysid=%(id)s]|
-|[Stop|/AYS/ServiceAction?action=stop&aysid=%(id)s]|
-|[Restart|/AYS/ServiceAction?action=restart&aysid=%(id)s]|
-|[Update|/AYS/ServiceAction?action=update&aysid=%(id)s]|
-""" % {'id': aysid}
 
     params.result = (out, args.doc)
 

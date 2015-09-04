@@ -1,4 +1,0 @@
-@usedefaults
-
-h3. NICs
-{{nics: nid:$$nid gid:$$gid}}
