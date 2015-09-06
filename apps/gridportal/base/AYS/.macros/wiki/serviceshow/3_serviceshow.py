@@ -1,5 +1,7 @@
 
 def main(j, args, params, tags, tasklet):
+    import json
+
     domain = args.getTag('domain')
     name = args.getTag('name')
     instance = args.getTag('instance')
@@ -19,11 +21,14 @@ def main(j, args, params, tags, tasklet):
 
     # for i in info:
     fields = [('Domain', 'domain'), ('Name', 'name'), ('Instance', 'instance'), ('Installed', 'isInstalled'),
-              ('Path', 'path'), ('Template Path', 'templatepath'), ('Parent', 'parent'), ('No Remote', 'noremote'),
+              ('Path', 'path'), ('Template Path', 'templatepath'), ('No Remote', 'noremote'),
               ('Command', 'cmd'), ('Log Path', 'logPath'), ('Priority', 'priority'), ('Latest', 'isLatest')]
 
     for representation, field in fields:
         out += '|*%s*|%s|\n' % (representation, ays.__getattribute__(field))
+
+    if ays.parent:
+        out += '|*Parent*|[parent|/AYS/Service?aysid=%s]|\n' % (ays.parent)
     template = j.atyourservice.getTemplatefromSQL(metapath=ays.templatepath)
     if template:
         out += '|*Template*|[%s template|/AYS/Template?domain=%s&name=%s&aysid=%s]|\n' % (template[0].name, template[0].domain, template[0].name, template[0].id)  
@@ -49,6 +54,17 @@ def main(j, args, params, tags, tasklet):
     out += "h3. HRD\n"
     for hrditem in ays.hrd:
         out += '* %s: %s\n' % (hrditem.key, hrditem.value)
+
+    children = json.loads(ays.children)
+    if children:
+        out += "h3. Children\n"
+        for cdomain, domainchildren in children.items():
+            out += '* %s\n' % cdomain
+            for child in domainchildren:
+                childsql = j.atyourservice.getServicefromSQL(domain=cdomain, name=child)
+                if childsql:
+                    out += '** [%s|/AYS/Service?domain=%s&name=%s&aysid=%s]\n' % (child, cdomain, child, childsql[0].id)
+
 
 
     out += """
