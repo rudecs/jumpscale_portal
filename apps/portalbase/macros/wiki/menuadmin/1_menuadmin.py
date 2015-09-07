@@ -23,9 +23,25 @@ def main(j, args, params, tags, tasklet):
     #         pagename, pagelink = page.split(':')
     #         pagedict[pagename] = pagelink
 
-    megamenu.update(hrd.getDictFromPrefix('instance.navigationlinks'))
+
+    if j.core.portal.active.authentication_method == 'gitlab':
+        spaces = {}
+        for s in j.core.portal.active.getUserSpacesObjects(params.requestContext):
+            if s['namespace']['name']:
+                spaces[s['name']] = "%s_%s" % (s['namespace']['name'], s['name'])
+            else:
+                spaces[s['name']] = "/%s" % s['name']
+    else:
+        spaces = {}
+        for spaceid in j.core.portal.active.getUserSpaces(params.requestContext):
+            space = j.core.portal.active.getSpace(spaceid, ignore_doc_processor=True)
+            if space.model.hidden:
+                continue
+            spaces[space.model.name] = "/%s" % spaceid
+
+    megamenu['Portals'] = spaces
     template = jinja.from_string('''
-{{megamenu: name:Navigation
+{{megamenu: name:Navigation class:spaces-nav
 {% for name, links in megamenu.iteritems() %}
 column.${name} ={% for pagename, link in links|dictsort %}
         ${pagename}:${link},
