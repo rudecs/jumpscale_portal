@@ -547,7 +547,7 @@ a:hover, a:active, a:focus{
     margin-bottom: 0;
     margin-top: -5px;
 }
-#PortalsHamburgerMenu.white{
+#PortalsHamburgerMenu.white, #PortalsHamburgerMenu.dark{
     background: transparent;
 }
 #PortalsHamburgerMenu.white span,
@@ -555,7 +555,11 @@ a:hover, a:active, a:focus{
 #PortalsHamburgerMenu.white span::after{
     background: #fff;
 }
-
+#PortalsHamburgerMenu.dark span,
+#PortalsHamburgerMenu.dark span::before,
+#PortalsHamburgerMenu.dark span::after{
+    background: #000;
+}
 .page-content .naviation{
     width: 5%;
 }
@@ -570,4 +574,38 @@ a:hover, a:active, a:focus{
 }
 .clean-header{
     min-height: 0;
+}
+.portals-list{
+    padding-left: 0;
+    list-style: none;
+}
+.portals-list li{
+    padding: 5px 0;
+    border-bottom: 1px solid #D3DAE0;
+    border-left: 4px solid transparent;
+    margin-left: 5px;
+}
+.portals-list li:first-child{
+    border-top: 1px solid #D3DAE0;
+}
+.portals-list li a{
+    padding-left: 4px;
+    display: block;
+    color: #34495E;
+}
+.portals-list li:hover{
+    border-left: 4px solid #34495E;
+    background-color: #95A5A6;
+}
+.portals-list li:hover a{
+    color: #fff;
+}
+.explore-portals{
+    background-color: #34495E;
+    color: #fff;
+    padding-bottom: 12px;
+    margin-bottom: 0;
+    margin-left: 0;
+    font-size: 15px;
+    padding-top: 9px;
 }

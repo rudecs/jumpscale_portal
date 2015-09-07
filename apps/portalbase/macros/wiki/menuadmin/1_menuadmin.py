@@ -25,14 +25,14 @@ def main(j, args, params, tags, tasklet):
 
     megamenu.update(hrd.getDictFromPrefix('instance.navigationlinks'))
     template = jinja.from_string('''
-{{megamenu: name:Navigation
-{% for name, links in megamenu.iteritems() %}
-column.${name} ={% for pagename, link in links|dictsort %}
-        ${pagename}:${link},
+# {{megamenu: name:Navigation
+# {% for name, links in megamenu.iteritems() %}
+# column.${name} ={% for pagename, link in links|dictsort %}
+#         ${pagename}:${link},
 
-{%- endfor %}
-{% endfor %}
-}}
+# {%- endfor %}
+# {% endfor %}
+# }}
 ''')
     navigationmenu = template.render(megamenu=megamenu)
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
