@@ -155,6 +155,9 @@ class system_usermanager(j.code.classGetBase()):
     def create(self, username, emails, password, groups, domain, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'text/plain'), ]
+        if '-' in username:
+            ctx.start_response('409', headers)
+            return "Usernames MUST NOT contain '-'"
         check, result = self._checkUser(username)
         if check:
             ctx.start_response('409', headers)
