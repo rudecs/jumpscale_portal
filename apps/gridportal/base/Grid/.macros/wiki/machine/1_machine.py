@@ -1,14 +1,13 @@
 import datetime
 
 def main(j, args, params, tags, tasklet):
-    id = args.getTag('id')
-    gid = args.getTag('gid')
-    if not id:
+    guid = args.getTag('guid')
+    if not guid:
         out = 'Missing machine id param "id"'
         params.result = (out, args.doc)
         return params
 
-    machine = j.core.portal.active.osis.get('system', 'machine', "%s_%s" % (gid, id))
+    machine = j.core.portal.active.osis.get('system', 'machine', guid)
     if not machine:
         params.result = ('Machine with id %s not found' % id, args.doc)
         return params
