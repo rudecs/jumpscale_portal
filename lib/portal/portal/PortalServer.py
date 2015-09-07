@@ -125,7 +125,8 @@ class PortalServer:
         self.macroexecutorPage = MacroExecutorPage(macroPathsPage)
         self.macroexecutorMarkDown = MacroexecutorMarkDown(macroPathsMarkDown)
         self.macroexecutorWiki = MacroExecutorWiki(macroPathsWiki)
-        self.templates = PortalTemplate(j.system.fs.joinPaths(self.portaldir, 'templates'))
+        templatedirs = [j.system.fs.joinPaths(self.portaldir, 'templates'),j.system.fs.joinPaths(self.appdir, 'templates')]
+        self.templates = PortalTemplate(templatedirs)
         self.bootstrap()
 
         self._router = SessionMiddleware(AuditMiddleWare(self.router), session_opts)
