@@ -1,9 +1,10 @@
 @usedefaults
+@@title Node Status: ${nodename}
 
 {{node_getdata: gid:$$gid id:$$nid}}
 {{timestamp}}
 
-h2. $$gridname: $$nodename ([$$gid:$$id|/grid/grid node?id=$$nid&gid=$$gid])
+h2. ${gridname}: ${nodename} ([$$gid:$$nid|/grid/grid node?id=$$nid&gid=$$gid])
 
 h3. Actions
 

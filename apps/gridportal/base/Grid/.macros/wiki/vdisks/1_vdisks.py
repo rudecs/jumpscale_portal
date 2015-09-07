@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
     fields = ['id', 'nid', 'devicename', 'description', 'active', 'sizeondisk', 'free', 'path']
 
     out.append('||id||node||devicename||description||active||free||path||')
-    vdisks = actor.getVDisks(machineid=int(machineid))
+    vdisks = actor.getVDisks(machineid=machineid)
 
     if not vdisks:
         params.result = ('No disks found', doc)

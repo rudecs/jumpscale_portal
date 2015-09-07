@@ -27,7 +27,7 @@ def main(j, args, params, tags, tasklet):
         for field in fields:
             # add links
             if field == 'name':
-                line.append('[%(name)s|/grid/Virtual Machine?id=%(id)s&gid=%(gid)s]' % machine)
+                line.append('[%(name)s|/grid/Virtual Machine?guid=%(guid)s]' % machine)
             elif field == 'nid':
                 line.append('[%(nid)s|/grid/grid node?id=%(nid)s&gid=%(gid)s]' % machine)
             elif field == 'netaddr':
