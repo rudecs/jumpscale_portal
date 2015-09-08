@@ -3,6 +3,12 @@
 @@title Statistics
 
 {{node_getdata: gid:$$gid id:$$id}}
+{{breadcrumb:
+- Grid Nodes: /grid/Grid Nodes
+- 'Grid Node: ${nodename}': /grid/grid node?id=$$id&gid=$$gid
+- Statistics: /grid/Node Stats??id=$$id&gid=$$gid
+}}
+
 
 h2. Statistics ${gridname}: ${nodename} ([$$gid:$$id|/grid/grid node?id=$$id&gid=$$gid])
 
