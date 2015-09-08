@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
 
     guid = args.getTag('ecoguid')
 
-    out = "[*Error Condition Object Details*|eco?id=%s]" % guid
+    out = "[*Error Condition Object Details*|error condition?id=%s]" % guid
 
     params.result = (out, doc)
     return params
