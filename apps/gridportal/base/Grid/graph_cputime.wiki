@@ -29,6 +29,7 @@ target.4 =
     interval:1m,
 
 cfg.title = CPU Time
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) CPU Time'
 cfg.height = 275px
 cfg.width = 500px
 cfg.stack = true

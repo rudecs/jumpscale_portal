@@ -16,6 +16,7 @@ target.2 =
 
 
 cfg.title = Network Error
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) Network Error'
 cfg.height = 275px
 cfg.width = 500px
 cfg.stack = false

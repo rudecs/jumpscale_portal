@@ -16,6 +16,7 @@ target.2 =
 
 
 cfg.title = Disk Usage
+cfg.dashboardtitle = 'Disk {bpath} ({gid}:{nid}) Disk Usage'
 cfg.height = 275px
 cfg.width = 1000px
 cfg.stack = true
