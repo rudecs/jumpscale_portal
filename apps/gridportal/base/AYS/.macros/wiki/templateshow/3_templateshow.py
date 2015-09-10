@@ -16,6 +16,33 @@ def main(j, args, params, tags, tasklet):
 
     out += "h2. Template: %s\n" % ays.name
 
+    asks = [{line.split('=')[0].strip():line.split('=')[1].strip()} for line in ays.instancehrd.splitlines() if line.strip() and not line.startswith('#') and '@ASK' in line]
+    askparams = '\n' if asks else ''
+    for ask in asks:
+        for key, value in ask.items():
+            tags = j.core.tags.getObject(value)
+            askparams += '   - name: %s\n' % key
+            descr = '%s' % (tags.tagGet('descr', ''))
+            askparams += '     default: "%s"\n' % tags.tagGet('default', '')
+            askparams += '     label: "%s"\n' % (descr or key)
+            askparams += '     type: text\n'
+
+
+
+    out += """
+{{actions:
+- display: Install
+  action: /AYS/TemplateAction?action=install
+  input:
+   - instance
+   - name: parent
+     type: text
+     label: parent (should be in the format domain__name__instance)%s
+  data: 
+    aysid: %s
+}}
+    """ % (askparams, aysid)
+
     fields = [('Domain', 'domain'), ('Name', 'name'), ('Metadata', 'metapath')]
 
     for representation, field in fields:
@@ -50,18 +77,28 @@ def main(j, args, params, tags, tasklet):
             count += 1
 
     out += "h3. HRD\n"
+    exports = list()
     for hrditem in ays.hrd:
-        out += '* %s: %s\n' % (hrditem.key, hrditem.value)
+        if hrditem.key.startswith('service.git.export'):
+            exports.append(hrditem)
+        else:
+            out += '* %s: %s\n' % (hrditem.key, hrditem.value)
+    if exports:
+        out += "h3. Service Exports\n"
+        out += "{{code:\n"
+        for export in exports:
+            vals = ['\t%s:%s' % (key, value) for key, value in json.loads(export.value).items()]
+            out += "%s:\n%s" % (export.key, '\n'.join(vals))
+        out += "}}\n"
 
-
-    out += """
-\n
-h3. Files\n
-|[Template Code Editors|/AYS/AYSCodeEditors?metapath=%(metapath)s&domain=%(domain)s&servicename=%(name)s]|
-""" % ays.__dict__
+    if ays.metapath or not j.system.fs.exists(ays.metapath):
+        out += "h3. Files\n"
+        path = ays.metapath.replace(j.dirs.baseDir, '$base')
+        path = path.replace(j.dirs.codeDir, '$codedir')
+        out += "h5. MetaPath\n"
+        out += "{{explorer: ppath:%s height:200}}\n" % path
 
     params.result = (out, args.doc)
-
     return params
 
 

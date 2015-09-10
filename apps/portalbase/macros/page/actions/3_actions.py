@@ -44,6 +44,9 @@ eg:
     if actions == content:
         return _showexample()
 
+    if not isinstance(actions, list):
+      actions = [actions]
+
     for actiondata in actions:
         actionurl = actiondata['action']
         display = actiondata['display']
@@ -83,7 +86,8 @@ eg:
                     elif var['type'] in ('text', 'password'):
                         label = var['label']
                         name = var['name']
-                        popup.addText(label, name, type=var['type'])
+                        default = var.get('default', '')
+                        popup.addText(label, name, type=var['type'], value=default)
                     elif var['type'] == 'hidden':
                         popup.addHiddenField(var['name'], var['value'])
 

@@ -3,31 +3,33 @@ def main(j, args, params, tags, tasklet):
     action = args.requestContext.params.get('action')
     aysid = args.requestContext.params.get('aysid')
 
-    from JumpScale.baselib.atyourservice import AYSdb
 
-    # TODO ---> get out of factory
-    sql = j.db.sqlalchemy.get(sqlitepath=j.dirs.varDir+"/AYS.db", tomlpath=None, connectionstring='')
+    installedagent = j.application.getAppHRDInstanceNames('agentcontroller2_client')
+    if not installedagent:
+        if not installedagent:
+            page.addMessage('No agentcontroller2_client installed on node')
+            params.result = page
+            return params
 
-    ays = sql.session.query(AYSdb.Service).get(aysid)
+    acc = j.clients.ac.getByInstance(installedagent[0])
+
+    ays = j.atyourservice.getServicefromSQL(serviceid=aysid)
 
     if not ays:
-        page.addMessage("h3. Could not find service:%s %s (%s) installed on node:%s" % (domain, name, instance, nid))
+        page.addMessage("h3. Could not find service installed on node")
         params.result = page
         return params
+    ays = ays[0]
 
-    parent = None
+    parent = ''
     if ays.parent:
         parent = sql.session.query(AYSdb.Service).get(ays.parent)
-    service = j.atyourservice.get(domain=ays.domain, name=ays.name, instance=ays.instance, parent=parent)
+        parent = '%s__%s__%s' % (parent.domain, parent.name, parent.instance)
 
-    try:
-        getattr(service, action)()
-        state = 'success'
-    except Exception, e:
-        state = 'failure'
+    result = acc.execute(j.application.whoAmI.gid, j.application.whoAmI.nid, 'ays', [action, '-n', ays.name, '-d', ays.domain,
+                '-i', ays.instance, '--parent', parent])
 
-    page.addMessage('Action %s on service %s:%s:%s was a %s' % (action, ays.domain, ays.name, ays.instance, state))
-
+    page.addMessage('Action %s on service %s:%s:%s is triggered in job %s' % (action, ays.domain, ays.name, ays.instance, result.id))
 
     params.result = page
     return params
