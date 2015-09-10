@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
 
     activejobs = acclient.getActiveJobs()
 
-    out = ['||Default||HyperVisor||IO||Process||Internal||||']
+    out = ['||Default||Hypervisor||IO||Process||Internal||||']
 
     cnt = {'default': 0, 'io': 0, 'hypervisor': 0, 'internal':0, 'process':0}
     for job in activejobs:

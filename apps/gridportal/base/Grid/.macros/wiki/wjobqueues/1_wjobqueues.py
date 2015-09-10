@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     out = list()
-    out = ['||Node Name||Default||HyperVisor||IO||Process||']
+    out = ['||Default||Hypervisor||IO||Process||Node Name||Details||']
     addnote = False
     greens = list()
     for node in j.apps.system.gridmanager.getNodes():
@@ -32,11 +32,11 @@ def main(j, args, params, tags, tasklet):
                 for job in jobs:
                     if job['queue'] in data:
                         data[job['queue']] += 1
-            out.append('|[%(nodename)s|workersjobs?nid=%(nid)s]|%(default)s|%(hypervisor)s|%(io)s|%(process)s|' % (data))
+            out.append('|%(default)s|%(hypervisor)s|%(io)s|%(process)s|%(nodename)s|[Details|workersjobs?nid=%(nid)s]|' % (data))
 
         if jobs is None:
             addnote = True
-            out.append('|[%(nodename)s|workersjobs?nid=%(nid)s]|N/A*|N/A*|N/A*|N/A*|' % (data))
+            out.append('|N/A*|N/A*|N/A*|N/A*|%(nodename)s|[Details|workersjobs?nid=%(nid)s]|' % (data))
             continue
 
 
