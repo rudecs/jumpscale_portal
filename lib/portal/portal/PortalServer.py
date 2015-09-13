@@ -341,6 +341,23 @@ class PortalServer:
                     gitlabobjects.append({'name':name, 'namespace':{'name':''}})
                 return gitlabobjects
 
+    def getSpaceLinks(self, ctx):
+        if self.authentication_method == 'gitlab':
+            spaces = {}
+            for s in self.getUserSpacesObjects(ctx):
+                if s['namespace']['name']:
+                    spaces[s['name']] = "%s_%s" % (s['namespace']['name'], s['name'])
+                else:
+                    spaces[s['name']] = "/%s" % s['name']
+        else:
+            spaces = {}
+            for spaceid in self.getUserSpaces(ctx):
+                space = self.getSpace(spaceid, ignore_doc_processor=True)
+                if space.model.hidden:
+                    continue
+                spaces[space.model.name] = "/%s" % spaceid
+        return spaces
+
     def getNonClonedGitlabSpaces(self, ctx):
         """
         Return Gitlab spaces that are not (YET) cloned into local filesystem

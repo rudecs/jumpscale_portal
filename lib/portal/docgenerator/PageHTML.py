@@ -1065,10 +1065,10 @@ function copyText$id() {
             CC += "} );\n"
             jsHead += "<script type='text/javascript'>" + CC + "</script>"
 
-        return '''
+        return j.tools.text.toStr('''
 <!DOCTYPE html>
 <html>
 <head>%s</head>
 <body %s>%s</body>
-</html>''' % (jsHead, ' '.join(self.bodyattributes), self.body)
- 
+</html>''' % (j.tools.text.toStr(jsHead), ' '.join(self.bodyattributes), j.tools.text.toStr(self.body)))
+
