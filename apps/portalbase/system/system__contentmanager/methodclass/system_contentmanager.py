@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth
 import ujson
 
 class system_contentmanager(j.code.classGetBase()):
@@ -392,6 +393,7 @@ class system_contentmanager(j.code.classGetBase()):
 
         return result
 
+    @auth(['admin'])
     def wikisave(self, cachekey, text, **args):
         """
         param:cachekey key to the doc
