@@ -1,5 +1,0 @@
-@usedefault
-
-{{datatables_use}}
-
-{{jpackagefiles}}

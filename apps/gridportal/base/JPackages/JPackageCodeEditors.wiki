@@ -1,3 +1,0 @@
-@usedefault
-{{jpackagecodeeditors: domain:$$domain name:$$name version:$$version nid:$$nid}}
-

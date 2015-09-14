@@ -14,8 +14,8 @@ parser.add_argument('-i', '--instance', help="Gridportal instance", required=Tru
 
 opts = parser.parse_args()
 
-jp =j.atyourservice.get('jumpscale', 'portal', instance=opts.instance)
-j.application.instanceconfig = jp.hrd
+ays =j.atyourservice.get('jumpscale', 'portal', instance=opts.instance)
+j.application.instanceconfig = ays.hrd
 
 j.application.start("jumpscale:gridportal")
 j.application.initGrid()
