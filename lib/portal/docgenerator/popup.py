@@ -20,7 +20,7 @@ class Popup(object):
                 <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
               </div>
         ''')
-        content = template.render(label=label, name=name, type=type, value=value, placeholder=placeholder)
+        content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder)
         self.widgets.append(content)
 
     def addHiddenField(self, name, value):
@@ -37,7 +37,7 @@ class Popup(object):
                 <textarea class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
               </div>
         ''')
-        content = template.render(label=label, name=name, placeholder=placeholder)
+        content = template.render(label=label, name=name, required=required, placeholder=placeholder)
         self.widgets.append(content)
 
     def addNumber(self, label, name, required=False):
@@ -47,7 +47,7 @@ class Popup(object):
                 <input type="number" class="form-control" name="${name}" {% if required %}required{% endif %}>
               </div>
         ''')
-        content = template.render(label=label, name=name)
+        content = template.render(label=label, name=name, required=required)
         self.widgets.append(content)
 
     def addDropdown(self, label, name, options, required=False):
@@ -61,7 +61,7 @@ class Popup(object):
                 </select>
               </div>
         ''')
-        content = template.render(label=label, name=name, options=options)
+        content = template.render(label=label, name=name, required=required, options=options)
         self.widgets.append(content)
 
     def addRadio(self, label, name, options, required=False):
@@ -77,22 +77,22 @@ class Popup(object):
                 {% endfor %}
               </div>
         ''')
-        content = template.render(label=label, name=name, options=options)
+        content = template.render(label=label, name=name, options=options, required=required)
         self.widgets.append(content)
 
-    def addCheckboxes(self, label, name, options):
+    def addCheckboxes(self, label, name, options, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height">${label}</label>
                 {% for title, value, checked in options %}
                     <label class="checkbox">
-                      <input type="checkbox" {% if checked %}checked{% endif%} name="${name}" value="${value}" />
+                      <input type="checkbox" {% if checked %}checked{% endif%} {% if required %}required{% endif %} name="${name}" value="${value}" />
                       ${title}
                     </label>
                 {% endfor %}
             </div>
         ''')
-        content = template.render(label=label, name=name, options=options)
+        content = template.render(label=label, name=name, options=options, required=required)
         self.widgets.append(content)
 
     def write_html(self, page):
@@ -104,7 +104,7 @@ class Popup(object):
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                     <div id="${id}Label" class="modal-header-text">${header}</div>
                   </div>
-                  <div class="modal-body modal-body-error alert alert-error">
+                  <div class="modal-body modal-body-error alert alert-danger">
                     Error happened on the server
                   </div>
                   <div class="modal-body modal-body-form">
@@ -153,13 +153,18 @@ class Popup(object):
                     location.reload();
                     {% endif %}
                 },
-                error: function(responseText, statusText, xhr, $form) {
-                    if (responseText) {
-                        var response = responseText.responseJSON || responseText.responseText;
-                        this.popup.find('.modal-body-error').text(response);
+                error: function(response, statusText, xhr, $form) {
+                    if (response) {
+                        var responsetext = response.responseJSON || response.responseText;
+                        this.popup.find('.modal-body-error').text(responsetext);
                     }
-                    this.popup.find('.modal-body').hide();
-                    this.popup.find('.modal-footer > .btn-primary').hide();
+                    if (response && (response.status == 400 || response.status == 409)){
+                        this.popup.find("input,select,textarea").prop("disabled", false)
+                        this.popup.find('.modal-footer > .btn-primary').button('reset').show();
+                    } else {
+                        this.popup.find('.modal-body').hide();
+                        this.popup.find('.modal-footer > .btn-primary').hide();
+                    }
                     this.popup.find('.modal-body-error').show();
                 }
             });
