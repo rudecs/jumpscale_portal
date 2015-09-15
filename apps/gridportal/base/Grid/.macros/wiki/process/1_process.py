@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
                 obj[attr] = 'N/A'
             else:
                 obj[attr] = datetime.datetime.fromtimestamp(obj[attr]).strftime('%Y-%m-%d %H:%M:%S')
-        obj['jpname'] = obj['jpname'] or 'None'
+        obj['aysname'] = obj['aysname'] or 'None'
         obj['ports'] = ', '.join([str(x) for x in obj['ports']])
         obj['systempids'] = ', '.join([str(x) for x in obj['systempids']])
         return obj

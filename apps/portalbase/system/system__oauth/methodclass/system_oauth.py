@@ -48,9 +48,7 @@ class system_oauth(j.code.classGetBase()):
         else:
             ctx.start_response('302 Found', [('Location', redirecturi)])
         return ''
-	
-    
- 
+
     def authorize(self, **kwargs):
         ctx = kwargs['ctx']
         code = kwargs.get('code')

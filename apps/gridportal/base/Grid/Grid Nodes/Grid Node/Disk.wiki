@@ -1,9 +1,14 @@
 @usedefault
 @@title Disk: ${dpath}
 {{disk: id:$$id nid:$$nid gid:$$gid}}
+{{breadcrumb:
+- Grid Nodes: /grid/Grid Nodes
+- 'Grid Node: ${nodename}': /grid/grid node?id=${nid}&gid=${gid}
+- 'Disk: ${name}': /grid/disk?id=$$id&nid=$$nid&gid=$$gid
+}}
 
 h2. Disk ${dpath}
-|*Node*|[$$nid|grid node?id=$$nid|]|
+|*Node*|[${nodename}|grid node?id=$$nid|]|
 |*Active*|${active}|
 |*SSD*|${ssd}|
 |*Model*|${model}|
@@ -18,7 +23,6 @@ h2. Disk ${dpath}
 |*Mount Point*|${mountpoint}|
 
 h3. Disk Statistics
-
 
 {{include:graph_disk}}
 {{include:graph_diskusage}}

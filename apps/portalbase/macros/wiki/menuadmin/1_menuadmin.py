@@ -23,9 +23,9 @@ def main(j, args, params, tags, tasklet):
     #         pagename, pagelink = page.split(':')
     #         pagedict[pagename] = pagelink
 
-    megamenu.update(hrd.getDictFromPrefix('instance.navigationlinks'))
+    megamenu['Portals'] = j.core.portal.active.getSpaceLinks(args.requestContext)
     template = jinja.from_string('''
-{{megamenu: name:Navigation
+{{megamenu: name:Navigation class:spaces-nav
 {% for name, links in megamenu.iteritems() %}
 column.${name} ={% for pagename, link in links|dictsort %}
         ${pagename}:${link},

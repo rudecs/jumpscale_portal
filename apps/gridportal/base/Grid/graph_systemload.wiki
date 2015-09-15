@@ -23,6 +23,7 @@ target.3 =
 
 
 cfg.title = System Load
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) System Load'
 cfg.height = 275px
 cfg.width = 500px
 cfg.stack = false

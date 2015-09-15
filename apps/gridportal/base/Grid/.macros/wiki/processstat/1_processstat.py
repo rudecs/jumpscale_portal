@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
         obj = process[0]
         prockey = "n%s.process.%%s.%%s" % obj['nid']
         if obj['type'] == 'jsprocess':
-            obj['prockey'] = prockey % ('js', "%s_%s" % (obj['jpdomain'], obj['sname']))
+            obj['prockey'] = prockey % ('js', "%s_%s" % (obj['aysdomain'], obj['sname']))
         else:
             obj['prockey'] = prockey % ('os', "%s" % (obj['pname']))
         return obj

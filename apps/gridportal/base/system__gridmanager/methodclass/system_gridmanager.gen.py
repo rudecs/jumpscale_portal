@@ -248,7 +248,7 @@ class system_gridmanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getProcessStats")
 
-    def getProcesses(self, id, guid, name, nid, gid, from_, to, active, jpdomain, jpname, instance, systempid, lastcheckFrom, lastcheckTo, **kwargs):
+    def getProcesses(self, id, guid, name, nid, gid, from_, to, active, aysdomain, aysname, instance, systempid, lastcheckFrom, lastcheckTo, **kwargs):
         """
         list processes (comes from osis), are the grid unique processes (not integrated with processmanager yet)
         param:id only find 1 process entry
@@ -259,8 +259,8 @@ class system_gridmanager(j.code.classGetBase()):
         param:from_ -4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes from date specified  (-4d means 4 days ago)
         param:to -4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes to date specified
         param:active True,is the process still active
-        param:jpdomain JPackage domain of process
-        param:jpname JPackage name of process
+        param:aysdomain AYS domain of process
+        param:aysname AYS name of process
         param:instance instance of process
         param:systempid pid on the system of process
         param:lastcheckFrom -4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckFrom  (-4d means 4 days ago)

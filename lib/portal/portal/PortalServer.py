@@ -105,7 +105,7 @@ class PortalServer:
             if self.authentication_method == 'gitlab':
                 self.auth = PortalAuthenticatorGitlab(instance=self.gitlabinstance)
             else:
-                self.osis = j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+                self.osis = j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
                 osissession = {
                     'session.type': 'OsisBeaker',
                     'session.namespace_class': OsisBeaker,
@@ -125,7 +125,8 @@ class PortalServer:
         self.macroexecutorPage = MacroExecutorPage(macroPathsPage)
         self.macroexecutorMarkDown = MacroexecutorMarkDown(macroPathsMarkDown)
         self.macroexecutorWiki = MacroExecutorWiki(macroPathsWiki)
-        self.templates = PortalTemplate(j.system.fs.joinPaths(self.portaldir, 'templates'))
+        templatedirs = [j.system.fs.joinPaths(self.portaldir, 'templates'),j.system.fs.joinPaths(self.appdir, 'templates')]
+        self.templates = PortalTemplate(templatedirs)
         self.bootstrap()
 
         self._router = SessionMiddleware(AuditMiddleWare(self.router), session_opts)
@@ -339,6 +340,23 @@ class PortalServer:
                         continue
                     gitlabobjects.append({'name':name, 'namespace':{'name':''}})
                 return gitlabobjects
+
+    def getSpaceLinks(self, ctx):
+        if self.authentication_method == 'gitlab':
+            spaces = {}
+            for s in self.getUserSpacesObjects(ctx):
+                if s['namespace']['name']:
+                    spaces[s['name']] = "%s_%s" % (s['namespace']['name'], s['name'])
+                else:
+                    spaces[s['name']] = "/%s" % s['name']
+        else:
+            spaces = {}
+            for spaceid in self.getUserSpaces(ctx):
+                space = self.getSpace(spaceid, ignore_doc_processor=True)
+                if space.model.hidden:
+                    continue
+                spaces[space.model.name] = "/%s" % spaceid
+        return spaces
 
     def getNonClonedGitlabSpaces(self, ctx):
         """
@@ -1085,7 +1103,7 @@ class PortalServer:
         elif match == "restextmachine":
             if not self.authentication_method:
                 try:
-                    j.clients.osis.getByInstance(self.hrd.get('jp.instance', 'main'))
+                    j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
                 except Exception, e:
                     raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)

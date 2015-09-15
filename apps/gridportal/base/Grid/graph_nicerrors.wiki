@@ -16,6 +16,7 @@ target.2 =
 
 
 cfg.title = Network Errors
+cfg.dashboardtitle = 'NIC {nic} ({gid}:{nid}) Network Errors'
 cfg.height = 275px
 cfg.width = 500px
 cfg.stack = false

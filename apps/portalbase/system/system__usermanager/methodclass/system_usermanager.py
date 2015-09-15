@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from JumpScale.portal.portal.auth import auth
+import re
 
 class system_usermanager(j.code.classGetBase()):
 
@@ -151,10 +152,19 @@ class system_usermanager(j.code.classGetBase()):
         self.modelGroup.set(group)
         return True
 
+    def _isValidUserName(self, username):
+        r = re.compile('^[a-z0-9]{1,20}$')
+        return r.match(username) is not None
+    
     @auth(['admin'])
     def create(self, username, emails, password, groups, domain, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'text/plain'), ]
+        
+        if not self._isValidUserName(username):
+            ctx.start_response('409', headers)
+            return 'Username may not exceed 20 characters and may only contain a-z and 0-9'
+
         check, result = self._checkUser(username)
         if check:
             ctx.start_response('409', headers)

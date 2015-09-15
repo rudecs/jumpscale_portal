@@ -4,18 +4,12 @@ def main(j, args, params, tags, tasklet):
 
     doc = args.doc
     nid = args.getTag('nid')
-    out = list()
-    out.append("{{datatables_use}}}}\n")
-    out.append('||ID||State||Queue||Category||Command||JScriptID||Start time||Stop time||')
+    node = j.core.portal.active.osis.get('system', 'node', int(nid))
 
     workerscl = j.clients.agentcontroller.getProxy(category="worker")
-    jobs = workerscl.getQueuedJobs(queue=None, format='wiki', _agentid=nid)
-    if jobs:
-        out.append(jobs)
-    else:
-        out.append('No jobs to display.')
-
-    params.result = ('\n'.join(out), doc)
+    jobs = workerscl.getQueuedJobs(queue=None, format='json', _agentid=nid)
+    doc.applyTemplate({'name': node['name'], 'jobs': jobs})
+    params.result = (doc, doc)
 
     return params
 

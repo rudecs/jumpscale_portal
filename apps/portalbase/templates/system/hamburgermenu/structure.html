@@ -1,0 +1,11 @@
+<p class='explore-portals'><i class='glyphicon glyphicon-globe margin-horizontal-small'></i>Explore other Portals</p>
+<ul class='portals-list'>
+    {% for _, portallinks in menulinks.iteritems() %}
+    {% for name, link in portallinks.iteritems() %}
+        <li>
+            <a class='openIframe' href='{{link}}'>{{name}}</a>
+        </li>
+    {% endfor %}
+    {% endfor %}
+</ul>
+

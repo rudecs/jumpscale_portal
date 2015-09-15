@@ -8,6 +8,7 @@ target.1 =
     interval:1m,
 
 cfg.title = CPU Percent
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) CPU Percent'
 cfg.height = 275px
 cfg.width = 500px
 

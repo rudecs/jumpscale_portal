@@ -12,7 +12,7 @@ h3. Details
 |*Last check*| $$lastcheck|
 |*Started*| $$epochstart|
 |*Stopped*| $$epochstop|
-|*AYS*| $$jpname|
+|*AYS*| $$aysname|
 |*Node*| [$$nid|grid node?id=$$nid&gid=$$gid|]|
 # |*Statistics*| [Go to statistics page|ProcessStats?id=$$id]|
 

@@ -8,6 +8,8 @@ def main(j, args, params, tags, tasklet):
     targets = graphdata.getDictFromPrefix('target')
     cfg = {'stack': False, 'fill': '1', 'percentage': False, "y_format": 'short', 'checksum': checksum}
     cfg.update(graphdata.getDictFromPrefix('cfg'))
+    if 'dashboardtitle' not in cfg:
+        cfg['dashboardtitle'] = checksum
 
     targetsstr = ''
     grafanatargets = []
@@ -29,7 +31,7 @@ def main(j, args, params, tags, tasklet):
     cfg['target'] = targetsstr.strip(',')
 
     dashboard = {
-    "title": checksum,
+    "title": cfg['dashboardtitle'],
     "tags": [],
     "style": "light",
     "timezone": "browser",
@@ -162,10 +164,11 @@ def main(j, args, params, tags, tasklet):
     "version": 2
 }
 
-    grafclient = j.clients.grafana.get()
-    grafclient.updateDashboard(dashboard)
+    grafclient = j.clients.grafana.getByInstance('main')
+    result = grafclient.updateDashboard(dashboard)
+    cfg['slug'] = result['slug']
     page.addHTML("""
-        <iframe width="%(width)s" height="%(height)s" src="/proxy/grafana/dashboard-solo/db/%(checksum)s?panelId=1&fullscreen&theme=light" frameborder="0"></iframe>""" % cfg)
+        <iframe width="%(width)s" height="%(height)s" src="/grafana/dashboard-solo/db/%(slug)s?panelId=1&fullscreen&theme=light" frameborder="0"></iframe>""" % cfg)
     params.result = page
     return params
 

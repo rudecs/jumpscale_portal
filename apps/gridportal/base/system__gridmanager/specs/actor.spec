@@ -245,8 +245,8 @@
         var:from_ str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes from date specified  (-4d means 4 days ago) @tags: optional
         var:to str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes to date specified @tags: optional
         var:active bool,,True,is the process still active @tags: optional
-        var:jpdomain str,, JPackage domain of process @tags: optional
-        var:jpname str,, JPackage name of process @tags: optional
+        var:aysdomain str,, AYS domain of process @tags: optional
+        var:aysname str,, AYS name of process @tags: optional
         var:instance str,, instance of process @tags: optional
         var:systempid int,, pid on the system of process @tags: optional
         var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckFrom  (-4d means 4 days ago) @tags: optional
