@@ -16,7 +16,7 @@ System Portal:/system
 @block
 @row
 
-@col 2 naviation
+@col 2 navigation
 {{navigation}}
 @divend
 

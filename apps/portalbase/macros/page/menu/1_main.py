@@ -100,13 +100,10 @@ def main(j, args, params, tags, tasklet):
     if page.hasfindmenu:
         if "." in args.doc.name:
             if args.doc.name.split('.')[1] == "md":
-                L = """<form class="navbar-form navbar-right" action="/system/find?page={name}&space={space}" method="post" role="search">
+                L = """<form id="search-form" class="navbar-form navbar-right padding-right-none" action="/system/find?page={name}&space={space}" method="post" role="search">
 <div class="form-group">
 <div class="input-group">
 <input class="form-control search-query" id="navbarInput-01" type="search" placeholder="Search">
-<span class="input-group-btn">
-<button type="submit" class="btn"><span class="fui-search"></span></button>
-</span>
 </div>
 </div>
 </form>"""

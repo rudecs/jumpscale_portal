@@ -68,7 +68,7 @@ def main(j, args, params, tags, tasklet):
               (this.classList.contains("is-active") === true) ? this.classList.remove("is-active") : this.classList.add("is-active");
               $('.page-content').find('.sidebar-nav').toggleClass('hide');
               $('.page-content').find('.content').toggleClass('less-wide');
-              $('.page-content').find('.naviation').toggleClass('wide-sidebar');
+              $('.page-content').find('.navigation').toggleClass('wide-sidebar');
             });
         }
 

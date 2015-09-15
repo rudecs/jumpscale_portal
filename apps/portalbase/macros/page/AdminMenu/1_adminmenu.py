@@ -19,11 +19,9 @@ def main(j, args, params, tags, tasklet):
 	if j.core.portal.active.isAdminFromCTX(params.requestContext):
 		page.addMessage('''
 	<ul class="nav navbar-nav navbar-left">
-	<li><a href="/{spaceName}">Home<span class="navbar-unread">1</span></a></li>
 	<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Portal Admin <b class="caret"></b></a>
-	<span class="dropdown-arrow"></span>
-	<ul class="dropdown-menu">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Navigation <b class="caret"></b></a>
+	<ul class="dropdown-menu mega-menu">
 	<li><a href="/system/create">New page</a></li>
 	<li><a href="/system/editmarkdown?space={spaceName}&page={pageName}">Edit Page</a></li>
 	<li><a href="/system/createspace">Create Space</a></li>
@@ -44,9 +42,6 @@ def main(j, args, params, tags, tasklet):
 		page.addJS("/jslib/old/adminmenu/adminmenu.js")
 	else:
 		page.addMessage('''
-			<ul class="nav navbar-nav navbar-left">
-				<li><a href="/{spaceName}">Home<span class="navbar-unread">1</span></a></li>
-			</ul>
 			<ul class="nav navbar-nav navbar-right login-url">
 				<li><a href="/system/login?user_logoff_=1">Login</a></li>
 			</ul>

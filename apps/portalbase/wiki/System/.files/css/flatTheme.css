@@ -560,10 +560,10 @@ a:hover, a:active, a:focus{
 #PortalsHamburgerMenu.dark span::after{
     background: #000;
 }
-.page-content .naviation{
+.page-content .navigation{
     width: 5%;
 }
-.page-content .naviation.wide-sidebar{
+.page-content .navigation.wide-sidebar{
     width: 16.66666667%;
 }
 .page-content .content{
@@ -608,4 +608,52 @@ a:hover, a:active, a:focus{
     margin-left: 0;
     font-size: 15px;
     padding-top: 9px;
+}
+#markdown-portal .navbar-inverse .navbar-nav > .open > .dropdown-menu > li > a:hover, #markdown-portal .navbar-inverse .navbar-nav > .open > .dropdown-menu > li > a:focus,
+#markdown-portal .navbar-inverse .navbar-nav > .open > a, #markdown-portal .navbar-inverse .navbar-nav > .open > a:hover, #markdown-portal .navbar-inverse .navbar-nav > .open > a:focus{
+    background-color: transparent;
+}
+#markdown-portal .navbar{
+    min-height: 30px;
+    margin-bottom: 0;
+}
+#markdown-portal .navbar-nav > li > a{
+    font-weight: 400;
+    font-size: 15px;
+    padding: 1px 15px !important;
+}
+#markdown-portal .navbar .nav > li a:hover, .navbar .nav > li a:focus, .navbar .nav > li a:active, #markdown-portal .navbar-brand:hover{
+    color: #bdc3c7;
+}
+#markdown-portal .navbar-inverse .navbar-nav > .dropdown > a .caret{
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+}
+#markdown-portal .navbar-brand{
+    font-size: 21px;
+    padding: 1px 15px;
+}
+#markdown-portal .navbar-form.navbar-right{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+#markdown-portal .header-container{
+    padding-top: 10px;
+    padding-bottom: 4px;
+}
+#markdown-portal .nav.navbar.pull-right a{
+    padding: 1px 15px;
+}
+#markdown-portal .open > .dropdown-menu{
+    margin-top: 27px !important;
+}
+#markdown-portal .form-control.search-query{
+    border-radius: 5px;
+    margin-top: -3px;
+}
+#markdown-portal #menu-container{
+    width: 83%;
+}
+#markdown-portal #search-form .form-group{
+    float: right;
 }

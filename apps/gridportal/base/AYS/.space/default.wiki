@@ -17,7 +17,7 @@ At Your Sercvice:/AYS
 @block
 @row
 
-@col 2 naviation
+@col 2 navigation
 {{navigation}}
 @divend
 

@@ -38,7 +38,7 @@ h5. Events Dashboard
 @divend
 
 @row
-@col 2 naviation col-md-2
+@col 2 navigation col-md-2
 @colend
 @col 10 content col-md-10
 {{healthcheck}}
