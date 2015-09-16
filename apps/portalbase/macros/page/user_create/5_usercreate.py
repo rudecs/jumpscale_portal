@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
     options = list()
     popup.addText('Enter Username', 'username')
     popup.addText('Enter Emails (comma seperated)', 'emails')
-    popup.addText('Enter Domain', 'domain')
+    popup.addHiddenField('domain', '')
     popup.addText('Enter Password', 'password', type='password')
     for group in scl.group.search({})[1:]:
         options.append((group['id'], group['id'], False))

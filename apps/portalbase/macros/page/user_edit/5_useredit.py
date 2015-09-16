@@ -10,8 +10,8 @@ def main(j, args, params, tags, tasklet):
     popup = Popup(id='user_edit', header='Change User', submit_url='/restmachine/system/usermanager/editUser')
 
     options = list()
-    popup.addText('Enter emails (comma seperated)', 'emails')
-    popup.addText('Enter domain', 'domain')
+    popup.addText('Enter emails (comma seperated)', 'emails', value=', '.join(user.emails))
+    popup.addHiddenField('domain', user.domain)
     popup.addText('Enter Password (leave empty to unchange)', 'password', type='password')
     for group in scl.group.search({})[1:]:
         available = group['id'] in user.groups
