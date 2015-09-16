@@ -104,10 +104,10 @@ class Popup(object):
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                     <div id="${id}Label" class="modal-header-text">${header}</div>
                   </div>
-                  <div class="modal-body modal-body-error alert alert-danger">
-                    Error happened on the server
-                  </div>
                   <div class="modal-body modal-body-form">
+                    <div class="modal-body modal-body-error alert alert-danger padding-all-small padding-left-large">
+                      Error happened on the server
+                    </div>
                     {% for widget in widgets %}${widget}{% endfor %}
                   </div>
                   <div class="modal-footer">
