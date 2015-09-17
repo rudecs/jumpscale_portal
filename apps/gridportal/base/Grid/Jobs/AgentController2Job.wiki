@@ -4,34 +4,33 @@
 
 h2. Job Details
 
-| *Command* | ${job.cmd} |
-| *Grid ID* | ${job.gid} |
-| *Node* | ${job.nid} |
-| *Role* | ${job.role} |
-| *Fanout* | ${job.fanout} |
+| *Command* | ${firstjob.cmd} |
+| *Grid ID* | ${firstjob.gid} |
+| *Role* | ${cmdjobs.role} |
+| *Fanout* | ${cmdjobs.fanout} |
 
 h3. Run Arguments
 {{code:
-${job.args}
+${firstjob.jsonargs}
 }}
 
 h3. Job Input
 {{code:
-${job.data}
+${firstjob.data}
 }}
 
 {{html
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 }}
-{% if not results %}
+{% if not cmdjobs %}
 {{html:
 <div class='alert alert-warning margin-top-medium'>This job is not beeing processed by any agent yet.</div>
 }}
 {% endif %}
 
-{% for result in results %}
+{% for nodeinfo, result in cmdjobs.iteritems() %}
 
-    h3. Job Results of ${result.gid}:[${result.nid}|/grid/grid node?id=${result.nid}&gid=${result.gid}]
+    h3. Job Results of [${result.gid}:${result.nid}|/grid/grid node?id=${result.nid}&gid=${result.gid}]
 
     {{html:
             <div class="panel panel-default">

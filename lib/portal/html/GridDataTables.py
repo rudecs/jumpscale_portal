@@ -53,7 +53,7 @@ $(document).ready(function() {
     $.extend( $.fn.dataTableExt.oStdClasses, {
         "sWrapper": "dataTables_wrapper form-inline"
     } );
-} );""" % data
+} );""" % json.dumps(data)
         C = C.replace("$tableid", tableid)
         self.page.addJS(jsContent=C, header=False)
 

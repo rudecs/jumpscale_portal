@@ -13,17 +13,14 @@ def main(j, args, params, tags, tasklet):
 
     instance = clients[0].instance
     acclient = j.clients.ac.getByInstance(instance)
-    jobs = acclient.get_jobs(count=100)
+    jobs = acclient.get_cmds(count=100)
 
     out = list()
     out.append('||Grid ID||Node ID||Command||Role||Fanout||Details||')
 
     line = '|{gid}|{nid}|{cmd}|{role}|{fanout}|[Details|/grid/agentcontroller2job?job={job}]|'
     for job in jobs:
-        jobrow = line.format(
-            job=base64.b64encode(json.dumps(job)).strip(),
-            **job
-        )
+        jobrow = line.format(job=job['id'], **job)
 
         out.append(jobrow)
 
