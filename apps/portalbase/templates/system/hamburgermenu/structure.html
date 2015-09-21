@@ -3,6 +3,15 @@
     {% for portal in menulinks %}
         <li>
             <a class='openIframe' href='{{portal.url}}' data-theme='{{portal.theme}}' data-external='{{portal.external}}'>{{portal.name}}</a>
+            {% if portal.children %}
+            <ul>
+            {% for child in portal.children %}
+                <li>
+                    <a href='{{child.url}}'>{{child.name}}</a>
+                </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
         </li>
     {% endfor %}
 </ul>
