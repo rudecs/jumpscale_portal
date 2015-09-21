@@ -1,6 +1,6 @@
 <p class='explore-portals'><i class='glyphicon glyphicon-globe margin-horizontal-small'></i>Explore other Portals</p>
 <ul class='portals-list'>
-    {% for _, portal in menulinks.iteritems() %}
+    {% for portal in menulinks %}
         <li>
             <a class='openIframe' href='{{portal.url}}' data-theme='{{portal.theme}}' data-external='{{portal.external}}'>{{portal.name}}</a>
         </li>
