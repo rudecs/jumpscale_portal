@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
             for field in ['organization', 'version', 'descr']: #code
                 itemdata.append(str(jumpscript[field]))
             aaData.append(itemdata)
-        return json.dumps(aaData)
+        return aaData
 
     cl=j.clients.redis.getGeventRedisClient("localhost", 7770)
 
