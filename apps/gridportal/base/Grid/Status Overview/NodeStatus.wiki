@@ -27,3 +27,6 @@ h3. Worker Status
 
 h3. Disks Status
 {{diskscheck nid:$$nid}}
+
+h3. General Status
+{{generalstatus nid:$$nid}}
