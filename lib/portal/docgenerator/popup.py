@@ -135,6 +135,12 @@ class Popup(object):
                 clearForm: ${'true' if clearform else 'false' },
                 beforeSubmit: function(formData, $form, options) {
                     this.popup = $form;
+                    var extradata = $form.data('extradata');
+                    if (extradata) {
+                        for (var name in extradata) {
+                            formData.push({'name': name, 'value': extradata[name]});
+                        }
+                    }
                     $form.find('.modal-footer > .btn-primary').button('loading');
                     $form.find("input,select,textarea").prop("disabled", true)
                 },
@@ -146,7 +152,10 @@ class Popup(object):
                     //in case we reload we need to reset the form here
                     this.popup.find("input,select,textarea").prop("disabled", false)
                     this.popup.find('.modal-footer > .btn-primary').button('reset').show();
-
+                    var extracallback = this.popup.data('extracallback');
+                    if (extracallback) {
+                        extracallback();
+                    }
                     {% if navigateback %}
                     window.location = document.referrer;
                     {% elif reload %}

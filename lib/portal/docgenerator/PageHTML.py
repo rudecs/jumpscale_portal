@@ -23,6 +23,7 @@ class PageHTML(Page):
         #self.title = "<title>%s</title>\n" % name
         self.title = ""
         self.head = ""
+        self.tail = []
         self.libs = ""
         #self.body = "<div class='heading'><h1>%s</h1></div>\n" % name
         self.body = ""
@@ -712,7 +713,8 @@ function copyText$id() {
         if header:
             self.head += js
         else:
-            self.body += js
+            if js not in self.tail:
+                self.tail.append(js)
 
     def removeJS(self, jsLink=None, jsContent=None):
         out = ""
@@ -795,7 +797,8 @@ function copyText$id() {
         """
         if self.pagemirror4jscss != None:
             self.pagemirror4jscss.addDocumentReadyJSfunction(function)
-        self.documentReadyFunctions.append(function)
+        if function not in self.documentReadyFunctions:
+            self.documentReadyFunctions.append(function)
 
     def addExplorer(self, path="", dockey=None, height=500, width=750, readonly=False, tree=False):
 
@@ -1069,6 +1072,7 @@ function copyText$id() {
 <!DOCTYPE html>
 <html>
 <head>%s</head>
-<body %s>%s</body>
-</html>''' % (j.tools.text.toStr(jsHead), ' '.join(self.bodyattributes), j.tools.text.toStr(self.body)))
+<body %s>%s
+%s</body>
+</html>''' % (j.tools.text.toStr(jsHead), ' '.join(self.bodyattributes), j.tools.text.toStr(self.body), '\n'.join(self.tail)))
 
