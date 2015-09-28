@@ -104,11 +104,13 @@ class Popup(object):
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                     <div id="${id}Label" class="modal-header-text">${header}</div>
                   </div>
-                  <div class="modal-body modal-body-form">
+                  <div class="modal-body">
                     <div class="modal-body modal-body-error alert alert-danger padding-all-small padding-left-large">
                       Error happened on the server
                     </div>
+                    <div class="modal-body modal-body-form">
                     {% for widget in widgets %}${widget}{% endfor %}
+                    </div>
                   </div>
                   <div class="modal-footer">
                     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -171,7 +173,7 @@ class Popup(object):
                         this.popup.find("input,select,textarea").prop("disabled", false)
                         this.popup.find('.modal-footer > .btn-primary').button('reset').show();
                     } else {
-                        this.popup.find('.modal-body').hide();
+                        this.popup.find('.modal-body-form').hide();
                         this.popup.find('.modal-footer > .btn-primary').hide();
                     }
                     this.popup.find('.modal-body-error').show();
