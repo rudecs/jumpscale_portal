@@ -1,3 +1,5 @@
+import json
+
 class Popup(object):
     def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True):
         self.widgets = []
@@ -97,14 +99,18 @@ class Popup(object):
 
     def write_html(self, page):
         template = self.jinja.from_string('''
-            <form role="form" method="post" action="${submit_url}" class="popup_form">
+        <form role="form" method="post" action="${submit_url}" class="popup_form"
+        {% for key, value in data.iteritems() -%}
+            data-${key}="${value}"
+        {%- endfor %}
+        >
             <div id="${id}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="${id}Label" aria-hidden="true">
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                     <div id="${id}Label" class="modal-header-text">${header}</div>
                   </div>
-                  <div class="modal-body">
+                  <div class="modal-body-container">
                     <div class="modal-body modal-body-error alert alert-danger padding-all-small padding-left-large">
                       Error happened on the server
                     </div>
@@ -120,9 +126,11 @@ class Popup(object):
             </div>
         </form>
         ''')
-
+        data = {'clearform': json.dumps(self.clearForm),
+                'reload': json.dumps(self.reload_on_success),
+                'navigateback': json.dumps(self.navigateback)}
         content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout,
-                                widgets=self.widgets, submit_url=self.submit_url)
+                                widgets=self.widgets, submit_url=self.submit_url, clearForm=self.clearForm, data=data)
 
         css = '.modal-body-error { display: none } .modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
         if css not in page.head:
@@ -133,8 +141,16 @@ class Popup(object):
             page.addJS(jsLink)
 
         js = self.jinja.from_string('''$(function(){
-            $('#${id}').parent().ajaxForm({
-                clearForm: ${'true' if clearform else 'false' },
+            var resetForm = function($form) {
+                $form.find('.modal-body').hide();
+                $form.find('.modal-body-form').show();
+
+                //in case we reload we need to reset the form here
+                $form.find("input,select,textarea").prop("disabled", false)
+                $form.find('.modal-footer > .btn-primary').button('reset').show();
+
+            };
+            $('.popup_form').ajaxForm({
                 beforeSubmit: function(formData, $form, options) {
                     this.popup = $form;
                     var extradata = $form.data('extradata');
@@ -147,22 +163,21 @@ class Popup(object):
                     $form.find("input,select,textarea").prop("disabled", true)
                 },
                 success: function(responseText, statusText, xhr) {
-                    this.popup.find('.modal').modal('hide');
-                    this.popup.find('.modal-body').hide();
-                    this.popup.find('.modal-body-form').show();
-
-                    //in case we reload we need to reset the form here
-                    this.popup.find("input,select,textarea").prop("disabled", false)
-                    this.popup.find('.modal-footer > .btn-primary').button('reset').show();
                     var extracallback = this.popup.data('extracallback');
                     if (extracallback) {
                         extracallback();
                     }
-                    {% if navigateback %}
-                    window.location = document.referrer;
-                    {% elif reload %}
-                    location.reload();
-                    {% endif %}
+                    if (this.popup.data('clearform') === true) {
+                        this.popup.clearForm();
+                    }
+                    if (this.popup.data('navigateback') === true) {
+                        resetForm(this.popup);
+                        window.location = document.referrer;
+                    } else if (this.popup.data('reload') === true) {
+                        resetForm(this.popup);
+                        location.reload();
+                    }
+                    this.popup.find('.modal').modal('hide');
                 },
                 error: function(response, statusText, xhr, $form) {
                     if (response) {
@@ -179,17 +194,13 @@ class Popup(object):
                     this.popup.find('.modal-body-error').show();
                 }
             });
-            $('#${id}').on('hidden.bs.modal', function () {
-                $(this).find("input,select,textarea").prop("disabled", false)
-                $(this).find('.modal-footer > .btn-primary').button('reset').show();
-                $(this).find('.modal-body').hide();
-                $(this).find('.modal-body-form').show();
+            $('.popup_form').on('hidden.bs.modal', function () {
+                resetForm($(this));
             });
         });''')
 
-        js = js.render(id=self.id, reload=self.reload_on_success, navigateback=self.navigateback, clearform=self.clearForm)
+        js = js.render()
 
-        if js not in page.head:
-            page.addJS(jsContent=js)
+        page.addJS(jsContent=js, header=False)
 
         page.addMessage(content)
