@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
     for portal in menulinks:
         portal['children'] = list()
         external = portal.get('external', 'false').lower()
-        portal['external'] = external 
+        portal['external'] = external
         if external != 'true':
             spacename = j.system.fs.getBaseName(portal['url']).lower()
             if spacename in j.core.portal.active.spacesloader.spaces:
@@ -31,19 +31,22 @@ def main(j, args, params, tags, tasklet):
                         line = line.strip()
                         if line.startswith('#'):
                             continue
-                        name, link = line.split(':', 1)
+                        try:
+                            name, link = line.split(':', 1)
+                        except:
+                            continue
                         portal['children'].append({'url': link, 'name': name})
 
     hrdListHTML = j.core.portal.active.templates.render('system/hamburgermenu/structure.html', menulinks=menulinks)
     script = j.core.portal.active.templates.render('system/hamburgermenu/script.js', hrdListHTML=hrdListHTML).replace('\n', '')
     style = j.core.portal.active.templates.render('system/hamburgermenu/style.css')
 
-    page.addCSS('/jslib/bootstrap/css/off-canvas/jasny-bootstrap.css')
+    # remove it!
+    # page.addCSS('/jslib/bootstrap/css/off-canvas/jasny-bootstrap.css')
+
     page.addCSS(cssContent=style)
     page.addMessage('''<script type="text/javascript">%s</script>''' % script)
-    page.addMessage('''
-        <script src="/jslib/bootstrap/js/off-canvas/jasny-bootstrap.js" type="text/javascript"></script>
-    ''')
+
     params.result = page
     return params
 
