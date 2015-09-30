@@ -92,6 +92,8 @@ class DataTables():
         nativequery = datainfo.get('nativequery') or dict()
         nativequery = copy.deepcopy(nativequery)
         filters = filters.copy()
+        nativequery.update(filters)
+        fullquery = {'$query': nativequery}
 
         client = self.getClient(namespace, category)
 
@@ -101,14 +103,16 @@ class DataTables():
 
 
         #sort
-        sort = dict()
+        sort = []
         if kwargs['iSortCol_0']:
             for i in range(int(kwargs['iSortingCols'])):
                 colidx = kwargs['iSortCol_%s' % i]
                 key = 'bSortable_%s' % colidx
                 if kwargs[key] == 'true':
                     colname = fieldids[int(colidx)]
-                    sort[colname] = 'asc' if kwargs['sSortDir_%s' % i] == 'asc' else 'desc'
+                    sort.append((colname,  1 if kwargs['sSortDir_%s' % i] == 'asc' else -1))
+        if sort:
+            fullquery['$orderby'] = sort
 
         #filters
         partials = dict()
@@ -118,21 +122,20 @@ class DataTables():
                 fieldname = fieldids[x]
                 if svalue.isdigit():
                     if fieldname not in filters:
-                        filters[fieldname] = int(svalue)
+                        nativequery[fieldname] = int(svalue)
                 else:
-                    partials[fieldname] = '*%s*' % svalue.lower()
+                    nativequery[fieldname] = {'$regex': svalue, '$options': 'i'}
 
         #top search field
         if 'sSearch' in kwargs and kwargs['sSearch']:
-            dummyobj = client.new()
-            nativequery.setdefault('query', {}).setdefault('bool', {}).setdefault('must', [])
-            nativequery.setdefault('query', {}).setdefault('bool', {}).setdefault('should', [])
+            orquery = []
+            nativequery['$or'] = orquery
             for idname in fieldids:
-                if isinstance(getattr(dummyobj, idname, None), str):
-                    nativequery['query']['bool']['should'].append({'wildcard': {idname: '*%s*' % kwargs['sSearch'].lower()}})
-            nativequery
+                orquery.append({idname: {'$regex': kwargs['sSearch'], '$options': 'i'}})
 
-        total, inn = client.simpleSearch(filters, size=size, start=start, withtotal=True, sort=sort, partials=partials, withguid=True, nativequery=nativequery)
+        queryresult = client.search(fullquery, size=size, start=start)
+        total = queryresult[0]
+        inn = queryresult[1:]
         result = {}
         result["sEcho"] = int(kwargs.get('sEcho', 1))
         result["iTotalRecords"] = total
