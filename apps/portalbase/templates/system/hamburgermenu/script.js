@@ -54,6 +54,7 @@ $(function () {
         if(window.location.href.indexOf( $( this )[0].href ) > -1){
           SpacesNavBtnTheme = $(this).data().theme;
           isSpaceExternal = $(this).data().external;
+          return false;
         }else{
           SpacesNavBtnTheme = "light";
         }
