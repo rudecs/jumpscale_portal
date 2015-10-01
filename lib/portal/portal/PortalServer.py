@@ -238,8 +238,6 @@ class PortalServer:
             if "system" not in self.spacesloader.spaces:
                 raise RuntimeError("could not find system space")
 
-            self.spacesloader.spaces["system"].loadDocProcessor() #need to make sure we have content for the systemspace
-
     def getContentDirs(self):
         """
         walk over known content dirs & execute loader on it
@@ -455,8 +453,6 @@ class PortalServer:
             name = "pagenotfound"
         else:
             spaceObject = self.spacesloader.getLoaderFromId(space)
-            if spaceObject.docprocessor is None:
-                spaceObject.loadDocProcessor(force=True)  # dynamic load of space
             spacedocgen = spaceObject.docprocessor
 
             if name in spacedocgen.name2doc:
@@ -1327,13 +1323,6 @@ class PortalServer:
         if name not in self.spacesloader.spaces:
             raise RuntimeError("Could not find space %s" % name)
         space = self.spacesloader.spaces[name]
-        if space.docprocessor == None and not ignore_doc_processor:
-            space.loadDocProcessor()
-        return space
-
-    def loadSpace(self, name, force=False):
-        space = self.getSpace(name)
-        space.loadDocProcessor(force=force)
         return space
 
     def getBucket(self, name):

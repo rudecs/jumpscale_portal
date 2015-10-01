@@ -6,8 +6,14 @@ class Space(LoaderBaseObject):
 
     def __init__(self):
         LoaderBaseObject.__init__(self, "space")
-        self.docprocessor = None
+        self._docprocessor = None
         self._loading = False
+
+    @property
+    def docprocessor(self):
+        if not self._docprocessor:
+            self.loadDocProcessor(False)
+        return self._docprocessor
 
     def loadDocProcessor(self,force=False):
         if self._loading and force==False:
@@ -29,7 +35,7 @@ class Space(LoaderBaseObject):
             webserver.macroexecutorMarkDown.addMacros(macroPathsMarkDown, name)
 
             
-        self.docprocessor = j.tools.docpreprocessor.get(contentDirs=[self.model.path], spacename=self.model.id)
+        self._docprocessor = j.tools.docpreprocessor.get(contentDirs=[self.model.path], spacename=self.model.id)
         
 
     def createDefaults(self, path):
