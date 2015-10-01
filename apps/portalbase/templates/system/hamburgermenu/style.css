@@ -95,7 +95,7 @@ html, body {
     content: "\e114";
 }
 .show-on-large.portals-navigation.visible{
-  width: 250px;
+  width: 210px;
 }
 .spaces-nav {
     display: none;
@@ -118,11 +118,11 @@ html, body {
 }
 .fixed-slide-nav{
   position: fixed;
-  left: -250px;
+  left: -210px;
   min-height: 50px;
   z-index: 2;
   height: 100%;
-  width: 250px;
+  width: 210px;
 }
 .portals-navigation ul {
   list-style-type: none;
@@ -205,11 +205,11 @@ html, body {
     margin-left: 25px;
   }
   .portals-navigation {
-      width: 250px;
+      width: 210px;
       height: 100%;
       display: block;
       position: fixed;
-      left: -250px;
+      left: -210px;
       top: 0px;
       transition: left 0.3s linear;
       margin: 0;
@@ -302,14 +302,14 @@ html, body {
 	.portals-navigation {
 		display: block;
 		position: fixed;
-		left: -250px;
+		left: -210px;
 		transition: left 0.3s linear;
 		border-radius: 0;
 		overflow-y: auto;
 		overflow-x: hidden;
     }
     /*.portals-navigation.visible.show-on-large{
-    	left: -250px;
+    	left: -210px;
     }*/
 }
 /* medium */
