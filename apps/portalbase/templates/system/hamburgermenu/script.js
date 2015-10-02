@@ -50,15 +50,14 @@ function injectHamburgerButton(theme, external) {
 
 $(function () {
     function getSpaceinfo(){
-      var SpacesNavBtnTheme;
+      var SpacesNavBtnTheme = "light";
       var isSpaceExternal = false;
       $('.navmenu-default').find('a.space').each(function() {
-        if(window.location.href.indexOf( $( this )[0].href ) > -1){
+        if(window.location.href.toLowerCase().indexOf($(this)[0].href.toLowerCase()) > -1){
           SpacesNavBtnTheme = $(this).data().theme;
           isSpaceExternal = $(this).data().external;
+          $(this).siblings('.accordion-toggle').click();
           return false;
-        }else{
-          SpacesNavBtnTheme = "light";
         }
       });
       return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal};
@@ -86,7 +85,8 @@ $(function () {
 
     if(currentPage == 'external'){
         injectIframe();
-        injectHamburgerButton(getSpaceinfo()["theme"], getSpaceinfo()["external"]);
+        var spaceinfo = getSpaceinfo();
+        injectHamburgerButton(spaceinfo["theme"], spaceinfo["external"]);
     }
 
     $( ".openIframe" ).click(function(event) {
@@ -119,7 +119,7 @@ $(function () {
         checkChangedBrowserSize();
     });
 
-    window.onresize = function WriteScreen(){
+    window.onresize = function (){
         checkChangedBrowserSize();
     };
 
