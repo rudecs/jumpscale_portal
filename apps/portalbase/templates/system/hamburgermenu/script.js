@@ -21,7 +21,9 @@ function injectIframe() {
     $('.flatTheme').addClass('padding-top-none');
     $('.navbar-inverse').remove();
     $('.navmenu-fixed-left.offcanvas').remove();
-    $('.height-full').prepend("<div class='navmenu navmenu-default navmenu-fixed-left offcanvas'><a class=''>{{hrdListHTML}}</a></div>");
+    var div = $("<div class='navmenu navmenu-default navmenu-fixed-left offcanvas'><a class=''></a></div>");
+    div.find('a').html($('#portalsHamburgerStructure').html());
+    $('.height-full').prepend(div);
 };
 
 function injectHamburgerButton(theme, external) {
@@ -69,8 +71,11 @@ $(function () {
     });
 
     if($('.navmenu.navmenu-default').length === 0){
-      $('.navbar-inner.navbar-form').prepend("<div class='navmenu navmenu-default navmenu-fixed-left offcanvas'>{{hrdListHTML}}</div>");
-      injectHamburgerButton(getSpaceinfo()["theme"], getSpaceinfo()["external"]);
+      var div = $("<div class='navmenu navmenu-default navmenu-fixed-left offcanvas'></div>");
+      div.html($('#portalsHamburgerStructure').html());
+      $('.navbar-inner.navbar-form').prepend(div);
+      var spaceinfo = getSpaceinfo();
+      injectHamburgerButton(spaceinfo["theme"], spaceinfo["external"]);
     }
 
 
@@ -100,7 +105,7 @@ $(function () {
     });
 
 
-    function checkChengedBrowserSize() {
+    function checkChangedBrowserSize() {
         if($( window ).width() + 21 < 1560){
             $('.portals-navigation').removeClass('visible').removeClass('show-on-large');
             $('.slider-container').removeClass('visible');
@@ -110,10 +115,10 @@ $(function () {
         }
     }
 
-    checkChengedBrowserSize();
+    checkChangedBrowserSize();
 
     window.onresize = function WriteScreen(){
-        checkChengedBrowserSize();
+        checkChangedBrowserSize();
     };
 
 });
