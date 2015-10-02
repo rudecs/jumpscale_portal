@@ -482,7 +482,11 @@ class PortalServer:
 
         if not "r" in right:
             if self.force_oauth_instance:
-                location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance}))
+                redirect = ctx.env['PATH_INFO']
+                if ctx.env['QUERY_STRING']:
+                    redirect += "?%s" % ctx.env['QUERY_STRING']
+                queryparams = {'type':self.force_oauth_instance, 'redirect': redirect}
+                location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode(queryparams))
                 raise exceptions.Redirect(location)
 
             name = "accessdenied" if loggedin else "login"
