@@ -104,7 +104,6 @@ $(function () {
         $('.portals-navigation').toggleClass('show-on-large');
     });
 
-
     function checkChangedBrowserSize() {
         if($( window ).width() + 21 < 1560){
             $('.portals-navigation').removeClass('visible').removeClass('show-on-large');
@@ -116,6 +115,9 @@ $(function () {
     }
 
     checkChangedBrowserSize();
+    $('.container').click(function() {
+        checkChangedBrowserSize();
+    });
 
     window.onresize = function WriteScreen(){
         checkChangedBrowserSize();

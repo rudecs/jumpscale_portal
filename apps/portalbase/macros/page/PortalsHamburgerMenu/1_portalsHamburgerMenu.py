@@ -41,9 +41,6 @@ def main(j, args, params, tags, tasklet):
     script = j.core.portal.active.templates.render('system/hamburgermenu/script.js')
     style = j.core.portal.active.templates.render('system/hamburgermenu/style.css')
 
-    # remove it!
-    # page.addCSS('/jslib/bootstrap/css/off-canvas/jasny-bootstrap.css')
-
     page.addCSS(cssContent=style)
     page.addMessage('''<script id="portalsHamburgerStructure" type="text/x-jQuery-tmpl">%s</script>''' % hrdListHTML)
     page.addJS(jsContent=script, header=False)
