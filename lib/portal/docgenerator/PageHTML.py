@@ -1068,11 +1068,17 @@ function copyText$id() {
             CC += "} );\n"
             jsHead += "<script type='text/javascript'>" + CC + "</script>"
 
-        return j.tools.text.toStr('''
+        docdata = {'head': jsHead,
+                   'bodyattrib': ' '.join(self.bodyattributes),
+                   'body': self.body,
+                   'tail': '\n'.join(self.tail)}
+        for key, val in docdata.iteritems():
+            docdata[key] = j.tools.text.toStr(val)
+
+        return '''
 <!DOCTYPE html>
 <html>
-<head>%s</head>
-<body %s>%s
-%s</body>
-</html>''' % (j.tools.text.toStr(jsHead), ' '.join(self.bodyattributes), j.tools.text.toStr(self.body), '\n'.join(self.tail)))
-
+<head>%(head)s</head>
+<body %(bodyattrib)s>%(body)s
+%(tail)s</body>
+</html>''' % docdata
