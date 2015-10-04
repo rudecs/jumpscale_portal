@@ -114,6 +114,15 @@ class DataTables():
         if sort:
             fullquery['$orderby'] = sort
 
+        def getRegexQuery(value):
+            regextmpl = '%s'
+            if value.startswith('!'):
+                value = value[1:]
+                if value:
+                    regextmpl = '^(?!.*%s).*$'
+            query = {'$regex': regextmpl % value, '$options': 'i'}
+            return query
+
         #filters
         partials = dict()
         for x in range(len(fieldids)):
@@ -124,14 +133,14 @@ class DataTables():
                     if fieldname not in filters:
                         nativequery[fieldname] = int(svalue)
                 else:
-                    nativequery[fieldname] = {'$regex': svalue, '$options': 'i'}
+                    nativequery[fieldname] = getRegexQuery(svalue)
 
         #top search field
         if 'sSearch' in kwargs and kwargs['sSearch']:
             orquery = []
             nativequery['$or'] = orquery
             for idname in fieldids:
-                orquery.append({idname: {'$regex': kwargs['sSearch'], '$options': 'i'}})
+                orquery.append({idname: getRegexQuery(kwargs['sSearch'])})
 
         queryresult = client.search(fullquery, size=size, start=start)
         total = queryresult[0]
