@@ -28,7 +28,7 @@ class system_docgenerator(j.code.classGetBase()):
         self.appname = "system"
 
 
-    def getDocForActor(self, actorname, spec):
+    def getDocForActor(self, actorname, spec, hide_private_api):
         paths = spec['paths']
         tags = spec['tags']
         apppart, actorpart = actorname.split('__')
@@ -37,9 +37,10 @@ class system_docgenerator(j.code.classGetBase()):
         specobj = j.core.specparser.getActorSpec(apppart, actorpart, False)
         if not specobj:
             return
-
         tags.append({'name': actorname, 'description': specobj.description})
         for method in specobj.methods:
+            if hide_private_api and method.tags and 'hide' in method.tags:
+                continue
             methods = dict()
             path = '/%s/%s/%s' % (specobj.appname, specobj.actorname, method.name)
             paths[path] = methods
@@ -85,14 +86,15 @@ class system_docgenerator(j.code.classGetBase()):
                                               }
                                             }
                                  }
+        hide_private_api = args.get('skip_private')
         if 'actors' in args and args['actors']:
             actors = args['actors'].split(',')
         else:
             actors = j.core.portal.active.getActors()
-
+        
         for actor in sorted(actors):
             try:
-                self.getDocForActor(actor, catalog)
+                self.getDocForActor(actor, catalog, hide_private_api)
             except Exception as e:
                 catalog['info']['description'] += "<p class='alert alert-danger'>Failed to load actor %s error was %s</p>" % (actor, e)
         return catalog
