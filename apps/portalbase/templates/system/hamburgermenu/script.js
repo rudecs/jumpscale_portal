@@ -77,7 +77,6 @@ $(function () {
       injectHamburgerButton(spaceinfo["theme"], spaceinfo["external"]);
     }
 
-
     var currentPage = '';
     if(window.location.pathname.indexOf('external') > -1){
         currentPage = 'external';
@@ -105,13 +104,30 @@ $(function () {
     });
 
     function checkChangedBrowserSize() {
-        if($( window ).width() + 21 < 1560){
-            $('.portals-navigation').removeClass('visible').removeClass('show-on-large');
-            $('.slider-container').removeClass('visible');
-        }else{
-            $('.portals-navigation').addClass('visible').addClass('show-on-large');
-            $('.slider-container').addClass('visible');
+
+        function showMenu(){
+          $('.portals-navigation').addClass('visible').addClass('show-on-large');
+          $('.slider-container').addClass('visible');
         }
+        function hideMenu() {
+          $('.portals-navigation').removeClass('visible').removeClass('show-on-large');
+          $('.slider-container').removeClass('visible');
+        }
+
+        if(window.location.pathname.indexOf('wiki_gcb') > -1){
+          if($( window ).width() + 21 < 1710){
+              hideMenu();
+          }else{
+              showMenu();
+          }
+        }else{
+          if($( window ).width() + 21 < 1560){
+              hideMenu();
+          }else{
+              showMenu();
+          }
+        }
+        
     }
 
     checkChangedBrowserSize();

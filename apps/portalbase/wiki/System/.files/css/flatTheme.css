@@ -543,6 +543,7 @@ a:hover, a:active, a:focus{
   bottom: 0;
   transform: translateX(39px) translateY(-3px) rotate(-50deg);
 }
+/* end of Hamburger menu */
 
 .page-content .navigation{
     width: 5%;
