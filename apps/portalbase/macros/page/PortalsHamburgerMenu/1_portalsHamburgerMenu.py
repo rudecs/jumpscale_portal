@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
         spacelinks = j.core.portal.active.getSpaceLinks(args.requestContext)
         menulinks = []
         for name, url in spacelinks.iteritems():
-            menulinks.append({'name': name, 'url': url, 'theme': 'dark', 'external': 'false'})
+            menulinks.append({'name': name, 'url': url, 'theme': 'light', 'external': 'false'})
 
     for portal in menulinks:
         portal['children'] = list()
