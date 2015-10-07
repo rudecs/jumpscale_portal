@@ -92,9 +92,6 @@ class system_docgenerator(j.code.classGetBase()):
         else:
             actors = j.core.portal.active.getActors()
         
-        if hide_private_api:
-            actors = [actor for actor in actors if actor.startswith('cloudapi')]
-        
         for actor in sorted(actors):
             try:
                 self.getDocForActor(actor, catalog, hide_private_api)
