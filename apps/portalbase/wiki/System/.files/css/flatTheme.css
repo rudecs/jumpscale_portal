@@ -559,6 +559,31 @@ a:hover, a:active, a:focus{
 .clean-header{
     min-height: 0;
 }
+
+.datatables-row-StatusCode{
+    width: 100px !important;
+}
+.datatables-row-GridID {
+    width: 75px !important;
+}
+.datatables-row-AccountID, .datatables-row-NetworkID, .datatables-row-StackID {
+    width: 100px !important;
+}
+.datatables-row-CloudSpaceID {
+    width: 115px !important;
+}
+.datatables-row-ID{
+    width: 50px !important;
+}
+.datatables-row-GridNodeID{
+    width: 125px !important;
+}
+.datatables-row-Call{
+    width: 400px !important;
+}
+.datatables-row-Message{
+    width: 400px !important;
+}
 #markdown-portal .navbar-inverse .navbar-nav > .open > .dropdown-menu > li > a:hover, #markdown-portal .navbar-inverse .navbar-nav > .open > .dropdown-menu > li > a:focus,
 #markdown-portal .navbar-inverse .navbar-nav > .open > a, #markdown-portal .navbar-inverse .navbar-nav > .open > a:hover, #markdown-portal .navbar-inverse .navbar-nav > .open > a:focus{
     background-color: transparent;

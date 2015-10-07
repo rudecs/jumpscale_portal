@@ -1,5 +1,5 @@
 from JumpScale import j
-import datetime
+import re
 import json
 
 class GridDataTables:
@@ -76,7 +76,8 @@ $fields
 
         fieldstext = ""
         for name in fieldnames:
-            fieldstext += "<th>%s</th>\n" % (name)
+            classname = re.sub('[^\w]', '', name)
+            fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname,name)
         C = C.replace("$fields", fieldstext)
         C = C.replace("$tableid", tableid)
 
@@ -127,7 +128,8 @@ $fields
 
         fieldstext = ""
         for name in fieldnames:
-            fieldstext += "<th>%s</th>\n" % (name)
+            classname = re.sub('[^\w]', '', name)
+            fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname,name)
         C = C.replace("$fields", fieldstext)
         C = C.replace("$tableid", tableid)
 
