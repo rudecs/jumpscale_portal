@@ -37,10 +37,10 @@ class system_oauth(j.code.classGetBase()):
         session = ctx.env['beaker.session']
         if session:
             oauth = session.get('oauth')
+            session.delete()
+            session.save()
             if oauth:
                 back_uri = urllib.urlencode({'redirect_uri': redirecturi})
-                session.delete()
-                session.save()
                 location = str('%s?%s'% (oauth.get('logout_url'), back_uri))
                 ctx.start_response('302 Found', [('Location', location)])
             else:
