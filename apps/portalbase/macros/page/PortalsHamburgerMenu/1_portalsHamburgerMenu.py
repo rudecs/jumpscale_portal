@@ -11,7 +11,12 @@ def main(j, args, params, tags, tasklet):
         for name, url in spacelinks.iteritems():
             menulinks.append({'name': name, 'url': url, 'theme': 'light', 'external': 'false'})
 
-    for portal in menulinks:
+    groups = j.core.portal.active.getGroupsFromCTX(args.requestContext)
+    for portal in menulinks[:]:
+        scope = portal.get('scope')
+        if scope and scope not in groups:
+            menulinks.remove(portal)
+            continue
         portal['children'] = list()
         external = portal.get('external', 'false').lower()
         portal['external'] = external
@@ -37,6 +42,10 @@ def main(j, args, params, tags, tasklet):
                             continue
                         portal['children'].append({'url': link, 'name': name})
 
+    params.result = page
+    if not menulinks or len(menulinks) == 1 and not menulinks[0]['children']:
+        return params
+
     hrdListHTML = j.core.portal.active.templates.render('system/hamburgermenu/structure.html', menulinks=menulinks)
     script = j.core.portal.active.templates.render('system/hamburgermenu/script.js')
     style = j.core.portal.active.templates.render('system/hamburgermenu/style.css')
@@ -45,7 +54,6 @@ def main(j, args, params, tags, tasklet):
     page.addMessage('''<script id="portalsHamburgerStructure" type="text/x-jQuery-tmpl">%s</script>''' % hrdListHTML)
     page.addJS(jsContent=script, header=False)
 
-    params.result = page
     return params
 
 
