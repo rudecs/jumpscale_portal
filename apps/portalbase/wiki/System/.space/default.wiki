@@ -5,6 +5,8 @@
 
 
 {{find}}
+{{PortalsHamburgerMenu}}
+
 
 {{menu:
 System Portal:/system
@@ -16,11 +18,7 @@ System Portal:/system
 @block
 @row
 
-@col 2 navigation
-{{navigation}}
-@divend
-
-@col 10 content
+@col 12 content
 {{breadcrumbs}}
 {content}
 

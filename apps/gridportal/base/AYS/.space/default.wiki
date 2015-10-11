@@ -3,7 +3,7 @@
 {{ApplyFlatTheme}}
 
 {{find}}
-
+{{PortalsHamburgerMenu}}
 
 
 {{menu:
@@ -17,15 +17,9 @@ At Your Sercvice:/AYS
 @block
 @row
 
-@col 2 navigation
-{{navigation}}
-@divend
-
-@col 10 content
+@col 12 content
 {{breadcrumbs}}
 {content}
 
 @divend
 @divend
-
-

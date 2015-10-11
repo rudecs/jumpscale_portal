@@ -3,8 +3,7 @@
 {{ApplyFlatTheme}}
 
 {{find}}
-
-
+{{PortalsHamburgerMenu}}
 
 {{menu:
 Grid Portal:/grid
@@ -17,11 +16,7 @@ Grid Portal:/grid
 @block
 @row
 
-@col 2 navigation
-{{navigation}}
-@divend
-
-@col 10 content
+@col 12 content
 {{breadcrumbs}}
 {content}
 

@@ -331,11 +331,11 @@ class MacroExecutorWiki(MacroExecutorBase):
             if result != None:
                 if not j.basetype.string.check(result):
                     result = "***ERROR***: Could not execute macro %s on %s, did not return content as string (params.result=astring)" % (macro, doc.name)
-                content = content.replace(macrostr, result)
+                content = content.replace(macrostr, j.tools.text.toStr(result))
         else:
             result = "***ERROR***: Could not execute macro %s on %s, did not find the macro, was a wiki macro." % (macro, doc.name)
 
-        content = content.replace(macrostr,result)
+        content = content.replace(macrostr, j.tools.text.toStr(result))
 
         return content,doc
 

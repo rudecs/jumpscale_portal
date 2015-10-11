@@ -3,6 +3,8 @@
 
 {{projectname:JumpScale Portal}}
 {{find}}
+{{PortalsHamburgerMenu}}
+
 {{menu:
 Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 }}
@@ -12,15 +14,9 @@ Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
 @block
 @row
 
-@col 3
-{{navigation}}
-@divend
-
-@col 9
+@col 12
 
 {content}
 
 @divend
 @divend
-
-

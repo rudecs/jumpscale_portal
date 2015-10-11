@@ -16,16 +16,21 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
+        if not val:
+            continue
         if tag == 'from' and val:
-            filters['from_'] = {'name': 'timeStart', 'value': j.base.time.getEpochAgo(val), 'eq': 'gte'}
+            filters['timeStart'] = {'$gte': j.base.time.getEpochAgo(val)}
         elif tag == 'to' and val:
-            filters['to'] = {'name': 'timeStop', 'value': j.base.time.getEpochAgo(val), 'eq': 'lte'}
+            filters['timeStop'] = {'$lte': j.base.time.getEpochAgo(val)}
         elif tag == 'organization':
             filters['category'] = val
         elif tag == 'jsname':
             filters['cmd'] = val
         elif tag in ('nid', 'gid') and val:
             filters[tag] = int(val)
+        elif tag == 'filter':
+            filter = json.loads(val or 'null')
+            filters.update(filter)
         elif val:
             filters[tag] = val
 
@@ -45,7 +50,7 @@ def main(j, args, params, tags, tasklet):
     fieldnames = ['Time Start', 'Category', 'Command', 'Result', 'State']
     fieldvalues = [makeLink, 'category', 'cmd', makeResult, 'state']
     fieldids = ['timeStart', 'category', 'cmd', 'result', 'state']
-    tableid = modifier.addTableForModel('system', 'job', fieldids, fieldnames, fieldvalues, filters)
+    tableid = modifier.addTableForModel('system', 'job', fieldids, fieldnames, fieldvalues, nativequery=filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 

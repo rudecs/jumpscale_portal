@@ -53,6 +53,7 @@ eg:
         inputs = actiondata.get('input', '')
         navigateback = actiondata.get('navigateback', False)
         reload = actiondata.get('reload', True)
+        hide = actiondata.get('hide', False)
         data = actiondata.get('data', {})
         hideon = actiondata.get('hideon', [])
         if hideon:
@@ -65,7 +66,8 @@ eg:
             continue
         else:
             actionid = "action-%s" % display.replace(' ', '')
-            actionoptions.append((display, actionid))
+            if not hide:
+                actionoptions.append((display, actionid))
 
         popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl, navigateback=navigateback, reload_on_success=reload)
         if inputs:
@@ -83,7 +85,7 @@ eg:
                             popup.addDropdown(label, name, options)
                         elif var['type'] == 'radio':
                             popup.addRadio(label, name, options)
-                    elif var['type'] in ('text', 'password'):
+                    elif var['type'] in ('text', 'password', 'number'):
                         label = var['label']
                         name = var['name']
                         default = var.get('default', '')
