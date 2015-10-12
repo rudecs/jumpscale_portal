@@ -17,7 +17,7 @@ Grid Portal:/grid
 @row
 
 @col 12 content
-{{breadcrumbs}}
+#{{breadcrumbs}}
 {content}
 
 @divend
