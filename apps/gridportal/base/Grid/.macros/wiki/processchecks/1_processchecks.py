@@ -19,40 +19,36 @@ def main(j, args, params, tags, tasklet):
 
     out.append('||Grid ID||Node ID||Node Name||JSAgent Status||Details||')
     data = rediscl.hget('healthcheck:monitoring', 'results')
-    errors = rediscl.hget('healthcheck:monitoring', 'errors')
     data = ujson.loads(data) if data else dict()
-    errors = ujson.loads(errors) if errors else dict()
     rows = list()
+
+    errors = dict()
+    for nid, result in data.items():
+        for category, categorydata in result.items():
+            for dataitem in categorydata:
+                if dataitem.get('state') != 'OK':
+                    errors.setdefault(nid, set())
+                    errors[nid].add(category)
 
     if len(data) > 0:
         for nid, checks in data.iteritems():
             level = 0
             if nid in errors:
                 level = -1
-                categories = errors.get(nid, {}).keys()
+                categories = errors.get(nid, [])
                 runningstring = '{color:orange}*DEGRADED** (issues in %s){color}' % ', '.join(categories)
             else:
                 level = 0
                 runningstring = '{color:green}*RUNNING*{color}'
-            status = checks.get('processmanager', [{'state': 'UNKOWN'}])[0]
+            status = checks.get('Processmanager', [{'state': 'UNKOWN'}])[0]
+            if status and status['state'] != 'OK':
+                level = -2
+                runningstring = '{color:red}*HALTED*{color}'
             gid = j.core.grid.healthchecker.getGID(nid)
             link = '[Details|nodestatus?nid=%s&gid=%s]' % (nid, gid) 
             row = {'level': level, 'gid': gid, 'nid': nid}
             row['message'] = '|%s|[%s|grid node?id=%s&gid=%s]|%s|%s|%s|' % (gid, nid, nid, gid, j.core.grid.healthchecker.getName(nid), runningstring, link)
             rows.append(row)
-
-    if len(errors) > 0:
-        for nid, checks in errors.iteritems():
-            if nid in data:
-                continue
-            status = checks.get('processmanager', [{'state': 'UNKOWN'}])[0]
-            if status and status['state'] != 'RUNNING':
-                level = -2
-                gid = j.core.grid.healthchecker.getGID(nid)
-                row = {'level': level, 'gid': gid, 'nid': nid}
-                link = '[Details|nodestatus?nid=%s&gid=%s]' % (nid, gid)
-                row['message'] = "|%s|[%s|grid node?id=%s&gid=%s]|%s|{color:red}*HALTED*{color}|%s|" % (gid, nid, nid, gid, j.core.grid.healthchecker.getName(nid), link)
-                rows.append(row)
 
     def sorter(row1, row2):
         for sortkey in ('level', 'gid', 'nid'):
