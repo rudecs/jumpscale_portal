@@ -8,6 +8,8 @@
 
 - display: Delete
   action: /restmachine/system/errorconditionhandler/delete
+  navigateback: true
+  reload: false
   data:
    eco: '$$id'
 }}
