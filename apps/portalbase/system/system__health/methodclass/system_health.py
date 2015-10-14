@@ -17,6 +17,6 @@ class system_health(j.code.classGetBase()):
             nid = int(nid)
             j.core.grid.healthchecker.runAllOnNode(nid)
         else:
-            j.core.grid.healthchecker.runOnAllNodesByCategory()
+            j.core.grid.healthchecker.runOnAllNodes()
         return True
 
