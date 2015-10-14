@@ -16,11 +16,13 @@ h3. Actions
 
 - display: Run Healthcheck on Node
   action: /restmachine/system/health/run
+  hide: true
   data:
    nid: $$nid
 }}
 
 
+{{action id:action-RunHealthcheckonNode class:'glyphicon glyphicon-refresh' label:'Run Healthcheck on Node'}}
 
 {{monitorstatus nid:$$nid}}
 

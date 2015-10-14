@@ -6,21 +6,19 @@ import ujson
 def main(j, args, params, tags, tasklet):
     doc = args.doc
     nid = args.getTag('nid')
-    nidstr = str(nid)
-    rediscl = j.clients.redis.getByInstance('system')
+    nidint = int(nid)
 
     out = list()
 
-    results = rediscl.hget('healthcheck:monitoring', 'results')
-    results = ujson.loads(results)
+    results = j.core.grid.healthchecker.runAllOnNode(nidint)
 
-    noderesults = results.get(nidstr, dict())
-    for category, data in noderesults.items():
+    noderesults = results.get(nidint, dict())
+    for category, data in sorted(noderesults.items()):
         out.append('h5. %s' % category)
         for dataitem in data:
             if isinstance(dataitem, dict):
                 status = j.core.grid.healthchecker.getWikiStatus(dataitem.get('state'))
-                out.append('|%s|%s|' % (dataitem.get('message', ' '), status))
+                out.append('|%s |%s|' % (dataitem.get('message', ''), status))
             else:
                 out.append(dataitem)
 

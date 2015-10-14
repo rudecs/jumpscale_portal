@@ -15,7 +15,8 @@ class system_health(j.code.classGetBase()):
     def run(self, nid=None, **kwargs):
         if nid:
             nid = int(nid)
-        args = {'nid': nid}
-        self.acl.executeJumpscript('jumpscale', 'healthcheck_monitoring', role='master', args=args, gid=j.application.whoAmI.gid, wait=False)
+            j.core.grid.healthchecker.runAllOnNode(nid)
+        else:
+            j.core.grid.healthchecker.runOnAllNodesByCategory()
         return True
 
