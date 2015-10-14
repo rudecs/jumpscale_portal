@@ -8,17 +8,8 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
     
     out = list()
-    rediscl = j.clients.redis.getByInstance('system', gevent=True)
-
-    data = rediscl.hget('healthcheck:monitoring', 'results')
-    data = ujson.loads(data) if data else dict()
-
-
-    if rediscl.hexists('healthcheck:monitoring', 'lastcheck'):
-        lastchecked = j.basetype.float.fromString(rediscl.hget('healthcheck:monitoring', 'lastcheck'))
-        lastchecked = '{{span: class=jstimestamp|data-ts=%s}}{{span}}' % lastchecked
-    else:
-        lastchecked = 'N/A'
+    data = j.core.grid.healthchecker.fetchMonitoringOnAllNodes()
+    lastchecked = 'N/A'
     out.append('Grid was last checked at: %s.' % lastchecked)
 
     nodeids = set()
