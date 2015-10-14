@@ -1,9 +1,6 @@
 @usedefault
 
-h3. Databases' Status
 {{dbcheck}}
-
-
 
 h3. Process Status
 

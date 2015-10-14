@@ -7,19 +7,13 @@ def main(j, args, params, tags, tasklet):
 
     status = None
     out = list()
-    rediscl = j.clients.redis.getByInstance('system', gevent=True)
 
 
-    if rediscl.hexists('healthcheck:monitoring', 'lastcheck'):
-        lastchecked = j.basetype.float.fromString(rediscl.hget('healthcheck:monitoring', 'lastcheck'))
-        lastchecked = '{{span: class=jstimestamp|data-ts=%s}}{{span}}' % lastchecked
-    else:
-        lastchecked = 'N/A'
+    lastchecked = 'N/A'
     out.append('Grid was last checked at: %s.' % lastchecked)
 
     out.append('||Grid ID||Node ID||Node Name||JSAgent Status||Details||')
-    data = rediscl.hget('healthcheck:monitoring', 'results')
-    data = ujson.loads(data) if data else dict()
+    data = j.core.grid.healthchecker.fetchMonitoringOnAllNodes()
     rows = list()
 
     errors = dict()
@@ -40,7 +34,7 @@ def main(j, args, params, tags, tasklet):
             else:
                 level = 0
                 runningstring = '{color:green}*RUNNING*{color}'
-            status = checks.get('Processmanager', [{'state': 'UNKOWN'}])[0]
+            status = checks.get('Heartbeat', [{'state': 'UNKOWN'}])[0]
             if status and status['state'] != 'OK':
                 level = -2
                 runningstring = '{color:red}*HALTED*{color}'
