@@ -481,7 +481,7 @@ class PortalServer:
                 right = "r" + right
 
         if not "r" in right:
-            if self.force_oauth_instance:
+            if self.force_oauth_instance and not loggedin:
                 redirect = ctx.env['PATH_INFO']
                 if ctx.env['QUERY_STRING']:
                     redirect += "?%s" % ctx.env['QUERY_STRING']
