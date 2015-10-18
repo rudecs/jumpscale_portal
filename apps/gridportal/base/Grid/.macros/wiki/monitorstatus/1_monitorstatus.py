@@ -5,6 +5,8 @@ import ujson
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
+    import time
+    now = time.time()
     nid = args.getTag('nid')
     nidint = int(nid)
 
@@ -18,7 +20,10 @@ def main(j, args, params, tags, tasklet):
         for dataitem in data:
             if isinstance(dataitem, dict):
                 status = j.core.grid.healthchecker.getWikiStatus(dataitem.get('state'))
-                out.append('|%s |%s |' % (dataitem.get('message', ''), status))
+                lastchecked = dataitem.get('lastchecked', '')
+                if lastchecked:
+                    lastchecked = '%s ago' % j.base.time.getSecondsInHR(now - lastchecked)
+                out.append('|%s |%s |%s |' % (dataitem.get('message', ''), lastchecked, status))
             else:
                 out.append(dataitem)
 

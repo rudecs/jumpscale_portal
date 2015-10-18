@@ -9,18 +9,12 @@ def main(j, args, params, tags, tasklet):
     
     out = list()
     data = j.core.grid.healthchecker.fetchMonitoringOnAllNodes()
-    lastchecked = 'N/A'
-    out.append('Grid was last checked at: %s.' % lastchecked)
+    errors, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(data)
 
-    nodeids = set()
-    for nid, result in data.items():
-        for categorydata in result.values():
-            for dataitem in categorydata:
-                if dataitem.get('state') == 'ERROR':
-                    nodeids.add(nid)
+    out.append('Grid was last checked at: {{ts:%s}}' % oldestdate)
 
-    if nodeids:
-        nodenames = [j.core.grid.healthchecker.getName(nodeid) for nodeid in list(nodeids)]
+    if errors:
+        nodenames = [j.core.grid.healthchecker.getName(nodeid) for nodeid in errors]
         out.append('{{html: <div><p class="alert alert-warning padding-vertical-none width-50"> Something on node(s) %s is not running.</p></div>}}' % ', '.join(nodenames))
     else:
         out.append('{{html: <div><p class="alert alert-success padding-vertical-none width-50">Everything seems to be OK.</p></div>}}')

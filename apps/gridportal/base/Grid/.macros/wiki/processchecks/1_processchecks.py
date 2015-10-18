@@ -4,25 +4,13 @@ import ujson
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
-
-    status = None
     out = list()
 
-
-    lastchecked = 'N/A'
-    out.append('Grid was last checked at: %s.' % lastchecked)
-
-    out.append('||Grid ID||Node ID||Node Name||JSAgent Status||Details||')
     data = j.core.grid.healthchecker.fetchMonitoringOnAllNodes()
+    errors, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(data)
+    out.append('Grid was last checked at: {{ts:%s}}' % oldestdate)
+    out.append('||Grid ID||Node ID||Node Name||Node Status||Details||')
     rows = list()
-
-    errors = dict()
-    for nid, result in data.items():
-        for category, categorydata in result.items():
-            for dataitem in categorydata:
-                if dataitem.get('state') != 'OK':
-                    errors.setdefault(nid, set())
-                    errors[nid].add(category)
 
     if len(data) > 0:
         for nid, checks in data.iteritems():
@@ -34,7 +22,7 @@ def main(j, args, params, tags, tasklet):
             else:
                 level = 0
                 runningstring = '{color:green}*RUNNING*{color}'
-            status = checks.get('Heartbeat', [{'state': 'UNKOWN'}])[0]
+            status = checks.get('JSAgent', [{'state': 'UNKOWN'}])[0]
             if status and status['state'] != 'OK':
                 level = -2
                 runningstring = '{color:red}*HALTED*{color}'
