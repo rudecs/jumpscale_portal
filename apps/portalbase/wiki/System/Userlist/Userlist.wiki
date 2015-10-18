@@ -1,4 +1,5 @@
-h2. User List
+@@title Users
+h2. Users
 
 {{actions:
 - display: Add User
