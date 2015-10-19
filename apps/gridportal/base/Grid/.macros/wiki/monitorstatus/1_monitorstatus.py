@@ -14,11 +14,11 @@ def main(j, args, params, tags, tasklet):
     classmap = {'OK': 'success',
                 'WARNING': 'warning',
                 'EXPIRED': 'warning',
-                'UNKOWN': 'default',
+                'UNKNOWN': 'default',
                 'ERROR': 'danger'}
 
     def makeStatusLabel(status, guid=None):
-        html = '<span class="label label-%s pull-right">%s</span>' % (classmap.get(status, 'unkown'), status)
+        html = '<span class="label label-%s pull-right">%s</span>' % (classmap.get(status, 'default'), status)
         if guid:
             html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
         return html
