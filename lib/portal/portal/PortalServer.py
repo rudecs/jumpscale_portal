@@ -77,7 +77,7 @@ class PortalServer:
         self.started = False
         self.epoch = time.time()
         self.force_oauth_url = None
-        self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
+        self.cfg = self.hrd.getDictFromPrefix('param.cfg')
         self.force_oauth_instance = self.cfg.get('force_oauth_instance', "")
 
         j.core.portal.active=self
@@ -189,7 +189,7 @@ class PortalServer:
         self.getContentDirs()
 
         # load proxies
-        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').iteritems():
+        for _, proxy in self.hrd.getDictFromPrefix('proxy').iteritems():
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
