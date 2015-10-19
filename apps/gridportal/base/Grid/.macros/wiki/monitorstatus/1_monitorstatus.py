@@ -15,6 +15,7 @@ def main(j, args, params, tags, tasklet):
                 'WARNING': 'warning',
                 'EXPIRED': 'warning',
                 'UNKNOWN': 'default',
+                'HALTED': 'danger',
                 'ERROR': 'danger'}
 
     def makeStatusLabel(status, guid=None):
