@@ -43,19 +43,21 @@ def main(j, args, params, tags, tasklet):
                 table += dataitem
         categorystatus = STATUSLABEL % (classmap.get(categorystatus, 'default'), categorystatus)
         html = '''{{html:
-<div class="panel panel-default"><div class="panel-heading" role="tab" id="%(headingid)s">
-    <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#%(sectionid)s" aria-expanded="false" aria-controls="%(sectionid)s">
-            %(category)s
-        </a>
-        %(status)s
-    </h4>
-</div>
-<div id="%(sectionid)s" class="panel-collapse collapse" role="tabpanel" aria-labelledby="%(headingid)s">
-    <div class="panel-body">
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="%(headingid)s">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#%(sectionid)s" aria-expanded="false" aria-controls="%(sectionid)s">
+                %(category)s
+            </a>
+            %(status)s
+        </h4>
+    </div>
+    <div id="%(sectionid)s" class="panel-collapse collapse" role="tabpanel" aria-labelledby="%(headingid)s">
+        <div class="panel-body">
 }}
 %(table)s
 {{html:
+        </div>
     </div>
 </div>
 }}
