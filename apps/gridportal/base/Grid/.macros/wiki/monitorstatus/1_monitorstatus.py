@@ -17,8 +17,13 @@ def main(j, args, params, tags, tasklet):
                 'UNKOWN': 'default',
                 'ERROR': 'danger'}
 
+    def makeStatusLabel(status, guid=None):
+        html = '<span class="label label-%s pull-right">%s</span>' % (classmap.get(status, 'unkown'), status)
+        if guid:
+            html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
+        return html
+
     results = j.core.grid.healthchecker.fetchMonitoringOnNode(nidint)
-    STATUSLABEL = '<span class="label label-%s pull-right">%s</span>'
 
     out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
     noderesults = results.get(nidint, dict())
@@ -34,14 +39,12 @@ def main(j, args, params, tags, tasklet):
                 if categorystatus != 'ERROR' and status !='OK':
                     categorystatus = status
                 lastchecked = dataitem.get('lastchecked', '')
-                status = STATUSLABEL % (classmap.get(categorystatus, 'default'), status)
-                status = '{{html: %s}}' % status
+                status = makeStatusLabel(status, dataitem.get('guid'))
                 if lastchecked:
                     lastchecked = '%s ago' % j.base.time.getSecondsInHR(now - lastchecked)
-                table += '|%s |%s |%s |\n' % (dataitem.get('message', ''), lastchecked, status)
+                table += '|%s |%s | {{html: %s}} |\n' % (dataitem.get('message', ''), lastchecked, status)
             else:
                 table += dataitem
-        categorystatus = STATUSLABEL % (classmap.get(categorystatus, 'default'), categorystatus)
         html = '''{{html:
 <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="%(headingid)s">
@@ -62,7 +65,7 @@ def main(j, args, params, tags, tasklet):
 </div>
 }}
 ''' % {'headingid': headingid, 'sectionid': sectionid, 'table': table,
-         'category': category, 'status': categorystatus}
+         'category': category, 'status': makeStatusLabel(categorystatus)}
 
         out.append(html)
 
