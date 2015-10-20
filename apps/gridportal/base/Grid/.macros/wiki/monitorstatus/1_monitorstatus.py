@@ -11,21 +11,67 @@ def main(j, args, params, tags, tasklet):
     nidint = int(nid)
 
     out = list()
+    classmap = {'OK': 'success',
+                'WARNING': 'warning',
+                'EXPIRED': 'warning',
+                'UNKNOWN': 'default',
+                'HALTED': 'danger',
+                'ERROR': 'danger'}
+
+    def makeStatusLabel(status, guid=None):
+        html = '<span class="label label-%s pull-right">%s</span>' % (classmap.get(status, 'default'), status)
+        if guid:
+            html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
+        return html
 
     results = j.core.grid.healthchecker.fetchMonitoringOnNode(nidint)
 
+    out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
     noderesults = results.get(nidint, dict())
     for category, data in sorted(noderesults.items()):
-        out.append('h5. %s' % category)
+        sectionid = 'collapse_%s' % category.replace(' ', '_')
+        headingid = 'heading_%s' % category
+        table = ""
+        categorystatus = "OK"
         for dataitem in data:
             if isinstance(dataitem, dict):
-                status = j.core.grid.healthchecker.getWikiStatus(dataitem.get('state'))
+                status = dataitem.get('state')
+                wikistatus = j.core.grid.healthchecker.getWikiStatus(status)
+                if categorystatus != 'ERROR' and status !='OK':
+                    categorystatus = status
                 lastchecked = dataitem.get('lastchecked', '')
+                status = makeStatusLabel(status, dataitem.get('guid'))
                 if lastchecked:
                     lastchecked = '%s ago' % j.base.time.getSecondsInHR(now - lastchecked)
-                out.append('|%s |%s |%s |' % (dataitem.get('message', ''), lastchecked, status))
+                table += '|%s |%s | {{html: %s}} |\n' % (dataitem.get('message', ''), lastchecked, status)
             else:
-                out.append(dataitem)
+                table += dataitem
+        html = '''{{html:
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="%(headingid)s">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#%(sectionid)s" aria-expanded="false" aria-controls="%(sectionid)s">
+                %(category)s
+            </a>
+            %(status)s
+        </h4>
+    </div>
+    <div id="%(sectionid)s" class="panel-collapse collapse" role="tabpanel" aria-labelledby="%(headingid)s">
+        <div class="panel-body">
+}}
+%(table)s
+{{html:
+        </div>
+    </div>
+</div>
+}}
+''' % {'headingid': headingid, 'sectionid': sectionid, 'table': table,
+         'category': category, 'status': makeStatusLabel(categorystatus)}
+
+        out.append(html)
+
+
+    out.append('{{html: </div>}}')
 
     out = '\n'.join(out)
     params.result = (out, doc)

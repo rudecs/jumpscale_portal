@@ -28,6 +28,6 @@ h3. Actions
 
 {{cssstyle
 	.table-condensed>tbody>tr>td{
-		width: 40%;
+		width: 75%;
 	}
 }}
