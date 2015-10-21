@@ -98,18 +98,19 @@ eg:
 
         popup.write_html(page)
 
-    id = page.addComboBox(actionoptions)
-    page.addJS(None, """
-        $(document).ready(function() {
-            $("#%(id)s").change(function () {
-                 var actionid = $("#%(id)s").val();
-                 $("#%(id)s").val('#');
-                 if (actionid != '#'){
-                    $('#'+actionid).modal('show');
-                 }
+    if len(actionoptions) > 1:
+        id = page.addComboBox(actionoptions)
+        page.addJS(None, """
+            $(document).ready(function() {
+                $("#%(id)s").change(function () {
+                     var actionid = $("#%(id)s").val();
+                     $("#%(id)s").val('#');
+                     if (actionid != '#'){
+                        $('#'+actionid).modal('show');
+                     }
+                });
             });
-        });
-        """ % ({'id':id}))
+            """ % ({'id':id}))
     params.result = page
 
     return params

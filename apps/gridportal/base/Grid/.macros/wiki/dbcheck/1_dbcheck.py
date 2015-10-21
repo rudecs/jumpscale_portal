@@ -5,24 +5,20 @@ import ujson
 def main(j, args, params, tags, tasklet):
     doc = args.doc
 
-    dbdata = j.core.grid.healthchecker.checkDBs() 
+    dbdata = j.core.grid.healthchecker.checkDBs()
     out = list()
+    results = dbdata.values()
 
-    results = dbdata[0]
-    errors = dbdata[1]
+    for noderesults in results:
+        for category, data in sorted(noderesults.items()):
+            out.append('h5. %s' % category)
+            for dataitem in data:
+                if isinstance(dataitem, dict):
+                    status = j.core.grid.healthchecker.getWikiStatus(dataitem.get('state'))
+                    out.append('|%s |%s |' % (dataitem.get('message', ''), status))
+                else:
+                    out.append(dataitem)
 
-    if errors:
-        errors = errors.values()
-        for error in errors:
-            for dbtype, status in error.iteritems():
-                out.append('{color:red}*%s is not alive.*{color}' % dbtype.capitalize())
-
-    if results:
-        results = results.values()
-        for db in results:
-            for dbtype, status in db.iteritems():
-                out.append('{color:green}*%s is alive.*{color}' % dbtype.capitalize())
-    
     out = '\n'.join(out)
     params.result = (out, doc)
     return params

@@ -62,8 +62,11 @@ def main(j, args, params, tags, tasklet):
     portal = j.core.portal.active
     contentdir = args.paramsExtra.get('contentdir')
     space_path = args.paramsExtra.get('space_path')
+    space_type = args.paramsExtra.get('space_type')
 
     if contentdir and space_path:
+        portal.spacesloader = j.core.portalloader.getSpacesLoader()
+
         if os.path.exists(space_path):
             page.addMessage('***ERROR***: The space path "{}" already exists'.format(space_path))
             return params
@@ -81,22 +84,24 @@ def main(j, args, params, tags, tasklet):
         with open(os.path.join(space_path, '.space', 'main.cfg'), 'w') as f:
             f.write(main_cfg)
 
-        with open(os.path.join(space_path, '.space', 'nav.md'), 'w') as f:
-            f.write('Home:Home')
+        if space_type == "md":
+            with open(os.path.join(space_path, '.space', 'nav.md'), 'w') as f:
+                f.write('Home:Home')
 
-        with open(os.path.join(space_path, '.space', 'default.md'), 'w') as f:
-            f.write(default_wiki)
+            with open(os.path.join(space_path, '.space', 'default.md'), 'w') as f:
+                f.write(default_wiki)
 
-        with open(os.path.join(space_path, 'home.md'), 'w') as f:
-            f.write('''
-{{% extends ".space/default.md" %}}{{% block body %}}
-##Welcome to the new space 
-This space lives in `{}`{{% endblock %}}
-                '''.format(space_path))
+            with open(os.path.join(space_path, 'home.md'), 'w') as f:
+                f.write('''
+    {{% extends ".space/default.md" %}}{{% block body %}}
+    ##Welcome to the new space
+    This space lives in `{}`{{% endblock %}}
+                    '''.format(space_path))
 
-        
-        portal.spacesloader = j.core.portalloader.getSpacesLoader()
         portal.spacesloader.scan(portal.contentdirs)
+        if space_type == 'wiki':
+            spacename = j.system.fs.getBaseName(space_path).lower()
+            portal.spacesloader.id2object[spacename].createDefaults(space_path)
 
         page.addMessage('Created successfully. Click <a href="/{}/">here</a> to go to the new portal'.format(os.path.basename(space_path)))
 
@@ -109,10 +114,9 @@ This space lives in `{}`{{% endblock %}}
                     <div class="control-group">
                         <label class="control-label" for="space_path">Path to space</label>
                         <div class="controls">
-                            <input name="space_path" type="text" placeholder="" class="input-xxlarge width-40" required="" value="/opt/code/incubaid/www_<my_space>">
+                            <input name="space_path" type="text" placeholder="" class="input-xxlarge width-40" required="" value="/opt/code/github/jumpscale/www_<my_space>">
                         </div>
                     </div>
-
                     <div class="control-group margin-bottom-large">
                         <label class="control-label" for="contentdir">Content Directory</label>
                         <div class="controls" name="contentdir">
@@ -121,7 +125,15 @@ This space lives in `{}`{{% endblock %}}
                             </select>
                         </div>
                     </div>
-
+                    <div class="control-group margin-bottom-large">
+                        <label class="control-label" for="space_type">Space type</label>
+                        <div class="controls" name="space_type">
+                            <select name="space_type" id="space_type" class="input-xxlarge width-40">
+                                <option value="wiki">Portal Wiki</option>
+                                <option value="md">Markdown</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="control-group">
                         <div class="controls">
                             <button class="btn btn-primary">Create</button>

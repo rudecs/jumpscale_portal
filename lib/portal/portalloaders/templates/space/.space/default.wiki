@@ -1,28 +1,25 @@
+{{title:JumpScale Portal}}
 
-{{title:QWiki}}
+{{ApplyFlatTheme}}
 
-{{projectname:TestSpace}}
 
 {{find}}
+{{PortalsHamburgerMenu}}
+
 
 {{menu:
-System:/System
-RestInterface:/rest
-Explorer:/System/Explorer
+JumpScale Portal:/
+}}
+
+{{menuadmin:
 }}
 
 @block
 @row
 
-@col 3
-{{navigation}}
-@divend
-
-@col 9
-
+@col 12 content
+{{breadcrumbs}}
 {content}
 
 @divend
 @divend
-
-

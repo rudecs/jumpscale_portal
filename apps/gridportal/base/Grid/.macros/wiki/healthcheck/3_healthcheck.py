@@ -8,24 +8,13 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
     
     out = list()
-    rediscl = j.clients.redis.getByInstance('system', gevent=True)
+    data = j.core.grid.healthchecker.fetchMonitoringOnAllNodes()
+    errors, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(data)
 
-    data = rediscl.hget('healthcheck:monitoring', 'results')
-    errors = rediscl.hget('healthcheck:monitoring', 'errors')
-    data = ujson.loads(data) if data else dict()
-    errors = ujson.loads(errors) if errors else dict()
-
-
-    if rediscl.hexists('healthcheck:monitoring', 'lastcheck'):
-        lastchecked = j.basetype.float.fromString(rediscl.hget('healthcheck:monitoring', 'lastcheck'))
-        lastchecked = '{{span: class=jstimestamp|data-ts=%s}}{{span}}' % lastchecked
-    else:
-        lastchecked = 'N/A'
-    out.append('Grid was last checked at: %s.' % lastchecked)
+    out.append('Grid was last checked at: {{ts:%s}}' % oldestdate)
 
     if errors:
-        nodeids = errors.keys()
-        nodenames = [j.core.grid.healthchecker.getName(nodeid) for nodeid in nodeids]
+        nodenames = [j.core.grid.healthchecker.getName(nodeid) for nodeid in errors]
         out.append('{{html: <div><p class="alert alert-warning padding-vertical-none width-50"> Something on node(s) %s is not running.</p></div>}}' % ', '.join(nodenames))
     else:
         out.append('{{html: <div><p class="alert alert-success padding-vertical-none width-50">Everything seems to be OK.</p></div>}}')

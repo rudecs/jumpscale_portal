@@ -1,10 +1,14 @@
 @usedefaults
 @@title Node Status: ${nodename}
 
+
+
+h2. Monitoring Status
+
 {{node_getdata: gid:$$gid id:$$nid}}
 {{timestamp}}
 
-h2. ${gridname}: ${nodename} ([$$gid:$$nid|/grid/grid node?id=$$nid&gid=$$gid])
+h4. ${gridname}: ${nodename} ([$$gid:$$nid|/grid/grid node?id=$$nid&gid=$$gid])
 
 h3. Actions
 
@@ -12,18 +16,18 @@ h3. Actions
 
 - display: Run Healthcheck on Node
   action: /restmachine/system/health/run
+  hide: true
   data:
    nid: $$nid
 }}
 
-h3. Redis Status
-{{redisstatus nid:$$nid}}
 
-h3. Heartbeat
-{{nodeheartbeat nid:$$nid}}
+{{action id:action-RunHealthcheckonNode class:'glyphicon glyphicon-refresh' label:'Run Healthcheck on Node'}}
 
-h3. Worker Status
-{{workerstatus nid:$$nid}}
+{{monitorstatus nid:$$nid}}
 
-h3. Disks Status
-{{diskscheck nid:$$nid}}
+{{cssstyle
+	.table-condensed>tbody>tr>td{
+		width: 75%;
+	}
+}}

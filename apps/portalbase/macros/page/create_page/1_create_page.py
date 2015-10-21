@@ -3,8 +3,8 @@ import os
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
 
-    page_space = args.paramsExtra.get('space')
-    page_name = args.paramsExtra.get('page')
+    page_space = args.paramsExtra.get('page_space')
+    page_name = args.paramsExtra.get('page_name')
 
     # Creating a new page
     if page_name and page_space:
@@ -22,19 +22,19 @@ def main(j, args, params, tags, tasklet):
         j.core.portal.active.loadSpaces()
 
         # Redirect to edit the new page
-        page.addMessage("<script>window.open('/system/edit?space={0}&page={1}', '_self', '');</script>".format(page_space, page_name))
+        page.addMessage("<script>window.open('/system/edit?edit_space={0}&edit_page={1}', '_self', '');</script>".format(page_space, page_name))
     elif page_name==None and page_space!=None:
 
         page.addMessage('''
             <form class="form-horizontal" method="get" action="/system/create">
                 <fieldset>
                 <div class="control-group">
-                <input type="hidden" name="space" value="$$space">
+                <input type="hidden" name="page_space" value="$$space">
                 </div>                
                 <div class="control-group">
-                  <label class="control-label" for="name">Name</label>
+                  <label class="control-label" for="page_name">Name</label>
                   <div class="controls">
-                    <input id="page" name="page" type="text" placeholder="" class="input-xlarge margin-bottom-large width-40" required="">
+                    <input id="page" name="page_name" type="text" placeholder="" class="input-xlarge margin-bottom-large width-40" required="">
                   </div>
                 </div>
 

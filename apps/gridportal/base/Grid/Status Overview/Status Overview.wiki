@@ -1,18 +1,17 @@
 @usedefault
 
-h3. Databases' Status
 {{dbcheck}}
-
-
 
 h3. Process Status
 
 {{datatables_use: displaylength:100 autosort:false}}
 
 {{actions:
-
-- display: Run Heathcheck
+- display: Run Healthcheck
+  hide: true
   action: /restmachine/system/health/run
 }}
+
+{{action id:'action-RunHealthcheck' class:'glyphicon glyphicon-refresh' label:'Run Healthcheck'}}
 
 {{processchecks}}
