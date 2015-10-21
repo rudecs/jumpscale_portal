@@ -52,14 +52,20 @@ $(function () {
     function getSpaceinfo(){
       var SpacesNavBtnTheme = "light";
       var isSpaceExternal = false;
+      var isLinkOnHrd = false;
       $('.navmenu-default').find('a.space').each(function() {
         if(window.location.href.toLowerCase().indexOf($(this)[0].href.toLowerCase()) > -1){
           SpacesNavBtnTheme = $(this).data().theme;
           isSpaceExternal = $(this).data().external;
+          isLinkOnHrd = true;
           $(this).siblings('.accordion-toggle').click();
           return false;
         }
       });
+      if(isLinkOnHrd === false){
+        window.location.replace("/");
+        return false;
+      }
       return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal};
     };
 
@@ -127,7 +133,7 @@ $(function () {
               showMenu();
           }
         }
-        
+
     }
 
     checkChangedBrowserSize();
