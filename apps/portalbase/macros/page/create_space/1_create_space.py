@@ -85,18 +85,15 @@ def main(j, args, params, tags, tasklet):
             f.write(main_cfg)
 
         if space_type == "md":
+            spacename = j.system.fs.getBaseName(space_path).lower()
             with open(os.path.join(space_path, '.space', 'nav.md'), 'w') as f:
-                f.write('Home:Home')
+                f.write('Home:/{}/Home'.format(spacename))
 
             with open(os.path.join(space_path, '.space', 'default.md'), 'w') as f:
                 f.write(default_wiki)
 
             with open(os.path.join(space_path, 'home.md'), 'w') as f:
-                f.write('''
-    {{% extends ".space/default.md" %}}{{% block body %}}
-    ##Welcome to the new space
-    This space lives in `{}`{{% endblock %}}
-                    '''.format(space_path))
+                f.write('''{{% extends ".space/default.md" %}}{{% block body %}}\n##Welcome to the new space\nThis space lives in `{}`{{% endblock %}}'''.format(space_path))
 
         portal.spacesloader.scan(portal.contentdirs)
         if space_type == 'wiki':
