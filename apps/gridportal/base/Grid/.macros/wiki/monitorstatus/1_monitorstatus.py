@@ -25,6 +25,9 @@ def main(j, args, params, tags, tasklet):
         return html
 
     results = j.core.grid.healthchecker.fetchMonitoringOnNode(nidint)
+    _, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(results)
+
+    out.append('Node was last checked at: {{ts:%s}}' % oldestdate)
 
     out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
     noderesults = results.get(nidint, dict())

@@ -55,6 +55,7 @@ eg:
         reload = actiondata.get('reload', True)
         hide = actiondata.get('hide', False)
         data = actiondata.get('data', {})
+        showresponse = actiondata.get('showresponse', False)
         hideon = actiondata.get('hideon', [])
         if hideon:
             hideon_input = actiondata.get('hideonInput', '')
@@ -69,7 +70,7 @@ eg:
             if not hide:
                 actionoptions.append((display, actionid))
 
-        popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl, navigateback=navigateback, reload_on_success=reload)
+        popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl, navigateback=navigateback, reload_on_success=reload, showresponse=showresponse)
         if inputs:
             for var in inputs:
                 if isinstance(var, basestring):

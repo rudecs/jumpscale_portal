@@ -1,13 +1,14 @@
 import json
 
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True):
+    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=True):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
         self.header = header
         self.action_button = action_button
         self.submit_url = submit_url
+        self.showresponse = showresponse
         self.reload_on_success = reload_on_success
         self.navigateback = navigateback
         self.clearForm = clearForm
@@ -114,6 +115,8 @@ class Popup(object):
                     <div class="modal-body modal-body-error alert alert-danger padding-all-small padding-left-large">
                       Error happened on the server
                     </div>
+                    <div class="modal-body modal-body-message alert alert-success padding-all-small padding-left-large">
+                    </div>
                     <div class="modal-body modal-body-form">
                     {% for widget in widgets %}${widget}{% endfor %}
                     </div>
@@ -128,11 +131,12 @@ class Popup(object):
         ''')
         data = {'clearform': json.dumps(self.clearForm),
                 'reload': json.dumps(self.reload_on_success),
+                'showresponse': json.dumps(self.showresponse),
                 'navigateback': json.dumps(self.navigateback)}
         content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout,
                                 widgets=self.widgets, submit_url=self.submit_url, clearForm=self.clearForm, data=data)
 
-        css = '.modal-body-error { display: none } .modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
+        css = '.modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
         if css not in page.head:
             page.addCSS(cssContent=css)
 
@@ -141,6 +145,7 @@ class Popup(object):
             page.addJS(jsLink)
 
         js = self.jinja.from_string('''$(function(){
+            $(".modal-body-error, .modal-body-message").hide();
             var resetForm = function($form) {
                 $form.find('.modal-body').hide();
                 $form.find('.modal-body-form').show();
@@ -170,6 +175,17 @@ class Popup(object):
                     if (this.popup.data('clearform') === true) {
                         this.popup.clearForm();
                     }
+                    if (this.popup.data('showresponse') === true) {
+                        resetForm(this.popup);
+                        this.popup.find('.modal-footer > .btn-primary').hide();
+                        this.popup.find('.modal-body-form').hide();
+                        this.popup.find('.modal-body-message').show();
+                        this.popup.find('.modal-body-message').text(responseText);
+                        return;
+
+                    } else {
+                        this.popup.find('.modal').modal('hide');
+                    }
                     if (this.popup.data('navigateback') === true) {
                         resetForm(this.popup);
                         window.location = document.referrer;
@@ -177,7 +193,6 @@ class Popup(object):
                         resetForm(this.popup);
                         location.reload();
                     }
-                    this.popup.find('.modal').modal('hide');
                 },
                 error: function(response, statusText, xhr, $form) {
                     if (response) {
