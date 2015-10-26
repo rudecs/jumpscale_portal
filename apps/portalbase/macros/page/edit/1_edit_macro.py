@@ -7,15 +7,18 @@ def main(j, args, params, tags, tasklet):
 
     page = args.page
     page_match = re.search(r"page\s*:\s*([^:}]*)", args.macrostr)
-
     querystr = args.requestContext.env['QUERY_STRING']
     querytuples = urlparse.parse_qsl(querystr)
+    import ipdb;ipdb.set_trace()
     args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
+    spacename = ""
     for name, value in querytuples[:]:
         if name in ['space', 'page']:
             if not args.get(name):
                 args[name] = value
         if name in ('edit_page', 'edit_space'):
+            if name == 'edit_space':
+                spacename = value
             querytuples.remove((name, value))
 
     querystr = urllib.urlencode(querytuples)
@@ -35,11 +38,11 @@ def main(j, args, params, tags, tasklet):
         # look for path for bucket
         aloader = j.core.portal.active.actorsloader.getActorLoaderFromId("%s__%s" % (args["app"].lower(), args["actor"].lower()))
         path = j.system.fs.joinPaths(aloader.model.path, args["path"])
-    elif args['space'] != "":
+    elif spacename != "":
         # look for path for bucket
-        space = j.core.portal.active.getSpace(args['space'])
+        space = j.core.portal.active.getSpace(spacename)
         if page_name != "":
-            space = j.core.portal.active.getSpace(args['space'])
+            space = j.core.portal.active.getSpace(spacename)
             doc = space.docprocessor.docGet(page_name.lower())
             path = doc.path
             args["edit"] = True
@@ -60,10 +63,10 @@ def main(j, args, params, tags, tasklet):
     content = j.system.fs.fileGetContents(path)
 
     page.addMessage('<div class="span12">')
-    page.addCodeBlock(content, path=path, exitpage=False, edit=args["edit"], spacename=args["space"], pagename=page_name, querystr=querystr)
+    page.addCodeBlock(content, path=path, exitpage=False, edit=args["edit"], spacename=spacename, pagename=page_name, querystr=querystr)
     page.addMessage('</div>')
     page.addMessage('<div class="span8" style="display: none !important"><iframe space="$space" doc="$doc" id="preview$id" src="/render" width="100%" height="600px"></iframe></div>'.replace('$id', str(page._codeblockid))
-                    .replace('$space', args["space"]).replace('$doc', page_name))
+                    .replace('$space', spacename).replace('$doc', page_name))
 
     # This macro should be added _only once_ to a page
     page.addJS('/jslib/underscore/underscore.js')
