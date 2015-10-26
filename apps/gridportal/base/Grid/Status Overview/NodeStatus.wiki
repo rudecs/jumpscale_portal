@@ -17,6 +17,7 @@ h3. Actions
 - display: Run Healthcheck on Node
   action: /restmachine/system/health/run
   hide: true
+  showresponse: true
   data:
    nid: $$nid
 }}
