@@ -9,7 +9,6 @@ def main(j, args, params, tags, tasklet):
     page_match = re.search(r"page\s*:\s*([^:}]*)", args.macrostr)
     querystr = args.requestContext.env['QUERY_STRING']
     querytuples = urlparse.parse_qsl(querystr)
-    import ipdb;ipdb.set_trace()
     args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
     spacename = ""
     for name, value in querytuples[:]:
