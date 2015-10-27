@@ -1,7 +1,7 @@
 import json
 
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=True):
+    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=False):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout

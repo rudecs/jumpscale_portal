@@ -37,6 +37,16 @@ function injectHamburgerButton(theme, external) {
                 $("#external-iframe").contents().find(".logo").addClass('margin-left-large');
             }
           }
+
+          if(window.location.href.toLowerCase().indexOf('grafana') > -1){
+            var $head = $("#external-iframe").contents().find("head");
+            $head.append($("<link/>",{ rel: "stylesheet", href: "/system/.files/css/grafana-custom.css", type: "text/css" }));
+            setTimeout(function() {
+              var grafanaSigninBtn = $("#external-iframe").contents().find('.sidemenu.sidemenu-small').find('.sidemenu-item').last();
+              grafanaSigninBtn.attr("href", "/grafana/login/github");
+            }, 400);
+          }
+
         });
       }
     }
@@ -62,11 +72,7 @@ $(function () {
           return false;
         }
       });
-      if(isLinkOnHrd === false){
-        window.location.replace("/");
-        return false;
-      }
-      return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal};
+      return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal, "isLinkOnHrd":isLinkOnHrd};
     };
 
     $(document).on('click', '.accordion-toggle', function(e) {
@@ -91,6 +97,10 @@ $(function () {
     if(currentPage == 'external'){
         injectIframe();
         var spaceinfo = getSpaceinfo();
+        if(spaceinfo["isLinkOnHrd"] === false){
+          window.location.replace("/");
+          return false;
+        }
         injectHamburgerButton(spaceinfo["theme"], spaceinfo["external"]);
     }
 
@@ -107,6 +117,9 @@ $(function () {
         $('.portals-navigation').toggleClass('visible');
         $('.slider-container').toggleClass('visible');
         $('.portals-navigation').toggleClass('show-on-large');
+        if($("#external-iframe").contents().find(".sidemenu-canvas").length > 0){
+          $("#external-iframe").contents().find(".sidemenu-canvas").toggleClass('grafana-push-left');
+        }
     });
 
     function checkChangedBrowserSize() {
@@ -114,10 +127,16 @@ $(function () {
         function showMenu(){
           $('.portals-navigation').addClass('visible').addClass('show-on-large');
           $('.slider-container').addClass('visible');
+          $('#external-iframe').one("load", function() {
+            if($("#external-iframe").contents().find(".sidemenu-canvas").length > 0 && window.location.href.toLowerCase().indexOf('grafana') > -1){
+              $("#external-iframe").contents().find(".sidemenu-canvas").addClass('grafana-push-left');
+            }
+          });
         }
         function hideMenu() {
           $('.portals-navigation').removeClass('visible').removeClass('show-on-large');
           $('.slider-container').removeClass('visible');
+          $("#external-iframe").contents().find(".sidemenu-canvas").removeClass('grafana-push-left');
         }
 
         if(window.location.pathname.indexOf('wiki_gcb') > -1){
