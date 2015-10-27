@@ -180,6 +180,9 @@ class LoaderBaseObject():
                     # print "ACE:%s %s"%(name,rights)
 
     def deleteOnDisk(self):
+        if j.system.fs.isLink(self.model.path):
+            actualpath = j.system.fs.readlink(self.model.path)
+            j.system.fs.removeDirTree(actualpath)
         j.system.fs.removeDirTree(self.model.path)
 
     def reset(self):
