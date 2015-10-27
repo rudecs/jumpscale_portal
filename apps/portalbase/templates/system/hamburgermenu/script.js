@@ -72,11 +72,7 @@ $(function () {
           return false;
         }
       });
-      if(isLinkOnHrd === false){
-        window.location.replace("/");
-        return false;
-      }
-      return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal};
+      return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal, "isLinkOnHrd":isLinkOnHrd};
     };
 
     $(document).on('click', '.accordion-toggle', function(e) {
@@ -101,6 +97,10 @@ $(function () {
     if(currentPage == 'external'){
         injectIframe();
         var spaceinfo = getSpaceinfo();
+        if(spaceinfo["isLinkOnHrd"] === false){
+          window.location.replace("/");
+          return false;
+        }
         injectHamburgerButton(spaceinfo["theme"], spaceinfo["external"]);
     }
 
