@@ -73,8 +73,8 @@ if __name__ == "__main__":
     port = opts.port
     if opts.mongodb_config:
         mongodb_config = j.application.getAppInstanceHRD('mongodb_client', opts.mongodb_config)
-        mongo_host = mongodb_config.get('instance.param.addr')
-        mongo_port = mongodb_config.get('instance.param.port')
+        mongo_host = mongodb_config.get('param.addr')
+        mongo_port = mongodb_config.get('param.port')
     else:
         mongo_host = opts.mongo_host
         mongo_port = opts.mongo_port
