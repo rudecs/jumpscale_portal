@@ -2,6 +2,7 @@
 from JumpScale import j
 from .Confluence2HTML import Confluence2HTML
 from .Confluence2RST import Confluence2RST
+from .MD2Confluence import MD2Confluence
 
 
 class DocgeneratorFactory:
@@ -63,6 +64,10 @@ class DocgeneratorFactory:
 
     def getConfluence2htmlConvertor(self):
         return Confluence2HTML()
+
+    def getMarkDown2ConfluenceConvertor(self):
+        return MD2Confluence()
+
 
     def getConfluence2rstConvertor(self):
         return Confluence2RST()        

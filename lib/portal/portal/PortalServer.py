@@ -449,6 +449,7 @@ class PortalServer:
         if space not in self.spacesloader.spaces:
             if space == "system":
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
+                
             ctx.params["error"] = "Could not find space %s\n" % space
             print("could not find space %s" % space)
             space = self.defaultspace or 'system'
@@ -517,6 +518,7 @@ class PortalServer:
         return doc, params
 
     def returnDoc(self, ctx, start_response, space, docname, extraParams={}):
+
         doc, params = self.getDoc(space, docname, ctx, params=ctx.params)
 
         if doc.dirty or "reload" in ctx.params:
