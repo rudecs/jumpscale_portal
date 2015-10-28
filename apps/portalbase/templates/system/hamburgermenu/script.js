@@ -62,27 +62,17 @@ $(function () {
     function getSpaceinfo(){
       var SpacesNavBtnTheme = "light";
       var isSpaceExternal = false;
-<<<<<<< HEAD
-=======
       var isLinkOnHrd = false;
->>>>>>> master
       $('.navmenu-default').find('a.space').each(function() {
         if(window.location.href.toLowerCase().indexOf($(this)[0].href.toLowerCase()) > -1){
           SpacesNavBtnTheme = $(this).data().theme;
           isSpaceExternal = $(this).data().external;
-<<<<<<< HEAD
-=======
           isLinkOnHrd = true;
->>>>>>> master
           $(this).siblings('.accordion-toggle').click();
           return false;
         }
       });
-<<<<<<< HEAD
-      return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal};
-=======
       return {"theme":SpacesNavBtnTheme, "external":isSpaceExternal, "isLinkOnHrd":isLinkOnHrd};
->>>>>>> master
     };
 
     $(document).on('click', '.accordion-toggle', function(e) {
@@ -107,13 +97,10 @@ $(function () {
     if(currentPage == 'external'){
         injectIframe();
         var spaceinfo = getSpaceinfo();
-<<<<<<< HEAD
-=======
         if(spaceinfo["isLinkOnHrd"] === false){
           window.location.replace("/");
           return false;
         }
->>>>>>> master
         injectHamburgerButton(spaceinfo["theme"], spaceinfo["external"]);
     }
 
@@ -130,12 +117,9 @@ $(function () {
         $('.portals-navigation').toggleClass('visible');
         $('.slider-container').toggleClass('visible');
         $('.portals-navigation').toggleClass('show-on-large');
-<<<<<<< HEAD
-=======
         if($("#external-iframe").contents().find(".sidemenu-canvas").length > 0){
           $("#external-iframe").contents().find(".sidemenu-canvas").toggleClass('grafana-push-left');
         }
->>>>>>> master
     });
 
     function checkChangedBrowserSize() {
@@ -143,22 +127,16 @@ $(function () {
         function showMenu(){
           $('.portals-navigation').addClass('visible').addClass('show-on-large');
           $('.slider-container').addClass('visible');
-<<<<<<< HEAD
-=======
           $('#external-iframe').one("load", function() {
             if($("#external-iframe").contents().find(".sidemenu-canvas").length > 0 && window.location.href.toLowerCase().indexOf('grafana') > -1){
               $("#external-iframe").contents().find(".sidemenu-canvas").addClass('grafana-push-left');
             }
           });
->>>>>>> master
         }
         function hideMenu() {
           $('.portals-navigation').removeClass('visible').removeClass('show-on-large');
           $('.slider-container').removeClass('visible');
-<<<<<<< HEAD
-=======
           $("#external-iframe").contents().find(".sidemenu-canvas").removeClass('grafana-push-left');
->>>>>>> master
         }
 
         if(window.location.pathname.indexOf('wiki_gcb') > -1){
@@ -174,11 +152,6 @@ $(function () {
               showMenu();
           }
         }
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> master
     }
 
     checkChangedBrowserSize();
