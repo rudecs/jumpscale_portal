@@ -58,18 +58,19 @@ class MD2Confluence():
 
 
             if isList == 0:
-              if isCode == 1:
-                if l[0:1] == ' ' or l[0:1]=='\t':
-                  k = k[indent:]  
-                else:
-                  k = '{code}\n'+k
-                  isCode = 0
-                  indent = -1
-              else:
-                if l[0:1]==' ' or l[0:1]=='\t':
-                  indent = len(k)-len(k.lstrip())
-                  k = '{code}\n'+k[indent:]              
-                  isCode = 1
+              pass
+              # if isCode == 1:
+              #   if l[0:1] == ' ' or l[0:1]=='\t':
+              #     k = k[indent:]  
+              #   else:
+              #     k = '{code}\n'+k
+              #     isCode = 0
+              #     indent = -1
+              # else:
+              #   if l[0:1]==' ' or l[0:1]=='\t':
+              #     indent = len(k)-len(k.lstrip())
+              #     k = '{code}\n'+k[indent:]              
+              #     isCode = 1
             else:
                if l[0:4]=='\t\t\t*':
                  k = '****' + l[4:]
