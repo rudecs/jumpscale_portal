@@ -131,15 +131,15 @@ class Doc(object):
             self.content = template.replace('{content}', self.source)
         elif self.defaultPath and self.usedefault:
             extension = fs.getFileExtension(self.path)
-            if extension == 'md':
-                self.content = self.source
-            else:
-                try:
-                    self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
-                    default = fs.fileGetTextContents(self.defaultPath)
-                    self.content = default.replace("{content}", self.source)
-                except Exception: 
-                    pass
+            # if extension == 'md':
+            #     self.content = self.source
+            # else:
+            try:
+                self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
+                default = fs.fileGetTextContents(self.defaultPath)
+                self.content = default.replace("{content}", self.source)
+            except Exception: 
+                pass
 
         if preprocess and self.source.strip() != "":
             # print path3
