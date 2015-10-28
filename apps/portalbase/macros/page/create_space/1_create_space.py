@@ -40,7 +40,8 @@ def main(j, args, params, tags, tasklet):
             f.write(main_cfg)
 
         with open(os.path.join(space_path, 'Home.%s' % space_type), 'w') as f:
-            f.write('''@usedefault\n\n## Welcome to the new space\nThis space lives in `{}`'''.format(space_path))
+            header = '##' if space_type == 'md' else 'h2.'
+            f.write('@usedefault\n\n%s Welcome to the new space\nThis space lives in `%s`'% (header, space_path))
 
         portal.spacesloader.scan(portal.contentdirs)
         spacename = j.system.fs.getBaseName(space_path).lower()
