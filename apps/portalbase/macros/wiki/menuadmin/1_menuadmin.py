@@ -38,7 +38,7 @@ def main(j, args, params, tags, tasklet):
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
         adminmenu = """
 {{menudropdown: name:Administration
-New Page:/system/create
+New Page:/system/create?page_space=$$space
 Edit Page:/system/edit?edit_space=$$space&edit_page=$$page&$$querystr
 Create Space:/system/createspace
 --------------

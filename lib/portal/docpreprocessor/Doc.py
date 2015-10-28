@@ -71,7 +71,6 @@ class Doc(object):
         self.processDefs = False
         self.space_path = None
         self.md=False
-
     def copy(self):
         newdoc = Doc(self.preprocessor)
         newdoc.__dict__ = self.__dict__.copy()

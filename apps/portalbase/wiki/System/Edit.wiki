@@ -4,7 +4,7 @@
 {{projectname:System Portal}}
 {{find}}
 {{menu:
-Help:https://github.com/Jumpscale/jumpscale_core7/wiki:target=_blank
+Help:https://gig.gitbooks.io/jumpscale/content/:target=_blank
 }}
 
 {{menuadmin}}

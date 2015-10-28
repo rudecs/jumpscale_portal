@@ -15,8 +15,8 @@ class system_health(j.code.classGetBase()):
     def run(self, nid=None, **kwargs):
         if nid:
             nid = int(nid)
-            j.core.grid.healthchecker.runAllOnNode(nid)
+            j.core.grid.healthchecker.runAllOnNode(nid, False)
         else:
-            j.core.grid.healthchecker.runOnAllNodes()
-        return True
+            j.core.grid.healthchecker.runOnAllNodes(False)
+        return "Scheduled healthcheck"
 
