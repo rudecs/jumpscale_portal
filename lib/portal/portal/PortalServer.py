@@ -105,13 +105,9 @@ class PortalServer:
             if self.authentication_method == 'gitlab':
                 self.auth = PortalAuthenticatorGitlab(instance=self.gitlabinstance)
             else:
-<<<<<<< HEAD
                 key = self.hrd.get('producer.osis_client')[0]
                 _, _, _, instance, _ = j.atyourservice.parseKey(key)
                 self.osis = j.clients.osis.getByInstance(instance)
-=======
-                self.osis = j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
->>>>>>> master
                 osissession = {
                     'session.type': 'OsisBeaker',
                     'session.namespace_class': OsisBeaker,
@@ -195,11 +191,7 @@ class PortalServer:
         self.getContentDirs()
 
         # load proxies
-<<<<<<< HEAD
         for _, proxy in self.hrd.getDictFromPrefix('proxy').iteritems():
-=======
-        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').iteritems():
->>>>>>> master
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
@@ -457,10 +449,6 @@ class PortalServer:
         if space not in self.spacesloader.spaces:
             if space == "system":
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
-<<<<<<< HEAD
-                
-=======
->>>>>>> master
             ctx.params["error"] = "Could not find space %s\n" % space
             print("could not find space %s" % space)
             space = self.defaultspace or 'system'
@@ -529,10 +517,6 @@ class PortalServer:
         return doc, params
 
     def returnDoc(self, ctx, start_response, space, docname, extraParams={}):
-<<<<<<< HEAD
-
-=======
->>>>>>> master
         doc, params = self.getDoc(space, docname, ctx, params=ctx.params)
 
         if doc.dirty or "reload" in ctx.params:
