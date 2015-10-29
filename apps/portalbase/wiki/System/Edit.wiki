@@ -14,7 +14,6 @@ Help:https://gig.gitbooks.io/jumpscale/content/:target=_blank
 
 @col 12
 h1. Edit Page
-More Info on [WIKI syntax|https://github.com/Jumpscale/jumpscale_portal/wiki/Wiki-Syntax|||target='_blank'|] & [Macros|https://github.com/Jumpscale/jumpscale_portal/wiki/macros|||target='_blank'|]
 
 
 @colend

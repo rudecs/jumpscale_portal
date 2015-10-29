@@ -59,6 +59,14 @@ def main(j, args, params, tags, tasklet):
         page.addMessage('Supplied path "%s" does not exist.' % args['path'])
         params.result = page
         return params
+
+    pagetype = 'md' if path.endswith('.md') else 'wiki'
+    documentation = ("WIKI syntax", "https://github.com/Jumpscale/jumpscale_portal/wiki/Wiki-Syntax")
+    if pagetype == 'md':
+        documentation = ("MarkDown syntax", "http://daringfireball.net/projects/markdown/syntax")
+
+    page.addLink("More Info on %s" % documentation[0], "%s" % documentation[1], newtab=True) 
+    page.addLink("Macros Documentation", "https://gig.gitbooks.io/jumpscale/content/Portal/Macros/Macros.html", newtab=True)
     content = j.system.fs.fileGetContents(path)
 
     page.addMessage('<div class="span12">')

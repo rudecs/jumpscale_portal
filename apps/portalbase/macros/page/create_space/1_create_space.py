@@ -1,16 +1,5 @@
 import os
 
-acl_cfg = '''all:R
-admin:*
-guests:R
-guest:R
-'''
-
-main_cfg = '''[main]
-id = cloudscalers_operations
-'''
-
-
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
 
@@ -33,19 +22,15 @@ def main(j, args, params, tags, tasklet):
         os.makedirs(os.path.join(space_path, '.space'))
         os.symlink(space_path, os.path.join(contentdir, os.path.basename(space_path)))
 
-        with open(os.path.join(space_path, '.space', 'acl.cfg'), 'w') as f:
-            f.write(acl_cfg)
-
-        with open(os.path.join(space_path, '.space', 'main.cfg'), 'w') as f:
-            f.write(main_cfg)
-
+        header = '##' if space_type == 'md' else 'h2.'
         with open(os.path.join(space_path, 'Home.%s' % space_type), 'w') as f:
-            header = '##' if space_type == 'md' else 'h2.'
-            f.write('@usedefault\n\n%s Welcome to the new space\nThis space lives in `%s`'% (header, space_path))
+            f.write('@usedefault\n\n%s Welcome to the new space\nThis space lives in `%s`' % (header, space_path))
+
 
         portal.spacesloader.scan(portal.contentdirs)
         spacename = j.system.fs.getBaseName(space_path).lower()
         portal.spacesloader.id2object[spacename].createDefaults(space_path)
+        portal.spacesloader.id2object[spacename].createTemplate(space_path, templatetype=space_type)
 
         page.addMessage('Created successfully. Click <a href="/{}/">here</a> to go to the new portal'.format(os.path.basename(space_path)))
 

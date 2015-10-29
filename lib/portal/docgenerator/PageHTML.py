@@ -267,7 +267,7 @@ class PageHTML(Page):
         self.addNewLine()
 
     @staticmethod
-    def getLink(description, link, link_id=None, link_class=None,htmlelements=""):
+    def getLink(description, link, link_id=None, link_class=None, htmlelements="", newtab=False):
         if link_id:
             link_id = ' id="%s"' % link_id.strip()
         else:
@@ -277,12 +277,17 @@ class PageHTML(Page):
             link_class = ' class="%s"' % link_class.strip()
         else:
             link_class = ''
+        
+        if newtab:
+            target = 'target="_blank"'
+        else:
+            target = ''
 
-        anchor = "<a href='%s' %s %s %s>%s</a>" % (link.strip(), link_id.strip(), link_class,htmlelements, description)
+        anchor = "<a href='%s' %s %s %s %s>%s</a>" % (link.strip(), link_id.strip(), link_class, htmlelements, target, description)
         return anchor
 
-    def addLink(self, description, link):
-        anchor = self.getLink(description, link)
+    def addLink(self, description, link, newtab=False):
+        anchor = self.getLink(description, link, newtab=newtab)
         self.addParagraph(anchor)
 
     def addPageBreak(self,):
