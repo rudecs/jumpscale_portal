@@ -56,7 +56,9 @@ class Space(LoaderBaseObject):
             dirname = j.system.fs.getDirName(path+"/", lastOnly=True)
             dirname = j.system.fs.getDirName(path+"/", lastOnly=True)
 
-            if not j.system.fs.exists(j.system.fs.joinPaths(path,"%s.wiki"%dirname)):
+            wikipath = j.system.fs.joinPaths(path, "%s.wiki" % dirname)
+            mdpath = j.system.fs.joinPaths(path, "%s.md" % dirname)
+            if not j.system.fs.exists(wikipath) and not j.system.fs.exists(mdpath):
                 dirnamel=dirname.lower()
                 for item in  j.system.fs.listFilesInDir(path):
                     item= j.system.fs.getDirName(item+"/", lastOnly=True)

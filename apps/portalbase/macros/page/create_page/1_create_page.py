@@ -5,6 +5,7 @@ def main(j, args, params, tags, tasklet):
 
     page_space = args.paramsExtra.get('page_space')
     page_name = args.paramsExtra.get('page_name')
+    page_type = args.paramsExtra.get('page_type')
 
     # Creating a new page
     if page_name and page_space:
@@ -15,7 +16,7 @@ def main(j, args, params, tags, tasklet):
 
         space = j.core.portal.active.getSpace(page_space)
         j.system.fs.createDir(os.path.join(space.model.path, page_name))
-        j.system.fs.writeFile(os.path.join(space.model.path, page_name, page_name + '.wiki'), '')
+        j.system.fs.writeFile(os.path.join(space.model.path, page_name, page_name + '.%s' % page_type), '')
 
         # Reload spaces to discover the new page
         # TODO: find an efficient way of doing this
@@ -38,6 +39,16 @@ def main(j, args, params, tags, tasklet):
                   </div>
                 </div>
 
+                <div class="control-group margin-bottom-large">
+                    <label class="control-label" for="page_type">Page type</label>
+                    <div class="controls" name="page_type">
+                        <select name="page_type" id="page_type" class="input-xxlarge width-40">
+                            <option value="wiki">Portal Wiki</option>
+                            <option value="md">Markdown</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div class="control-group">
                   <div class="controls">
                     <button class="btn btn-primary">Create</button>
@@ -74,6 +85,16 @@ def main(j, args, params, tags, tasklet):
                   <div class="controls">
                     <button class="btn btn-primary">Create</button>
                   </div>
+                </div>
+                
+                <div class="control-group margin-bottom-large">
+                    <label class="control-label" for="page_type">Page type</label>
+                    <div class="controls" name="page_type">
+                        <select name="page_type" id="page_type" class="input-xxlarge width-40">
+                            <option value="wiki">Portal Wiki</option>
+                            <option value="md">Markdown</option>
+                        </select>
+                    </div>
                 </div>
 
                 </fieldset>
