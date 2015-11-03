@@ -80,7 +80,10 @@ def main(j, args, params, tags, tasklet):
         }, 300);
         render();
         //editor1.on('change', render);
-    });''')
+
+        var createPageLink = $('.dropdown-menu').find('li').first().find('a').attr('href');
+        $('.dropdown-menu').find('li').first().find('a').attr('href', createPageLink + '&spaceBeforeEditPage=%s');
+    });''' % spacename)
 
 
     params.result = page

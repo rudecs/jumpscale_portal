@@ -3,10 +3,15 @@ import os
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
 
-    page_space = args.paramsExtra.get('page_space')
-    page_name = args.paramsExtra.get('page_name')
+    spaceBeforeEditPage = args.paramsExtra.get('spaceBeforeEditPage')
+    if spaceBeforeEditPage:
+        page_space = args.paramsExtra.get('spaceBeforeEditPage')
+    else:
+        page_space = args.paramsExtra.get('page_space')
 
+    page_name = args.paramsExtra.get('page_name')
     # Creating a new page
+    page.addMessage('''<h2>Create a new page in '%s' space</h2>''' % page_space )
     if page_name and page_space:
         space = j.core.portal.active.getSpace(page_space)
         if not page_name:
@@ -30,7 +35,7 @@ def main(j, args, params, tags, tasklet):
                 <fieldset>
                 <div class="control-group">
                 <input type="hidden" name="page_space" value="$$space">
-                </div>                
+                </div>
                 <div class="control-group">
                   <label class="control-label" for="page_name">Name</label>
                   <div class="controls">
@@ -48,7 +53,7 @@ def main(j, args, params, tags, tasklet):
             </form>
             '''.replace("$$space",page_space))
     else:
-        
+
         spaces = sorted(s for s in j.core.portal.active.getSpaces())
         spaces = ''.join('<option value="{0}">{0}</option>'.format(space) for space in spaces)
         page.addMessage('''
