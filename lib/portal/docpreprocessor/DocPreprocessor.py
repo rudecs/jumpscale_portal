@@ -212,9 +212,7 @@ class DocPreprocessor():
                         lastparams[param1.strip().lower()] = val1.strip()
             lastnavdir = path
             lastnav = ""
-            if fs.exists(spaceconfigdir + "/nav.md"):
-                lastnav = fs.fileGetTextContents(spaceconfigdir + "/nav.md")
-            elif fs.exists(spaceconfigdir + "/nav.wiki"):
+            if fs.exists(spaceconfigdir + "/nav.wiki"):
                 lastnav = fs.fileGetTextContents(spaceconfigdir + "/nav.wiki")
         else:
             raise RuntimeError("space dir needs to have a dir .space for %s" % path)

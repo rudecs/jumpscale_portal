@@ -2,12 +2,7 @@ def main(j, args, params, tags, tasklet):
 
     page = args.page
     params.extend(args)
-    if "." in args.doc.name:
-        if args.doc.name.split('.')[1] == "md":
-            page.removeCSS('bootstrap.css')
-            page.removeCSS('bootstrap-responsive.css')
-    else:
-        page.addBootstrap()
+    page.addBootstrap()
 
     page._hasmenu = True
     page.login = True
@@ -24,12 +19,7 @@ def main(j, args, params, tags, tasklet):
     else:
         classtags = "navbar navbar-inverse navbar-fixed-top"
 
-    if "." in args.doc.name:
-        if args.doc.name.split('.')[1] == "md":
-            T = """{items}{login}{username}{findmenu}
-"""
-    else:
-        T = """
+    T = """
     <div class="{classtags}"  {hide-menu}>
         <div class="navbar-inner">
             <div class="container">
@@ -98,17 +88,7 @@ def main(j, args, params, tags, tasklet):
         T = T.replace("{login}", "")
 
     if page.hasfindmenu:
-        if "." in args.doc.name:
-            if args.doc.name.split('.')[1] == "md":
-                L = """<form id="search-form" class="navbar-form navbar-right padding-right-none" action="/system/find?page={name}&space={space}" method="post" role="search">
-<div class="form-group">
-<div class="input-group">
-<input class="form-control search-query" id="navbarInput-01" type="search" placeholder="Search">
-</div>
-</div>
-</form>"""
-        else:
-            L = """
+        L = """
 <form name="input" action="/system/find?page={name}&space={space}" method="post" class="navbar-search pull-right">
 <input name="text" type="text" class="search-query" placeholder="Search">
 </form>"""

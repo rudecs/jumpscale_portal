@@ -152,7 +152,6 @@ $(function () {
               showMenu();
           }
         }
-
     }
 
     checkChangedBrowserSize();

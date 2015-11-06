@@ -77,7 +77,7 @@ class PortalServer:
         self.started = False
         self.epoch = time.time()
         self.force_oauth_url = None
-        self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
+        self.cfg = self.hrd.getDictFromPrefix('param.cfg')
         self.force_oauth_instance = self.cfg.get('force_oauth_instance', "")
 
         j.core.portal.active=self
@@ -105,7 +105,9 @@ class PortalServer:
             if self.authentication_method == 'gitlab':
                 self.auth = PortalAuthenticatorGitlab(instance=self.gitlabinstance)
             else:
-                self.osis = j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
+                key = self.hrd.get('producer.osis_client')[0]
+                _, _, _, instance, _ = j.atyourservice.parseKey(key)
+                self.osis = j.clients.osis.getByInstance(instance)
                 osissession = {
                     'session.type': 'OsisBeaker',
                     'session.namespace_class': OsisBeaker,
@@ -189,7 +191,7 @@ class PortalServer:
         self.getContentDirs()
 
         # load proxies
-        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').iteritems():
+        for _, proxy in self.hrd.getDictFromPrefix('proxy').iteritems():
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
@@ -1103,7 +1105,7 @@ class PortalServer:
         elif match == "restextmachine":
             if not self.authentication_method:
                 try:
-                    j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
+                    j.clients.osis.getByInstance(self.hrd.get('instance', 'main'))
                 except Exception, e:
                     raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)

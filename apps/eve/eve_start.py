@@ -18,8 +18,8 @@ from JumpScale.baselib import cmdutils
 import JumpScale.grid.osis
 import sys
 
-def run(port=5000, mongo_host='localhost', mongo_port=27017, pagination_limit=1000000):
-    client = j.clients.osis.getByInstance('main')
+def run(port=5000, mongo_host='localhost', mongo_port=27017, pagination_limit=1000000, osis_config='main'):
+    client = j.clients.osis.getByInstance(osis_config)
 
     apps = dict()
     
@@ -69,15 +69,16 @@ if __name__ == "__main__":
     parser.add_argument("-dp", '--mongo_port', help='Mongodb port', default=27017, type=int)
     parser.add_argument("-pl", '--pagination_limit', help='pagination limit', default=1000000, type=int)
     parser.add_argument("--mongodb_config")
+    parser.add_argument("--osis_config")
     opts = parser.parse_args()
     port = opts.port
     if opts.mongodb_config:
         mongodb_config = j.application.getAppInstanceHRD('mongodb_client', opts.mongodb_config)
-        mongo_host = mongodb_config.get('instance.param.addr')
-        mongo_port = mongodb_config.get('instance.param.port')
+        mongo_host = mongodb_config.get('param.addr')
+        mongo_port = mongodb_config.get('param.port')
     else:
         mongo_host = opts.mongo_host
         mongo_port = opts.mongo_port
     pagination_limit = opts.pagination_limit
 
-    run(port=port, mongo_host=mongo_host, mongo_port=mongo_port, pagination_limit=pagination_limit)
+    run(port=port, mongo_host=mongo_host, mongo_port=mongo_port, pagination_limit=pagination_limit, osis_config=opts.osis_config)
