@@ -149,7 +149,8 @@ class Confluence2HTML():
             (r'\\([^\n\r\\])',  escape_char),
             ('<',           '&lt;'),
             ('>',           '&gt;'),
-            (r'\@LF\b',     '<br>'), # This should come after != 
+            (r'\@HR\b',     '<HR>'), # This should come after !=
+            (r'\@LF\b',     '<br>'), # This should come after !=
             (limiter('`'),  limiter_replacement('code')),
             (limiter('*'),  limiter_replacement('strong')),
             (limiter('_'),  limiter_replacement('em')),
