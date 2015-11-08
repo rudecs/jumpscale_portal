@@ -17,11 +17,7 @@ if __name__ == '__main__':
         args=sys.argv
         instance=args[1]
 
-        portal_service = j.atyourservice.getService(role="portal", instance=instance)
-        hrd = portal_service.hrd
-        hrd.set('instance', portal_service.hrd_template.get('instance'))
-
-        j.application.instanceconfig = hrd
+        j.application.instanceconfig = j.application.getAppInstanceHRD(name="portal",instance=instance)
 
         j.application.start("portal")
 

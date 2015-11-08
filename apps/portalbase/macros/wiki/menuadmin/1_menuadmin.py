@@ -16,6 +16,25 @@ def main(j, args, params, tags, tasklet):
 
     pages = macrostr[1:-1]
 
+#    if pages:
+#        pagedict = OrderedDict()
+#        megamenu['Topics'] = pagedict
+#        for page in pages:
+#            pagename, pagelink = page.split(':')
+#            pagedict[pagename] = pagelink
+
+#     megamenu['Portals'] = j.core.portal.active.getSpaceLinks(args.requestContext)
+#     template = jinja.from_string('''
+# {{megamenu: name:Navigation class:spaces-nav
+# {% for name, links in megamenu.iteritems() %}
+# column.${name} ={% for pagename, link in links|dictsort %}
+#         ${pagename}:${link},
+#
+# {%- endfor %}
+# {% endfor %}
+# }}
+# ''')
+#     navigationmenu = template.render(megamenu=megamenu)
     if j.core.portal.active.isAdminFromCTX(params.requestContext):
         adminmenu = """
 {{menudropdown: name:Administration

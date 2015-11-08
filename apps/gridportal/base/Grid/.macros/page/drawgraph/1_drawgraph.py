@@ -164,7 +164,7 @@ def main(j, args, params, tags, tasklet):
     "version": 2
 }
 
-    grafclient = j.clients.grafana.getByInstance()
+    grafclient = j.clients.grafana.getByInstance('main')
     result = grafclient.updateDashboard(dashboard)
     cfg['slug'] = result['slug']
     page.addHTML("""

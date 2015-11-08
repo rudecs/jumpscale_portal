@@ -1,8 +1,2 @@
-<<<<<<< HEAD
 
 {{create_page}}
-=======
-h2. Create a new page
-
-{{create_page}}
->>>>>>> eaee213525987c44d104eaeaeaeabef14aa8c584

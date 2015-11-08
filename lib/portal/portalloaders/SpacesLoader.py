@@ -37,17 +37,6 @@ class Space(LoaderBaseObject):
             
         self._docprocessor = j.tools.docpreprocessor.get(contentDirs=[self.model.path], spacename=self.model.id)
         
-    def createTemplate(self, path, templatetype='wiki'):
-        header = '##' if templatetype == 'md' else 'h2.'
-        template = '''
-%(header)s $$page
-
-%(header)s children
-
-{{children: bullets}}
-''' % {'header': header}
-        templatepath = j.system.fs.joinPaths(path, '.space', 'template.%s' % templatetype)
-        j.system.fs.writeFile(templatepath, template)
 
     def createDefaults(self, path):
         self._createDefaults(path)
@@ -67,28 +56,18 @@ class Space(LoaderBaseObject):
             dirname = j.system.fs.getDirName(path+"/", lastOnly=True)
             dirname = j.system.fs.getDirName(path+"/", lastOnly=True)
 
-            wikipath = j.system.fs.joinPaths(path, "%s.wiki" % dirname)
-            mdpath = j.system.fs.joinPaths(path, "%s.md" % dirname)
-            if not j.system.fs.exists(wikipath) and not j.system.fs.exists(mdpath):
-                dirnamel = dirname.lower()
-                for item in j.system.fs.listFilesInDir(path):
-                    item = j.system.fs.getDirName(item +"/", lastOnly=True)
-                    extension =  j.system.fs.getFileExtension(item)
-                    item = item.lower()
-                    item = item.rstrip(".%s" % extension)
+            if not j.system.fs.exists(j.system.fs.joinPaths(path,"%s.wiki"%dirname)):
+                dirnamel=dirname.lower()
+                for item in  j.system.fs.listFilesInDir(path):
+                    item= j.system.fs.getDirName(item+"/", lastOnly=True)
+                    item=item.lower()
+                    item=item.replace(".wiki","")
                     print(item)
-                    if item == dirnamel:
+                    if item==dirnamel:
                         return
-                spacepath = j.system.fs.joinPaths(self.model.path, '.space/')
-                templates = j.system.fs.walk(spacepath, recurse=0, pattern='template[.]*')
-                if not templates:
-                    self.createTemplate(self.model.path)
-                    source = j.system.fs.joinPaths(spacepath, 'template.wiki')
-                    templatetype = 'wiki'
-                else:
-                    source = templates[0]
-                    templatetype = j.system.fs.getFileExtension(source)
-                dest = j.system.fs.joinPaths(path, "%s.%s" % (dirname, templatetype))
+                
+                source = j.system.fs.joinPaths(self.model.path, ".space", "template.wiki")
+                dest= j.system.fs.joinPaths(path,"%s.wiki"%dirname)
                 j.system.fs.copyFile(source, dest)
 
                 print("NOTIFY NEW DIR %s IN SPACE %s" % (path, self.model.id))

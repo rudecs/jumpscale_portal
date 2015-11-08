@@ -1,5 +1,61 @@
 import os
 
+acl_cfg = '''all:R
+admin:*
+guests:R
+guest:R
+'''
+
+main_cfg = '''[main]
+id = cloudscalers_operations
+'''
+
+default_wiki = '''
+<html>
+<head>
+    <link rel="stylesheet" href="/jslib/bootstrap/css/bootstrap-3-3-1.min.css">
+    <link rel="stylesheet" href="/jslib/old/bootstrap/css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="/jslib/flatui/css/flat-ui.css">
+    <link rel="stylesheet" href="/jslib/new-ui/new-ui.css">
+</head>
+<body id="markdown-portal">
+{{ApplyFlatTheme}}
+<header style="padding: 0;">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="header-container container">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+<span class="sr-only">Toggle navigation</span>
+</button>
+<a class="navbar-brand" href="#">Portal/Jumpscale7</a>
+</div>
+<div class="navbar-collapse" id="navbar-collapse-01">
+<ul id="menu-container" class="nav navbar-nav navbar-left">
+{{adminmenu}}{{find}}
+{{menu:
+Documentation:/Help
+}}
+</ul>
+</div><!-- /.navbar-collapse -->
+</div>
+</nav>
+</header>
+<div class="container">
+<div class="col-md-2 navigation">
+{{navigation}}
+</div>
+<div class="col-md-10" markdown="1">
+{{breadcrumbs}}
+{% block body %}{% endblock %}
+</div>
+</div>
+<footer class="container">
+</footer>
+<script src="/jslib/flatui/js/flat-ui.min.js"></script>
+</body>
+</html>
+'''
+
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
 
@@ -22,15 +78,27 @@ def main(j, args, params, tags, tasklet):
         os.makedirs(os.path.join(space_path, '.space'))
         os.symlink(space_path, os.path.join(contentdir, os.path.basename(space_path)))
 
-        header = '##' if space_type == 'md' else 'h2.'
-        with open(os.path.join(space_path, 'Home.%s' % space_type), 'w') as f:
-            f.write('@usedefault\n\n%s Welcome to the new space\nThis space lives in `%s`' % (header, space_path))
+        with open(os.path.join(space_path, '.space', 'acl.cfg'), 'w') as f:
+            f.write(acl_cfg)
 
+        with open(os.path.join(space_path, '.space', 'main.cfg'), 'w') as f:
+            f.write(main_cfg)
+
+        if space_type == "md":
+            spacename = j.system.fs.getBaseName(space_path).lower()
+            with open(os.path.join(space_path, '.space', 'nav.md'), 'w') as f:
+                f.write('Home:/{}/Home'.format(spacename))
+
+            with open(os.path.join(space_path, '.space', 'default.md'), 'w') as f:
+                f.write(default_wiki)
+
+            with open(os.path.join(space_path, 'home.md'), 'w') as f:
+                f.write('''{{% extends ".space/default.md" %}}{{% block body %}}\n##Welcome to the new space\nThis space lives in `{}`{{% endblock %}}'''.format(space_path))
 
         portal.spacesloader.scan(portal.contentdirs)
-        spacename = j.system.fs.getBaseName(space_path).lower()
-        portal.spacesloader.id2object[spacename].createDefaults(space_path)
-        portal.spacesloader.id2object[spacename].createTemplate(space_path, templatetype=space_type)
+        if space_type == 'wiki':
+            spacename = j.system.fs.getBaseName(space_path).lower()
+            portal.spacesloader.id2object[spacename].createDefaults(space_path)
 
         page.addMessage('Created successfully. Click <a href="/{}/">here</a> to go to the new portal'.format(os.path.basename(space_path)))
 

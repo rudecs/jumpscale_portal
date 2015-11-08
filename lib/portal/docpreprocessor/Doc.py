@@ -70,7 +70,7 @@ class Doc(object):
         self.htmlBodiesCustom = []
         self.processDefs = False
         self.space_path = None
-        self.md=False
+
     def copy(self):
         newdoc = Doc(self.preprocessor)
         newdoc.__dict__ = self.__dict__.copy()
@@ -131,15 +131,15 @@ class Doc(object):
             self.content = template.replace('{content}', self.source)
         elif self.defaultPath and self.usedefault:
             extension = fs.getFileExtension(self.path)
-            # if extension == 'md':
-            #     self.content = self.source
-            # else:
-            try:
-                self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
-                default = fs.fileGetTextContents(self.defaultPath)
-                self.content = default.replace("{content}", self.source)
-            except Exception: 
-                pass
+            if extension == 'md':
+                self.content = self.source
+            else:
+                try:
+                    self.defaultPath = fs.joinPaths(self.preprocessor.space_path, ".space", 'default' + '.wiki')
+                    default = fs.fileGetTextContents(self.defaultPath)
+                    self.content = default.replace("{content}", self.source)
+                except Exception: 
+                    pass
 
         if preprocess and self.source.strip() != "":
             # print path3
@@ -199,11 +199,6 @@ class Doc(object):
             self.loadFromDisk()
             self.preprocess()
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
-
-        if self.md:
-            convertor=j.tools.docgenerator.getMarkDown2ConfluenceConvertor()
-            content=convertor.convert(content)
-
         ws = j.core.portal.active
         page = ws.confluence2htmlconvertor.convert(content, doc=self, requestContext=ctx, page=ws.getpage(), paramsExtra=ctx.params)
         if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
@@ -352,32 +347,27 @@ class Doc(object):
         return self.__str__()
 
 class DocMD(Doc):
-    def __init__(self,docpreprocessor):
-        Doc.__init__(self,docpreprocessor)
-        self.md=True
+    def getHtmlBody(self, paramsExtra={}, ctx=None):
+        if self.source == "":
+            self.loadFromDisk()
+            self.preprocess()
+        if self.dirty or (ctx != None and "reload" in ctx.params):
+            self.loadFromDisk()
+            self.preprocess()
+        loader = jinja2.FileSystemLoader(self.defaultPath.split('.space')[0])
+        env = jinja2.Environment(variable_start_string="${", variable_end_string="}", loader=loader)
+        jinja2html = env.get_or_select_template(self.name).render()
+        self.content = jinja2html
+        content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
+        content, doc = self.executeMarkDownMacro(paramsExtra, ctx)
+        self.content = content
+        content, doc = self.executePageMacro(paramsExtra, ctx)
+        return content
 
+    def executePageMacro(self, paramsExtra, ctx):
+        page = j.tools.docgenerator.pageNewHTML('temp')
+        return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page, markdown=True)
 
-    # def getHtmlBody(self, paramsExtra={}, ctx=None):
-    #     if self.source == "":
-    #         self.loadFromDisk()
-    #         self.preprocess()
-    #     if self.dirty or (ctx != None and "reload" in ctx.params):
-    #         self.loadFromDisk()
-    #         self.preprocess()
-    #     loader = jinja2.FileSystemLoader(self.defaultPath.split('.space')[0])
-    #     env = jinja2.Environment(variable_start_string="${", variable_end_string="}", loader=loader)
-    #     jinja2html = env.get_or_select_template(self.name).render()
-    #     self.content = jinja2html
-    #     content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
-    #     content, doc = self.executeMarkDownMacro(paramsExtra, ctx)
-    #     self.content = content
-    #     content, doc = self.executePageMacro(paramsExtra, ctx)
-    #     return content
-
-    # def executePageMacro(self, paramsExtra, ctx):
-    #     page = j.tools.docgenerator.pageNewHTML('temp')
-    #     return self.preprocessor.macroexecutorPage.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page, markdown=True)
-
-    # def executeMarkDownMacro(self, paramsExtra, ctx):
-    #     page = j.tools.docgenerator.pageNewHTML('temp')
-    #     return self.preprocessor.macroexecutorMarkDown.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page)
+    def executeMarkDownMacro(self, paramsExtra, ctx):
+        page = j.tools.docgenerator.pageNewHTML('temp')
+        return self.preprocessor.macroexecutorMarkDown.execMacrosOnContent(content=self.content, doc=self, paramsExtra=paramsExtra, ctx=ctx, page=page)

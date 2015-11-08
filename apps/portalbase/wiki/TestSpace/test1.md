@@ -1,12 +1,23 @@
-@usedefaults
+{% extends ".space/default.md" %}
+
+{% block body %}
+
+{{markdownMacroTest}}
+
+
+{{showhrd:
+	file.path=tasks
+	header=Tasks
+}}
 
 I did these things:
 * bullet1
 * bullet2
 * bullet3
 
-
+<div class="twist" markdown="1">
 #This is true markdown text.
+</div>
 
 [http://example.com](http://example.com)
 
