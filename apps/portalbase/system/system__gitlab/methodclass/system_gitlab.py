@@ -1,5 +1,5 @@
 from JumpScale import j
-import JumpScale.baselib.redis2worker
+import JumpScale.baselib.redisworker
 
 class system_gitlab(j.code.classGetBase()):
 
