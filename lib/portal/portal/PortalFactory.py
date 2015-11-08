@@ -5,7 +5,7 @@ from .PortalClient2 import Resource
 import time
 #from ActorLoaderLocal import *
 
-import JumpScale.baselib.redis
+import JumpScale.baselib.redis2
 
 from JumpScale import j
 

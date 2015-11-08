@@ -3,17 +3,17 @@ import os
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
 
-<<<<<<< HEAD
+
     spaceBeforeEditPage = args.paramsExtra.get('spaceBeforeEditPage')
     if spaceBeforeEditPage:
         page_space = args.paramsExtra.get('spaceBeforeEditPage')
     else:
         page_space = args.paramsExtra.get('page_space')
-=======
-    page_space = args.paramsExtra.get('page_space')
-    page_name = args.paramsExtra.get('page_name')
-    page_type = args.paramsExtra.get('page_type')
->>>>>>> eaee213525987c44d104eaeaeaeabef14aa8c584
+# =======
+#     page_space = args.paramsExtra.get('page_space')
+#     page_name = args.paramsExtra.get('page_name')
+#     page_type = args.paramsExtra.get('page_type')
+# >>>>>>> eaee213525987c44d104eaeaeaeabef14aa8c584
 
     page_name = args.paramsExtra.get('page_name')
     # Creating a new page

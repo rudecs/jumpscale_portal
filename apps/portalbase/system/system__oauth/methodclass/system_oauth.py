@@ -2,7 +2,7 @@ import urllib
 import requests
 
 from JumpScale import j
-import JumpScale.baselib.redisworker
+import JumpScale.baselib.redis2worker
 try:
     import ujson as json
 except:
