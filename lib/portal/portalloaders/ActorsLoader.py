@@ -68,10 +68,12 @@ class ActorsLoader(LoaderBase):
     def __init__(self):
         """
         """
+        import gevent.coros
         LoaderBase.__init__(self, "actor", ActorLoader)
         self.actorIdToActorLoader = self.id2object
         self.getActorLoaderFromId = self.getLoaderFromId
         self.osiscl = None
+        self.lock = gevent.coros.RLock()
 
     def reset(self):
         j.apps = GroupAppsClass(self)
@@ -111,7 +113,8 @@ class ActorsLoader(LoaderBase):
 
         if key in self.actorIdToActorLoader:
             loader = self.actorIdToActorLoader[key]
-            aobj = loader.activate()
+            with self.lock:
+                aobj = loader.activate()
             j.core.portal.active.actors[key] = aobj
             return j.core.portal.active.actors[key]
         else:
