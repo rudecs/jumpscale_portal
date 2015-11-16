@@ -33,7 +33,7 @@ class PortalAuthenticatorOSIS(object):
         return self.osisgroup.get(key)
 
     def userExists(self, user):
-        return self.osisuser.exists(self._getkey(user, self.osisuser))
+        return self._getkey(user, self.osisuser) is not None
 
     def createUser(self, username, password, email, groups, domain):
         user = self.osisuser.new()
