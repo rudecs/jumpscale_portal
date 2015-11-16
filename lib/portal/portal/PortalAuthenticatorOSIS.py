@@ -4,9 +4,9 @@ import time
 class PortalAuthenticatorOSIS(object):
 
     def __init__(self, osis):
-        self.osisusers = j.clients.osis.getCategory(osis, "system", "user")
-        self.osisgroups = j.clients.osis.getCategory(osis, "system", "group")
-        self.key2user = {user['authkey']: user['id'] for user in self.osis.simpleSearch({}, nativequery={'authkey': {'$ne': ''}})}
+        self.osisuser = j.clients.osis.getCategory(osis, "system", "user")
+        self.osisgroup = j.clients.osis.getCategory(osis, "system", "group")
+        self.key2user = {user['authkey']: user['id'] for user in self.osisuser.simpleSearch({}, nativequery={'authkey': {'$ne': ''}})}
 
     def getUserFromKey(self,key):
         if not key in self.key2user:
@@ -27,10 +27,10 @@ class PortalAuthenticatorOSIS(object):
         return self.osisuser.get(key)
 
     def getGroupInfo(self, groupname):
-        key = self._getkey(groupname, self.osisgroups)
+        key = self._getkey(groupname, self.osisgroup)
         if not key:
             return None
-        return self.osisgroups.get(key)
+        return self.osisgroup.get(key)
 
     def userExists(self, user):
         return self.osisuser.exists(self._getkey(user, self.osisuser))
@@ -53,7 +53,7 @@ class PortalAuthenticatorOSIS(object):
         return self.osisuser.simpleSearch({})
 
     def listGroups(self):
-        return self.osisgroups.simpleSearch({})
+        return self.osisgroup.simpleSearch({})
 
     def getGroups(self,user):
         try:
