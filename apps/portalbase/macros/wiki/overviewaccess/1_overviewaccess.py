@@ -47,6 +47,8 @@ def main(j, args, params, tags, tasklet):
         for name in msorted:
             right = ",".join(memberace[name])
             user = j.core.portal.active.auth.getUserInfo(name)
+            if not user:
+                continue
             secreturl = "/%s?authkey=%s" % (spacename, user.authkey)
             if not singlespace:
                 out += "|%s" % spacename

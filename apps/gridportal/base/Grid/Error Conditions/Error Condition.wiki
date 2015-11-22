@@ -38,7 +38,7 @@ ${errormessage}
 |*Node*|[${nid}|grid node?id=${nid}&gid=${gid}]|
 |*Grid*|[${gid}|grid?id=${gid}]|
 |*Tags*|${tags}|
-{% if level < 3 %}|*Alerts*|[show | alerts?eco=${id}]|{% endif %}
+#{% if level < 3 %}|*Alerts*|[show | alerts?eco=${id}]|{% endif %}
 
 *Code* 
 {{code: 

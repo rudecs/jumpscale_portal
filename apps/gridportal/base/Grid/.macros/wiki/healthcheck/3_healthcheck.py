@@ -17,7 +17,7 @@ def main(j, args, params, tags, tasklet):
         nodenames = [j.core.grid.healthchecker.getName(nodeid) for nodeid in errors]
         out.append('{{html: <div><p class="alert alert-warning padding-vertical-none width-50"> Something on node(s) %s is not running.</p></div>}}' % ', '.join(nodenames))
     else:
-        out.append('{{html: <div><p class="alert alert-success padding-vertical-none width-50">Everything seems to be OK.</p></div>}}')
+        out.append('{{html: <div><p class="alert alert-success padding-vertical-none width-50">Everything is OK.</p></div>}}')
     out.append('For more details, check [status overview.|/grid/Status Overview]')
 
     out = '\n'.join(out)
