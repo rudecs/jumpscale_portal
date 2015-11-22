@@ -1,5 +1,25 @@
 @usedefaults
 
+{{actions:
+- display: Purge Logs
+  action: /restmachine/system/job/purge
+  input:
+  - name: age
+    type: dropdown
+    label: Age of records to purge
+    values:
+     - label: All
+       value: 0
+     - label: Older than 1 Hour
+       value: '-1h'
+     - label: Older than 3 Hours
+       value: '-3h'
+     - label: Older than 1 Day
+       value: '-1d'
+     - label: Older than 3 Days
+       value: '-3d'
+ }}
+
 h2. Jobs
 {{jobs id:$$id lock:$$lock timeStop:$$timeStop lockduration:$$lockduration result:$$result category:$$category jsname:$$jsname children:$$children source:$$source state:$$state gid:$$gid childrenActive:$$childrenActive jscriptid:$$jscriptid description:$$description parent:$$parent args:$$args sessionid:$$sessionid jsorganization:$$jsorganization roles:$$roles timeStart:$$timeStart timeout:$$timeout resultcode:$$resultcode}}
 
