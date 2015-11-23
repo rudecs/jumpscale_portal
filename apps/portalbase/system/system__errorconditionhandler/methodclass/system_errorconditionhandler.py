@@ -1,4 +1,6 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth
+
 
 class system_errorconditionhandler(j.code.classGetBase()):
 
@@ -72,3 +74,11 @@ class system_errorconditionhandler(j.code.classGetBase()):
             self.scl.eco.delete(eco)
             return True
         return False
+
+    @auth(['level1', 'level2', 'level3'])
+    def purge(self, age, **kwargs):
+        start = int(j.base.time.getEpochAgo(age))
+        query = {'epoch':{'$lt':start}}
+        result = self.scl.eco.deleteSearch(query)
+        return result
+

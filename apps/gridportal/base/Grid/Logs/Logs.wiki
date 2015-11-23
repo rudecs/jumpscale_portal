@@ -1,4 +1,24 @@
 @usedefaults
 
+{{actions:
+- display: Purge Logs
+  action: /restmachine/system/log/purge
+  input:
+  - name: age
+    type: dropdown
+    label: Age of records to purge
+    values:
+     - label: All
+       value: 0
+     - label: Older than 1 Hour
+       value: '-1h'
+     - label: Older than 3 Hours
+       value: '-3h'
+     - label: Older than 1 Day
+       value: '-1d'
+     - label: Older than 3 Days
+       value: '-3d'
+ }}
+
 h2. Logs
 {{logs: id:$$id appname:$$appname category:$$category message:$$message jid:$$jid level:$$level parentjid:$$parentjid pid:$$pid nid:$$nid order:$$order masterjid:$$masterjid epoch:$$epoch gid:$$gid private:$$private aid:$$aid tags:$$tags}}

@@ -1,5 +1,25 @@
 @usedefaults
 
+{{actions:
+- display: Purge Ecos
+  action: /restmachine/system/errorconditionhandler/purge
+  input:
+  - name: age
+    type: dropdown
+    label: Age of records to purge
+    values:
+     - label: All
+       value: 0
+     - label: Older than 1 Hour
+       value: '-1h'
+     - label: Older than 3 Hours
+       value: '-3h'
+     - label: Older than 1 Day
+       value: '-1d'
+     - label: Older than 3 Days
+       value: '-3d'
+ }}
+
 {{html:
     <div ng-app="eveTestApp">
 }}
