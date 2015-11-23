@@ -1,6 +1,7 @@
 @usedefaults
+
 {{actions:
-- display: Purge
+- display: Purge Ecos
   action: /restmachine/system/errorconditionhandler/purge
   input:
   - name: age
@@ -18,7 +19,6 @@
      - label: Older than 3 Days
        value: '-3d'
  }}
-h2. Error Conditions
 
 {{html:
     <div ng-app="eveTestApp">

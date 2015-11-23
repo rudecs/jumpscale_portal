@@ -1,7 +1,7 @@
 @usedefaults
 
 {{actions:
-- display: Purge
+- display: Purge Logs
   action: /restmachine/system/log/purge
   input:
   - name: age
