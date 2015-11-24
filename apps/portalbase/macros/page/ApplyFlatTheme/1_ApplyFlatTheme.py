@@ -17,20 +17,13 @@ def main(j, args, params, tags, tasklet):
     page.addJS(jsContent='''
         $( function () {
         $('body').addClass('flatTheme');
-        // fix firefox elements size on windows
-        var operatingSystem = navigator.platform;
-        if(operatingSystem.indexOf('Win') >= 0 && $.browser.mozilla == true){
-            $('body').addClass('fixFirefoxSizing');
-        }else{
-            $('body').addClass('removeTransform');
-        }
-        
+
         $('link[href="/jslib/old/bootstrap/css/bootstrap.css"]').remove();
         $('link[href="/jslib/old/bootstrap/css/bootstrap-responsive.css"]').remove();
         $('link[href="/jslib/old/breadcrumbs/breadcrumbs.css"]').remove();
         $('link[href="/jslib/swagger/css/reset.css"]').remove();
 
-        
+
         $('.nav-collapse.collapse').removeClass('nav-collapse').addClass('navbar-collapse');
         $('.btn.btn-navbar').replaceWith('<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".nav-collapse" aria-expanded="false">' +
             '<span class="sr-only">Toggle navigation</span>' +
@@ -74,7 +67,7 @@ def main(j, args, params, tags, tasklet):
 
     });
      ''')
-    
+
     page.removeJS('/jslib/old/jquery-latest.js')
     page.removeJS('/jslib/old/bootstrap/js/bootstrap.js')
     page.removeJS('/jslib/old/jquery.cookie.js')
