@@ -461,6 +461,12 @@ a:hover, a:active, a:focus{
 .datatables-row-GridID {
     width: 75px !important;
 }
+.datatables-row-CreateTime {
+    width: 125px !important;
+}
+.datatables-row-StartTime, .datatables-row-StopTime {
+    width: 75px !important;
+}
 .datatables-row-AccountID, .datatables-row-NetworkID, .datatables-row-StackID {
     width: 100px !important;
 }
