@@ -533,3 +533,8 @@ a:hover, a:active, a:focus{
 #markdown-portal #search-form .form-group{
     float: right;
 }
+.modal-body-error pre {
+    background-color: inherit;
+    border: 0;
+    overflow-x: scroll;
+}
