@@ -7,13 +7,12 @@ def main(j, args, params, tags, tasklet):
     doc = params.doc
 
     clients = j.atyourservice.findServices('jumpscale', 'agentcontroller2_client')
-    if not clients:
-        params.result = ('* Agent controller 2 is not available, are you missing the client?', doc)
-        return params
-
-    instance = clients[0].instance
-    acclient = j.clients.ac.getByInstance(instance)
-    jobs = acclient.get_cmds(count=100)
+    if clients:
+        instance = clients[0].instance
+        acclient = j.clients.ac.getByInstance(instance)
+        jobs = acclient.get_cmds(count=100)
+    else:
+        jobs = []
 
     out = list()
     out.append('||Grid ID||Node ID||Command||Role||Fanout||Details||')
@@ -21,8 +20,9 @@ def main(j, args, params, tags, tasklet):
     line = '|{gid}|{nid}|{cmd}|{role}|{fanout}|[Details|/grid/agentcontroller2job?job={job}]|'
     for job in jobs:
         jobrow = line.format(job=job['id'], **job)
-
         out.append(jobrow)
+    else:
+        out.append("| | | | | | |")
 
     out = '\n'.join(out)
     params.result = (out, doc)
