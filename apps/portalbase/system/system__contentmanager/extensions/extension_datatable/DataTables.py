@@ -127,7 +127,7 @@ class DataTables():
         partials = dict()
         for x in range(len(fieldids)):
             svalue = kwargs.get('sSearch_%s' % x)
-            if kwargs['bSearchable_%s' % x] == 'true' and svalue:
+            if kwargs.get('bSearchable_%s' % x) == 'true' and svalue:
                 fieldname = fieldids[x]
                 if svalue.isdigit():
                     if fieldname not in filters:

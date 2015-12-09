@@ -37,91 +37,6 @@ body{
     line-height: .9;
 }
 
-.fixFirefoxSizing{
-    transform: none;
-    transform-origin: 0;
-}
-.fixFirefoxSizing *, .fixFirefoxSizing .navbar *{
-    font-size: 97%;
-}
-.fixFirefoxSizing .search-query{
-    margin-bottom: 0;
-    height: 25px !important;
-}
-.fixFirefoxSizing .dropdown-menu li{
-    max-height: 28px;
-}
-.fixFirefoxSizing .mega-menu li{
-    max-height: initial;
-}
-.fixFirefoxSizing select, .fixFirefoxSizing input{
-    max-height: 27px;
-}
-.fixFirefoxSizing select{
-    border: 1px solid #B1B0B0;
-}
-.fixFirefoxSizing .pagination ul li > a{
-    font-size: 13px;
-    padding-top: 0;
-}
-.fixFirefoxSizing .pagination ul li.previous > a, .fixFirefoxSizing .pagination ul li.next > a, .fixFirefoxSizing .pagination ul li.previous > span, .fixFirefoxSizing .pagination ul li.next > span{
-    padding: 7px 17px;
-    height: 32px;
-    margin-top: 0;
-    margin-right: 0;
-    margin-left: 0;
-}
-.fixFirefoxSizing .pagination ul{
-    max-height: 33px;
-}
-.fixFirefoxSizing .pagination ul li > a, .pagination ul li > span{
-    margin: 5px 2px 6px;
-}
-.fixFirefoxSizing table input[type="text"]{
-    max-height: 22px;
-}
-.fixFirefoxSizing .sidebar-nav li{
-    padding: 2px;
-}
-.fixFirefoxSizing .container{
-    width: 970px;
-}
-.fixFirefoxSizing h1, .h1{
-    font-size: 34px;
-}
-.fixFirefoxSizing h2, .h2{
-    font-size: 29px;
-}
-.fixFirefoxSizing h3, .h3{
-    font-size: 24px;
-}
-.fixFirefoxSizing h4, .h4{
-    font-size: 19px;
-}
-.fixFirefoxSizing h5, .h5{
-    font-size: 18px;
-}
-.fixFirefoxSizing h6, .h6{
-    font-size: 17px;
-}
-.fixFirefoxSizing .table-condensed > thead > tr > th{
-    padding: 6px;
-}
-.fixFirefoxSizing .navbar-brand{
-    line-height: 0.9em;
-}
-body.fixFirefoxSizing input[type="text"]{
-    font-size: 13px;
-}
-.fixFirefoxSizing .sidebar-nav li a, .fixFirefoxSizing .sidebar-nav a{
-    font-size: 13px;
-}
-
-
-.removeTransform{
-    transform: none;
-    transform-origin: 0;
-}
 body input[type=text]{
     border: 2px solid #bdc3c7;
     color: #34495e !important;
@@ -183,9 +98,6 @@ body input[type=text]:focus{
 .nav a{
     font-size: 15px;
 }
-.fixFirefoxSizing .navbar-brand, .navbar-brand{
-    font-size: 21px;
-}
 .sidebar-nav{
     box-shadow: inset 0 0 0 rgba(0,0,0,.05);
     padding: 10px;
@@ -241,9 +153,6 @@ body input[type=text]:focus{
     font-size: 14px;
     display: block;
 }
-.fixFirefoxSizing .dropdown-menu li a{
-    font-size: 12px;
-}
 .dropdown-menu li:hover{
     background-color: #717577;
 }
@@ -274,12 +183,6 @@ body input[type=text]:focus{
 .dropdown.open .caret{
     border-bottom-color: #bdc3c7 !important;
     border-top-color: #bdc3c7 !important;
-}
-
-/* Breadcrumb */
-.fixFirefoxSizing .fui-arrow-right, .fui-arrow-right{
-    font-size: 12px;
-    margin: 0 4px;
 }
 
 /* Tables */
@@ -333,9 +236,6 @@ div.dataTables_length select{
 }
 .swagger-section .swagger-ui-wrap ul#resources li.resource div.heading h2{
     margin: 0;
-}
-.fixFirefoxSizing .swagger-section .swagger-ui-wrap p, .swagger-section .swagger-ui-wrap p{
-    font-size: 13px;
 }
 
 /* Explorer Page */
@@ -397,12 +297,6 @@ div.dataTables_length select{
     margin-right: 60px;
     margin-bottom: 10px;
     text-transform: capitalize;
-}
-.fixFirefoxSizing .bootstrap-datetimepicker-widget .table-condensed > thead > tr > th{
-    padding: 2px;
-}
-.fixFirefoxSizing td {
-    font-size: 12px;
 }
 select{
     -webkit-appearance: menulist !important;
@@ -567,6 +461,12 @@ a:hover, a:active, a:focus{
 .datatables-row-GridID {
     width: 75px !important;
 }
+.datatables-row-CreateTime {
+    width: 125px !important;
+}
+.datatables-row-StartTime, .datatables-row-StopTime {
+    width: 75px !important;
+}
 .datatables-row-AccountID, .datatables-row-NetworkID, .datatables-row-StackID {
     width: 100px !important;
 }
@@ -632,4 +532,9 @@ a:hover, a:active, a:focus{
 }
 #markdown-portal #search-form .form-group{
     float: right;
+}
+.modal-body-error pre {
+    background-color: inherit;
+    border: 0;
+    overflow-x: scroll;
 }
