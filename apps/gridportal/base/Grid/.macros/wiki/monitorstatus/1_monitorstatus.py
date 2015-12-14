@@ -34,7 +34,7 @@ def main(j, args, params, tags, tasklet):
     for category, data in sorted(noderesults.items()):
         sectionid = 'collapse_%s' % category.replace(' ', '_')
         headingid = 'heading_%s' % category
-        table = ""
+        table = "||Message||Last Executed||Interval||Status||\n"
         categorystatus = "OK"
         for dataitem in data:
             if isinstance(dataitem, dict):
@@ -46,7 +46,13 @@ def main(j, args, params, tags, tasklet):
                 status = makeStatusLabel(status, dataitem.get('guid'))
                 if lastchecked:
                     lastchecked = '%s ago' % j.base.time.getSecondsInHR(now - lastchecked)
-                table += '|%s |%s | {{html: %s}} |\n' % (dataitem.get('message', ''), lastchecked, status)
+                interval = dataitem.get('interval')
+                if interval:
+                    interval = j.base.time.getSecondsInHR(interval)
+                else:
+                    interval = ''
+
+                table += '|%s |%s |  %s|{{html: %s}} |\n' % (dataitem.get('message', ''), lastchecked, interval, status)
             else:
                 table += dataitem
         html = '''{{html:

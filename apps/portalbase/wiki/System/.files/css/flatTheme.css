@@ -463,6 +463,12 @@ a:hover, a:active, a:focus{
 .datatables-row-GridID {
     width: 75px !important;
 }
+.datatables-row-CreateTime {
+    width: 125px !important;
+}
+.datatables-row-StartTime, .datatables-row-StopTime {
+    width: 75px !important;
+}
 .datatables-row-AccountID, .datatables-row-NetworkID, .datatables-row-StackID {
     width: 100px !important;
 }
@@ -588,4 +594,9 @@ h4, .h4 {
     cursor: default;
     background-color: #337ab7;
     border-color: #E4E7EA;
+}
+.modal-body-error pre {
+    background-color: inherit;
+    border: 0;
+    overflow-x: scroll;
 }

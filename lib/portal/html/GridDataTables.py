@@ -20,6 +20,11 @@ class GridDataTables:
             return ''
         return '<div class="jstimestamp" data-ts="%s"></div>' % row[field]
 
+    def makeTimeOnly(self, row, field):
+        if row[field] == 0:
+            return ''
+        return '<div class="jstimestamp" data-ts="%s" data-timeonly="true"></div>' % row[field]
+
     def addTableForModel(self, namespace, category, fieldids, fieldnames=None, fieldvalues=None, filters=None, nativequery=None):
         """
         @param namespace: namespace of the model
