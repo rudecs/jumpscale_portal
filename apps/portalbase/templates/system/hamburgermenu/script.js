@@ -108,8 +108,6 @@ $(function () {
         if( $(this).data().external === true ){
             event.preventDefault();
             window.location.replace("/home/external?url=" + this["href"]);
-            injectIframe();
-            injectHamburgerButton($(this).data().theme, $(this).data().external);
         }
     });
 
