@@ -1,15 +1,15 @@
 {{drawgraph:
 
 target.1 =
-    function:derivative,
-    value:value,
+    function:derivative(mean,
+    value:value),
     series:{gid}_{nid}_nic_{nic}_kbytes_recv.gauge,
     alias:Received,
     interval:2m,
 
 target.2 =
-    function:derivative,
-    value:value,
+    function:derivative(mean,
+    value:value),
     series:{gid}_{nid}_nic_{nic}_kbytes_sent.gauge,
     alias:Sent,
     interval:2m,
