@@ -199,7 +199,7 @@ table input[type=text]{
     height: 25px !important;
 }
 table thead {
-    background: #5D88B3;
+    background: #4A749C;
     color: #fff;
 }
 .dataTables_wrapper table.table thead .sorting_asc{
@@ -302,8 +302,10 @@ select{
     -webkit-appearance: menulist !important;
 }
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus{
-    background-color: #5D88B3 !important;
-    border-color: #5D88B3 !important;
+    background-color: #e4e7ea !important;
+    border-right-color: #FFFFFF !important;
+    border-left-color: #FFFFFF !important;
+    color: #4A749C;
 }
 .pagination>li>a, .pagination>li>span, .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus{
     color: #34495E;
@@ -526,4 +528,64 @@ a:hover, a:active, a:focus{
 }
 #markdown-portal #search-form .form-group{
     float: right;
+}
+.title + .nav.nav-list li a {
+    border: 0
+}
+.title + .nav.nav-list li {
+    border-left: 5px solid #F5F5F5;
+}
+/*
+h3, .h3 {
+    font-size: 20px;
+}
+h2, .h2 {
+    font-size: 25px;
+}
+h4, .h4 {
+    font-size: 17px;
+}
+*/
+.page-content table.table {
+    margin-left: 0 !important;
+}
+.dataTables_wrapper.form-inline .row {
+    margin: 0;
+}
+.span6 label, .span6 div.dataTables_info {
+    margin-left: 0 !important;
+}
+.page-content .dataTables_wrapper.form-inline {
+    width: 100% !important;
+}
+.page-content .content {
+    width: 100% !important;
+}
+.row-fluid.page-content .container.eve-grid-container {
+    margin-left: -27px;
+}
+.swagger-section .swagger-ui-wrap {
+    max-width: 100% !important;
+}
+.swagger-section .swagger-ui-wrap ul#resources {
+    padding-left: 0 !important; margin-left: -20px;
+}
+.endpoints {
+    padding-left: 0;
+}
+.panel-title a p {
+    font-size: 14px; margin: 0;
+}
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #e4e7ea;
+    border-color: #ddd;
+}
+.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
+    z-index: 2;
+    color: #4A749C;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #E4E7EA;
 }
