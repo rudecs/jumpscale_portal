@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 from JumpScale.portal.docgenerator.Confluence2HTML import Confluence2HTML
 import copy
 
@@ -85,7 +86,10 @@ class DataTables():
         return field
 
     def getData(self, namespace, category, key, **kwargs):
-        datainfo = self.getFromCache(key)
+        try:
+            datainfo = self.getFromCache(key)
+        except:
+            raise exceptions.Gone('Table is not available anymore. Please refresh')
         fieldids = datainfo['fieldids']
         fieldvalues = datainfo['fieldvalues'] or fieldids
         filters = datainfo["filters"] or dict()

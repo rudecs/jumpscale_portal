@@ -44,6 +44,8 @@ class Forbidden(Error):
 class NotFound(Error):
     CODE = 404
 
+class Gone(Error):
+    CODE = 410
 
 class MethodNotAllowed(Error):
     CODE = 405
