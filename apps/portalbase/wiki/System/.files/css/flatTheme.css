@@ -603,3 +603,20 @@ h4, .h4 {
 div.jgauge{
     float: initial !important;
 }
+.circle-dot{
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+}
+.health-success{
+    border: 2px solid #50B645;
+    background-color: #50B645;
+}
+.health-warning{
+    border: 2px solid #E79020;
+    background-color: #E79020;
+}
+.health-danger{
+    border: 2px solid #F3405F;
+    background-color: #F3405F;
+}

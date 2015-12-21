@@ -8,6 +8,7 @@
 {{menu:
 Grid Portal:/grid
 }}
+{{grid.healthmenu}}
 
 {{menuadmin:
 }}
