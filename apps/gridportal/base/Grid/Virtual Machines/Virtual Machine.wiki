@@ -2,6 +2,7 @@
 
 @@title Virtual Machine: ${name}
 
+{% if id %}
 {{machine: guid:$$guid}}
 
 h2. Virtual Machine: ${name}
@@ -10,16 +11,27 @@ h2. Virtual Machine: ${name}
 |*Description*|${description}|
 |*Roles*|${roles}|
 |*Memory*|${mem}|
-|*Net Address*|${netaddr}|
-|*IP Adress*|${ipaddr}|
-|*Node ID*|[${nid}|grid node?id=${nid}&gid=${gid}]|
+|*IP Address*|${ipaddr}|
+|*Node*|[${nodename}|grid node?id=${nid}&gid=${gid}]|
 |*Last Checked*|${lastcheck}|
 |*State*|${state}|
-|*Grid ID*|[${gid}|grid?id=${gid}]|
+|*Grid*|${gridname}|
 |*Active*|${active}|
 |*CPU Core*|${cpucore}|
 |*Type*|${type}|
 
+h3. Network
+
+||Name||IP Address||Mac Address||
+{% for mac, info in netaddr.iteritems() -%}
+||${info[0]} | ${info[1] or ''} |${mac} |
+{% else %}
+| | | |
+{% endfor %}
+
 
 h3. Virtual Disks
 {{vdisks: machineid:$$guid}}
+{% else %}
+Machine not found
+{% endif %}
