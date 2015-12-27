@@ -4,6 +4,7 @@
 
 {{eco: id:$$id}}
 
+{% if errormessage %}
 {{actions:
 
 - display: Delete
@@ -49,3 +50,6 @@ ${code}
 {{code: 
 ${backtrace}
 }}
+{% else %}
+Error Condition not found.
+{% endif %}
