@@ -163,7 +163,7 @@ class system_usermanager(j.code.classGetBase()):
         
         if not self._isValidUserName(username):
             ctx.start_response('409', headers)
-            return 'Username may not exceed 20 characters and may only contain a-z and 0-9'
+            return 'Username may not exceed 20 characters and may only contain lower case characters and numbers.'
 
         check, result = self._checkUser(username)
         if check:
