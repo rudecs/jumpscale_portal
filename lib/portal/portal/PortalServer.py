@@ -14,6 +14,7 @@ from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 from .MinimalBeaker import MinimalBeaker
 from . import exceptions
+from . import events
 from .auth import AuditMiddleWare
 
 from JumpScale.portal.portalloaders.SpaceWatcher import SpaceWatcher
@@ -140,8 +141,8 @@ class PortalServer:
         self.schedule15min = {}
         self.schedule60min = {}
 
-        self.rediscache=redis.StrictRedis(host='localhost', port=9999, db=0)
-        self.redisprod=redis.StrictRedis(host='localhost', port=9999, db=0)
+        self.rediscache = j.clients.redis.getByInstance('system')
+        self.redisprod = j.clients.redis.getByInstance('system')
 
         self.jslibroot=j.system.fs.joinPaths(j.dirs.baseDir,"apps","portals","jslib")
 
@@ -1032,8 +1033,9 @@ class PortalServer:
         if path.find("favicon.ico") != -1:
             return self.processor_page(environ, start_response, self.filesroot, "favicon.ico", prefix="")
 
-        ctx = RequestContext(application="", actor="", method="", env=environ,
-                             start_response=start_response, path=path, params=None)
+        ctx = RequestContext(application="", actor="", method="",
+                             env=environ, start_response=start_response,
+                             path=path, params=None, server=self)
         ctx.params = self._getParamsFromEnv(environ, ctx)
         ctx.env['JS_CTX'] = ctx
 
@@ -1170,8 +1172,9 @@ class PortalServer:
             start_response('200 OK', [('Content-Type', "text/html")])
             return 'Parameter "doc" not supplied'
 
-        ctx = RequestContext(application="", actor="", method="", env=environ,
-                     start_response=start_response, path=path, params=None)
+        ctx = RequestContext(application=self, actor="", method="",
+                             env=environ, start_response=start_response,
+                             path=path, params=None, server=self)
         ctx.params = self._getParamsFromEnv(environ, ctx)
 
         doc, _ = self.getDoc(space, doc, ctx)
@@ -1304,6 +1307,8 @@ class PortalServer:
 
         S3 = gevent.greenlet.Greenlet(self._60minRepeat)
         S3.start()
+
+        events.EventSubScriber(self.redisprod).start()
 
         j.console.echo("webserver started on port %s" % self.port)
         self._webserver.serve_forever()

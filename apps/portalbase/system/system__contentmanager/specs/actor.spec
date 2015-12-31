@@ -160,4 +160,9 @@
         var:path str,,
 
 
-
+    method:checkEvents
+        """
+        Check for events
+        """
+        var:key str,,unique id identifying the connection
+        result:dict

@@ -408,3 +408,7 @@ class system_contentmanager(j.code.classGetBase()):
             returnpath += "?%s" % contents['querystr']
         returncontent = "<script>window.open('%s', '_self', '');</script>" % returnpath
         return returncontent
+
+    def checkEvents(self, key, **kwargs):
+        ctx = kwargs['ctx']
+        return ctx.events.get(key)

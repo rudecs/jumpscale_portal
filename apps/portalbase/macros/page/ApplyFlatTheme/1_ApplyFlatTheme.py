@@ -14,6 +14,11 @@ def main(j, args, params, tags, tasklet):
     page.addJS('/jslib/old/jquery.cookie.js')
     page.addJS('/jslib/bootstrap/js/bootstrap-3-3-2.min.js')
 
+
+    page.addJS('/jslib/pnotify/pnotify.js')
+    page.addJS('/jslib/pnotify/pnotify.buttons.js')
+    page.addCSS('/jslib/pnotify/pnotify.css')
+
     page.addJS(jsContent='''
         $( function () {
         $('body').addClass('flatTheme');
@@ -64,6 +69,38 @@ def main(j, args, params, tags, tasklet):
               $('.page-content').find('.navigation').toggleClass('wide-sidebar');
             });
         }
+
+        //pnotify stuff
+        PNotify.prototype.options.styling = "bootstrap3";
+        var eventId = sessionStorage.getItem('event.id');
+        if (eventId == null) {
+            eventId = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            sessionStorage.setItem('event.id', eventId);
+        }
+        var getevents = function() {
+            $.ajax({url: '/restmachine/system/contentmanager/checkEvents',
+                    data: {
+                        key: eventId
+                    },
+                    success: function(data) {
+                        if (data) {
+                            data.buttons = {sticker: false};
+                            if (data.refresh_hint && data.refresh_hint == location) {
+                                data.hide = false;
+                                data.text += "<a href='javascript:window.reloadAll()'> refresh page</a>"
+                            }
+                            new PNotify(data);
+                        }
+                        setTimeout(getevents, 0);
+                    },
+                    error: function(data) {
+                        console.log('Failed to call checkEvents');
+                        setTimeout(getevents, 3000);
+                    }
+            });
+
+        };
+        setTimeout(getevents, 0);
 
     });
      ''')
