@@ -69,21 +69,23 @@ class Events(object):
             except (Exception, exceptions.BaseError),  e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 errormsg = error + "</br> For more info check <a href='/grid/error condition?id=%s'>error</a> details" % eco.guid
-                self.sendMessage('%s Failed' % title, errormsg, 'error', hide=False)
+                self.sendMessage(title, errormsg, 'error', hide=False)
                 return
-            self.sendMessage('%s Done' % title, success, 'success')
-        self.sendMessage('%s Started' % title, '')
+            refreshhint = self.ctx.env.get('HTTP_REFERER')
+            self.sendMessage(title, success, 'success', refresh_hint=refreshhint)
+        self.sendMessage(title, 'Started')
         gevent.spawn(runner)
 
-    def waitForJob(self, job, success, error):
-        gevent.spawn(self._waitForJob, job, success, error)
+    def waitForJob(self, job, success, error, title=None):
+        gevent.spawn(self._waitForJob, job, success, error, title)
 
-    def _waitForJob(self, job, success, error):
+    def _waitForJob(self, job, success, error, title):
+        title = title or 'Job Info'
         acl = j.clients.agentcontroller.get()
         job = acl.waitJumpscript(job=job)
         if job['state'] != 'OK':
             error += "</br> For more info check <a href='/grid/job?id=%(guid)s'>job</a> details" % job
-            self.sendMessage('Job Error', error, 'error', hide=False)
+            self.sendMessage(title, error, 'error', hide=False)
         else:
             refreshhint = self.ctx.env.get('HTTP_REFERER')
-            self.sendMessage('Job Done', success, 'success', refresh_hint=refreshhint)
+            self.sendMessage(title, success, 'success', refresh_hint=refreshhint)

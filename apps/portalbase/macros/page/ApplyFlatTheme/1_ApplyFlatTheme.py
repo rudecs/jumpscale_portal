@@ -77,6 +77,7 @@ def main(j, args, params, tags, tasklet):
             eventId = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
             sessionStorage.setItem('event.id', eventId);
         }
+        var notifications = {};
         var getevents = function() {
             $.ajax({url: '/restmachine/system/contentmanager/checkEvents',
                     data: {
@@ -89,7 +90,17 @@ def main(j, args, params, tags, tasklet):
                                 data.hide = false;
                                 data.text += "<a href='javascript:window.reloadAll()'> refresh page</a>"
                             }
-                            new PNotify(data);
+                            if (data.title in notifications) {
+                                var notify = notifications[data.title];
+                                notify.update(data);
+                            } else {
+                                var notify = new PNotify(data);
+                            }
+                            if (data.type == 'info') {
+                                notifications[data.title] = notify;
+                            } else {
+                                delete notifications[data.title];
+                            }
                         }
                         setTimeout(getevents, 0);
                     },
