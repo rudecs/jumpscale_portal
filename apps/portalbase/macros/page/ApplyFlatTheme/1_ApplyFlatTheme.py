@@ -93,6 +93,7 @@ def main(j, args, params, tags, tasklet):
                             if (data.title in notifications) {
                                 var notify = notifications[data.title];
                                 notify.update(data);
+                                notify.open(); // reopen incase it was already closed
                             } else {
                                 var notify = new PNotify(data);
                             }
