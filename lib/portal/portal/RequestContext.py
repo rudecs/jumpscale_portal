@@ -34,7 +34,7 @@ class RequestContext(object):
     @property
     def events(self):
         if self._events is None:
-            self._events = Events(self.env['beaker.session'].id, self.server.redisprod, self)
+            self._events = Events(self.server.redisprod, self)
         return self._events
 
 

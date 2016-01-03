@@ -23,10 +23,10 @@ class system_contentmanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method bitbucketreload")
 
-    def checkEvents(self, key, **kwargs):
+    def checkEvents(self, cursor, **kwargs):
         """
         Check for events
-        param:key unique id identifying the connection
+        param:cursor to get from
         result dict
         """
         #put your code here to implement this method

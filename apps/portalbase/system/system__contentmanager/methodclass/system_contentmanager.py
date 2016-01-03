@@ -409,6 +409,6 @@ class system_contentmanager(j.code.classGetBase()):
         returncontent = "<script>window.open('%s', '_self', '');</script>" % returnpath
         return returncontent
 
-    def checkEvents(self, key, **kwargs):
+    def checkEvents(self, cursor, **kwargs):
         ctx = kwargs['ctx']
-        return ctx.events.get(key)
+        return ctx.events.get(cursor)

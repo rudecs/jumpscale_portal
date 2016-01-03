@@ -4,7 +4,6 @@ import types
 import pprint
 import os
 import sys
-import redis
 import requests
 
 from beaker.middleware import SessionMiddleware
@@ -14,7 +13,6 @@ from .PortalRest import PortalRest
 from .OsisBeaker import OsisBeaker
 from .MinimalBeaker import MinimalBeaker
 from . import exceptions
-from . import events
 from .auth import AuditMiddleWare
 
 from JumpScale.portal.portalloaders.SpaceWatcher import SpaceWatcher
@@ -1307,8 +1305,6 @@ class PortalServer:
 
         S3 = gevent.greenlet.Greenlet(self._60minRepeat)
         S3.start()
-
-        events.EventSubScriber(self.redisprod).start()
 
         j.console.echo("webserver started on port %s" % self.port)
         self._webserver.serve_forever()

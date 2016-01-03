@@ -4,63 +4,53 @@ import gevent
 import json
 
 
-EVENTKEY = 'events.events'
+EVENTKEY = 'events.data.%s'
+EVENTCOUNT = 'events.count'
 SESSIONKEY = 'events.session.'
-
-class EventSubScriber(object):
-    def __init__(self, redis):
-        self.redis = redis
-        self.pubsub = redis.pubsub()
-        self.pubsub.subscribe(EVENTKEY)
-        self.pubsub.ignore_subscribe_messages = True
-
-    def start(self):
-        gevent.spawn(self.run)
-
-    def run(self):
-        for event in self.pubsub.listen():
-            for key in self.redis.keys(SESSIONKEY + '*'):
-                self.redis.getQueue(key).put(event['data'])
-
 
 class Events(object):
     GETS = {}
 
-    def __init__(self, session, redis, ctx):
-        self.ctx = ctx
-        self.session = session
+    def __init__(self, redis, ctx):
         self.redis = redis
+        self.ctx = ctx
+        self.eventstreamid = j.base.idgenerator.generateGUID()
 
-    def get(self, key):
-        queuename = SESSIONKEY + key
-        self.redis.set(queuename, 1, ex=60)
+    def get(self, cursor):
+        head = int(self.redis.get(EVENTCOUNT) or 0)
+        if cursor <= 0 or cursor < head - 100 or cursor > head + 1:
+            cursor = head + 1
+        if cursor < head:
+            # find first available queue or head
+            while not self.redis.exists(self.redis.getQueue(EVENTKEY % cursor).key) and cursor < head + 1:
+                cursor += 1
 
-        def get():
-            queue = self.redis.getQueue(queuename)
-            data = queue.get(timeout=30)
-            if data:
-                return json.loads(data)
-            return 0
-        puller = self.GETS.get(queuename)
-        if puller:
-            del Events.GETS[queuename]
-            puller.kill()
-        greenlet = gevent.spawn(get)
-        Events.GETS[queuename] = greenlet
-        greenlet.join()
-        if greenlet.value is None:
-            return
-        Events.GETS.pop(queuename, None)
-        return greenlet.value or None
+        event = self.redis.getQueue(EVENTKEY % cursor).fetch(timeout=50)
+        if not event:
+            return {'event': None, 'cursor': cursor}
+        else:
+            cursor += 1
+            return {'event': json.loads(event), 'cursor': cursor}
 
     def sendMessage(self, title, text, level='info', **kwargs):
-        msg = {'eventtype': 'message', 'title': title, 'text': text, 'type': level}
+        msg = {'eventtype': 'message',
+               'title': title,
+               'text': text,
+               'type': level,
+               'eventstreamid': self.eventstreamid}
         if kwargs:
             msg.update(kwargs)
         self.sendEvent(msg)
 
     def sendEvent(self, event):
-        self.redis.publish(EVENTKEY, json.dumps(event))
+        count = self.redis.incr(EVENTCOUNT)
+        queue = self.redis.getQueue(EVENTKEY % count)
+        queue.put(json.dumps(event))
+        queue.set_expire(60)
+
+        # delete tail
+        qkey = self.redis.getQueue(EVENTKEY % (count - 100)).key
+        self.redis.delete(qkey)
 
     def runAsync(self, func, args, kwargs, title, success, error):
         def runner():
