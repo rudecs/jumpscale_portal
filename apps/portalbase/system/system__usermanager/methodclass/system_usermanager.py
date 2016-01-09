@@ -71,34 +71,8 @@ class system_usermanager(j.code.classGetBase()):
 
     @auth(['admin'])
     def editUser(self, username, groups, emails, domain, password, **kwargs):
-        ctx = kwargs['ctx']
-        user = self._getUser(username)
-        if not user:
-            ctx.start_response('404 Not Found', [('Content-Type', 'text/plain')])
-            return "User %s not found" % username
-        if groups:
-            if isinstance(groups, basestring):
-                groups = [x.strip() for x in groups.split(',')]
-            elif not isinstance(groups, list):
-                ctx.start_response('400 Bad Request', [('Content-Type', 'text/plain')])
-                return "Groups paramter should be a list or string"
-        else:
-            groups = []
-        if emails:
-            if isinstance(emails, basestring):
-                emails = [x.strip() for x in emails.split(',')]
-            elif not isinstance(emails, list):
-                ctx.start_resonpnse('400 Bad Request', [('Content-Type', 'text/plain')])
-                return "Emails should be a list or a comma seperated string"
-            user.emails = emails
-        if domain:
-            user.domain = domain
-        if password:
-            user.passwd = j.tools.hash.md5_string(password)
-
-        user.groups = groups
-        self.modelUser.set(user)
-        return True
+        groups = groups or []
+        return j.core.portal.active.auth.updateUser(username, password, emails, groups, None)
 
     @auth(['admin'])
     def delete(self, username, **kwargs):
@@ -151,24 +125,9 @@ class system_usermanager(j.code.classGetBase()):
         group['users'] = users
         self.modelGroup.set(group)
         return True
-
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
     
     @auth(['admin'])
     def create(self, username, emails, password, groups, domain, **kwargs):
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'text/plain'), ]
-        
-        if not self._isValidUserName(username):
-            ctx.start_response('409', headers)
-            return 'Username may not exceed 20 characters and may only contain a-z and 0-9'
-
-        check, result = self._checkUser(username)
-        if check:
-            ctx.start_response('409', headers)
-            return "Username %s already exists" % username
         groups = groups or []
         return j.core.portal.active.auth.createUser(username, password, emails, groups, None)
 
