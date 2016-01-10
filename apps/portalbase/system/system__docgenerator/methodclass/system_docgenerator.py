@@ -7,7 +7,7 @@ INPUTMAP = {'bool': {'type': 'boolean'},
            'string': {'type': 'string'},
            'int': {'type': 'integer'},
            'float': {'type': 'number'},
-           'list': {'type': 'string'},
+           'list': {'type': 'array'},
            'dict': {'type': 'string'},
            }
 

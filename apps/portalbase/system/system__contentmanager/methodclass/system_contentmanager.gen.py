@@ -26,7 +26,7 @@ class system_contentmanager(j.code.classGetBase()):
     def checkEvents(self, cursor, **kwargs):
         """
         Check for events
-        param:cursor to get from
+        param:cursor cursor to get from
         result dict
         """
         #put your code here to implement this method
