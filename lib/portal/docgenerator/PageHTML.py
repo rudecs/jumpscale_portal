@@ -194,7 +194,9 @@ class PageHTML(Page):
         if rows==[[]]:
             return 
         if "datatables" in self.functionsAdded:
-            classparams += 'cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display JSdataTable dataTable'
+            classparams += 'cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display dataTable'
+            if headers:
+                classparams += ' JSdataTable'
         if len(rows) == 0:
             return False
         l = len(rows[0])

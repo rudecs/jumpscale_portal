@@ -93,6 +93,8 @@ eg:
                         popup.addText(label, name, type=var['type'], value=default)
                     elif var['type'] == 'hidden':
                         popup.addHiddenField(var['name'], var['value'])
+                    elif var['type'] == 'message':
+                        popup.addMessage(var['message'], var['messagetype'])
 
         for name, value in data.items():
             popup.addHiddenField(name, value)

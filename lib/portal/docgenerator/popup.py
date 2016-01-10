@@ -26,6 +26,16 @@ class Popup(object):
         content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder)
         self.widgets.append(content)
 
+
+    def addMessage(self, message, type='info'):
+        template = self.jinja.from_string('''
+            <div class="alert alert-${type} padding-vertical-small" role="alert">
+            ${message}
+            </div>
+        ''')
+        content = template.render(type=type, message=message)
+        self.widgets.append(content)
+
     def addHiddenField(self, name, value):
         template = self.jinja.from_string('''
             <input type="hidden" class="form-control" name="${name}" value="${value}">

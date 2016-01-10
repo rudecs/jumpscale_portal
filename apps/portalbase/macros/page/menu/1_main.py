@@ -41,6 +41,7 @@ def main(j, args, params, tags, tasklet):
                 {brand}
                 <div class="nav-collapse collapse">
                    <ul class="nav pull-left">
+                   $$$menuleft
                    {items}
                    $$$menuright
                    </ul>

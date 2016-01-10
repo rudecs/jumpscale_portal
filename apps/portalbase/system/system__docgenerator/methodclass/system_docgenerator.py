@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 
 INMAP = {'post': 'formData', 'get': 'query'}
 
@@ -91,8 +92,22 @@ class system_docgenerator(j.code.classGetBase()):
             actors = args['actors'].split(',')
         else:
             actors = j.core.portal.active.getActors()
-        
-        for actor in sorted(actors):
+ 
+        if 'group' in args and args['group']:
+            group = args['group']
+            groups = dict()
+            for actor in actors:
+                group_name = actor.split('__')[0]
+                if group_name not in groups.keys():
+                    groups[group_name] = [actor]
+                groups[group_name].append(actor)
+            
+            if group in groups.keys():
+                actors = groups[group]
+            else:
+                raise exceptions.BadRequest("invalid actor group")
+
+        for actor in sorted(actors):    
             try:
                 self.getDocForActor(actor, catalog, hide_private_api)
             except Exception as e:
