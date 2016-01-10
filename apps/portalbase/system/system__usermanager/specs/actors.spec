@@ -24,9 +24,9 @@
         set Groups for a user
         """
         var:username str,,name of user
-        var:groups list,,name of groups @optional
+        var:groups list,,name of groups
         var:password str,,password for user @optional
-		var:emails str,,comma seperated list of emails or list @optional
+		var:emails list,,list of email addresses
 		var:domain str,,Domain of user @optional
 
 	method:delete
@@ -41,8 +41,8 @@
 		"""
         var:username str,,name of user
 		var:password str,,passwd
-		var:groups str,,comma separated list of groups this user belongs to @optional
-		var:emails str,,comma separated list of email addresses
+		var:groups list,,list of groups this user belongs to @optional
+		var:emails list,,list of email addresses
 		var:domain str,,domain of user
         result:bool    #True if successful, False otherwise
 

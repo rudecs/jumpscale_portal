@@ -62,10 +62,7 @@ class PortalAuthenticatorOSIS(object):
         if not email:
             raise exceptions.BadRequest('Email address cannot be empty.')
         else:
-            if isinstance(email, basestring):
-                email = map(lambda s: s.strip(), email.split(','))
             for address in email:
-                address = address.strip()
                 if not self._isValidEmailAddress(address):
                     raise exceptions.BadRequest('Email address %s is in an invalid format'
                                                 % address)
@@ -75,8 +72,6 @@ class PortalAuthenticatorOSIS(object):
 
         user = self.osisuser.new()
         user.id = username
-        if isinstance(groups, basestring):
-            groups = map(lambda s: s.strip(), groups.split(','))
         user.groups = groups
         user.emails = email
         user.domain = domain
@@ -99,10 +94,7 @@ class PortalAuthenticatorOSIS(object):
         if not email:
             raise exceptions.BadRequest('Email address cannot be empty.')
         else:
-            if isinstance(email, basestring):
-                email = map(lambda s: s.strip(), email.split(','))
             for address in email:
-                address = address.strip()
                 if not self._isValidEmailAddress(address):
                     raise exceptions.BadRequest('Email address %s is in an invalid format'
                                                 % address)
@@ -111,9 +103,6 @@ class PortalAuthenticatorOSIS(object):
                                               'system with a different username' % address)
             user.emails = email
 
-        if groups:
-            if isinstance(groups, basestring):
-                groups = map(lambda s: s.strip(), groups.split(','))
         user.groups = groups
 
         if domain:

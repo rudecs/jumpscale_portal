@@ -29,8 +29,8 @@ class system_usermanager(j.code.classGetBase()):
         create a user
         param:username name of user
         param:password passwd
-        param:groups comma separated list of groups this user belongs to
-        param:emails comma separated list of email addresses
+        param:groups list of groups this user belongs to
+        param:emails list of email addresses
         param:domain domain of user
         result bool
         """
@@ -83,7 +83,7 @@ class system_usermanager(j.code.classGetBase()):
         param:username name of user
         param:groups name of groups
         param:password password for user
-        param:emails comma seperated list of emails or list
+        param:emails list of email addresses
         param:domain Domain of user
         """
         #put your code here to implement this method
