@@ -1085,7 +1085,9 @@ function copyText$id() {
         return '''
 <!DOCTYPE html>
 <html>
-<head>%(head)s</head>
+<head>
+ <meta charset="UTF-8">
+%(head)s</head>
 <body %(bodyattrib)s>%(body)s
 %(tail)s</body>
 </html>''' % docdata
