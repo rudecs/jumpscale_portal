@@ -38,6 +38,11 @@ class PortalRest():
                     ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
                 except ValueError:
                     raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+            elif param['type'] == 'list' and not isinstance(ctx.params[key], (list, types.NoneType)):
+                try:
+                    ctx.params[key] = j.basetype.list.fromString(ctx.params[key])
+                except ValueError:
+                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
 
         return True, ""
 

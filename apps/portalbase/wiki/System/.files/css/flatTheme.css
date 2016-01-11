@@ -620,3 +620,7 @@ div.jgauge{
     border: 2px solid #F3405F;
     background-color: #F3405F;
 }
+
+.ui-pnotify-title{
+    font-size: 18px !important;
+}

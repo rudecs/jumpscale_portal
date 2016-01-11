@@ -30,7 +30,7 @@ class system_usermanager(j.code.classGetBase()):
         """
         ctx = kwargs['ctx']
         if j.core.portal.active.auth.authenticate(name, secret):
-            session = ctx.env['beaker.get_session']()  # create new session
+            session = ctx.env['beaker.session']
             session['user'] = name
             session.save()
             return session.id

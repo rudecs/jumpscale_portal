@@ -1,11 +1,9 @@
-import datetime
-import JumpScale.grid.osis
 
 def main(j, args, params, tags, tasklet):
     id = args.getTag('id')
     if not id:
-        out = 'Missing ECO id param "id"'
-        params.result = (out, args.doc)
+        params.result = (args.doc, args.doc)
+        args.doc.applyTemplate({})
         return params
 
     oscl = j.clients.osis.getByInstance('main')
@@ -13,8 +11,8 @@ def main(j, args, params, tags, tasklet):
     try:
         obj = ecocl.get(id).__dict__
     except:
-        out = 'Could not find Error Condition Object with id %s'  % id
-        params.result = (out, args.doc)
+        params.result = (args.doc, args.doc)
+        args.doc.applyTemplate({})
         return params
 
     obj['epoch'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['epoch']

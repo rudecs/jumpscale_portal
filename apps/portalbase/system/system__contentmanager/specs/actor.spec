@@ -160,4 +160,9 @@
         var:path str,,
 
 
-
+    method:checkEvents
+        """
+        Check for events
+        """
+        var:cursor int,,cursor to get from
+        result:dict
