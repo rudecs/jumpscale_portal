@@ -70,7 +70,7 @@ class system_usermanager(j.code.classGetBase()):
         return self.modelUser.get(users[0]['guid'])
 
     @auth(['admin'])
-    def editUser(self, username, groups, emails, domain, password, **kwargs):
+    def editUser(self, username, groups, password, emails, domain, **kwargs):
         groups = groups or []
         return j.core.portal.active.auth.updateUser(username, password, emails, groups, None)
 
@@ -127,7 +127,7 @@ class system_usermanager(j.code.classGetBase()):
         return True
     
     @auth(['admin'])
-    def create(self, username, emails, password, groups, domain, **kwargs):
+    def create(self, username, password, groups, emails, domain, **kwargs):
         groups = groups or []
         return j.core.portal.active.auth.createUser(username, password, emails, groups, None)
 

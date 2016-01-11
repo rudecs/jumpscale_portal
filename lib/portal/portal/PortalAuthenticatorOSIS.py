@@ -51,7 +51,7 @@ class PortalAuthenticatorOSIS(object):
             return False
         return re.search(r"\s",password) is None
 
-    def createUser(self, username, password, email, groups, domain):
+    def createUser(self, username, password, emails, groups, domain):
         if not self._isValidUserName(username):
             raise exceptions.BadRequest('Username may not exceed 20 characters and may '
                                         'only contain a-z and 0-9')
@@ -59,10 +59,10 @@ class PortalAuthenticatorOSIS(object):
             if self.osisuser.search({'id': username})[1:]:
                     raise exceptions.Conflict('Username %s is already exists' % username)
 
-        if not email:
+        if not emails:
             raise exceptions.BadRequest('Email address cannot be empty.')
         else:
-            for address in email:
+            for address in emails:
                 if not self._isValidEmailAddress(address):
                     raise exceptions.BadRequest('Email address %s is in an invalid format'
                                                 % address)
@@ -73,7 +73,7 @@ class PortalAuthenticatorOSIS(object):
         user = self.osisuser.new()
         user.id = username
         user.groups = groups
-        user.emails = email
+        user.emails = emails
         user.domain = domain
         if not password:
             password = str(random.random())
@@ -84,24 +84,24 @@ class PortalAuthenticatorOSIS(object):
         user.passwd = j.tools.hash.md5_string(password)
         return self.osisuser.set(user)
 
-    def updateUser(self, username, password, email, groups, domain):
+    def updateUser(self, username, password, emails, groups, domain):
         users = self.osisuser.search({'id': username})[1:]
         if not users:
             raise exceptions.NotFound('Email address cannot be empty.')
         else:
             user = self.osisuser.get(users[0]['guid'])
 
-        if not email:
+        if not emails:
             raise exceptions.BadRequest('Email address cannot be empty.')
         else:
-            for address in email:
+            for address in emails:
                 if not self._isValidEmailAddress(address):
                     raise exceptions.BadRequest('Email address %s is in an invalid format'
                                                 % address)
                 if address not in user.emails and self.osisuser.search({'emails': address})[1:]:
                     raise exceptions.Conflict('Email address %s is already registered in the '
                                               'system with a different username' % address)
-            user.emails = email
+            user.emails = emails
 
         user.groups = groups
 
@@ -110,7 +110,8 @@ class PortalAuthenticatorOSIS(object):
 
         if password:
             user.passwd = j.tools.hash.md5_string(password)
-        return self.osisuser.set(user)
+        self.osisuser.set(user)
+        return True
 
     def listUsers(self):
         return self.osisuser.simpleSearch({})
