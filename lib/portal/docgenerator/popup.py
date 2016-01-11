@@ -29,7 +29,7 @@ class Popup(object):
 
     def addMessage(self, message, type='info'):
         template = self.jinja.from_string('''
-            <div class="alert alert-${type}" role="alert">
+            <div class="alert alert-${type} padding-vertical-small" role="alert">
             ${message}
             </div>
         ''')
