@@ -6,11 +6,14 @@ monkey.patch_ssl()
 monkey.patch_thread()
 monkey.patch_time()
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import os
 import subprocess
 from JumpScale import j
 import JumpScale.portal
-import sys
 
 if __name__ == '__main__':
     if 'PORTAL_MAIN' in os.environ:

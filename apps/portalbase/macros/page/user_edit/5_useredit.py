@@ -7,7 +7,8 @@ def main(j, args, params, tags, tasklet):
     scl = j.clients.osis.getNamespace('system')
     user = scl.user.get(userguid)
 
-    popup = Popup(id='user_edit', header='Change User', submit_url='/restmachine/system/usermanager/editUser')
+    popup = Popup(id='user_edit', header='Change User',
+                  submit_url='/restmachine/system/usermanager/editUser', clearForm=False)
 
     options = list()
     popup.addText('Enter emails (comma seperated)', 'emails', value=', '.join(user.emails))

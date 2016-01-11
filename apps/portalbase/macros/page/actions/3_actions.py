@@ -53,6 +53,7 @@ eg:
         inputs = actiondata.get('input', '')
         navigateback = actiondata.get('navigateback', False)
         reload = actiondata.get('reload', True)
+        clearForm = actiondata.get('clearform', True)
         hide = actiondata.get('hide', False)
         data = actiondata.get('data', {})
         showresponse = actiondata.get('showresponse', False)
@@ -70,7 +71,9 @@ eg:
             if not hide:
                 actionoptions.append((display, actionid))
 
-        popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl, navigateback=navigateback, reload_on_success=reload, showresponse=showresponse)
+        popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl,
+                      navigateback=navigateback, reload_on_success=reload,
+                      showresponse=showresponse, clearForm=clearForm)
         if inputs:
             for var in inputs:
                 if isinstance(var, basestring):

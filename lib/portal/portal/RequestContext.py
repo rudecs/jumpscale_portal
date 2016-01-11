@@ -1,15 +1,16 @@
 import re
+from .events import Events
 
 REC = re.compile("(?P<code>\d+)\s+(?P<message>.*)")
 
-class RequestContext(object):
 
+class RequestContext(object):
     """
     is context of one request to WS
     please keep this as light as possible because these objects are mostly created
     """
 
-    def __init__(self, application, actor, method, env, start_response, path, params={}, fformat=""):
+    def __init__(self, application, actor, method, env, start_response, path, params={}, fformat="", server=None):
         self.env = env
         self._start_response = start_response
         if params == "":
@@ -18,8 +19,10 @@ class RequestContext(object):
         self.path = path
         self.actor = actor
         self.application = application
+        self.server = server
         self.method = method
         self._response_started = False
+        self._events = None
         self.httpStatus = 200
         self.httpMessage = "OK"
         self.fformat = fformat.strip().lower()
@@ -27,6 +30,13 @@ class RequestContext(object):
     @property
     def response_started(self):
         return self._response_started
+
+    @property
+    def events(self):
+        if self._events is None:
+            self._events = Events(self.server.redisprod, self)
+        return self._events
+
 
     def start_response(self, status, *args, **kwargs):
         force = kwargs.pop('forceheaders', False)

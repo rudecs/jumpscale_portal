@@ -15,6 +15,7 @@ def main(j, args, params, tags, tasklet):
     codepaths[j.system.fs.joinPaths('$base', 'apps', 'osis', 'logic')] = 'Models'
 
     codepaths[j.system.fs.joinPaths('$jumpscriptsdir', 'jumpscripts')] = 'JumpScripts'
+    codepaths[j.system.fs.joinPaths(j.core.portal.active.portaldir, 'templates').replace(j.dirs.baseDir, '$base')] = 'Templates'
 
     result = list()
     result.append('''{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}''')

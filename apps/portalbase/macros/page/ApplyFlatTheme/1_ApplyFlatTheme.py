@@ -14,6 +14,12 @@ def main(j, args, params, tags, tasklet):
     page.addJS('/jslib/old/jquery.cookie.js')
     page.addJS('/jslib/bootstrap/js/bootstrap-3-3-2.min.js')
 
+
+    page.addJS('/jslib/pnotify/pnotify.js')
+    page.addJS('/jslib/pnotify/pnotify.buttons.js')
+    page.addJS('/system/.files/js/events.js')
+    page.addCSS('/jslib/pnotify/pnotify.css')
+
     page.addJS(jsContent='''
         $( function () {
         $('body').addClass('flatTheme');
@@ -64,7 +70,6 @@ def main(j, args, params, tags, tasklet):
               $('.page-content').find('.navigation').toggleClass('wide-sidebar');
             });
         }
-
     });
      ''')
 
