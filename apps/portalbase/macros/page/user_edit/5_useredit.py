@@ -7,11 +7,12 @@ def main(j, args, params, tags, tasklet):
     scl = j.clients.osis.getNamespace('system')
     user = scl.user.get(userguid)
 
-    popup = Popup(id='user_edit', header='Change User',
+    popup = Popup(id='user_edit', header='Update User',
                   submit_url='/restmachine/system/usermanager/editUser', clearForm=False)
 
     options = list()
-    popup.addText('Enter emails (comma separated)', 'emails', value=', '.join(user.emails))
+    popup.addText('Enter Email Address', 'emails', value=', '.join(user.emails),
+                  placeholder='If left empty, email address will not be changed')
     popup.addHiddenField('domain', user.domain)
     popup.addText('Enter Password', 'password', type='password',
                   placeholder='If left empty, password will not be changed')

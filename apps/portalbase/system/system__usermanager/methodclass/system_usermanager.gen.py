@@ -81,7 +81,7 @@ class system_usermanager(j.code.classGetBase()):
         """
         set Groups for a user
         param:username name of user
-        param:groups name of groups
+        param:groups list of groups this user belongs to
         param:password password for user
         param:emails list of email addresses
         param:domain Domain of user
