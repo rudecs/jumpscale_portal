@@ -57,7 +57,7 @@ class PortalAuthenticatorOSIS(object):
                                         'contain lower case characters and numbers.')
         else:
             if self.osisuser.search({'id': username})[1:]:
-                    raise exceptions.Conflict('Username %s is already exists' % username)
+                    raise exceptions.Conflict('Username %s already exists.' % username)
 
         if not emailaddress:
             raise exceptions.BadRequest('Email address cannot be empty.')
@@ -65,11 +65,11 @@ class PortalAuthenticatorOSIS(object):
             if len(emailaddress) != 1:
                 raise exceptions.BadRequest('Only 1 email address is allowed for each user.')
             if not self._isValidEmailAddress(emailaddress[0]):
-                raise exceptions.BadRequest('Email address %s is in an invalid format'
+                raise exceptions.BadRequest('Email address %s is in an invalid format.'
                                             % emailaddress[0])
             if self.osisuser.search({'emails': emailaddress})[1:]:
                 raise exceptions.Conflict('Email address %s is already registered in the '
-                                          'system' % emailaddress[0])
+                                          'system.' % emailaddress[0])
 
         user = self.osisuser.new()
         user.id = username
@@ -88,20 +88,24 @@ class PortalAuthenticatorOSIS(object):
     def updateUser(self, username, password, emailaddress, groups, domain=None):
         users = self.osisuser.search({'id': username})[1:]
         if not users:
-            raise exceptions.NotFound('Email address cannot be empty.')
+            raise exceptions.NotFound('Could not find user with the username: %s.' % username)
         else:
             user = self.osisuser.get(users[0]['guid'])
 
         if password:
-            user.passwd = j.tools.hash.md5_string(password)
+            if not self._isValidPassword(password):
+                raise exceptions.BadRequest("Password should have at least 8 characters and not "
+                                            "more than 60 characters.")
+            else:
+                user.passwd = j.tools.hash.md5_string(password)
 
         if emailaddress and emailaddress != ['']:
             if not self._isValidEmailAddress(emailaddress[0]):
-                raise exceptions.BadRequest('Email address %s is in an invalid format'
+                raise exceptions.BadRequest('Email address %s is in an invalid format.'
                                             % emailaddress[0])
-            if emailaddress !=user.emails and self.osisuser.search({'emails': emailaddress})[1:]:
+            if emailaddress != user.emails and self.osisuser.search({'emails': emailaddress})[1:]:
                 raise exceptions.Conflict('Email address %s is already registered in the '
-                                          'system with a different username' % emailaddress[0])
+                                          'system with a different username.' % emailaddress[0])
             user.emails = emailaddress
 
         user.groups = groups
