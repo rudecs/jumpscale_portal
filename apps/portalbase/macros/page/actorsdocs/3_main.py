@@ -1,6 +1,7 @@
 def main(j, args, params, tags, tasklet):
     page = args.page
     actors = args.tags.tagGet('actors', '')
+    group = args.tags.tagGet('group', '')
 
     page.addCSS('/jslib/swagger/css/typography.css', media='screen')
     page.addCSS('/jslib/swagger/css/reset.css', media='screen')
@@ -28,7 +29,7 @@ def main(j, args, params, tags, tasklet):
     <script type="text/javascript">
     $(function () {
         window.swaggerUi = new SwaggerUi({
-                url:"/restmachine/system/docgenerator/prepareCatalog?actors=%s&format=jsonraw",
+                url:"/restmachine/system/docgenerator/prepareCatalog?actors=%s&group=%s&format=jsonraw",
                 validatorUrl: null,
                 dom_id:"swagger-ui-container",
                 supportHeaderParams: false,
@@ -57,7 +58,7 @@ def main(j, args, params, tags, tasklet):
         });
 
     </script>
-    """ % actors
+    """ % (actors, group)
 
     body = """
     <div class="swagger-section">
