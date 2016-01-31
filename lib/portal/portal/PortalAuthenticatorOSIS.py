@@ -1,5 +1,8 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 import time
+import re
+import random
 
 class PortalAuthenticatorOSIS(object):
 
@@ -35,19 +38,83 @@ class PortalAuthenticatorOSIS(object):
     def userExists(self, user):
         return self._getkey(user, self.osisuser) is not None
 
-    def createUser(self, username, password, email, groups, domain):
+    def _isValidUserName(self, username):
+        r = re.compile('^[a-z0-9]{1,20}$')
+        return r.match(username) is not None
+
+    def _isValidEmailAddress(self, emailaddress):
+        r = re.compile('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$')
+        return r.match(emailaddress) is not None
+
+    def _isValidPassword(self, password):
+        if len(password) < 8 or len (password) > 80:
+            return False
+        return re.search(r"\s",password) is None
+
+    def createUser(self, username, password, emailaddress, groups, domain):
+        if not self._isValidUserName(username):
+            raise exceptions.BadRequest('Username may not exceed 20 characters and may only'
+                                        'contain lower case characters and numbers.')
+        else:
+            if self.osisuser.search({'id': username})[1:]:
+                    raise exceptions.Conflict('Username %s already exists.' % username)
+
+        if not emailaddress:
+            raise exceptions.BadRequest('Email address cannot be empty.')
+        else:
+            if len(emailaddress) != 1:
+                raise exceptions.BadRequest('Only 1 email address is allowed for each user.')
+            if not self._isValidEmailAddress(emailaddress[0]):
+                raise exceptions.BadRequest('Email address %s is in an invalid format.'
+                                            % emailaddress[0])
+            if self.osisuser.search({'emails': emailaddress})[1:]:
+                raise exceptions.Conflict('Email address %s is already registered in the '
+                                          'system.' % emailaddress[0])
+
         user = self.osisuser.new()
         user.id = username
-        if isinstance(groups, basestring):
-            groups = [groups]
         user.groups = groups
-        if isinstance(email, basestring):
-            email = [email]
-        user.emails = email
+        user.emails = emailaddress
         user.domain = domain
+        if not password:
+            password = str(random.random())
+        elif not self._isValidPassword(password):
+            raise exceptions.BadRequest("Password should have at least 8 characters and not more "
+                                        "than 60 characters.")
+
         user.passwd = j.tools.hash.md5_string(password)
         return self.osisuser.set(user)
 
+    def updateUser(self, username, password, emailaddress, groups, domain=None):
+        users = self.osisuser.search({'id': username})[1:]
+        if not users:
+            raise exceptions.NotFound('Could not find user with the username: %s.' % username)
+        else:
+            user = self.osisuser.get(users[0]['guid'])
+
+        if password:
+            if not self._isValidPassword(password):
+                raise exceptions.BadRequest("Password should have at least 8 characters and not "
+                                            "more than 60 characters.")
+            else:
+                user.passwd = j.tools.hash.md5_string(password)
+
+        if emailaddress and emailaddress != ['']:
+            if not self._isValidEmailAddress(emailaddress[0]):
+                raise exceptions.BadRequest('Email address %s is in an invalid format.'
+                                            % emailaddress[0])
+            if emailaddress != user.emails and self.osisuser.search({'emails': emailaddress})[1:]:
+                raise exceptions.Conflict('Email address %s is already registered in the '
+                                          'system with a different username.' % emailaddress[0])
+            user.emails = emailaddress
+
+        user.groups = groups
+
+        if domain:
+            user.domain = domain
+
+        self.osisuser.set(user)
+        return True
 
     def listUsers(self):
         return self.osisuser.simpleSearch({})

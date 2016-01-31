@@ -24,7 +24,7 @@ def main(j, args, params, tags, tasklet):
             e["PATH_INFO"].replace("/rest/", "").strip("/") + "?" + querystr
 
         params.page.addLink(url, url)
-        params.page.addMessage("Be carefull generated key above has been generated for you as administrator.")
+        params.page.addMessage("Be careful generated key above has been generated for you as administrator.")
 
     return params
 

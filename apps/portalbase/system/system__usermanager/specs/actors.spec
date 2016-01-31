@@ -1,6 +1,6 @@
 [actor] @dbtype:fs
-	"""
-	"""
+    """
+    """
     method:userregister
         """
         register a user (can be done by user itself, no existing key or login/passwd is needed)
@@ -24,58 +24,58 @@
         set Groups for a user
         """
         var:username str,,name of user
-        var:groups list,,name of groups @optional
+        var:groups list,,list of groups this user belongs to @optional
         var:password str,,password for user @optional
-		var:emails str,,comma seperated list of emails or list @optional
-		var:domain str,,Domain of user @optional
+        var:emails list,,list of email addresses
+        var:domain str,,Domain of user @optional
 
-	method:delete
-		"""
-		Delete a user
-		"""
-		var:username str,, name of the user
+    method:delete
+        """
+        Delete a user
+        """
+        var:username str,, name of the user
 
     method:create
-		"""
-		create a user
-		"""
+        """
+        create a user
+        """
         var:username str,,name of user
-		var:password str,,passwd
-		var:groups str,,comma separated list of groups this user belongs to @optional
-		var:emails str,,comma separated list of email addresses
-		var:domain str,,domain of user
+        var:password str,,passwd
+        var:groups list,,list of groups this user belongs to @optional
+        var:emails list,,list of email addresses
+        var:domain str,,domain of user
         result:bool    #True if successful, False otherwise
 
     method:authenticate @noauth
-		"""
+        """
         authenticate and return False if not successfull
         otherwise return secret for api
-		"""
+        """
         var:name str,,name
-		var:secret str,,md5 or passwd
+        var:secret str,,md5 or passwd
         #var:refresh bool,False,if True will recreate a new key otherwise will use last key created @optional
         result:str #is key to be used to e.g use the rest interface
 
     method:userexists
-		"""
-		"""
+        """
+        """
         var:name str,,name
         result:bool
 
 
     method:createGroup
-		"""
-		create a group
-		"""
+        """
+        create a group
+        """
         var:name str,,name of group
         var:domain str,,domain of group
         var:description str,,description of group
         result:bool    #True if successful, False otherwise
 
     method:editGroup
-		"""
-		edit a group
-		"""
+        """
+        edit a group
+        """
         var:name str,,name of group
         var:domain str,,domain of group
         var:description str,,description of group
@@ -83,21 +83,21 @@
         result:bool    #True if successful, False otherwise
 
     method:deleteGroup
-		"""
-		delete a group
-		"""
+        """
+        delete a group
+        """
         var:id str,,id/name of group
         result:bool    #True if successful, False otherwise
 
-	method:usergroupsget
-		"""
-		return list of groups in which user is member of
-		"""
-		var:user str,,name of user
+    method:usergroupsget
+        """
+        return list of groups in which user is member of
+        """
+        var:user str,,name of user
         result:list(str)
 
-	method:whoami @noauth
-		"""
-		return username
-		"""
+    method:whoami @noauth
+        """
+        return username
+        """
         result:str
