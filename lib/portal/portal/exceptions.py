@@ -5,7 +5,7 @@ codemapping = httplib.responses.copy()
 codemapping[419] = 'Authentication Timeout'
 
 
-class BaseError(BaseException):
+class BaseError(Exception):
     def __init__(self, code, headers, msg, status=None):
         self.code = code
         self.headers = headers
@@ -13,7 +13,7 @@ class BaseError(BaseException):
         if status is None:
             status = codemapping.get(code, 'Unkonwn')
         self.status = status
-
+        super(BaseError, self).__init__("%s: %s %s" % (code, status, msg))
 
 class Error(BaseError):
     CODE = 500
