@@ -1,5 +1,6 @@
 @@title User: ${id}
 
+{% if id %}
 h2. User: ${id}
 {{user_info: guid:$$id}}
 
@@ -19,3 +20,7 @@ h2. User: ${id}
 |*Authkey*|${authkey} |
 
 {{user_edit: guid:$$id}}
+
+{% else %}
+No user found with id $$id
+{% endif %}

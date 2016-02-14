@@ -104,7 +104,7 @@ class PortalServer:
             if self.authentication_method == 'gitlab':
                 self.auth = PortalAuthenticatorGitlab(instance=self.gitlabinstance)
             else:
-                self.osis = j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
+                self.osis = j.clients.osis.getByInstance(self.hrd.get('instance.param.osis.connection', 'main'))
                 osissession = {
                     'session.type': 'OsisBeaker',
                     'session.namespace_class': OsisBeaker,
