@@ -33,7 +33,7 @@ class PortalRest():
                     ctx.params[key] = int(ctx.params[key])
                 except ValueError:
                     raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
-            elif param['type'] == 'float' and not isinstance(ctx.params[key], (float, types.NoneType)):
+            elif param['type'] == 'float' and not isinstance(ctx.params[key], (float, int, long, types.NoneType)):
                 try:
                     ctx.params[key] = j.basetype.float.fromString(ctx.params[key])
                 except ValueError:
