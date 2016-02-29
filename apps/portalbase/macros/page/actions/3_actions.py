@@ -87,6 +87,8 @@ eg:
                             options.append((value['label'], value['value']))
                         if var['type'] == 'dropdown':
                             popup.addDropdown(label, name, options)
+                        elif var['type'] == 'checkboxes':
+                            popup.addCheckboxes(label, name, options)
                         elif var['type'] == 'radio':
                             popup.addRadio(label, name, options)
                     elif var['type'] in ('text', 'password', 'number'):
