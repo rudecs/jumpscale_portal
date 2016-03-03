@@ -151,8 +151,7 @@ class Popup(object):
             page.addCSS(cssContent=css)
 
         jsLink = '/jslib/old/jquery.form/jquery.form.js'
-        if jsLink not in page.head:
-            page.addJS(jsLink)
+        page.addJS(jsLink, header=False)
 
         js = self.jinja.from_string('''$(function(){
             $(".modal-body-error, .modal-body-message").hide();

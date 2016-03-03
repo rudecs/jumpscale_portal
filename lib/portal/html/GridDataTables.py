@@ -6,12 +6,10 @@ class GridDataTables:
 
     def __init__(self, page, online=False):
         self.page = page
-        if online:
-            self.liblocation = "https://bitbucket.org/incubaid/jumpscale-core-6.0/raw/default/extensions/html/htmllib"
-        else:
-            self.liblocation = "/jslib"
+        self.liblocation = "/jslib"
 
-        self.page.addJS("%s/old/datatables/jquery.dataTables.min.js" % self.liblocation)
+        self.page.addJS("%s/old/datatables/datatables.min.js" % self.liblocation, header=False)
+        self.page.addCSS("%s/old/datatables/datatables.min.css" % self.liblocation)
         self.page.addBootstrap()
         self.page.addTimeStamp()
 
@@ -43,9 +41,6 @@ class GridDataTables:
         import random
         tableid = 'table%s' % random.randint(0, 1000)
 
-        self.page.addCSS("%s/old/datatables/DT_bootstrap.css" % self.liblocation)
-        self.page.addJS("%s/old/datatables/dataTables.bootstrap.js" % self.liblocation)
-        
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
@@ -93,15 +88,13 @@ $fields
         import random
         tableid = 'table%s' % random.randint(0, 1000)
 
-        self.page.addCSS("%s/old/datatables/DT_bootstrap.css" % self.liblocation)
-        self.page.addJS("%s/old/datatables/dataTables.bootstrap.js" % self.liblocation)
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
         "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
         "bServerSide": true,
         "bDestroy": true,
-        "sPaginationType": "bootstrap",
+        "select": true,
         "sAjaxSource": "$url"
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -171,10 +164,7 @@ $fields
         , header=False)
 
     def prepare4DataTables(self, autosort=True, displaylength=None):
-        self.page.addCSS("%s/old/datatables/DT_bootstrap.css" % self.liblocation)
-        self.page.addJS("%s/old/datatables/DT_bootstrap.js"% self.liblocation)
         data = {"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-                "sPaginationType": "bootstrap",
                 "bDestroy": True,
                 "oLanguage": {
                         "sLengthMenu": "_MENU_ records per page"

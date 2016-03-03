@@ -752,25 +752,16 @@ function copyText$id() {
 
         self._hasCharts = True
 
+    def addJQuery(self):
+        self.addJS('/jslib/jquery/jquery-2.2.1.min.js')
+        self.addJS('/jslib/jquery/jquery-migrate-1.2.1.js')
+
     def addBootstrap(self, jquery=True):
-        if self._hasBootstrap:
-            return
+        if jquery:
+            self.addJQuery()
 
-        if jquery and not self._hasJQuery:
-            self.addJS("%s/old/jquery-latest.js" % self.liblocation)
-            self._hasJQuery = True
-
-        if not self._hasBootstrapJS:
-            self.addJS("%s/old/bootstrap/js/bootstrap.js" % self.liblocation)
-            self.addJS("%s/old/jquery.cookie.js" % self.liblocation)
-            self._hasBootstrapJS = True
-
-        if not self._hasBootstrapCSS:
-            self.addCSS("%s/old/bootstrap/css/bootstrap.css" % self.liblocation)
-            self.addCSS("%s/old/bootstrap/css/bootstrap-responsive.css" % self.liblocation)
-            self._hasBootstrapCSS = True
-
-        self._hasBootstrap = True
+        self.addJS('/jslib/bootstrap/js/bootstrap-3-3-6.min.js')
+        self.addCSS('/jslib/bootstrap/css/bootstrap-3-3-6.min.css')
 
     def addBodyAttribute(self, attribute):
         if attribute not in self.bodyattributes:
@@ -810,7 +801,6 @@ function copyText$id() {
     def addExplorer(self, path="", dockey=None, height=500, width=750, readonly=False, tree=False):
 
         if not self._hasJQuery:
-            self.addJS("%s/old/jquery-latest.js" % self.liblocation)
             self._hasJQuery = True
         self.addJS("%s/old/elfinder/jquery-ui.min.js" % self.liblocation)
         self.addCSS("%s/old/elfinder/jquery-ui.css" % self.liblocation)

@@ -4,16 +4,9 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     params.extend(args)
     page.addHTMLHeader('''<link rel="shortcut icon" type="image/png" href="/system/.files/img/favicon.png">''')
-    page.addCSS('/jslib/bootstrap/css/bootstrap-3-3-1.min.css')
     page.addCSS('/jslib/flatui/css/flat-ui.css')
     page.addCSS('/jslib/new-ui/new-ui.css')
     page.addCSS('/jslib/new-ui/oocss.css')
-
-    page.addJS('/jslib/jquery/jquery-2.0.3.min.js')
-    page.addJS('/jslib/jquery/jquery-migrate-1.2.1.js')
-    page.addJS('/jslib/old/jquery.cookie.js')
-    page.addJS('/jslib/bootstrap/js/bootstrap-3-3-2.min.js')
-
 
     page.addJS('/jslib/pnotify/pnotify.js')
     page.addJS('/jslib/pnotify/pnotify.buttons.js')
@@ -24,8 +17,6 @@ def main(j, args, params, tags, tasklet):
         $( function () {
         $('body').addClass('flatTheme');
 
-        $('link[href="/jslib/old/bootstrap/css/bootstrap.css"]').remove();
-        $('link[href="/jslib/old/bootstrap/css/bootstrap-responsive.css"]').remove();
         $('link[href="/jslib/old/breadcrumbs/breadcrumbs.css"]').remove();
         $('link[href="/jslib/swagger/css/reset.css"]').remove();
 
@@ -72,10 +63,6 @@ def main(j, args, params, tags, tasklet):
         }
     });
      ''')
-
-    page.removeJS('/jslib/old/jquery-latest.js')
-    page.removeJS('/jslib/old/bootstrap/js/bootstrap.js')
-    page.removeJS('/jslib/old/jquery.cookie.js')
 
     page.addCSS('/system/.files/css/flatTheme.css')
 
