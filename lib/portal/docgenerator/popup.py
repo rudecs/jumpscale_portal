@@ -16,14 +16,14 @@ class Popup(object):
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
 
-    def addText(self, label, name, required=False, type='text', value='', placeholder=''):
+    def addText(self, label, name, required=False, type='text', value='', placeholder='', step=''):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height" for="${name}">${label}</label>
-                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
+                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}" step="${step}">
               </div>
         ''')
-        content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder)
+        content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder, step=step)
         self.widgets.append(content)
 
 
