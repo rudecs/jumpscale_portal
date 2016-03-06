@@ -34,12 +34,14 @@ eg:
         return params
 
     macrostr = args.macrostr.strip()
+    title = args.getTag('title', 'Action')
+    gridbinding = args.getTag('gridbinding', '').split()
     content = "\n".join(macrostr.split("\n")[1:-1])
 
     if not content:
         return _showexample()
 
-    actionoptions = [('Choose Action', '#')]
+    actionoptions = []
     actions = yaml.load(content)
     if actions == content:
         return _showexample()
@@ -63,17 +65,19 @@ eg:
             if hideon_input in hideon:
                 continue
 
+        action = "$('%s').modal('show');"
+
         if actionurl.startswith("#"):
-            actionoptions.append((display, actionurl[1:]))
+            actionoptions.append((display, action % actionurl))
             continue
         else:
             actionid = "action-%s" % display.replace(' ', '')
             if not hide:
-                actionoptions.append((display, actionid))
+                actionoptions.append((display, action % ('#' + actionid)))
 
         popup = Popup(id=actionid, header="Confirm Action %s" % display, submit_url=actionurl,
                       navigateback=navigateback, reload_on_success=reload,
-                      showresponse=showresponse, clearForm=clearForm)
+                      showresponse=showresponse, clearForm=clearForm, gridbinding=gridbinding)
         if inputs:
             for var in inputs:
                 if isinstance(var, basestring):
@@ -106,19 +110,23 @@ eg:
 
         popup.write_html(page)
 
-    if len(actionoptions) > 1:
-        id = page.addComboBox(actionoptions)
-        page.addJS(None, """
-            $(document).ready(function() {
-                $("#%(id)s").change(function () {
-                     var actionid = $("#%(id)s").val();
-                     $("#%(id)s").val('#');
-                     if (actionid != '#'){
-                        $('#'+actionid).modal('show');
-                     }
-                });
-            });
-            """ % ({'id':id}))
+    if len(actionoptions) >= 1:
+        actionsid = None
+        if gridbinding:
+            actionsid = "actions_%s" % gridbinding[0]
+            jscontent = """
+    $(document).on('init.dt', function(e, settings) {
+        var actionid = '#actions_' + settings.sTableId;
+        var action = $(actionid);
+        if (action) {
+            action.css('margin-left', '10px');
+            var container = '#' + settings.sTableId + '_length';
+            $(container).append(action);
+        }
+    });
+"""
+            page.addDocumentReadyJSfunction(jscontent)
+        page.addBootstrapCombo(title, actionoptions, actionsid)
     params.result = page
 
     return params

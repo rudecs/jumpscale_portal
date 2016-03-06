@@ -1,7 +1,7 @@
 import json
 
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=False):
+    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=False, gridbinding=None):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
@@ -12,6 +12,7 @@ class Popup(object):
         self.reload_on_success = reload_on_success
         self.navigateback = navigateback
         self.clearForm = clearForm
+        self.gridbinding = gridbinding
 
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
@@ -114,6 +115,10 @@ class Popup(object):
         {% for key, value in data.iteritems() -%}
             data-${key}="${value}"
         {%- endfor %}
+        {% if gridbinding -%}
+            data-gridbinding-name="${gridbinding[0]}"
+            data-gridbinding-value="${gridbinding[1]}"
+        {%- endif %}
         >
             <div id="${id}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="${id}Label" aria-hidden="true">
                 <div class="modal-content">
@@ -143,13 +148,13 @@ class Popup(object):
                 'reload': json.dumps(self.reload_on_success),
                 'showresponse': json.dumps(self.showresponse),
                 'navigateback': json.dumps(self.navigateback)}
+        gridbinding = self.gridbinding or {}
         content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout,
-                                widgets=self.widgets, submit_url=self.submit_url, clearForm=self.clearForm, data=data)
+                                widgets=self.widgets, submit_url=self.submit_url, clearForm=self.clearForm, data=data, gridbinding=gridbinding)
 
         css = '.modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
         if css not in page.head:
             page.addCSS(cssContent=css)
-
         jsLink = '/jslib/old/jquery.form/jquery.form.js'
         page.addJS(jsLink, header=False)
 
@@ -173,6 +178,14 @@ class Popup(object):
                             formData.push({'name': name, 'value': extradata[name]});
                         }
                     }
+                    $form.find('.form-grid-data').each(function () {
+                        var name = $(this).data('name');
+                        var gridid = $(this).data('value');
+                        var rows = $(gridid).DataTable().rows({ selected: true}).data() || [];
+                        for (var i = 0; i < rows.length; i++) {
+                            formData.push({'name': name, 'value': rows[i][0]});
+                        }
+                    });
                     $form.find('.modal-footer > .btn-primary').button('loading');
                     $form.find("input,select,textarea").prop("disabled", true)
                 },

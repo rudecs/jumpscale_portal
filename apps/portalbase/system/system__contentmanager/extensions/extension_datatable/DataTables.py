@@ -153,9 +153,9 @@ class DataTables():
         result["sEcho"] = int(kwargs.get('sEcho', 1))
         result["iTotalRecords"] = total
         result["iTotalDisplayRecords"] = total
-        result["aaData"] = []
+        result["data"] = []
         for row in inn:
-            r = []
+            r = [row.get('id', 'NA')]
             for field, fieldid in zip(fieldvalues, fieldids):
                 if field in row:
                     r.append(row[field])
@@ -170,6 +170,6 @@ class DataTables():
                     field = Confluence2HTML.findLinks(field)
                     r.append(field)
 
-            result["aaData"].append(r)
+            result["data"].append(r)
 
         return result

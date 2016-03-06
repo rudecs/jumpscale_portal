@@ -6,6 +6,7 @@ class GridDataTables:
 
     def __init__(self, page, online=False):
         self.page = page
+        self._tableids = set()
         self.liblocation = "/jslib"
 
         self.page.addJS("%s/old/datatables/datatables.min.js" % self.liblocation, header=False)
@@ -35,7 +36,8 @@ class GridDataTables:
         url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
         if not fieldnames:
             fieldnames = fieldids
-        return self.addTableFromURL(url, fieldnames)
+        tableid = 'table_%s_%s' % (namespace, category)
+        return self.addTableFromURL(url, fieldnames, tableid)
 
     def addTableFromData(self, data, fieldnames):
         import random
@@ -44,11 +46,16 @@ class GridDataTables:
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
-        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": false,
         "bDestroy": true,
         "sPaginationType": "bootstrap",
-        "aaData": %s
+        "render" : {
+            "_": "plain",
+            "filter": "filter",
+            "display": "display"
+        },
+        "data": %s
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
         "sWrapper": "dataTables_wrapper form-inline"
@@ -84,17 +91,23 @@ $fields
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addTableFromURL(self, url, fieldnames):
+    def addTableFromURL(self, url, fieldnames, tableid=None):
         import random
-        tableid = 'table%s' % random.randint(0, 1000)
+        tableid = tableid or 'table'
+        basename = tableid
+        counter = 1
+        while tableid in self._tableids:
+            tableid = "%s_%" % counter
+            counter += 1
 
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
-        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": true,
         "bDestroy": true,
-        "select": true,
+        "select": "rows",
+        "columnDefs": [{"targets": [0], "visible": false}],
         "sAjaxSource": "$url"
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -125,6 +138,7 @@ $fields
 </div>"""
 
         fieldstext = ""
+        fieldnames.insert(0, "id")
         for name in fieldnames:
             classname = re.sub('[^\w]', '', name)
             fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname,name)
@@ -164,7 +178,7 @@ $fields
         , header=False)
 
     def prepare4DataTables(self, autosort=True, displaylength=None):
-        data = {"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        data = {"sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
                 "bDestroy": True,
                 "oLanguage": {
                         "sLengthMenu": "_MENU_ records per page"
