@@ -119,9 +119,28 @@ eg:
         var actionid = '#actions_' + settings.sTableId;
         var action = $(actionid);
         if (action) {
-            action.css('margin-left', '10px');
+            action.css('margin', '10px');
             var container = '#' + settings.sTableId + '_length';
             $(container).append(action);
+            var tableid = '#' + settings.sTableId;
+            var table = $(tableid);
+            if (table.dataTable().fnSettings().oInit.select) {
+                var link = $('<a href="#">Select All</a>');
+                var selected = false;
+                link.click(function (e) {
+                    e.preventDefault();
+                    var rows = table.DataTable().rows();
+                    if (!selected) {
+                        rows.select();
+                        $(this).text('Clear Selection');
+                    } else {
+                        rows.deselect();
+                        $(this).text('Select All');
+                    }
+                    selected = !selected;
+                });
+                $(container).append(link);
+            }
         }
     });
 """

@@ -24,7 +24,7 @@ class GridDataTables:
             return ''
         return '<div class="jstimestamp" data-ts="%s" data-timeonly="true"></div>' % row[field]
 
-    def addTableForModel(self, namespace, category, fieldids, fieldnames=None, fieldvalues=None, filters=None, nativequery=None):
+    def addTableForModel(self, namespace, category, fieldids, fieldnames=None, fieldvalues=None, filters=None, nativequery=None, selectable=False):
         """
         @param namespace: namespace of the model
         @param cateogry: cateogry of the model
@@ -37,7 +37,7 @@ class GridDataTables:
         if not fieldnames:
             fieldnames = fieldids
         tableid = 'table_%s_%s' % (namespace, category)
-        return self.addTableFromURL(url, fieldnames, tableid)
+        return self.addTableFromURL(url, fieldnames, tableid, selectable)
 
     def addTableFromData(self, data, fieldnames):
         import random
@@ -91,7 +91,7 @@ $fields
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addTableFromURL(self, url, fieldnames, tableid=None):
+    def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False):
         import random
         tableid = tableid or 'table'
         basename = tableid
@@ -106,7 +106,7 @@ $(document).ready(function() {
         "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": true,
         "bDestroy": true,
-        "select": "rows",
+        "select": $selectable,
         "columnDefs": [{"targets": [0], "visible": false}],
         "sAjaxSource": "$url"
     } );
@@ -116,6 +116,7 @@ $(document).ready(function() {
 } );"""
         C = C.replace("$url", url)
         C = C.replace("$tableid", tableid)
+        C = C.replace("$selectable", json.dumps(selectable))
         self.page.addJS(jsContent=C, header=False)
 
 #<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
