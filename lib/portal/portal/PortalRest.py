@@ -3,6 +3,7 @@ from JumpScale.portal.portal import exceptions
 from JumpScale.grid.serverbase.Exceptions import RemoteException
 import urllib
 import types
+import re
 
 class PortalRest():
 
@@ -19,7 +20,18 @@ class PortalRest():
             ctx.start_response('401 Unauthorized', [])
             return False, msg
 
+        convertermap = {'int': (int, j.basetype.integer.fromString),
+                        'float': (float, j.basetype.float.fromString),
+                        'bool': (bool, j.basetype.boolean.fromString)
+                        }
         params = self.ws.routes[ctx.path]['params']
+        def loadList(key):
+            if isinstance(ctx.params[key], (list, types.NoneType)):
+                return
+            try:
+                ctx.params[key] = j.basetype.list.fromString(ctx.params[key])
+            except ValueError:
+                raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
 
         for key, param in params.iteritems():
             if key not in ctx.params:
@@ -28,26 +40,27 @@ class PortalRest():
                     ctx.params[key] = param['default']
                 else:
                     raise exceptions.BadRequest('Param with name:%s is missing.' % key)
-            elif param['type'] == 'int' and not isinstance(ctx.params[key], (int, types.NoneType)):
+            elif param['type'] in convertermap:
+                type_, converter = convertermap[param['type']]
+                if isinstance(ctx.params[key], (type_, types.NoneType)):
+                    continue
                 try:
-                    ctx.params[key] = int(ctx.params[key])
+                    ctx.params[key] = converter(ctx.params[key])
                 except ValueError:
                     raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
-            elif param['type'] == 'float' and not isinstance(ctx.params[key], (float, int, long, types.NoneType)):
-                try:
-                    ctx.params[key] = j.basetype.float.fromString(ctx.params[key])
-                except ValueError:
-                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
-            elif param['type'] == 'bool' and not isinstance(ctx.params[key], (bool, types.NoneType)):
-                try:
-                    ctx.params[key] = j.basetype.boolean.fromString(ctx.params[key])
-                except ValueError:
-                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
-            elif param['type'] == 'list' and not isinstance(ctx.params[key], (list, types.NoneType)):
-                try:
-                    ctx.params[key] = j.basetype.list.fromString(ctx.params[key])
-                except ValueError:
-                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+            elif param['type'] == 'list':
+                loadList(key)
+            elif param['type'] in ['list(int)', 'list(bool)', 'list(float)']:
+                loadList(key)
+                m = re.search("list\((?P<type>\w+)\)", param['type'])
+                if not m:
+                    continue
+                type_, converter = convertermap[m.group('type')]
+                for i in xrange(len(ctx.params[key])):
+                    try:
+                        ctx.params[key][i] = converter(ctx.params[key][i])
+                    except ValueError:
+                        raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
 
         return True, ""
 
