@@ -58,7 +58,9 @@ class PortalRest():
                 type_, converter = convertermap[m.group('type')]
                 for i in xrange(len(ctx.params[key])):
                     try:
-                        ctx.params[key][i] = converter(ctx.params[key][i])
+                        if not isinstance(ctx.params[key][i], type_):
+                            ctx.params[key][i] = converter(ctx.params[key][i])
+
                     except ValueError:
                         raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
 
