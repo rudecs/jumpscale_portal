@@ -178,14 +178,16 @@ class Popup(object):
                             formData.push({'name': name, 'value': extradata[name]});
                         }
                     }
-                    $form.find('.form-grid-data').each(function () {
-                        var name = $(this).data('name');
-                        var gridid = $(this).data('value');
+
+                    var gridid = $form.data('gridbinding-name');
+                    if (gridid) {
+                        gridid = '#' + gridid;
+                        var name = $form.data('gridbinding-value');
                         var rows = $(gridid).DataTable().rows({ selected: true}).data() || [];
                         for (var i = 0; i < rows.length; i++) {
                             formData.push({'name': name, 'value': rows[i][0]});
                         }
-                    });
+                    }
                     $form.find('.modal-footer > .btn-primary').button('loading');
                     $form.find("input,select,textarea").prop("disabled", true)
                 },
