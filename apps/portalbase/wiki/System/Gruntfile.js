@@ -8,29 +8,17 @@ module.exports = function(grunt) {
           }
         }
     },
-    cssmin: {
-        target: {
-          files: [{
-            expand: true,
-            cwd: 'assets/css',
-            src: ['*.css', '!*.min.css'],
-            dest: 'dist/css',
-            ext: '.min.css'
-          }]
-        }
-    },
     watch: {
-        tasks: ["less", "cssmin"],
+        tasks: ["less"],
         options: {
           livereload: true,
         },
-        files: "assets/less/*"
+        files: ".files/less/*"
     },
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   grunt.registerTask('default', ['watch']);
 
