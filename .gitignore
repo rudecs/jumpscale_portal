@@ -51,3 +51,6 @@ target/
 .pydevproject
 .project
 .settings
+
+# Node modules
+apps/portalbase/wiki/System/node_modules/*
