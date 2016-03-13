@@ -1,6 +1,6 @@
 @usedefaults
 
-{{actions:
+{{actions: title:'Actions' gridbinding:'table_system_log logids'
 - display: Purge
   action: /restmachine/system/log/purge
   input:

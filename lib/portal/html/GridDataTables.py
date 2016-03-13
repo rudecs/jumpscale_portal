@@ -6,12 +6,11 @@ class GridDataTables:
 
     def __init__(self, page, online=False):
         self.page = page
-        if online:
-            self.liblocation = "https://bitbucket.org/incubaid/jumpscale-core-6.0/raw/default/extensions/html/htmllib"
-        else:
-            self.liblocation = "/jslib"
+        self._tableids = set()
+        self.liblocation = "/jslib"
 
-        self.page.addJS("%s/old/datatables/jquery.dataTables.min.js" % self.liblocation)
+        self.page.addJS("%s/old/datatables/datatables.min.js" % self.liblocation, header=False)
+        self.page.addCSS("%s/old/datatables/datatables.min.css" % self.liblocation)
         self.page.addBootstrap()
         self.page.addTimeStamp()
 
@@ -25,7 +24,7 @@ class GridDataTables:
             return ''
         return '<div class="jstimestamp" data-ts="%s" data-timeonly="true"></div>' % row[field]
 
-    def addTableForModel(self, namespace, category, fieldids, fieldnames=None, fieldvalues=None, filters=None, nativequery=None):
+    def addTableForModel(self, namespace, category, fieldids, fieldnames=None, fieldvalues=None, filters=None, nativequery=None, selectable=False):
         """
         @param namespace: namespace of the model
         @param cateogry: cateogry of the model
@@ -37,23 +36,26 @@ class GridDataTables:
         url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
         if not fieldnames:
             fieldnames = fieldids
-        return self.addTableFromURL(url, fieldnames)
+        tableid = 'table_%s_%s' % (namespace, category)
+        return self.addTableFromURL(url, fieldnames, tableid, selectable)
 
     def addTableFromData(self, data, fieldnames):
         import random
         tableid = 'table%s' % random.randint(0, 1000)
 
-        self.page.addCSS("%s/old/datatables/DT_bootstrap.css" % self.liblocation)
-        self.page.addJS("%s/old/datatables/dataTables.bootstrap.js" % self.liblocation)
-        
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
-        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": false,
         "bDestroy": true,
         "sPaginationType": "bootstrap",
-        "aaData": %s
+        "render" : {
+            "_": "plain",
+            "filter": "filter",
+            "display": "display"
+        },
+        "data": %s
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
         "sWrapper": "dataTables_wrapper form-inline"
@@ -89,19 +91,23 @@ $fields
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addTableFromURL(self, url, fieldnames):
+    def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False):
         import random
-        tableid = 'table%s' % random.randint(0, 1000)
+        tableid = tableid or 'table'
+        basename = tableid
+        counter = 1
+        while tableid in self._tableids:
+            tableid = "%s_%" % counter
+            counter += 1
 
-        self.page.addCSS("%s/old/datatables/DT_bootstrap.css" % self.liblocation)
-        self.page.addJS("%s/old/datatables/dataTables.bootstrap.js" % self.liblocation)
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
-        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": true,
         "bDestroy": true,
-        "sPaginationType": "bootstrap",
+        "select": $selectable,
+        "columnDefs": [{"targets": [0], "visible": false}],
         "sAjaxSource": "$url"
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -110,6 +116,7 @@ $(document).ready(function() {
 } );"""
         C = C.replace("$url", url)
         C = C.replace("$tableid", tableid)
+        C = C.replace("$selectable", json.dumps(selectable))
         self.page.addJS(jsContent=C, header=False)
 
 #<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
@@ -132,6 +139,7 @@ $fields
 </div>"""
 
         fieldstext = ""
+        fieldnames.insert(0, "id")
         for name in fieldnames:
             classname = re.sub('[^\w]', '', name)
             fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname,name)
@@ -171,10 +179,7 @@ $fields
         , header=False)
 
     def prepare4DataTables(self, autosort=True, displaylength=None):
-        self.page.addCSS("%s/old/datatables/DT_bootstrap.css" % self.liblocation)
-        self.page.addJS("%s/old/datatables/DT_bootstrap.js"% self.liblocation)
-        data = {"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-                "sPaginationType": "bootstrap",
+        data = {"sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
                 "bDestroy": True,
                 "oLanguage": {
                         "sLengthMenu": "_MENU_ records per page"

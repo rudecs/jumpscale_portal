@@ -53,7 +53,7 @@ class PortalAuthenticatorOSIS(object):
 
     def createUser(self, username, password, emailaddress, groups, domain):
         if not self._isValidUserName(username):
-            raise exceptions.BadRequest('Username may not exceed 20 characters and may only'
+            raise exceptions.BadRequest('Username may not exceed 20 characters and may only '
                                         'contain lower case characters and numbers.')
         else:
             if self.osisuser.search({'id': username})[1:]:

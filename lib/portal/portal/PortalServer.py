@@ -1105,7 +1105,7 @@ class PortalServer:
                 try:
                     j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
                 except Exception, e:
-                    raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
+                    self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)
 
         elif match == "rest":

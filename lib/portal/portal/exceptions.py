@@ -5,7 +5,7 @@ codemapping = httplib.responses.copy()
 codemapping[419] = 'Authentication Timeout'
 
 
-class BaseError(Exception):
+class BaseError(BaseException):
     def __init__(self, code, headers, msg, status=None):
         self.code = code
         self.headers = headers

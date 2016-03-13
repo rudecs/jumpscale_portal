@@ -1,7 +1,7 @@
 import json
 
 class Popup(object):
-    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=False):
+    def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=False, gridbinding=None):
         self.widgets = []
         self.id = id
         self.form_layout = form_layout
@@ -12,18 +12,19 @@ class Popup(object):
         self.reload_on_success = reload_on_success
         self.navigateback = navigateback
         self.clearForm = clearForm
+        self.gridbinding = gridbinding
 
         import jinja2
         self.jinja = jinja2.Environment(variable_start_string="${", variable_end_string="}")
 
-    def addText(self, label, name, required=False, type='text', value='', placeholder=''):
+    def addText(self, label, name, required=False, type='text', value='', placeholder='', step=''):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height" for="${name}">${label}</label>
-                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
+                <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}" step="${step}">
               </div>
         ''')
-        content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder)
+        content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder, step=step)
         self.widgets.append(content)
 
 
@@ -114,6 +115,10 @@ class Popup(object):
         {% for key, value in data.iteritems() -%}
             data-${key}="${value}"
         {%- endfor %}
+        {% if gridbinding -%}
+            data-gridbinding-name="${gridbinding[0]}"
+            data-gridbinding-value="${gridbinding[1]}"
+        {%- endif %}
         >
             <div id="${id}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="${id}Label" aria-hidden="true">
                 <div class="modal-content">
@@ -143,16 +148,15 @@ class Popup(object):
                 'reload': json.dumps(self.reload_on_success),
                 'showresponse': json.dumps(self.showresponse),
                 'navigateback': json.dumps(self.navigateback)}
+        gridbinding = self.gridbinding or {}
         content = template.render(id=self.id, header=self.header, action_button=self.action_button, form_layout=self.form_layout,
-                                widgets=self.widgets, submit_url=self.submit_url, clearForm=self.clearForm, data=data)
+                                widgets=self.widgets, submit_url=self.submit_url, clearForm=self.clearForm, data=data, gridbinding=gridbinding)
 
         css = '.modal-header-text { font-weight: bold; font-size: 24.5px; line-height: 30px; }'
         if css not in page.head:
             page.addCSS(cssContent=css)
-
         jsLink = '/jslib/old/jquery.form/jquery.form.js'
-        if jsLink not in page.head:
-            page.addJS(jsLink)
+        page.addJS(jsLink, header=False)
 
         js = self.jinja.from_string('''$(function(){
             $(".modal-body-error, .modal-body-message").hide();
@@ -172,6 +176,16 @@ class Popup(object):
                     if (extradata) {
                         for (var name in extradata) {
                             formData.push({'name': name, 'value': extradata[name]});
+                        }
+                    }
+
+                    var gridid = $form.data('gridbinding-name');
+                    if (gridid) {
+                        gridid = '#' + gridid;
+                        var name = $form.data('gridbinding-value');
+                        var rows = $(gridid).DataTable().rows({ selected: true}).data() || [];
+                        for (var i = 0; i < rows.length; i++) {
+                            formData.push({'name': name, 'value': rows[i][0]});
                         }
                     }
                     $form.find('.modal-footer > .btn-primary').button('loading');

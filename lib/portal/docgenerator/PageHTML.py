@@ -7,6 +7,7 @@ try:
 except:
     import json
 import inspect
+import jinja2
 
 class PageHTML(Page):
 
@@ -22,6 +23,7 @@ class PageHTML(Page):
 
         #self.title = "<title>%s</title>\n" % name
         self.title = ""
+        self.jenv = jinja2.Environment(variable_start_string="${", variable_end_string="}")
         self.head = ""
         self.tail = []
         self.libs = ""
@@ -306,6 +308,24 @@ class PageHTML(Page):
             return id
         else:
             return ''
+
+    def addBootstrapCombo(self, title, items, id=None):
+        self.addBootstrap()
+        html = """
+<div class="btn-group" ${id}>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      ${title}<span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {% for name, action in items %}
+    <li><a href="javascript:void(0)" onclick="${action}">${name}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+"""
+        id = 'id="%s"' % id if id else ''
+        html = self.jenv.from_string(html).render(items=items, title=title, id=id)
+        self.addHTML(html)
 
 
     def addActionBox(self, actions):
@@ -752,25 +772,16 @@ function copyText$id() {
 
         self._hasCharts = True
 
+    def addJQuery(self):
+        self.addJS('/jslib/jquery/jquery-2.2.1.min.js')
+        self.addJS('/jslib/jquery/jquery-migrate-1.2.1.js')
+
     def addBootstrap(self, jquery=True):
-        if self._hasBootstrap:
-            return
+        if jquery:
+            self.addJQuery()
 
-        if jquery and not self._hasJQuery:
-            self.addJS("%s/old/jquery-latest.js" % self.liblocation)
-            self._hasJQuery = True
-
-        if not self._hasBootstrapJS:
-            self.addJS("%s/old/bootstrap/js/bootstrap.js" % self.liblocation)
-            self.addJS("%s/old/jquery.cookie.js" % self.liblocation)
-            self._hasBootstrapJS = True
-
-        if not self._hasBootstrapCSS:
-            self.addCSS("%s/old/bootstrap/css/bootstrap.css" % self.liblocation)
-            self.addCSS("%s/old/bootstrap/css/bootstrap-responsive.css" % self.liblocation)
-            self._hasBootstrapCSS = True
-
-        self._hasBootstrap = True
+        self.addJS('/jslib/bootstrap/js/bootstrap-3-3-6.min.js')
+        self.addCSS('/jslib/bootstrap/css/bootstrap-3-3-6.min.css')
 
     def addBodyAttribute(self, attribute):
         if attribute not in self.bodyattributes:
@@ -810,7 +821,6 @@ function copyText$id() {
     def addExplorer(self, path="", dockey=None, height=500, width=750, readonly=False, tree=False):
 
         if not self._hasJQuery:
-            self.addJS("%s/old/jquery-latest.js" % self.liblocation)
             self._hasJQuery = True
         self.addJS("%s/old/elfinder/jquery-ui.min.js" % self.liblocation)
         self.addCSS("%s/old/elfinder/jquery-ui.css" % self.liblocation)

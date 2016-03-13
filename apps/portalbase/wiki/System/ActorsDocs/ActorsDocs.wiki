@@ -1,6 +1,6 @@
 h2. Actors Documentation
 
-h4. Actors are restful API interfaces that are used to run backend tasks, in response to a message that it receives, an actor can make local decisions, create more actors, send more messages, and determine how to respond to the next message received. there functionality is tested through the UI of swagger 
+Actors are restful API interfaces that are used to run backend tasks, in response to a message that it receives, an actor can make local decisions, create more actors, send more messages, and determine how to respond to the next message received. there functionality is tested through the UI of swagger
 
 h3. The links below show the actors' groups, divided according to app name 
 

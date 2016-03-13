@@ -1,6 +1,6 @@
 @usedefaults
 
-{{actions:
+{{actions: gridbinding:'table_system_job jobids'
 - display: Purge
   action: /restmachine/system/job/purge
   input:
