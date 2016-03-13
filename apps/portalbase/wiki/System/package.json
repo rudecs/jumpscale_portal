@@ -1,0 +1,25 @@
+{
+  "name": "jumpscale_portal",
+  "version": "1.0.0",
+  "description": "[![Build Status](http://ci.codescalers.com/buildStatus/icon?job=Jumpscale7-web-build)](http://ci.codescalers.com/job/Jumpscale7-web-build/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jumpscale7/jumpscale_portal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-cssmin": "^0.14.0",
+    "grunt-contrib-less": "^1.2.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "bugs": {
+    "url": "https://github.com/jumpscale7/jumpscale_portal/issues"
+  },
+  "homepage": "https://github.com/jumpscale7/jumpscale_portal#readme"
+}
