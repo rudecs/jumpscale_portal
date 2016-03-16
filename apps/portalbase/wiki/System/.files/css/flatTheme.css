@@ -664,6 +664,9 @@ div.jgauge {
 .ui-pnotify-title {
   font-size: 18px !important;
 }
+.status-label {
+  width: 62px;
+}
 /*Imported from flat ui css*/
 .dropdown-arrow-inverse {
   border-bottom-color: #345E79 !important;

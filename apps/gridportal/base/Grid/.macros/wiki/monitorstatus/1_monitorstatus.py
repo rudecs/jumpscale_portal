@@ -19,7 +19,7 @@ def main(j, args, params, tags, tasklet):
                 'ERROR': 'danger'}
 
     def makeStatusLabel(status, guid=None):
-        html = '<span class="label label-%s pull-right">%s</span>' % (classmap.get(status, 'default'), status)
+        html = '<span class="label label-%s pull-right status-label">%s</span>' % (classmap.get(status, 'default'), status)
         if guid:
             html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
         return html
@@ -52,7 +52,9 @@ def main(j, args, params, tags, tasklet):
                 else:
                     interval = ''
 
-                table += '|%s |%s |  %s|{{html: %s}} |\n' % (dataitem.get('message', ''), lastchecked, interval, status)
+                message = dataitem.get('message', '')
+                table += '|{{html: <span title="%(msg)s">%(msg)s</span>}} |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
+                         {'msg': message, 'last': lastchecked, 'interval': interval, 'status': status}
             else:
                 table += dataitem
         html = '''{{html:
