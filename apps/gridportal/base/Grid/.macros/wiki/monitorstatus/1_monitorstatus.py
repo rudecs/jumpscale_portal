@@ -1,7 +1,3 @@
-import JumpScale.grid.gridhealthchecker
-import JumpScale.baselib.units
-import JumpScale.baselib.redis
-import ujson
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
@@ -28,6 +24,16 @@ def main(j, args, params, tags, tasklet):
     _, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(results)
 
     out.append('Node was last checked at: {{ts:%s}}' % oldestdate)
+    out.append('''
+{{jscript:
+$(function () {
+    $('#accordion td:first-child').each(function() {
+        var $this = $(this);
+        $this.attr('title', $this.text());
+    });
+});
+}}
+''')
 
     out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
     noderesults = results.get(nidint, dict())
@@ -53,7 +59,7 @@ def main(j, args, params, tags, tasklet):
                     interval = ''
 
                 message = dataitem.get('message', '')
-                table += '|{{html: <span title="%(msg)s">%(msg)s</span>}} |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
+                table += '|%(msg)s |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
                          {'msg': message, 'last': lastchecked, 'interval': interval, 'status': status}
             else:
                 table += dataitem
