@@ -42,11 +42,13 @@ $(function () {
         headingid = 'heading_%s' % category
         table = "||Message||Last Executed||Interval||Status||\n"
         categorystatus = "OK"
+        skipcount = 0
         for dataitem in data:
             if isinstance(dataitem, dict):
                 status = dataitem.get('state')
-                wikistatus = j.core.grid.healthchecker.getWikiStatus(status)
-                if categorystatus != 'ERROR' and status !='OK':
+                if status == 'SKIPPED':
+                    skipcount += 1
+                if categorystatus != 'ERROR' and status not in ['OK', 'SKIPPED']:
                     categorystatus = status
                 lastchecked = dataitem.get('lastchecked', '')
                 status = makeStatusLabel(status, dataitem.get('guid'))
@@ -63,6 +65,8 @@ $(function () {
                          {'msg': message, 'last': lastchecked, 'interval': interval, 'status': status}
             else:
                 table += dataitem
+        if skipcount == len(data):
+            categorystatus = 'SKIPPED'
         html = '''{{html:
 <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="%(headingid)s">
