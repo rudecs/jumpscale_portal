@@ -52,17 +52,24 @@ class Events(object):
         qkey = self.redis.getQueue(EVENTKEY % (count - 100)).key
         self.redis.delete(qkey)
 
-    def runAsync(self, func, args, kwargs, title, success, error):
+    def runAsync(self, func, args, kwargs, title, success, error, errorcb=None, successcb=None):
         def runner():
             try:
                 func(*args, **kwargs)
             except (Exception, exceptions.BaseError),  e:
+                if errorcb:
+                    try:
+                        errorcb()
+                    except:
+                        pass
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 errormsg = error + "</br> For more info check <a href='/grid/error condition?id=%s'>error</a> details" % eco.guid
                 self.sendMessage(title, errormsg, 'error', hide=False)
                 return
             refreshhint = self.ctx.env.get('HTTP_REFERER')
             self.sendMessage(title, success, 'success', refresh_hint=refreshhint)
+            if successcb:
+                successcb()
         self.sendMessage(title, 'Started')
         gevent.spawn(runner)
 
