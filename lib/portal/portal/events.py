@@ -57,12 +57,12 @@ class Events(object):
             try:
                 func(*args, **kwargs)
             except (Exception, exceptions.BaseError),  e:
+                eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 if errorcb:
                     try:
-                        errorcb()
+                        errorcb(eco)
                     except:
                         pass
-                eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 errormsg = error + "</br> For more info check <a href='/grid/error condition?id=%s'>error</a> details" % eco.guid
                 self.sendMessage(title, errormsg, 'error', hide=False)
                 return
