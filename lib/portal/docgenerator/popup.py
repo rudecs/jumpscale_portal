@@ -137,7 +137,7 @@ class Popup(object):
                     </div>
                   </div>
                   <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn" data-dismiss="modal" type="button" aria-hidden="true">Close</button>
                     <button class="btn btn-primary" data-loading-text="Loading...">${action_button}</button>
                   </div>
                 </div>

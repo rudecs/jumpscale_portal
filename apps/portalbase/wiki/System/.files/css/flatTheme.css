@@ -164,6 +164,7 @@ body input[type=text]:focus {
 }
 .dropdown-menu li:hover a {
   color: #ffffff !important;
+  background: transparent;
 }
 .nav-header,
 .nav-header:hover {
@@ -663,6 +664,9 @@ div.jgauge {
 }
 .ui-pnotify-title {
   font-size: 18px !important;
+}
+.status-label {
+  width: 62px;
 }
 /*Imported from flat ui css*/
 .dropdown-arrow-inverse {

@@ -51,6 +51,8 @@ class PortalRest():
             elif param['type'] == 'list':
                 loadList(key)
             elif param['type'] in ['list(int)', 'list(bool)', 'list(float)']:
+                if ctx.params[key] is None:
+                    continue
                 loadList(key)
                 m = re.search("list\((?P<type>\w+)\)", param['type'])
                 if not m:

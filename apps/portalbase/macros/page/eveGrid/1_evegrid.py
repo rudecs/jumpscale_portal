@@ -37,7 +37,6 @@ def main(j, args, params, tags, tasklet):
         page.addCSS('/jslib/bootstrap/css/bootstrap-datetimepicker.min.css')        
         page.addJS('/jslib/jquery/jqueryDataTable/js/jquery.dataTables.js')
         page.addJS('/jslib/angular/angular1-3-0.min.js')
-        page.addJS('/jslib/bootstrap/js/bootstrap.min.js')
         page.addJS('/jslib/underscore/underscore-min.js')
         page.addJS('/jslib/jquery/jqueryDataTable/js/dataTables.bootstrap.js')
         page.addJS('/jslib/moment.js')

@@ -1,7 +1,3 @@
-import JumpScale.grid.gridhealthchecker
-import JumpScale.baselib.units
-import JumpScale.baselib.redis
-import ujson
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
@@ -19,7 +15,7 @@ def main(j, args, params, tags, tasklet):
                 'ERROR': 'danger'}
 
     def makeStatusLabel(status, guid=None):
-        html = '<span class="label label-%s pull-right">%s</span>' % (classmap.get(status, 'default'), status)
+        html = '<span class="label label-%s pull-right status-label">%s</span>' % (classmap.get(status, 'default'), status)
         if guid:
             html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
         return html
@@ -28,6 +24,16 @@ def main(j, args, params, tags, tasklet):
     _, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(results)
 
     out.append('Node was last checked at: {{ts:%s}}' % oldestdate)
+    out.append('''
+{{jscript:
+$(function () {
+    $('#accordion td:first-child').each(function() {
+        var $this = $(this);
+        $this.attr('title', $this.text());
+    });
+});
+}}
+''')
 
     out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
     noderesults = results.get(nidint, dict())
@@ -36,11 +42,13 @@ def main(j, args, params, tags, tasklet):
         headingid = 'heading_%s' % category
         table = "||Message||Last Executed||Interval||Status||\n"
         categorystatus = "OK"
+        skipcount = 0
         for dataitem in data:
             if isinstance(dataitem, dict):
                 status = dataitem.get('state')
-                wikistatus = j.core.grid.healthchecker.getWikiStatus(status)
-                if categorystatus != 'ERROR' and status !='OK':
+                if status == 'SKIPPED':
+                    skipcount += 1
+                if categorystatus != 'ERROR' and status not in ['OK', 'SKIPPED']:
                     categorystatus = status
                 lastchecked = dataitem.get('lastchecked', '')
                 status = makeStatusLabel(status, dataitem.get('guid'))
@@ -52,9 +60,13 @@ def main(j, args, params, tags, tasklet):
                 else:
                     interval = ''
 
-                table += '|%s |%s |  %s|{{html: %s}} |\n' % (dataitem.get('message', ''), lastchecked, interval, status)
+                message = dataitem.get('message', '')
+                table += '|%(msg)s |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
+                         {'msg': message, 'last': lastchecked, 'interval': interval, 'status': status}
             else:
                 table += dataitem
+        if skipcount == len(data):
+            categorystatus = 'SKIPPED'
         html = '''{{html:
 <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="%(headingid)s">
