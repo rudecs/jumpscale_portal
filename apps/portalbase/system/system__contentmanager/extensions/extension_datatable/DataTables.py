@@ -2,6 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from JumpScale.portal.docgenerator.Confluence2HTML import Confluence2HTML
 import copy
+import cgi
 
 class DataTables():
 
@@ -157,10 +158,9 @@ class DataTables():
         for row in inn:
             r = [row.get('id', 'NA')]
             for field, fieldid in zip(fieldvalues, fieldids):
-                if field in row:
-                    r.append(row[field])
-                elif j.basetype.integer.check(field):
-                    r.append(row[field])
+                if field in row or j.basetype.integer.check(field):
+                    value = row[field]
+                    r.append(value and cgi.escape(value))
                 elif j.basetype.string.check(field):
                     r.append(self.executeMacro(row, field))
                 else:
