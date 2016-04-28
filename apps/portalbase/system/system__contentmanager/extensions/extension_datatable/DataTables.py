@@ -160,7 +160,9 @@ class DataTables():
             for field, fieldid in zip(fieldvalues, fieldids):
                 if field in row or j.basetype.integer.check(field):
                     value = row[field]
-                    r.append(value and cgi.escape(value))
+                    if isinstance(value, basestring):
+                        value = cgi.escape(value)
+                    r.append(value)
                 elif j.basetype.string.check(field):
                     r.append(self.executeMacro(row, field))
                 else:
