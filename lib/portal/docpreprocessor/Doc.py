@@ -224,6 +224,7 @@ class Doc(object):
             page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
 
         page.body = page.body.replace("$$$menuright", "")
+        page.body = page.body.replace("$$$menuleft", "")
         if "todestruct" in doc.__dict__:
             doc.destructed = True
         return str(page)
