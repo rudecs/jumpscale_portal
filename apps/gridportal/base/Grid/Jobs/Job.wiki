@@ -31,7 +31,7 @@ ${resultline}
 {% if backtrace %}
 h4. Backtrace
 {{code:
-${backtrace}
+${backtrace|replace('}}', '\}\}')}
 }}
 {% endif %}
 

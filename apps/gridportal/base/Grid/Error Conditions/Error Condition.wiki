@@ -48,7 +48,7 @@ ${code}
 
 *BackTrace*
 {{code: 
-${backtrace}
+${backtrace|replace('}}', '\}\}')}
 }}
 {% else %}
 Error Condition not found.
