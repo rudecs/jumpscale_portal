@@ -21,7 +21,7 @@ class PortalRest():
             return False, msg
 
         convertermap = {'int': (int, j.basetype.integer.fromString),
-                        'float': (float, j.basetype.float.fromString),
+                        'float': ((float, int), j.basetype.float.fromString),
                         'bool': (bool, j.basetype.boolean.fromString)
                         }
         params = self.ws.routes[ctx.path]['params']
