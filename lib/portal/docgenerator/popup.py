@@ -1,4 +1,11 @@
 import json
+import cgi
+
+def escape_html(val):
+    if isinstance(val, basestring):
+        return cgi.escape(val, True)
+    return val
+
 
 class Popup(object):
     def __init__(self, id, submit_url, header='', action_button='Confirm', form_layout='', reload_on_success=True, navigateback=False, clearForm=True, showresponse=False, gridbinding=None):
@@ -24,7 +31,7 @@ class Popup(object):
                 <input type="${type}" value="${value}", class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}" step="${step}">
               </div>
         ''')
-        content = template.render(label=label, name=name, type=type, value=value, required=required, placeholder=placeholder, step=step)
+        content = template.render(label=label, name=name, type=type, value=escape_html(value), required=required, placeholder=placeholder, step=step)
         self.widgets.append(content)
 
 
