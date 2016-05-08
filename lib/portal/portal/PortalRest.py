@@ -20,9 +20,17 @@ class PortalRest():
             ctx.start_response('401 Unauthorized', [])
             return False, msg
 
-        convertermap = {'int': (int, j.basetype.integer.fromString),
-                        'float': ((float, int), j.basetype.float.fromString),
-                        'bool': (bool, j.basetype.boolean.fromString)
+        def emptyisnone(func):
+            def wrapper(val):
+                if val == '':
+                    return None
+                else:
+                    return func(val)
+            return wrapper
+
+        convertermap = {'int': ((int, types.NoneType), emptyisnone(j.basetype.integer.fromString)),
+                        'float': ((float, int, types.NoneType), emptyisnone(j.basetype.float.fromString)),
+                        'bool': ((bool,  types.NoneType), emptyisnone(j.basetype.boolean.fromString))
                         }
         params = self.ws.routes[ctx.path]['params']
         def loadList(key):
@@ -42,7 +50,7 @@ class PortalRest():
                     raise exceptions.BadRequest('Param with name:%s is missing.' % key)
             elif param['type'] in convertermap:
                 type_, converter = convertermap[param['type']]
-                if isinstance(ctx.params[key], (type_, types.NoneType)):
+                if isinstance(ctx.params[key], type_):
                     continue
                 try:
                     ctx.params[key] = converter(ctx.params[key])
