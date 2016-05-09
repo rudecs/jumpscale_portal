@@ -616,7 +616,7 @@ class PortalServer:
             pathfull = "wiki/System/favicon.ico"
         else:
             if not os.path.abspath(pathfull).startswith(os.path.abspath(wwwroot)):
-                start_response("404 Not found", headers)
+                raise exceptions.NotFound('Not found')
 
         if not j.system.fs.isFile(pathfull):
             if j.system.fs.isFile(pathfull + '.gz') and 'gzip' in environ.get('HTTP_ACCEPT_ENCODING'):
