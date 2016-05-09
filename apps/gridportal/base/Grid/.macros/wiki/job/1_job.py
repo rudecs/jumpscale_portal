@@ -5,15 +5,15 @@ def main(j, args, params, tags, tasklet):
     import urllib
     scl = j.clients.osis.getNamespace('system')
 
+    params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id:
-        out = 'Missing job id param "id"'
-        params.result = (out, args.doc)
+    if not id or not id.isalnum():
+        args.doc.applyTemplate({})
         return params
 
     job = j.apps.system.gridmanager.getJobs(guid=id)
     if not job:
-        params.result = ('Job with id %s not found' % id, args.doc)
+        args.doc.applyTemplate({})
         return params
 
     obj = job[0]
@@ -65,7 +65,6 @@ def main(j, args, params, tags, tasklet):
 
     args.doc.applyTemplate(obj)
 
-    params.result = (args.doc, args.doc)
     return params
 
 

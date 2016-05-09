@@ -2,6 +2,7 @@
 
 {{agentcontroller2job: job:$$job }}
 
+{% if job %}
 h2. Job Details
 
 | *Command* | ${firstjob.cmd} |
@@ -61,3 +62,8 @@ ${result.data}
 {{html
         </div>
         }}
+{% elif agentcontrollererror %}
+Agent controller 2 is not available, are you missing the client?
+{% else %}
+Invalid job id
+{% endif %}

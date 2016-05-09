@@ -12,16 +12,16 @@ def prettify(j, s):
 
 
 def main(j, args, params, tags, tasklet):
+    params.result = (args.doc, args.doc)
     job = args.getTag('job')
 
-    if not job:
-        out = 'Missing job param "job"'
-        params.result = (out, args.doc)
+    if not job or not job.isalnum():
+        args.doc.applyTemplate({})
         return params
 
     clients = j.atyourservice.findServices('jumpscale', 'agentcontroller2_client')
     if not clients:
-        params.result = ('* Agent controller 2 is not available, are you missing the client?', doc)
+        args.doc.applyTemplate({'agentcontrollererror': True})
         return params
 
     instance = clients[0].instance
@@ -34,7 +34,6 @@ def main(j, args, params, tags, tasklet):
 
     args.doc.applyTemplate({'cmdjobs': cmdjobs, 'firstjob': firstjob})
 
-    params.result = (args.doc, args.doc)
     return params
 
 

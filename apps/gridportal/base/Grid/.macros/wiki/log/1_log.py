@@ -1,28 +1,25 @@
 import datetime
 
 def main(j, args, params, tags, tasklet):
+    params.result = (args.doc, args.doc)
     guid = args.getTag('id')
     if not guid:
-        out = 'Missing log guid param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
         return params
 
     logs = j.apps.system.gridmanager.getLogs(guid=guid)
     if not logs:
-        params.result = ('Log with guid %s not found' % guid, args.doc)
+        args.doc.applyTemplate({})
         return params
 
-    def objFetchManipulate(id):
-        obj = logs[0]
-        for attr in ['epoch']:
-            obj[attr] = datetime.datetime.fromtimestamp(obj[attr]).strftime('%Y-%m-%d %H:%M:%S')
-        for attr in ['jid', 'masterjid', 'parentjid']:
-            obj['jid'] = '[%(jid)s|job?id=%(jid)s]|' % obj if obj[attr] else 'N/A'
-        return obj
+    obj = logs[0]
+    for attr in ['epoch']:
+        obj[attr] = datetime.datetime.fromtimestamp(obj[attr]).strftime('%Y-%m-%d %H:%M:%S')
+    obj['jid'] = '[%(jid)s|job?id=%(jid)s]|' % obj if obj['jid'] else 'N/A'
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
+    args.doc.applyTemplate(obj)
 
-    return push2doc(args,params,objFetchManipulate)
+    return params
 
 
 def match(j, args, params, tags, tasklet):

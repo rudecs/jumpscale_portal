@@ -2,6 +2,7 @@
 
 {{job: id:$$id }}
 
+{% if id %}
 h2. Job Details
 
 | *Grid ID* | ${gid} |
@@ -42,3 +43,9 @@ h3. Additional Info
 |*Job Completed*| ${timestop}|
 |*Category*|${category}|
 |*Parent*|${parent}|
+
+{% else %}
+
+Invalid job id
+
+{% endif %}

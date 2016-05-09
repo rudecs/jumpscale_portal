@@ -6,6 +6,7 @@
 h2. Monitoring Status
 
 {{node_getdata: gid:$$gid id:$$nid}}
+{% if id %}
 {{timestamp}}
 
 h4. ${gridname}: ${nodename} ([$$gid:$$nid|/grid/grid node?id=$$nid&gid=$$gid])
@@ -32,3 +33,6 @@ h3. Actions
 		width: 75%;
 	}
 }}
+{% else %}
+Invalid node parameters
+{% endif %}

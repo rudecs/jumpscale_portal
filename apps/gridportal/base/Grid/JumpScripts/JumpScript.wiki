@@ -5,6 +5,19 @@
 h5. JumpScript Details
 {{jumpscript: organization:$$organization jsname:$$jsname}}
 
+{% if jumpscript %}
+||Propert||Value||
+{% for k, v in jumpscript.iteritems() -%}
+	|${k} | ${v}|
+{% endfor %}
+
+{{code:
+${source}
+}}
 
 h5. Jobs that have executed this Jumpscript
 {{jobs: organization:$$organization jsname:$$jsname}}
+
+{% else %}
+Invalid jumpscript parameters
+{% endif %}
