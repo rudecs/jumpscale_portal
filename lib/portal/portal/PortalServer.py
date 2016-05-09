@@ -660,15 +660,25 @@ class PortalServer:
             return send_file(pathfull, size)
 
     def process_elfinder(self, path, ctx):
+        if not self.isAdminFromCTX(ctx):
+            raise exceptions.NotFound('Not Found')
+
         from JumpScale.portal.html import elFinder
         db = j.db.keyvaluestore.getMemoryStore('elfinder')
-        rootpath = db.cacheGet(path)
+        try:
+            rootpath = db.cacheGet(path)
+        except:
+            raise exceptions.NotFound('Not Found')
+
         options = {'root': rootpath, 'dotFiles': True}
         con = elFinder.connector(options)
         params = ctx.params.copy()
 
         if params.get('init') == '1':
             params.pop('target', None)
+        if 'target' in params:
+            if j.system.fs.exists(params['target']):
+                raise exceptions.NotFound('Not Found')
         status, header, response = con.run(params)
         status = '%s' % status
         headers = [ (k, v) for k,v in header.items() ]
