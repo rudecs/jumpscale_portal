@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal import exceptions
 import ujson
 
 class system_contentmanager(j.code.classGetBase()):
@@ -401,7 +402,10 @@ class system_contentmanager(j.code.classGetBase()):
         result bool 
         
         """
-        contents = j.apps.system.contentmanager.dbmem.cacheGet(cachekey)
+        try:
+            contents = j.apps.system.contentmanager.dbmem.cacheGet(cachekey)
+        except:
+            raise exceptions.NotFound('Not Found')
         j.system.fs.writeFile(contents['path'], text)
         returnpath = "/%s/%s" % (contents['space'], contents['page'])
         if contents['querystr']:
