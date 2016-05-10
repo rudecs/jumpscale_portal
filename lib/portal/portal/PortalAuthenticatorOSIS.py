@@ -3,6 +3,8 @@ from JumpScale.portal.portal import exceptions
 import time
 import re
 import random
+import json
+from JumpScale.grid.serverbase.Exceptions import RemoteException
 
 class PortalAuthenticatorOSIS(object):
 
@@ -83,7 +85,14 @@ class PortalAuthenticatorOSIS(object):
                                         "than 60 characters.")
 
         user.passwd = j.tools.hash.md5_string(password)
-        return self.osisuser.set(user)
+        try:
+            return self.osisuser.set(user)
+        except RemoteException as e:
+            if e.eco['exceptionclassname'] == "ValueError":
+                raise exceptions.BadRequest(json.loads(e.eco['exceptioninfo'])['message'])
+            else:
+                raise
+
 
     def updateUser(self, username, password, emailaddress, groups, domain=None):
         users = self.osisuser.search({'id': username})[1:]
