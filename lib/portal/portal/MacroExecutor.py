@@ -314,14 +314,15 @@ class MacroExecutorWiki(MacroExecutorBase):
             try:
                 result, doc = taskletgroup.executeV2(groupname=macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                             paramsExtra=paramsExtra, cmdstr=cmdstr, requestContext=ctx, content=content, page=page)
-            except Exception:
-                e = traceback.format_exc()
-                if str(e).find("non-sequence") != -1:
-                    result = "***ERROR***: Could not execute macro %s on %s, did not return (out,doc)." % (macro, doc.name)
+            except Exception, error:
+                eco = j.errorconditionhandler.processPythonExceptionObject(error)
+                if str(eco).find("non-sequence") != -1:
+                    result = "*ERROR*: Could not execute macro `%s` on page `%s`, did not return (out,doc). " % (macro, doc.name)
                 else:
-                    result = "***ERROR***: Could not execute macro %s on %s, error in macro." % (macro, doc.name)
+                    result = "*ERROR*: Could not execute macro `%s` on page `%s`. " % (macro, doc.name)
                     if j.application.debug:
-                        result += " Error was:\n%s " % (e)
+                        result += " Error was:\n%s\n" % (eco)
+                result += "@LF If error persist please contact support with reference `%s`" % eco.guid
                 result = j.html.escape(result)
             if result == doc:
                 # means we did manipulate the doc.content
