@@ -18,9 +18,9 @@ class BaseError(BaseException):
 class Error(BaseError):
     CODE = 500
 
-    def __init__(self, msg):
+    def __init__(self, msg, content_type='apllication/json'):
         msg = json.dumps(msg)
-        BaseError.__init__(self, self.CODE, [('Content-Type', 'application/json')], msg)
+        BaseError.__init__(self, self.CODE, [('Content-Type', content_type)], msg)
 
 
 class Redirect(BaseError):

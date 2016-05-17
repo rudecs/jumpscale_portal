@@ -5,6 +5,13 @@ import pprint
 import os
 import sys
 import requests
+import gevent
+import time
+import urllib
+import cgi
+import json
+import mimeparse
+import mimetypes
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -20,14 +27,6 @@ from JumpScale.portal.html import multipart
 
 from JumpScale import j
 from gevent.pywsgi import WSGIServer
-import gevent
-import time
-
-import mimeparse
-import mimetypes
-import urllib
-import cgi
-import JumpScale.grid.agentcontroller
 from PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
 from PortalAuthenticatorMinimal import PortalAuthenticatorMinimal
 from PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
@@ -924,12 +923,40 @@ class PortalServer:
                     ctx.start_response('419 Authentication Timeout', [])
                     return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
 
+        # validate JWT token
+        if 'HTTP_AUTHORIZATION' in ctx.env:
+            authorization = ctx.env['HTTP_AUTHORIZATION']
+            type, token = authorization.split(' ', 1)
+            if type.lower() == 'bearer':
+                for service in j.atyourservice.findServices(name='jwt_client'):
+                    import jose.jws
+                    secret = service.hrd.getStr('instance.jwt.secret')
+                    algo = service.hrd.getStr('instance.jwt.algo')
+                    try:
+                        payload = jose.jws.verify(token, secret, algorithms=[algo])
+                    except jose.JWSError:
+                        continue
+                    try:
+                        data = json.loads(payload)
+                    except Exception:
+                        continue
+                    break
+                else:
+                    ctx.start_response('403 ', [])
+                    raise exceptions.Unauthorized(str(self.returnDoc(ctx, ctx.start_response,
+                                                                     "system", "accessdenied",
+                                                                     extraParams={"path": path}))
+                                                  , 'text/html')
+
+                session['user'] = data['username']
+                session.save()
+
         if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
             if session.get('user', '') not in ['guest', '']:
                 # If user session is oauth session and logout url is provided, redirect user to that URL
                 # after deleting session which will invalidate the oauth server session
                 # then redirects user back to where he was in portal
-                oauth =  session.get('oauth')
+                oauth = session.get('oauth')
                 oauth_logout_url = ''
                 if oauth:
                     oauth_logout_url = oauth.get('logout_url')
