@@ -9,6 +9,7 @@ INPUTMAP = {'bool': {'type': 'boolean'},
            'int': {'type': 'integer'},
            'float': {'type': 'number'},
            'list': {'type': 'array'},
+           'list(int)': {'$ref': '#/definitions/intarray'},
            'dict': {'type': 'string'},
            }
 
@@ -81,7 +82,8 @@ class system_docgenerator(j.code.classGetBase()):
                            'title': 'JumpScale Actors',
                            }
         catalog['definitions'] = {'strarray': {'type': 'array', 'items': {'type': 'string'}},
-                                  'object': { "type": "object",
+                                  'intarray': {'type': 'array', 'items': {'type': 'integer'}},
+                                  'object': {"type": "object",
                                               "additionalProperties": {
                                                 "type": "string"
                                               }
