@@ -926,20 +926,23 @@ class PortalServer:
         # validate JWT token
         if 'HTTP_AUTHORIZATION' in ctx.env:
             authorization = ctx.env['HTTP_AUTHORIZATION']
-            type, token = authorization.split(' ', 1)
+            type, _, token = authorization.partition(' ')
             if type.lower() == 'bearer':
-                for service in j.atyourservice.findServices(name='jwt_client'):
-                    import jose.jws
+                import jose.jwt
+                payload = json.loads(jose.jwt.get_unverified_claims(token))
+                issuer = payload.get('iss', 'main')
+                payload['iss'] = issuer
+                for service in j.atyourservice.findServices(name='jwt_client', instance=issuer):
                     secret = service.hrd.getStr('instance.jwt.secret')
                     algo = service.hrd.getStr('instance.jwt.algo')
                     try:
-                        payload = jose.jws.verify(token, secret, algorithms=[algo])
+                        jose.jws.verify(token, secret, algorithms=[algo])
                     except jose.JWSError:
-                        continue
-                    try:
-                        data = json.loads(payload)
-                    except Exception:
-                        continue
+                        ctx.start_response('403 ', [])
+                        raise exceptions.Unauthorized(str(self.returnDoc(ctx, ctx.start_response,
+                                                                         "system", "accessdenied",
+                                                                         extraParams={"path": path}))
+                                                      , 'text/html')
                     break
                 else:
                     ctx.start_response('403 ', [])
@@ -948,7 +951,7 @@ class PortalServer:
                                                                      extraParams={"path": path}))
                                                   , 'text/html')
 
-                session['user'] = data['username']
+                session['user'] = '{username}@{iss}'.format(**payload)
                 session.save()
 
         if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
