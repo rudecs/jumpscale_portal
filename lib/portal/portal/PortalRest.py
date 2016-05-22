@@ -3,6 +3,7 @@ from JumpScale.portal.portal import exceptions
 from JumpScale.grid.serverbase.Exceptions import RemoteException
 import urllib
 import types
+import cgi
 import re
 
 class PortalRest():
@@ -178,7 +179,7 @@ class PortalRest():
             else:
                 return (True, ctx, routekey)
         else:
-            msg = "Could not find method, path was %s" % (path)
+            msg = cgi.escape("Could not find method, path was %s" % (path))
             appname = paths[0]
             actor = paths[1]
             contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=not human)
@@ -273,6 +274,8 @@ class PortalRest():
         """
         if ctx == False:
             raise RuntimeError("ctx cannot be empty")
+        if not self.ws.isAdminFromCTX(ctx):
+            raise exceptions.NotFound('Not Found')
         try:
             j.logger.log("Routing request to %s" % path, 9)
 
