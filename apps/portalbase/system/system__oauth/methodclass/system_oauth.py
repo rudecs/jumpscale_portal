@@ -98,7 +98,7 @@ class system_oauth(j.code.classGetBase()):
         if not users:
             # register user
             u = user.new()
-            u.id = username
+            u.id = '{}@{}'.format(username, cache_result['type'])
             u.emails = [email]
             user.set(u)
         else:

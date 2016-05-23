@@ -127,9 +127,9 @@ class system_usermanager(j.code.classGetBase()):
         return True
     
     @auth(['admin'])
-    def create(self, username, password, groups, emails, domain, **kwargs):
+    def create(self, username, password, groups, emails, domain, provider=None, **kwargs):
         groups = groups or []
-        return j.core.portal.active.auth.createUser(username, password, emails, groups, None)
+        return j.core.portal.active.auth.createUser(username, password, emails, groups, domain, provider)
 
     def _checkUser(self, username):
         users = self.modelUser.search({'id': username})[1:]

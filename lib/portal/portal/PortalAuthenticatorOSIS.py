@@ -41,7 +41,7 @@ class PortalAuthenticatorOSIS(object):
         return self._getkey(user, self.osisuser) is not None
 
     def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
+        r = re.compile('^[a-z0-9]{2,40}$')
         return r.match(username) is not None
 
     def _isValidEmailAddress(self, emailaddress):
@@ -53,7 +53,11 @@ class PortalAuthenticatorOSIS(object):
             return False
         return re.search(r"\s",password) is None
 
-    def createUser(self, username, password, emailaddress, groups, domain):
+    def createUser(self, username, password, emailaddress, groups, domain, provider=None):
+        username, _, userprovider = username.partition('@')
+        if userprovider and userprovider != provider:
+            raise exceptions.BadRequest('Username may not contain @ unless suffix matches provider')
+
         if not self._isValidUserName(username):
             raise exceptions.BadRequest('Username may not exceed 20 characters and may only '
                                         'contain lower case characters and numbers.')
@@ -74,7 +78,10 @@ class PortalAuthenticatorOSIS(object):
                                           'system.' % emailaddress[0])
 
         user = self.osisuser.new()
-        user.id = username
+        if provider:
+            user.id = "{}@{}".format(username, provider)
+        else:
+            user.id = username
         user.groups = groups
         user.emails = emailaddress
         user.domain = domain
@@ -86,7 +93,8 @@ class PortalAuthenticatorOSIS(object):
 
         user.passwd = j.tools.hash.md5_string(password)
         try:
-            return self.osisuser.set(user)
+            self.osisuser.set(user)
+            return user.id
         except RemoteException as e:
             if e.eco['exceptionclassname'] == "ValueError":
                 raise exceptions.BadRequest(json.loads(e.eco['exceptioninfo'])['message'])

@@ -43,8 +43,9 @@
         var:password str,,passwd
         var:groups list,,list of groups this user belongs to @optional
         var:emails list,,list of email addresses
-        var:domain str,,domain of user
-        result:bool    #True if successful, False otherwise
+        var:domain str,,domain of user @optional
+        var:provider str,None,provider for this user @optional
+        result:str, username created when provider is given this will be <username@provider>
 
     method:authenticate @noauth
         """
