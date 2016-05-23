@@ -24,7 +24,7 @@ class system_usermanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method authenticate")
 
-    def create(self, username, password, groups, emails, domain, **kwargs):
+    def create(self, username, password, groups, emails, domain, provider, **kwargs):
         """
         create a user
         param:username name of user
@@ -32,7 +32,8 @@ class system_usermanager(j.code.classGetBase()):
         param:groups list of groups this user belongs to
         param:emails list of email addresses
         param:domain domain of user
-        result bool
+        param:provider provider for this user
+        result str,
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method create")
