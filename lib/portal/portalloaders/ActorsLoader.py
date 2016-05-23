@@ -313,7 +313,7 @@ def match(j, args, params, actor, tags, tasklet):
 
                 params = {}
                 for var in methodspec.vars:
-                    param = {'optional': False, 'description': '', 'default': None, 'type': None}
+                    param = {'optional': False, 'description': '', 'default': None, 'type': None, 'tags': None}
                     tags = j.core.tags.getObject(var.tags)
                     if tags.labelExists("optional"):
                         param['optional'] = True
@@ -325,6 +325,7 @@ def match(j, args, params, actor, tags, tasklet):
                     if var.defaultvalue:
                         param['default'] = var.defaultvalue
                     params[var.name] = param
+                    param['tags'] = tags
 
                 tags = j.core.tags.getObject(methodspec.tags)
                 if tags.tagExists("returnformat"):

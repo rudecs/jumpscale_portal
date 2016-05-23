@@ -5,6 +5,7 @@ import urllib
 import types
 import cgi
 import re
+from . import Validators
 
 class PortalRest():
 
@@ -49,31 +50,61 @@ class PortalRest():
                     ctx.params[key] = param['default']
                 else:
                     raise exceptions.BadRequest('Param with name:%s is missing.' % key)
-            elif param['type'] in convertermap:
-                type_, converter = convertermap[param['type']]
-                if isinstance(ctx.params[key], type_):
-                    continue
-                try:
-                    ctx.params[key] = converter(ctx.params[key])
-                except ValueError:
-                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
-            elif param['type'] == 'list':
-                loadList(key)
-            elif param['type'] in ['list(int)', 'list(bool)', 'list(float)']:
-                if ctx.params[key] is None:
-                    continue
-                loadList(key)
-                m = re.search("list\((?P<type>\w+)\)", param['type'])
-                if not m:
-                    continue
-                type_, converter = convertermap[m.group('type')]
-                for i in xrange(len(ctx.params[key])):
-                    try:
-                        if not isinstance(ctx.params[key][i], type_):
-                            ctx.params[key][i] = converter(ctx.params[key][i])
+            else:
+                if param['type'] in convertermap:
+                    type_, converter = convertermap[param['type']]
+                    if not isinstance(ctx.params[key], type_):
+                        try:
+                            ctx.params[key] = converter(ctx.params[key])
+                        except ValueError:
+                            raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+                elif param['type'] == 'list':
+                    loadList(key)
+                elif param['type'] in ['list(int)', 'list(bool)', 'list(float)']:
+                    if not ctx.params[key] is None:
+                        loadList(key)
+                        m = re.search("list\((?P<type>\w+)\)", param['type'])
+                        if m:
+                            type_, converter = convertermap[m.group('type')]
+                            for i in xrange(len(ctx.params[key])):
+                                try:
+                                    if not isinstance(ctx.params[key][i], type_):
+                                        ctx.params[key][i] = converter(ctx.params[key][i])
 
-                    except ValueError:
-                        raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+                                except ValueError:
+                                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+
+                if param['tags'].tagExists('validator'):
+                    validator_name = param['tags'].tagGet('validator').upper()
+                    validator = getattr(Validators, validator_name)
+
+                    if isinstance(validator, str):
+                        def validator_callable(val):
+                            m = re.match(validator, val)
+                            return m and m.end() == len(val)
+                    else:
+                        validator_callable = validator
+
+                    if not validator_callable(ctx.params[key]):
+                        raise exceptions.BadRequest('Value of param %s is not a valid %s' % (key, validator_name.lower()))
+
+                if param['tags'].tagExists('validator-max'):
+                    validator_max = int(param['tags'].tagGet('validator-max'))
+                    if param['type'] == 'str':
+                        if len(ctx.params[key]) > validator_max:
+                            raise exceptions.BadRequest("Length of param %s should be smaller than %d" % (key, validator_max))
+                    if param['type'] in ('int', 'float'):
+                        if ctx.params[key] > validator_max:
+                            raise exceptions.BadRequest("Value of param %s should be smaller than %d" % (key, validator_max))
+
+                if param['tags'].tagExists('validator-min'):
+                    validator_min = int(param['tags'].tagGet('validator-min'))
+                    if param['type'] == 'str':
+                        if len(ctx.params[key]) < validator_min:
+                            raise exceptions.BadRequest("Length of param %s should be larger than %d" % (key, validator_min))
+                    if param['type'] in ('int', 'float'):
+                        if ctx.params[key] < validator_min:
+                            raise exceptions.BadRequest("Value of param %s should be larger than %d" % (key, validator_min))
 
         return True, ""
 
