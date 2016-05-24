@@ -57,13 +57,11 @@ class PortalAuthenticatorOSIS(object):
         username, _, userprovider = username.partition('@')
         if userprovider and userprovider != provider:
             raise exceptions.BadRequest('Username may not contain @ unless suffix matches provider')
+        if provider:
+            username = "{}@{}".format(username, provider)
 
-        if not self._isValidUserName(username):
-            raise exceptions.BadRequest('Username may not exceed 20 characters and may only '
-                                        'contain lower case characters and numbers.')
-        else:
-            if self.osisuser.search({'id': username})[1:]:
-                    raise exceptions.Conflict('Username %s already exists.' % username)
+        if self.osisuser.search({'id': username})[1:]:
+            raise exceptions.Conflict('Username %s already exists.' % username)
 
         if not emailaddress:
             raise exceptions.BadRequest('Email address cannot be empty.')
@@ -78,10 +76,7 @@ class PortalAuthenticatorOSIS(object):
                                           'system.' % emailaddress[0])
 
         user = self.osisuser.new()
-        if provider:
-            user.id = "{}@{}".format(username, provider)
-        else:
-            user.id = username
+        user.id = username
         user.groups = groups
         user.emails = emailaddress
         user.domain = domain
