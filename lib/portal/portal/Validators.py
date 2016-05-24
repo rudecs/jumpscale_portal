@@ -27,8 +27,8 @@ def PASSWORD(val):
     return len(val) > 6
 
 def USERNAME(val):
-    m = re.match("[a-zA-Z0-9._-]+", val)
-    if 2 < len(val) < 40 m and m.end() == len(val):
+    m = re.match("[a-zA-Z0-9._-]+(?:@[a-zA-Z0-9._-]+)?", val)
+    if 2 < len(val.split('@')[0]) < 40 m and m.end() == len(val):
         return True
     else:
         raise exceptions.BadRequest('Usernames can only contain alphanumeric characeters, dots, dashes, underscores and should be between 2 and 40 characters')
