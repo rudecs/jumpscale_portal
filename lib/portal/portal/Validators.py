@@ -35,7 +35,7 @@ def USERNAME(val):
 
 def GROUPNAME(val):
     m = re.match("[a-zA-Z0-9._-]+", val)
-    if 2 < len(val) < 40 m and m.end() == len(val):
+    if 2 < len(val) < 40 and m and m.end() == len(val):
         return True
     else:
         raise exceptions.BadRequest('Groupnames can only contain alphanumeric characeters, dots, dashes, underscores and should be between 2 and 40 characters')
