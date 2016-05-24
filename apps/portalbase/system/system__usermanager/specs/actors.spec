@@ -1,18 +1,6 @@
 [actor] @dbtype:fs
     """
     """
-    method:userregister
-        """
-        register a user (can be done by user itself, no existing key or login/passwd is needed)
-        """
-        var:name str,,name of user @tags validator:username
-        var:passwd str,,chosen passwd (will be stored hashed in DB) @tags validator:password
-        var:emails str,,comma separated list of email addresses
-        var:reference str,'',reference as used in other application using this API (optional)
-        var:remarks str,'',free to be used field by client
-        var:config str,,free to be used field to store config information e.g. in json or xml format
-        result:bool    #True if successful, False otherwise
-
     method:userget
         """
         get a user
@@ -40,7 +28,7 @@
         create a user
         """
         var:username str,,name of user @tags validator:username
-        var:password str,,passwd @tags validator:password
+        var:password str,,password optional when provider is set
         var:groups list,,list of groups this user belongs to @optional
         var:emails list,,list of email addresses
         var:domain str,,domain of user @optional

@@ -152,16 +152,3 @@ class system_usermanager(j.code.classGetBase()):
         ctx = kwargs["ctx"]
         return str(ctx.env['beaker.session']["user"])
 
-    def userregister(self, name, passwd, emails, reference, remarks, config, **args):
-        """
-        param:name name of user
-        param:passwd chosen passwd (will be stored hashed in DB)
-        param:emails comma separated list of email addresses
-        param:reference reference as used in other application using this API (optional)
-        param:remarks free to be used field by client
-        param:config free to be used field to store config information e.g. in json or xml format
-        result bool
-
-        """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method userregister")
