@@ -24,7 +24,7 @@ def IP(val):
     return sum([x.isdigit() and 0 <= int(x) <= 255 for x in val.split('.')]) == 4
 
 def PASSWORD(val):
-    return len(val) > 6
+    return 8 <= len(val) <= 60
 
 def USERNAME(val):
     m = re.match("[a-zA-Z0-9._-]+(?:@[a-zA-Z0-9._-]+)?", val)
