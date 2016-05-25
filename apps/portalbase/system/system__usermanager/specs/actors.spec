@@ -32,7 +32,7 @@
         var:groups list,,list of groups this user belongs to @optional
         var:emails list,,list of email addresses
         var:domain str,,domain of user @optional
-        var:provider str,None,provider for this user @optional
+        var:provider str,,provider for this user @optional default_is_none
         result:str, username created when provider is given this will be <username@provider>
 
     method:authenticate @noauth
