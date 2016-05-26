@@ -71,9 +71,14 @@ class PortalAuthenticatorOSIS(object):
             if not self._isValidEmailAddress(emailaddress[0]):
                 raise exceptions.BadRequest('Email address %s is in an invalid format.'
                                             % emailaddress[0])
-            if self.osisuser.search({'emails': emailaddress})[1:]:
-                raise exceptions.Conflict('Email address %s is already registered in the '
-                                          'system.' % emailaddress[0])
+
+            # only require unique email for users that dont have a provider set
+            if not provider:
+                emailusers = self.osisuser.search({'emails': emailaddress})[1:]
+                for user in emailusers:
+                    if '@' not in user['id']:
+                        raise exceptions.Conflict('Email address %s is already registered in the '
+                                                  'system.' % emailaddress[0])
 
         user = self.osisuser.new()
         user.id = username
