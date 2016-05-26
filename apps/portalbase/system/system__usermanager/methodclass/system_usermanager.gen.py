@@ -2,7 +2,7 @@ from JumpScale import j
 
 class system_usermanager(j.code.classGetBase()):
     """
-    register a user (can be done by user itself, no existing key or login/passwd is needed)
+    get a user
     """
     def __init__(self):
         pass
@@ -28,7 +28,7 @@ class system_usermanager(j.code.classGetBase()):
         """
         create a user
         param:username name of user
-        param:password passwd
+        param:password password optional when provider is set
         param:groups list of groups this user belongs to
         param:emails list of email addresses
         param:domain domain of user
@@ -100,7 +100,6 @@ class system_usermanager(j.code.classGetBase()):
 
     def userget(self, name, **kwargs):
         """
-        get a user
         param:name name of user
         """
         #put your code here to implement this method
@@ -114,19 +113,6 @@ class system_usermanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method usergroupsget")
-
-    def userregister(self, name, passwd, emails, config, reference="''", remarks="''", **kwargs):
-        """
-        param:name name of user
-        param:passwd chosen passwd (will be stored hashed in DB)
-        param:emails comma separated list of email addresses
-        param:reference reference as used in other application using this API (optional) default=''
-        param:remarks free to be used field by client default=''
-        param:config free to be used field to store config information e.g. in json or xml format
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method userregister")
 
     def whoami(self, **kwargs):
         """
