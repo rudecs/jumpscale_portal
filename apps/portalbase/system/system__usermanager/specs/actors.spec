@@ -28,7 +28,7 @@
         create a user
         """
         var:username str,,name of user @tags validator:username
-        var:password str,,password optional when provider is set
+        var:password str,,password optional when provider is set @optional default_is_none
         var:groups list,,list of groups this user belongs to @optional
         var:emails list,,list of email addresses
         var:domain str,,domain of user @optional
