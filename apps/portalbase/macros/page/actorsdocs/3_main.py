@@ -11,7 +11,8 @@ def main(j, args, params, tags, tasklet):
     page.addCSS('/jslib/swagger/css/reset.css', media='print')
     page.addCSS('/jslib/swagger/css/screen.css', media='print')
 
-    page.addJS('/jslib/swagger/lib/shred.bundle.js')
+    page.addJS('/jslib/swagger/lib/jsoneditor.min.js')
+    page.addJS('/jslib/swagger/lib/swagger-oauth.js')
     page.addJS('/jslib/swagger/lib/jquery-1.8.0.min.js')
     page.addJS('/jslib/swagger/lib/jquery.slideto.min.js')
     page.addJS('/jslib/swagger/lib/jquery.wiggle.min.js')
@@ -19,7 +20,6 @@ def main(j, args, params, tags, tasklet):
     page.addJS('/jslib/swagger/lib/handlebars-2.0.0.js')
     page.addJS('/jslib/swagger/lib/underscore-min.js')
     page.addJS('/jslib/swagger/lib/backbone-min.js')
-    page.addJS('/jslib/swagger/lib/swagger-client.js')
     page.addJS('/jslib/swagger/swagger-ui.min.js')
     page.addJS('/jslib/swagger/lib/highlight.7.3.pack.js')
     page.addJS('/jslib/swagger/lib/marked.js')
