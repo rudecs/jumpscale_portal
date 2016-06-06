@@ -39,3 +39,11 @@ def GROUPNAME(val):
         return True
     else:
         raise exceptions.BadRequest('Groupnames can only contain alphanumeric characters, dots, dashes, underscores and should be between 2 and 40 characters')
+
+def EMAIL(val):
+    atpos = val.find('@')
+    dotpos = val.find('.')
+    if atpos == -1 or dotpos == -1:
+        raise exceptions.BadRequest('Invalid Email Address given')
+    elif dotpos < atpos:
+        raise exceptions.BadRequest('Invalid Email Address given')
