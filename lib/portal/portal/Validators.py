@@ -18,7 +18,12 @@ QUOTEDSTRING = r"""(?>(?<!\\)(?>"(?>\\.|[^\\"]+)+"|""|(?>'(?>\\.|[^\\']+)+')|''|
 UUID = r"""[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}"""
 
 def NAME(val):
-    return all(i not in val for i in r"""<>"'""") and len(val) >= 2
+    for i in r"""<>"'""":
+        if i in val:
+            raise exceptions.BadRequest('The name you entered contains invalid characters')
+    if len(val) < 2:
+        raise exceptions.BadRequest('The name cannot be shorter than two characters')
+    return True
 
 def IP(val):
     return sum([x.isdigit() and 0 <= int(x) <= 255 for x in val.split('.')]) == 4
