@@ -40,7 +40,7 @@ $(function () {
     for category, data in sorted(noderesults.items()):
         sectionid = 'collapse_%s' % category.replace(' ', '_')
         headingid = 'heading_%s' % category
-        table = "||Message||Last Executed||Interval||Status||\n"
+        table = "||Message||Error Start||Last Executed||Interval||Status||\n"
         categorystatus = "OK"
         skipcount = 0
         for dataitem in data:
@@ -50,6 +50,9 @@ $(function () {
                     skipcount += 1
                 if categorystatus != 'ERROR' and status not in ['OK', 'SKIPPED']:
                     categorystatus = status
+                lasterror = dataitem.get('lasterror', '') or ''
+                if lasterror:
+                    lasterror = '%s ago' % j.base.time.getSecondsInHR(now - lasterror)
                 lastchecked = dataitem.get('lastchecked', '')
                 status = makeStatusLabel(status, dataitem.get('guid'))
                 if lastchecked:
@@ -61,8 +64,8 @@ $(function () {
                     interval = ''
 
                 message = dataitem.get('message', '')
-                table += '|%(msg)s |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
-                         {'msg': message, 'last': lastchecked, 'interval': interval, 'status': status}
+                table += '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
+                         {'msg': message, 'lasterror': lasterror, 'last': lastchecked, 'interval': interval, 'status': status}
             else:
                 table += dataitem
         if skipcount == len(data):
