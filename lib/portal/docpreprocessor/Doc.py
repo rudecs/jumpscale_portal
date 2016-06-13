@@ -217,14 +217,16 @@ class Doc(object):
         content, doc = self.executeMacrosDynamicWiki(paramsExtra, ctx)
         ws = j.core.portal.active
         page = ws.confluence2htmlconvertor.convert(content, doc=self, requestContext=ctx, page=ws.getpage(), paramsExtra=ctx.params)
-        if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
-            page.body = page.body.replace("$$space", self.getSpaceName())
-            page.body = page.body.replace("$$page", self.original_name)
-            page.body = page.body.replace("$$path", self.path)
-            page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-
-        page.body = page.body.replace("$$$menuright", "")
-        page.body = page.body.replace("$$$menuleft", "")
+        replace_obj = {
+            "space": self.getSpaceName(),
+            "page": self.original_name,
+            "path": self.path,
+            # "querystr": ctx.env['QUERY_STRING'],
+            "querystr": "",
+            "$menuright": "",
+            "$menuleft": ""
+        }
+        page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
         if "todestruct" in doc.__dict__:
             doc.destructed = True
         return str(page)

@@ -8,6 +8,7 @@ except:
     import json
 import inspect
 import jinja2
+import re
 
 class PageHTML(Page):
 
@@ -358,8 +359,7 @@ class PageHTML(Page):
         # if codeblock no postprocessing(e.g replacing $$space, ...) should be
         # done
 
-        if edit:
-            self.processparameters['postprocess'] = False
+        code = re.sub('($$[a-zA-Z0-9_]+)', '\\\1', code)
         self.addJS("%s/old/codemirror/lib/codemirror.js" % self.liblocation)
         self.addCSS("%s/old/codemirror/lib/codemirror.css" % self.liblocation)
         self.addJS("%s/old/codemirror/mode/javascript/javascript.js" % self.liblocation)

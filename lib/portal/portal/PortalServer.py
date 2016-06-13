@@ -556,12 +556,14 @@ class PortalServer:
                     content2,doc = doc.executeMacrosDynamicWiki(paramsExtra={}, ctx=ctx)
 
                     page = self.confluence2htmlconvertor.convert(content2, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
-
-                    page.body = page.body.replace("$$space", space)
-                    page.body = page.body.replace("$$page", doc.original_name)
-                    page.body = page.body.replace("$$path", doc.path)
-                    page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-                    page.body = page.body.replace("$$$menuright", "")
+                    replace_obj = {
+                        "space", space,
+                        "page", doc.original_name,
+                        "path", doc.path,
+                        "querystr", ctx.env['QUERY_STRING'],
+                        "$menuright", ""
+                    }
+                    page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
 
                     content=content.replace(match.founditem,page.body)
 
@@ -1234,13 +1236,14 @@ class PortalServer:
 
         page = self.confluence2htmlconvertor.convert(content, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
 
-        if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
-            page.body = page.body.replace("$$space", space)
-            page.body = page.body.replace("$$page", doc.original_name)
-            page.body = page.body.replace("$$path", doc.path)
-            page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-
-        page.body = page.body.replace("$$$menuright", "")
+        replace_obj = {
+            "space", space,
+            "page", doc.original_name,
+            "path", doc.path,
+            "querystr", ctx.env['QUERY_STRING'],
+            "$menuright", ""
+        }
+        page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
 
         if "todestruct" in doc.__dict__:
             doc.destructed = True
