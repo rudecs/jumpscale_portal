@@ -65,8 +65,13 @@ def main(j, args, params, tags, tasklet):
     space_type = args.paramsExtra.get('space_type')
 
     if contentdir and space_path:
-        portal.spacesloader = j.core.portalloader.getSpacesLoader()
 
+        real_space_path = os.path.realpath(space_path)
+        permitted_dirs = [j.dirs.baseDir, j.dirs.codeDir]
+        if not any(not os.path.relpath(real_space_path, p).startswith('..') for p in permitted_dirs):
+            page.addMessage('***ERROR***: The space path should only be under {}' \
+                .format(" or ".join(permitted_dirs)))
+            return params
         if os.path.exists(space_path):
             page.addMessage('***ERROR***: The space path "{}" already exists'.format(space_path))
             return params
@@ -75,6 +80,7 @@ def main(j, args, params, tags, tasklet):
             page.addMessage('***ERROR***: The content dir "{}" does not exist'.format(contentdir))
             return params
 
+        portal.spacesloader = j.core.portalloader.getSpacesLoader()
         os.makedirs(os.path.join(space_path, '.space'))
         os.symlink(space_path, os.path.join(contentdir, os.path.basename(space_path)))
 
