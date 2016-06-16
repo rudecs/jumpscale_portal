@@ -68,6 +68,7 @@ class system_docgenerator(j.code.classGetBase()):
                         parameter = {'name': var.name, 'in': INMAP[methodtype],
                                      'description': var.description, 
                                      'required': not tagobj.labelExists('optional'),
+                                     'collectionFormat': 'multi',
                                      }
                         parameter.update(INPUTMAP.get(var.ttype, INPUTMAP['string']))
                         if var.defaultvalue is not None:

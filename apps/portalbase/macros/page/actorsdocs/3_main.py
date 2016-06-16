@@ -18,11 +18,14 @@ def main(j, args, params, tags, tasklet):
     page.addJS('/jslib/swagger/lib/jquery.wiggle.min.js')
     page.addJS('/jslib/swagger/lib/jquery.ba-bbq.min.js')
     page.addJS('/jslib/swagger/lib/handlebars-2.0.0.js')
-    page.addJS('/jslib/swagger/lib/underscore-min.js')
+    page.addJS('/jslib/swagger/lib//lodash.min.js')
     page.addJS('/jslib/swagger/lib/backbone-min.js')
     page.addJS('/jslib/swagger/swagger-ui.min.js')
-    page.addJS('/jslib/swagger/lib/highlight.7.3.pack.js')
+    page.addJS('/jslib/swagger/lib/highlight.9.1.0.pack.js')
+    page.addJS('/jslib/swagger/lib/highlight.9.1.0.pack_extended.js')
     page.addJS('/jslib/swagger/lib/marked.js')
+    page.addJS('/jslib/swagger/lib/object-assign-pollyfill.js')
+    page.addJS('/jslib/swagger/lib/js-yaml.min.js')
 
     head = """
     <title>Swagger UI</title>
