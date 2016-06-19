@@ -76,6 +76,9 @@ class system_usermanager(j.code.classGetBase()):
 
     @auth(['admin'])
     def delete(self, username, **kwargs):
+        u = self.modelUser.get(username)
+        if u.protected:
+            raise exceptions.BadRequest('You have to delete the user from the cloudbroker portal first')
         self.modelUser.delete(username)
         return True
 

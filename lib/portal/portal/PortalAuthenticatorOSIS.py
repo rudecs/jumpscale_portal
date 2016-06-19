@@ -53,7 +53,8 @@ class PortalAuthenticatorOSIS(object):
             return False
         return re.search(r"\s",password) is None
 
-    def createUser(self, username, password, emailaddress, groups, domain, provider=None):
+    def createUser(self, username, password, emailaddress, groups, domain, provider=None,
+                   protected=False):
         username, _, userprovider = username.partition('@')
         if userprovider and userprovider != provider:
             raise exceptions.BadRequest('Username may not contain @ unless suffix matches provider')
@@ -85,6 +86,7 @@ class PortalAuthenticatorOSIS(object):
         user.groups = groups
         user.emails = emailaddress
         user.domain = domain
+        user.protected = protected
         if not password:
             password = str(random.random())
         elif not self._isValidPassword(password):
