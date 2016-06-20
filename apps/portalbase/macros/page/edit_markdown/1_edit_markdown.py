@@ -32,29 +32,36 @@ def main(j, args, params, tags, tasklet):
         page_name = page_match.group(1)
 
     args = args.tags.getValues(path="", page="", space="")
-    space = j.core.portal.active.getSpace(spaceName)
-    doc = space.docprocessor.docGet(page_name)
-    path = doc.path
-  
-    content = j.system.fs.fileGetContents(path)
-    content = content.replace("'", "\\'").replace('"', '\\"').replace("\n", "\\n").replace('{{','\\\{\\\{')
-    guid = j.base.idgenerator.generateGUID()
-    contents = {'path': doc.path, 'querystr': '', 'page': page_name, 'space': spaceName}
-    j.apps.system.contentmanager.dbmem.cacheSet(guid, contents, 60)
-    page.addJS('/jslib/bootstrap/js/bootstrapmarkdown/bootstrap-markdown.js')
-    page.addMessage('''
-        <form name="editFileForm" method="post" action="/restmachine/system/contentmanager/wikisave?cachekey={guid}">
-            <textarea id="markdownEditor" name="text" data-provide="markdown" cols='60' rows='8'></textarea>
-            <div style="text-align: center; margin: 30px 0;">
-                <input type="submit" class="btn btn-lg btn-primary form-btn" value="Save">
-                <input type="submit" href="../{spaceName}/{pageName}" class="btn btn-lg form-btn" value="Cancel">
-            </div>
-        </form>
-        <script>
-            jQuery("#markdownEditor").val("{content}");
-            jQuery("#markdownEditor").markdown({{hiddenButtons:'cmdPreview', autofocus:false, savable:false, height: 700}});
-        </script>
-    '''.format(content=content, guid=guid, pageName=page_name, spaceName=spaceName))
+    try:
+        space = j.core.portal.active.getSpace(spaceName)
+        doc = space.docprocessor.docGet(page_name)
+        path = doc.path
+      
+        content = j.system.fs.fileGetContents(path)
+        content = content.replace("'", "\\'").replace('"', '\\"').replace("\n", "\\n").replace('{{','\\\{\\\{')
+        guid = j.base.idgenerator.generateGUID()
+        contents = {'path': doc.path, 'querystr': '', 'page': page_name, 'space': spaceName}
+        j.apps.system.contentmanager.dbmem.cacheSet(guid, contents, 60)
+        page.addJS('/jslib/bootstrap/js/bootstrapmarkdown/bootstrap-markdown.js')
+        page.addMessage('''
+
+            ###Edit {page_name} page in {spaceName}
+
+            <form name="editFileForm" method="post" action="/restmachine/system/contentmanager/wikisave?cachekey={guid}">
+                <textarea id="markdownEditor" name="text" data-provide="markdown" cols='60' rows='8'></textarea>
+                <div style="text-align: center; margin: 30px 0;">
+                    <input type="submit" class="btn btn-lg btn-primary form-btn" value="Save">
+                    <input type="submit" href="../{spaceName}/{pageName}" class="btn btn-lg form-btn" value="Cancel">
+                </div>
+            </form>
+            <script>
+                jQuery("#markdownEditor").val("{content}");
+                jQuery("#markdownEditor").markdown({{hiddenButtons:'cmdPreview', autofocus:false, savable:false, height: 700}});
+            </script>
+        '''.format(content=content, guid=guid, pageName=j.html.escape(page_name), spaceName=j.html.escape(spaceName)))
+    except:
+        page.addMessage('An error occured')
+
     params.result = page
     return params
 

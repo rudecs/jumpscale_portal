@@ -61,7 +61,7 @@ def main(j, args, params, tags, tasklet):
         });
 
     </script>
-    """ % (actors, group)
+    """ % (j.html.escape(actors), j.html.escape(group))
 
     body = """
     <div class="swagger-section">

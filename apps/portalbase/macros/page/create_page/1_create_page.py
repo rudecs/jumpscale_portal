@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
 
     page_name = args.paramsExtra.get('page_name')
     # Creating a new page
-    page.addMessage('''<h2>Create a new page in '%s' space</h2>''' % page_space )
+    page.addMessage('''<h2>Create a new page in '%s' space</h2>''' % j.html.escape(page_space) )
     if page_name and page_space:
         space = j.core.portal.active.getSpace(page_space)
         if not page_name:

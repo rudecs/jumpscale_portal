@@ -49,12 +49,12 @@ class MacroExecutorBase(object):
         items = list()
         lc = None
         for i in range(1,len(txt)):
-            if txt[i-1] == txt[i] == '{' != lc:
+            if txt[i-1] == txt[i] == '{' != lc and (i < 1 or txt[i-2]!='\\'):
                 if s == 0:
                     ss = i-1
                 s += 1
                 lc = '{'
-            elif txt[i-1] == txt[i] == '}' != lc:
+            elif txt[i-1] == txt[i] == '}' != lc and (i < 1 or txt[i-2]!='\\'):
                 s -= 1
                 if s == 0:
                     items.append(txt[ss:i+1])
@@ -109,6 +109,7 @@ class MacroExecutorBase(object):
         if cmdbody != "":
             cmdstr = cmdbody
 
+        cmdstr = cmdstr.replace(r'\{', '{').replace(r'\}', '}')
         macroparts = macro.split('.', 1)
         if len(macroparts) == 2:
             space, macro  = macroparts

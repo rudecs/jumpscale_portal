@@ -263,10 +263,15 @@ class Doc(object):
         if len(self.params) > 0:
             for param in self.params:
                 if param in params:
+                    subs = (str(params[param])
+                        .replace('{{', r'\{\{')
+                        .replace('}}', r'\}\}')
+                        .replace('\\', '\\\\')
+                        .replace('"', '\\"'))
                     if content == None:
-                        content = re.sub("\$\$%s(?!\w)" % param, str(params[param]), self.content)
+                        content = re.sub("\$\$%s(?!\w)" % param, subs, self.content)
                     else:
-                        content = re.sub("\$\$%s(?!\w)" % param, str(params[param]), content)
+                        content = re.sub("\$\$%s(?!\w)" % param, subs, content)
         if isdoccontent:
             self.content = content
         return content

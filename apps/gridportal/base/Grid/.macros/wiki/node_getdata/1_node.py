@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
     #macro puts obj info as params on doc, when show used as label, shows the content of the obj in nicely structured code block
     nid = args.getTag('id')
     gid = args.getTag('gid')
-    if not nid or not gid:
+    if not nid or not gid or not gid.isdigit():
         args.doc.applyTemplate({})
         return params
     gid = int(gid)

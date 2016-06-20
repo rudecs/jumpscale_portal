@@ -8,11 +8,13 @@ h2. Queued Jobs on Node: ${name}
 - "Queued Jobs on Node: ${name}": "/grid/workersjobs?nid=$$nid"
 }}
 
+{% if jobs %}
 {{datatables_use}}
 ||ID||State||Queue||Category||Command||JScriptID||Start time||Stop time||
 {% for job in jobs -%}
 |[${job.id}|/grid/job?id=${job.guid}]|${job.state}|${job.queue}|${job.category}|${job.cmd}|${job.jscriptid}|{{ts:${job.timeStart}}}|{{ts:${job.timeStop}}}|
+{% endfor %}
 {% else %}
 _No Queued Jobs_
-{% endfor %}
+{% endif %}
 
