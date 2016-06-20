@@ -18,14 +18,50 @@ class MacroExecutorBase(object):
         self.taskletsgroup[spacename] = taskletsgroup
 
     def getMacroCandidates(self, txt):
-        result = []
-        items = txt.split("{{")
-        for item in items:
-            if item.find("}}") != -1:
-                item = item.split("}}")[0]
-                if item not in result:
-                    result.append("{{%s}}" % item)
-        return result
+        """
+        >>> getMacroCandidates(None, "{{asdf asdf}}")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asddf{{asdf asdf}}")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "{{asdf asdf}}asddf")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asddf{{asdf asdf}}asddf")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}f{{asdf asdf}}asddf")
+        ['{{d}}', '{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{asdf asdf}}asddf")
+        ['{{d}}', '{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{as{{df a}}sdf}}asddf")
+        ['{{d}}', '{{as{{df a}}sdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{as{{d{{f}} a}}sdf}}asddf")
+        ['{{d}}', '{{as{{d{{f}} a}}sdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{as{{d}}f{{ a}}sdf}}asddf")
+        ['{{d}}', '{{as{{d}}f{{ a}}sdf}}']
+        >>> getMacroCandidates(None, "asd{{{{asd}}}}sdf")
+        ['{{{{asd}}}}']
+        >>> getMacroCandidates(None, "asd{{s{{asd}}}}sdf")
+        ['{{s{{asd}}}}']
+        >>> getMacroCandidates(None, "asd{{s{{asd}}a}}sdf")
+        ['{{s{{asd}}a}}']
+        """
+        s = 0
+        ss = -1
+        items = list()
+        lc = None
+        for i in range(1,len(txt)):
+            if txt[i-1] == txt[i] == '{' != lc:
+                if s == 0:
+                    ss = i-1
+                s += 1
+                lc = '{'
+            elif txt[i-1] == txt[i] == '}' != lc:
+                s -= 1
+                if s == 0:
+                    items.append(txt[ss:i+1])
+                lc = '}'
+            else:
+                lc = None
+        return items
 
     def _getTaskletGroup(self, doc, macrospace, macro):
         # if macrospace specified check there first
@@ -78,6 +114,9 @@ class MacroExecutorBase(object):
             space, macro  = macroparts
         else:
             space = None
+
+        space = space and ''.join(re.findall('[a-zA-Z0-9_]+', space))
+        macro = ''.join(re.findall('[a-zA-Z0-9_]+', macro))
 
         return space, macro, tags, cmdstr
 
