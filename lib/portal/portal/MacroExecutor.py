@@ -43,21 +43,28 @@ class MacroExecutorBase(object):
         ['{{s{{asd}}}}']
         >>> getMacroCandidates(None, "asd{{s{{asd}}a}}sdf")
         ['{{s{{asd}}a}}']
+        >>> getMacroCandidates(None, "asd{{%s{{asd}}a%}}sdf")
+        ['{{asd}}', '{{%s{{asd}}a%}}']
         """
         s = 0
-        ss = -1
+        n = 0
+        ss = [0]*100
         items = list()
         lc = None
         for i in range(1,len(txt)):
             if txt[i-1] == txt[i] == '{' != lc and (i < 1 or txt[i-2]!='\\'):
-                if s == 0:
-                    ss = i-1
+                if s == n:
+                    ss[n] = i-1
                 s += 1
+                if txt[i+1] == '%':
+                    n += 1
                 lc = '{'
             elif txt[i-1] == txt[i] == '}' != lc and (i < 1 or txt[i-2]!='\\'):
                 s -= 1
-                if s == 0:
-                    items.append(txt[ss:i+1])
+                if txt[i-2] == '%':
+                    n -= 1
+                if s == n:
+                    items.append(txt[ss[n]:i+1])
                 lc = '}'
             else:
                 lc = None
@@ -85,7 +92,7 @@ class MacroExecutorBase(object):
         @param macrostr full string like {{test something more}}
         @return macroname,jumpscaletags
         """
-        cmdstr = macrostr.replace("{{", "").replace("}}", "").strip()
+        cmdstr = macrostr.replace("{{", "").replace("}}", "").strip().strip('%')
         if cmdstr.find("\n") != -1:
             # multiline
             cmdbody = "\n".join(cmdstr.split("\n")[1:])
