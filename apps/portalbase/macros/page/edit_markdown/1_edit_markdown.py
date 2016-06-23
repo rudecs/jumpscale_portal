@@ -1,3 +1,4 @@
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
 
@@ -11,7 +12,10 @@ def main(j, args, params, tags, tasklet):
     for item in querytuples[:]:
         if item[0] in ['space', 'page']:
             querytuples.remove(item)
-    spaceName = querystr.split('&')[0].split('=')[1]
+    try:
+        spaceName = querystr.split('&')[0].split('=')[1]
+    except IndexError:
+        raise exceptions.BadRequest("BadRequest", "text/plain")
     querystr = urllib.urlencode(querytuples)
     page = args.page
     page.addCSS('/jslib/bootstrap/css/bootstrapmarkdown/bootstrap-markdown.min.css')

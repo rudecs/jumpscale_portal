@@ -2,18 +2,23 @@ from JumpScale import j
 
 class ActorsInfo():
 
-    def getActorMethodCall(self, appname, actor, method):
+    def getActorMethodCall(self, appname, actor, method, http_method='GET'):
         """
         used for during error show links to methods in browser
         """
         url = "/rest/%s/%s/%s?" % (appname, actor, method)
 
-        auth = j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)]['auth']
+        try:
+            m = j.core.portal.active.routes["%s_%s_%s_%s" % (http_method, appname, actor, method)]
+        except:
+            return ''
+
+        auth = m['auth']
         if auth:
             params = ["authkey"]
         else:
             params = []
-        params.extend(list(j.core.portal.active.ws.routes["%s_%s_%s" % (appname, actor, method)]['params'].keys()))
+        params.extend(list(m['params'].keys()))
 
         for param in params:
             url += "%s=&" % param
@@ -25,48 +30,49 @@ class ActorsInfo():
         # url="<a href=\"%s\">%s</a> " % (url,url)
         return url
 
-    def getActorInfoPage(self, appname, actorname, methodname, page=None):
+    def getActorInfoPage(self, appname, actorname, methodname, page=None, http_method='GET'):
         """
         used for during error show info about 1 actor
         """
+        if page == None:
+            page = j.core.portal.active.getpage()
         if appname == "" or actorname == "" or methodname == "":
             txt = "getActorInfo need 3 params: appname, actorname, methoname, got: %s, %s,%s" % (appname, actorname, methodname)
-            return txt
+            page.addMessage(txt)
+            return page
         if page == None:
             page = j.core.portal.active.getpage()
         page.addHeading("%s.%s.%s" % (appname, actorname, methodname), 5)
 
-        url = getActorMethodCall(appname, actorname, methodname)
+        url = self.getActorMethodCall(appname, actorname, methodname, http_method=http_method)
 
-        routekey="%s_%s_%s" % (appname, actorname, methodname)
-        if routekey not in j.core.portal.active.routes:
-            j.core.portal.active.activateActor(appname, actorname)
+        routekey="%s_%s_%s_%s" % (http_method, appname, actorname, methodname)
+        # to ensure that the actor is loaded
+        actorsloader = j.core.portal.active.actorsloader
+        actorsloader.existsActor(appname, actorname)
+
         routeData = j.core.portal.active.routes[routekey]
         # routedata: function,paramvalidation,paramdescription,paramoptional,description
 
-        description = routeData[4]
+        description = routeData['description']
         if description.strip() != "":
             page.addMessage(description)
         # param info
-        params = routeData[1]
-        descriptions = routeData[2]
+        params = routeData['params']
         # optional = routeData[3]
         page.addLink("%s" % (methodname), url)
         if len(list(params.keys())) > 0:
             page.addBullet("Params:\n", 1)
-            for key in list(params.keys()):
-                if key in descriptions:
-                    descr = descriptions[key].strip()
-                else:
-                    descr = ""
+            for key, param in params.items():
+                descr = param.get('description', '').strip()
                 page.addBullet("- %s : %s \n" % (key, descr), 2)
 
         return page
 
-    def getActorsInfoPage(appname="", actor="", page=None, extraParams={}):
+    def getActorsInfoPage(self, appname="", actor="", page=None, extraParams={}):
         actorsloader = j.core.portal.active.actorsloader
         if appname != "" and actor != "":
-            result = j.core.portal.active.activateActor(appname, actor)
+            result = actorsloader.existsActor(appname, actor)
             if result == False:
                 # actor was not there
                 page = j.core.portal.active.getpage()
@@ -83,7 +89,7 @@ class ActorsInfo():
                 appnames[appname] = 1
             appnames = sorted(appnames.keys())
             for appname in appnames:
-                link = page.getLink("%s" % (appname), getActorInfoUrl(appname, ""))
+                link = page.getLink("%s" % (appname), self.getActorInfoUrl(appname, ""))
                 page.addBullet(link)
             return page
 
@@ -96,23 +102,33 @@ class ActorsInfo():
             actornames.sort()
 
             for actorname in actornames:
-                link = page.getLink("%s" % (actorname), getActorInfoUrl(appname, actorname))
+                link = page.getLink("%s" % (actorname), self.getActorInfoUrl(appname, actorname))
                 page.addBullet(link)
             return page
 
         keys = sorted(j.core.portal.active.routes.keys())
         page.addHeading("list", 2)
         for item in keys:
-            app2, actor2, method = item.split("_")
+            http_method, app2, actor2, method = item.split("_")
             if app2 == appname and actor2 == actor:
-                url = getActorMethodCall(appname, actor, method)
+                url = self.getActorMethodCall(appname, actor, method, http_method=http_method)
                 link = page.getLink(item, url)
                 page.addBullet(link)
 
         page.addHeading("details", 2)
         for item in keys:
-            app2, actor2, method = item.split("_")
+            http_method, app2, actor2, method = item.split("_")
             if app2 == appname and actor2 == actor:
-                page = getActorInfoPage(appname, actor, method, page=page)
+                page = self.getActorInfoPage(appname, actor, method, page=page, http_method=http_method)
+        return page
 
 
+    def getActorInfoUrl(self, appname, actor):
+        """
+        used for during error show links to actor in browser
+        """
+        if actor == "":
+            url = "/rest/%s/" % (appname)
+        else:
+            url = "/rest/%s/%s/" % (appname, actor)
+        return url

@@ -14,14 +14,6 @@ execute always, so dynamic output can be created, output of these macro's is con
 the last step, executes after the wiki macro's ,these macros manipulate a page object (default an html page object)
 * [Page Macros|/system/Explorer/?path=wikimacros/page/]
 
-h2. specs
-
-{{explorespecs}}
-
 h2. actors
 
 {{exploreactors}}
-
-h2. root
-
-* [Explorer|/system/Explorer/]

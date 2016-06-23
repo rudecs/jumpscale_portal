@@ -125,8 +125,12 @@ class ActorsLoader(LoaderBase):
         return key in self.id2object
 
     def existsActor(self, appname, actorname):
-        key = "%s__%s" % (appname.lower(), actorname.lower())
-        return key in j.core.portal.active.actors
+        try:
+            key = "%s__%s" % (appname.lower(), actorname.lower())
+            app = getattr(j.apps, appname, False)
+            return app and getattr(app, actorname, False)
+        except RuntimeError:
+            return False
 
     def scan(self, path, reset=False):
         paths = path

@@ -18,8 +18,9 @@ class BaseError(BaseException):
 class Error(BaseError):
     CODE = 500
 
-    def __init__(self, msg, content_type='apllication/json'):
-        msg = json.dumps(msg)
+    def __init__(self, msg, content_type='application/json'):
+        if content_type == 'application/json':
+            msg = json.dumps(msg)
         BaseError.__init__(self, self.CODE, [('Content-Type', content_type)], msg)
 
 

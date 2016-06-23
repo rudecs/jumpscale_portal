@@ -9,12 +9,12 @@ def main(j, args, params, tags, tasklet):
     page_match = re.search(r"page\s*:\s*([^:}]*)", args.macrostr)
     querystr = args.requestContext.env['QUERY_STRING']
     querytuples = urlparse.parse_qsl(querystr)
-    args = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
+    args_dict = args.tags.getValues(app="", actor="", path="", bucket="", page="", space="", edit=False)
     spacename = ""
     for name, value in querytuples[:]:
         if name in ['space', 'page']:
-            if not args.get(name):
-                args[name] = value
+            if not args_dict.get(name):
+                args_dict[name] = value
         if name in ('edit_page', 'edit_space'):
             if name == 'edit_space':
                 spacename = value
@@ -28,15 +28,15 @@ def main(j, args, params, tags, tasklet):
     if page_match:
         page_name = page_match.group(1)
 
-    if page_name == "" and args["path"] == "":
-        page.addMessage("ERROR: path needs to be defined in: %s" % params.cmdstr)
+    if page_name == "" and args_dict["path"] == "":
+        page.addMessage("ERROR: path needs to be defined")
         params.result = page
         return params
 
-    if args["app"] != "" and args["actor"] != "":
+    if args_dict["app"] != "" and args_dict["actor"] != "":
         # look for path for bucket
-        aloader = j.core.portal.active.actorsloader.getActorLoaderFromId("%s__%s" % (args["app"].lower(), args["actor"].lower()))
-        path = j.system.fs.joinPaths(aloader.model.path, args["path"])
+        aloader = j.core.portal.active.actorsloader.getActorLoaderFromId("%s__%s" % (args_dict["app"].lower(), args_dict["actor"].lower()))
+        path = j.system.fs.joinPaths(aloader.model.path, args_dict["path"])
     elif spacename != "":
         # look for path for bucket
         space = j.core.portal.active.getSpace(spacename)
@@ -44,25 +44,25 @@ def main(j, args, params, tags, tasklet):
             space = j.core.portal.active.getSpace(spacename)
             doc = space.docprocessor.docGet(page_name.lower())
             path = doc.path
-            args["edit"] = True
+            args_dict["edit"] = True
         else:
-            path = j.system.fs.joinPaths(space.model.path, args["path"])
-    elif args["bucket"] != "":
+            path = j.system.fs.joinPaths(space.model.path, args_dict["path"])
+    elif args_dict["bucket"] != "":
         # look for path for bucket
-        bucket = j.core.portal.active.getBucket(args["bucket"])
-        path = j.system.fs.joinPaths(bucket.model.path, args["path"])
+        bucket = j.core.portal.active.getBucket(args_dict["bucket"])
+        path = j.system.fs.joinPaths(bucket.model.path, args_dict["path"])
     else:
-        page.addMessage("ERROR: could not find file as defined in: %s" % params.cmdstr)
+        page.addMessage("ERROR: could not find the requeted file")
         params.result = page
         return params
     if not j.system.fs.exists(path):
-        page.addMessage('Supplied path "%s" does not exist.' % args['path'])
+        page.addMessage('Supplied path "%s" does not exist.' % args_dict['path'])
         params.result = page
         return params
     content = j.system.fs.fileGetContents(path)
 
     page.addMessage('<div class="span12">')
-    page.addCodeBlock(content, path=path, exitpage=False, edit=args["edit"], spacename=spacename, pagename=page_name, querystr=querystr)
+    page.addCodeBlock(content, path=path, exitpage=False, edit=args_dict["edit"], spacename=spacename, pagename=page_name, querystr=querystr)
     page.addMessage('</div>')
     page.addMessage('<div class="span8" style="display: none !important"><iframe space="$space" doc="$doc" id="preview$id" src="/render" width="100%" height="600px"></iframe></div>'.replace('$id', str(page._codeblockid))
                     .replace('$space', spacename).replace('$doc', page_name))

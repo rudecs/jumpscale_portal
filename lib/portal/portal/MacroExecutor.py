@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.docgenerator.Page import Page
+from JumpScale.portal.portal import exceptions
 from JumpScale.baselib import taskletengine
 import traceback
 import re
@@ -256,6 +257,8 @@ class MacroExecutorPage(MacroExecutorBase):
             try:
                 page = taskletgroup.executeV2(macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                  paramsExtra=paramsExtra, cmdstr=cmdstr, page=page, requestContext=requestContext)
+            except exceptions.BaseError:
+                raise
             except:
                 e = traceback.format_exc()
                 result = "***ERROR***: Could not execute macro %s on %s, error in macro." % (macro, doc.name)

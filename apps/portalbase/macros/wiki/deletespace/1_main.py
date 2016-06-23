@@ -1,3 +1,4 @@
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
     params.merge(args)
@@ -6,11 +7,8 @@ def main(j, args, params, tags, tasklet):
 
     out = "Space \"%s\" succesfully deleted." % name
 
-    if name.find("$$") != -1:
-        out = "ERROR: could not delete the space because param was not specified (need to have param spacename)."
-        params.result = out
-
-        return params
+    if name or name.find("$$") != -1:
+        raise exceptions.BadRequest("BadRequest", "text/plain")
 
     try:
         space = j.core.portal.active.deleteSpace(name)

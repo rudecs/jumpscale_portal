@@ -1,13 +1,17 @@
 import os
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
 
     spaceBeforeEditPage = args.paramsExtra.get('spaceBeforeEditPage')
     if spaceBeforeEditPage:
-        page_space = args.paramsExtra.get('spaceBeforeEditPage')
+        page_space = spaceBeforeEditPage
     else:
         page_space = args.paramsExtra.get('page_space')
+
+    if not page_space:
+        raise exceptions.BadRequest("BadRequest", "text/plain")
 
     page_name = args.paramsExtra.get('page_name')
     # Creating a new page

@@ -1,3 +1,4 @@
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
     import os
@@ -16,6 +17,8 @@ def main(j, args, params, tags, tasklet):
 
     if args.tags.tagExists("ppath"):
         path = args.tags.tagGet("ppath").replace("+", ":").replace("___", ":").replace("\\", "/")
+        if path.startswith('$$'):
+            raise exceptions.BadRequest('BadRequest', 'text/plain')
         origpath = path
         path = j.dirs.replaceTxtDirVars(path)
         if not j.system.fs.exists(path):
