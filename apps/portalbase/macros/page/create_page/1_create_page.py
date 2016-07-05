@@ -55,7 +55,7 @@ def main(j, args, params, tags, tasklet):
 
                 </fieldset>
             </form>
-            '''.replace("$$space",page_space))
+            '''.replace("$$space", j.html.escape(page_space)))
     else:
 
         spaces = sorted(s for s in j.core.portal.active.getSpaces())
