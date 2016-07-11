@@ -75,8 +75,7 @@ class MacroExecutorBase(object):
         # if macrospace specified check there first
         spacename = doc.getSpaceName().lower()
         if macrospace is not None:
-            macrospace = macrospace or None
-            if macrospace:
+            if macrospace in  j.core.portal.active.spacesloader.spaces:
                 j.core.portal.active.spacesloader.spaces[macrospace].loadDocProcessor()
             if macrospace in self.taskletsgroup and self.taskletsgroup[macrospace].hasGroup(macro):
                 return self.taskletsgroup[macrospace]
@@ -84,8 +83,8 @@ class MacroExecutorBase(object):
         if spacename in self.taskletsgroup and self.taskletsgroup[spacename].hasGroup(macro):
             return self.taskletsgroup[spacename]
         # last fall back to default macros
-        if self.taskletsgroup[macrospace].hasGroup(macro):
-            return self.taskletsgroup[macrospace]
+        if self.taskletsgroup[None].hasGroup(macro):
+            return self.taskletsgroup[None]
         return None
 
     def parseMacroStr(self, macrostr):
