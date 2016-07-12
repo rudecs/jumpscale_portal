@@ -271,7 +271,7 @@ class PortalRest():
             paths = params['paths']
 
             success, ctx, routekey = self.restRouter(env, start_response, path,
-                                                   paths, ctx, human=human)
+                                                   paths, ctx)
             if not success:
                 #in this case routekey is really the errormsg
                 return routekey
