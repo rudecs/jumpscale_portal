@@ -244,7 +244,7 @@ class PortalRest():
             msg = "Execute method %s failed." % (routekey)
             return (False, self.ws.raiseError(ctx=ctx, msg=msg, errorObject=eco))
 
-    def processor_rest(self, env, start_response, path, human=True, ctx=False):
+    def processor_rest(self, env, start_response, path, ctx=False):
         """
         orignal rest processor (get statements)
         e.g. http://localhost/restmachine/system/contentmanager/notifySpaceModification?name=www_openvstorage&authkey=1234
@@ -264,15 +264,10 @@ class PortalRest():
             success, msg, params = self.restPathProcessor(path)
             if not success:
                 params["error"] = msg
-                if human:
-                    page = self.ws.returnDoc(ctx, start_response, "system", "rest",
-                                          extraParams=params)
-                    return [str(page)]
-                else:
-                    httpcode = "404 Not Found"
-                    contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=True)
-                    ctx.start_response(httpcode, [('Content-Type', contentType)])
-                    return data
+                httpcode = "404 Not Found"
+                contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=True)
+                ctx.start_response(httpcode, [('Content-Type', contentType)])
+                return data
             paths = params['paths']
 
             success, ctx, routekey = self.restRouter(env, start_response, path,
@@ -286,14 +281,8 @@ class PortalRest():
             if not success:
                 return result
 
-            if human:
-                ctx.format = "json"
-                params = {}
-                params["result"] = result
-                return [str(self.ws.returnDoc(ctx, start_response, "system", "restresult", extraParams=params))]
-            else:
-                contentType, result = self.ws.reformatOutput(ctx, result)
-                return respond(contentType, result)
+            contentType, result = self.ws.reformatOutput(ctx, result)
+            return respond(contentType, result)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             if ctx == False:
@@ -303,7 +292,7 @@ class PortalRest():
             else:
                 return self.ws.raiseError(ctx, errorObject=eco)
 
-    def processor_restext(self, env, start_response, path, human=True, ctx=False):
+    def processor_restext(self, env, start_response, path, ctx=False):
 
         """
         rest processer gen 2 (not used by the original get code)
@@ -324,12 +313,7 @@ class PortalRest():
 
             if not success:
                 params["error"] = message
-                if human:
-                    page = self.ws.returnDoc(ctx, start_response, "system", "rest",
-                                          extraParams=params)
-                    return [str(page)]
-                else:
-                    return self.ws.raiseError(ctx, message)
+                return self.ws.raiseError(ctx, message)
             requestmethod = ctx.env['REQUEST_METHOD']
             paths = params['paths']
             appname = paths[0]
@@ -352,15 +336,9 @@ class PortalRest():
                 start_response('405 Method not allowed', [('Content-Type', 'text/html')])
                 return 'Requested method is not allowed'
 
-            if human:
-                ctx.fformat = "json"
-                params = {}
-                params["result"] = result
-                return [str(self.ws.returnDoc(ctx, start_response, "system", "restresult", extraParams=params))]
-            else:
-                ctx.fformat = 'jsonraw'
-                contentType, result = self.ws.reformatOutput(ctx, result)
-                return respond(contentType, result)
+            ctx.fformat = 'jsonraw'
+            contentType, result = self.ws.reformatOutput(ctx, result)
+            return respond(contentType, result)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             if ctx == False:

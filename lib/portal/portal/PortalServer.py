@@ -1145,7 +1145,7 @@ class PortalServer:
             path = "/".join(pathparts[1:])
 
         if match == "restmachine":
-            return self.rest.processor_rest(environ, start_response, path, human=False, ctx=ctx)
+            return self.rest.processor_rest(environ, start_response, path, ctx=ctx)
 
         elif match == "elfinder":
             return self.process_elfinder(path, ctx)
@@ -1156,18 +1156,8 @@ class PortalServer:
                     j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
                 except Exception, e:
                     self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
-            return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)
+            return self.rest.processor_restext(environ, start_response, path, ctx=ctx)
 
-        elif match == "rest":
-            space, pagename = self.path2spacePagename(path.strip("/"))
-            self.log(ctx, user, path, space, pagename)
-            return self.rest.processor_rest(environ, start_response, path, ctx=ctx)
-
-        elif match == "restext":
-            space, pagename = self.path2spacePagename(path.strip("/"))
-            self.log(ctx, user, path, space, pagename)
-            return self.rest.processor_restext(environ, start_response, path,
-                                          ctx=ctx)
         elif match == "ping":
             status = '200 OK'
             headers = [
