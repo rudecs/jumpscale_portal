@@ -505,14 +505,17 @@ class PortalServer:
 
         doc.loadFromDisk()
 
+        headers = [('Content-Type', 'text/html')]
         if name == "pagenotfound":
-            ctx.start_response("404 Not found", [])
+            ctx.start_response("404 Not found", headers)
         elif name == 'accessdenied':
-            ctx.start_response("403 Not authorized", [])
+            ctx.start_response("403 Not authorized", headers)
+        else:
+            ctx.start_response('200 OK', headers)
 
         return doc, params
 
-    def returnDoc(self, ctx, start_response, space, docname, extraParams={}):
+    def returnDoc(self, ctx, space, docname, extraParams={}):
         doc, params = self.getDoc(space, docname, ctx, params=ctx.params)
 
         if doc.dirty or "reload" in ctx.params:
@@ -522,7 +525,6 @@ class PortalServer:
         ctx.params.update(extraParams)
 
         # doc.applyParams(ctx.params)
-        ctx.start_response('200 OK', [('Content-Type', "text/html"), ])
         return doc.getHtmlBody(paramsExtra=extraParams, ctx=ctx)
 
     def processor_page(self, environ, start_response, wwwroot, path, prefix="", webprefix="", index=False,includedocs=False,ctx=None,space=None):
@@ -923,7 +925,7 @@ class PortalServer:
                     session.save()
                 else:
                     ctx.start_response('419 Authentication Timeout', [])
-                    return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
+                    return False, [str(self.returnDoc(ctx, "system", "accessdenied", extraParams={"path": path}))]
 
         # validate JWT token
         if 'HTTP_AUTHORIZATION' in ctx.env:
@@ -940,16 +942,12 @@ class PortalServer:
                     try:
                         jose.jws.verify(token, secret, algorithms=[algo])
                     except jose.JWSError:
-                        ctx.start_response('403 ', [])
-                        raise exceptions.Unauthorized(str(self.returnDoc(ctx, ctx.start_response,
-                                                                         "system", "accessdenied",
+                        raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
                                                                          extraParams={"path": path}))
                                                       , 'text/html')
                     break
                 else:
-                    ctx.start_response('403 ', [])
-                    raise exceptions.Unauthorized(str(self.returnDoc(ctx, ctx.start_response,
-                                                                     "system", "accessdenied",
+                    raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
                                                                      extraParams={"path": path}))
                                                   , 'text/html')
 
@@ -1005,7 +1003,7 @@ class PortalServer:
                 session['user'] = ""
                 session["querystr"] = ""
                 session.save()
-                return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "login", extraParams={"path": path}))]
+                return False, [str(self.returnDoc(ctx, "system", "login", extraParams={"path": path}))]
 
         if "user" not in session or session["user"] == "":
             session['user'] = "guest"
@@ -1098,7 +1096,12 @@ class PortalServer:
             return self.processor_page(environ, start_response, self.jslibroot, path, prefix="jslib/")
 
         if path.find("images/") == 0:
-            space, image = pathparts[1:3]
+            try:
+                space, image = pathparts[1:3]
+            except ValueError:
+                # not a valid path
+                return self.returnDoc(ctx, 'system', 'pagenotfound', {'path': path})
+
             spaceObject = self.getSpace(space)
             image = image.lower()
 
@@ -1106,7 +1109,7 @@ class PortalServer:
                 path2 = spaceObject.docprocessor.images[image]
 
                 return self.processor_page(environ, start_response, j.system.fs.getDirName(path2), j.system.fs.getBaseName(path2), prefix="images")
-            ctx.start_response('404', [])
+            return self.returnDoc(ctx, 'system', 'pagenotfound', {'path': path})
 
         if path.find("files/specs/") == 0:
             path = path[6:]
@@ -1188,7 +1191,7 @@ class PortalServer:
             ctx.params["path"] = '/'.join(pathparts)
             space, pagename = self.path2spacePagename(path)
             self.log(ctx, user, path, space, pagename)
-            pagestring = str(self.returnDoc(ctx, start_response, space, pagename, {}))
+            pagestring = str(self.returnDoc(ctx, space, pagename, {}))
             return [pagestring]
 
     def render(self, environ, start_response):

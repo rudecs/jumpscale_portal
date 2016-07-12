@@ -207,8 +207,7 @@ class PortalRest():
                     params["appname"] = ctx.application
                     params["actorname"] = ctx.actor
                     params["method"] = ctx.method
-                    page = self.ws.returnDoc(ctx, start_response, "system",
-                                          "restvalidationerror", extraParams=params)
+                    page = self.ws.returnDoc(ctx, "system", "restvalidationerror", extraParams=params)
                     return (False, ctx, [str(page)])
                 else:
                     return (False, ctx, msg)
