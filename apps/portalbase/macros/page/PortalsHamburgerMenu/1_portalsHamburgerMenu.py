@@ -1,15 +1,24 @@
 from itertools import count
 
 def main(j, args, params, tags, tasklet):
+    import copy
     page = args.page
     hrd = j.application.instanceconfig
 
-    menulinks = hrd.getListFromPrefix('instance.navigationlinks')
+    menulinks = copy.deepcopy(hrd.getListFromPrefix('instance.navigationlinks'))
     if not menulinks:
         spacelinks = j.core.portal.active.getSpaceLinks(args.requestContext)
         menulinks = []
         for name, url in spacelinks.iteritems():
             menulinks.append({'name': name, 'url': url, 'theme': 'light', 'external': 'false'})
+    else:
+        for section in menulinks:
+            if 'children' in section:
+                children = hrd.getDict(section['children'])
+                section['children'] = []
+                for key, value in children.iteritems():
+                    section['children'].append({'url': value, 'name': key})
+
 
     groups = j.core.portal.active.getGroupsFromCTX(args.requestContext)
     for portal in menulinks[:]:
@@ -17,7 +26,8 @@ def main(j, args, params, tags, tasklet):
         if scope and scope not in groups:
             menulinks.remove(portal)
             continue
-        portal['children'] = list()
+        if 'children' not in portal:
+            portal['children'] = list()
         external = portal.get('external', 'false').lower()
         portal['external'] = external
         if external != 'true':
