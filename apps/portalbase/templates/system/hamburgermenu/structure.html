@@ -18,7 +18,7 @@
 									<div id='collapse-{{loop.index}}' class='panel-collapse collapse'>
 	                  {% for child in portal.children %}
 	                      <li>
-	                          <a href='{{child.url}}'>{{child.name}}</a>
+	                          <a class='openIframe' data-external="{{portal.external}}" href='{{child.url}}'>{{child.name}}</a>
 	                      </li>
 	                  {% endfor %}
 									</div>
