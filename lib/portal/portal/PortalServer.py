@@ -695,7 +695,7 @@ class PortalServer:
     def process_proxy(self, ctx, proxy):
         if not self.isAdminFromCTX(ctx):
             self.raiseError(ctx, httpcode='403 Forbidden')
-            yield 'Only admin can access that'
+            return 'Only admin can access that'
             return
         path = ctx.env['PATH_INFO']
         method = ctx.env['REQUEST_METHOD']
@@ -709,11 +709,14 @@ class PortalServer:
             desturl += "?%s" % query
         req = requests.Request(method, desturl, data=ctx.env['wsgi.input'], headers=headers).prepare()
         session = requests.Session()
-        resp = session.send(req, stream=True)
+        resp = session.send(req)
         resp.headers.pop("transfer-encoding", None)
+        resp.headers.pop("content-encoding", None)
+        resp.headers.pop("content-length", None)
+        content = resp.content
+        resp.headers['content-length'] = len(content)
         ctx.start_response('%s %s' % (resp.status_code, resp.reason), headers=resp.headers.items())
-        for chunk in resp.iter_content(512):
-            yield chunk
+        return content
 
     def path2spacePagename(self, path):
 
