@@ -709,14 +709,11 @@ class PortalServer:
             desturl += "?%s" % query
         req = requests.Request(method, desturl, data=ctx.env['wsgi.input'], headers=headers).prepare()
         session = requests.Session()
-        resp = session.send(req)
+        resp = session.send(req, stream=True, allow_redirects=False)
         resp.headers.pop("transfer-encoding", None)
-        resp.headers.pop("content-encoding", None)
-        resp.headers.pop("content-length", None)
-        content = resp.content
-        resp.headers['content-length'] = len(content)
         ctx.start_response('%s %s' % (resp.status_code, resp.reason), headers=resp.headers.items())
-        return content
+        rawdata = resp.raw.read()
+        return rawdata
 
     def path2spacePagename(self, path):
 
