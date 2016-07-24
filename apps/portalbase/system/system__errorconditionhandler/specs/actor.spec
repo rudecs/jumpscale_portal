@@ -2,7 +2,7 @@
 	"""
 	errorcondition handling
 	"""    
-    method:describeCategory
+    method:describeCategory @method:get,post
 		"""	
         describe the errorcondition category (type)
         describe it as well as the possible solution

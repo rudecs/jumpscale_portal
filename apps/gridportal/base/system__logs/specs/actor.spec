@@ -1,7 +1,7 @@
 #obsolete is now in https://bitbucket.org/jumpscale/jumpscale_grid/src/tip/apps/gridportal/base/system__gridmanager/specs/actor.spec
 
 [actor] @dbtype:mem #tasklets
-    method: listJobs
+    method: listJobs @method:get,post
         """
         Gets jobs that match criteria
         """
@@ -18,21 +18,21 @@
         result:dict
 
 
-    method: listNodes
+    method: listNodes @method:get,post
         """
         Gets nodes for grid
         """
         result:dict
 
 
-    method: listECOs
+    method: listECOs @method:get,post
         """
         Gets ECOs for node
         """
         var:nid int,, @tags: optional
         result:dict
 
-    method: listLogs
+    method: listLogs @method:get,post
         """
         Gets logs (for node)
         """

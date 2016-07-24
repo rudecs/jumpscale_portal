@@ -339,8 +339,16 @@ def match(j, args, params, actor, tags, tasklet):
 
                 auth = not tags.labelExists("noauth")
                 methodcall = getattr(actorobject, methodspec.name)
-                j.core.portal.active.addRoute(methodcall, appname, actorname, methodspec.name, params=params,
-                                              description=methodspec.description, auth=auth, returnformat=returnformat)
+                methodtags = j.core.tags.getObject(methodspec.tags)
+
+                methodtypes = ('post', )
+                if 'method' in methodtags.tags:
+                    methodtypes = [tag for tag in methodtags.tags['method'].split(',') if tag]
+                for methodtype in methodtypes:
+                    j.core.portal.active.addRoute(methodcall, appname, actorname, methodspec.name, params=params,
+                                                  description=methodspec.description, auth=auth, returnformat=returnformat,
+                                                  httpmethod=methodtype)
+
 
         # load taskletengines if they do exist
         tepath = j.system.fs.joinPaths(actorpath, "taskletengines")

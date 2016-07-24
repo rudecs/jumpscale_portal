@@ -8,8 +8,8 @@ INPUTMAP = {'bool': {'type': 'boolean'},
            'string': {'type': 'string'},
            'int': {'type': 'integer'},
            'float': {'type': 'number'},
-           'list': {'type': 'array'},
-           'list(int)': {'$ref': '#/definitions/intarray'},
+           'list': {'type': 'array', 'items': {'type': 'string'}},
+           'list(int)': {'type': 'array', 'items': {'type': 'integer'}},
            'dict': {'type': 'string'},
            }
 
@@ -18,7 +18,7 @@ RETURNMAP = {'bool': {'type': 'boolean'},
            'string': {'type': 'string'},
            'int': {'type': 'integer'},
            'float': {'type': 'number'},
-           'list': {'$ref': '#/definitions/strarray'},
+           'list': {'type': 'array', 'items': {'type': 'integer'}},
            'dict': {'$ref': '#/definitions/object'},
            }
 
@@ -46,7 +46,11 @@ class system_docgenerator(j.code.classGetBase()):
             methods = dict()
             path = '/%s/%s/%s' % (specobj.appname, specobj.actorname, method.name)
             paths[path] = methods
-            for methodtype in ('get', 'post'):
+            methodtags = j.core.tags.getObject(method.tags)
+            methodtypes = ('post', )
+            if 'method' in methodtags.tags:
+                methodtypes = [tag for tag in methodtags.tags['method'].split(',') if tag]
+            for methodtype in methodtypes:
                 methodinfo = dict()
                 methods[methodtype] = methodinfo
                 methodinfo['description'] = method.description
@@ -101,16 +105,14 @@ class system_docgenerator(j.code.classGetBase()):
             groups = dict()
             for actor in actors:
                 group_name = actor.split('__')[0]
-                if group_name not in groups.keys():
-                    groups[group_name] = [actor]
-                groups[group_name].append(actor)
+                groups.setdefault(group_name, []).append(actor)
             
             if group in groups.keys():
                 actors = groups[group]
             else:
                 raise exceptions.BadRequest("invalid actor group")
 
-        for actor in sorted(actors):    
+        for actor in sorted(actors):
             try:
                 self.getDocForActor(actor, catalog, hide_private_api)
             except Exception as e:

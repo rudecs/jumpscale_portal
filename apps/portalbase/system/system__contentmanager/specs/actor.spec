@@ -3,102 +3,102 @@
 	this actor manages all content on the wiki
 	can e.g. notify wiki/appserver of updates of content
 	"""    
-    method:notifyFiledir
+    method:notifyFiledir @method:get,post
 		"""		
 		"""
 		var:path str,,path of content which got changed
         result:bool    
 
-    method:getSpaces
+    method:getSpaces @method:get,post
 		"""		
 		"""
         result:list(str)
 		
-    method:getSpacesWithPaths
+    method:getSpacesWithPaths @method:get,post
 		"""		
 		"""
         result:list([name,path])
 
-    method:getContentDirsWithPaths
+    method:getContentDirsWithPaths @method:get,post
 		"""		
 		return root dirs of content (actors,buckets,spaces)
 		"""
         result:list([name,path])
 
-    method:getBucketsWithPaths
+    method:getBucketsWithPaths @method:get,post
 		"""		
 		"""
         result:list([name,path])
  
-    method:getActorsWithPaths
+    method:getActorsWithPaths @method:get,post
         """		
         """
         result:list([name,path])
  
-    method:getBuckets
+    method:getBuckets @method:get,post
 		"""		
 		"""
         result:list(str)
 
-    method:getActors
+    method:getActors @method:get,post
 		"""		
 		"""
         result:list(str)
 
 
-    method:notifySpaceModification
+    method:notifySpaceModification @method:get,post
 		"""		
 		"""
 		var:id str,,id of space which changed# @tags: optional
         #var:name str,,name of space which changed @tags: optional
         result:bool    
 
-    method:notifySpaceNew
+    method:notifySpaceNew @method:get,post
 		"""		
 		"""
 		var:path str,,path of content which got changed
 		var:name str,,name 
 		result:bool    
 
-    method:notifySpaceDelete
+    method:notifySpaceDelete @method:get,post
 		"""		
 		"""
 		var:id str,,id of space which changed
 		result:bool    
 
-    method:notifyBucketDelete
+    method:notifyBucketDelete @method:get,post
 		"""		
 		"""
 		var:id str,,id of bucket which changed
 		result:bool  
 
-    method:notifyBucketModification
+    method:notifyBucketModification @method:get,post
 		"""		
 		"""
 		var:id str,,id of bucket which changed
         result:bool    
 
-    method:notifyBucketNew
+    method:notifyBucketNew @method:get,post
 		"""		
 		"""
 		var:path str,,path of content which got changed
 		var:name str,,name 
 		result:bool    
 
-    method:notifyActorNew
+    method:notifyActorNew @method:get,post
 		"""		
 		"""
 		var:path str,,path of content which got changed
 		var:name str,,name 
 		result:bool 
 
-    method:notifyActorModification
+    method:notifyActorModification @method:get,post
 		"""		
 		"""
 		var:id str,,id of actor which changed
         result:bool  
 
-    method:notifyActorDelete
+    method:notifyActorDelete @method:get,post
 		"""		
 		"""
 		var:id str,,id of space which changed
@@ -120,7 +120,7 @@
 		var:text str,,content of file to edit
         result:bool  
 
-    method:modelobjectlist @noauth returnformat:jsonraw
+    method:modelobjectlist @noauth returnformat:jsonraw method:get
         """
         @todo describe what the goal is of this method
         """
@@ -129,7 +129,7 @@
         var:key str,,
         result:list
 
-    method:bitbucketreload @noauth
+    method:bitbucketreload @noauth method:get,post
         """
         Reload all spaces from bitbucket post
         """
@@ -145,14 +145,14 @@
         var:key str,,
         result:html
 
-    method:notifySpaceNewDir @noauth tasklets
+    method:notifySpaceNewDir @noauth tasklets method:get,post
         """
         """
         var:spacename str,,
         var:spacepath str,"",
         var:path str,,
 
-    method:notifyActorNewDir @noauth
+    method:notifyActorNewDir @noauth method:get,post
         """
         """
         var:actorname str,,
@@ -160,7 +160,7 @@
         var:path str,,
 
 
-    method:checkEvents
+    method:checkEvents @method:get
         """
         Check for events
         """

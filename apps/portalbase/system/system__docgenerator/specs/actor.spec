@@ -1,11 +1,11 @@
 [actor] @dbtype:mem #tasklets
-    method: prepareCatalog
+    method: prepareCatalog @method:get
         """
         Initializes the swagger entry point for listing the available APIs
         """
         result:dict
 
-    method:getDocForActor
+    method:getDocForActor @method:get,post
         """
         Gets the json doc of the given actor
         """
