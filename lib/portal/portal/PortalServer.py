@@ -703,11 +703,16 @@ class PortalServer:
         headers = {}
         for name, value in ctx.env.iteritems():
             if name.startswith('HTTP_'):
-                headers[name[5:].replace('_', '-')] = value
+                headers[name[5:].replace('_', '-').title()] = value
+        for key in ('CONTENT_TYPE', 'CONTENT_LENGTH'):
+            if key in ctx.env:
+                headers[key.replace('_', '-').title()] = ctx.env[key]
         desturl = proxy['dest'] + path[len(proxy['path']):]
         if query:
             desturl += "?%s" % query
-        req = requests.Request(method, desturl, data=ctx.env['wsgi.input'], headers=headers).prepare()
+        headers.pop('Connection', None)
+        data = ctx.env['wsgi.input'].read()
+        req = requests.Request(method, desturl, data=data, headers=headers).prepare()
         session = requests.Session()
         resp = session.send(req, stream=True, allow_redirects=False)
         resp.headers.pop("transfer-encoding", None)
@@ -1081,13 +1086,15 @@ class PortalServer:
 
         ctx = RequestContext(application="", actor="", method="",
                              env=environ, start_response=start_response,
-                             path=path, params=None, server=self)
-        ctx.params = self._getParamsFromEnv(environ, ctx)
-        ctx.env['JS_CTX'] = ctx
+                             path=path, params={}, server=self)
 
         for proxypath, proxy in self.proxies.iteritems():
             if path.startswith(proxypath.lstrip('/')):
                 return self.process_proxy(ctx, proxy)
+
+
+        ctx.params = self._getParamsFromEnv(environ, ctx)
+        ctx.env['JS_CTX'] = ctx
 
         if path.find("jslib/") == 0:
             path = path[6:]
