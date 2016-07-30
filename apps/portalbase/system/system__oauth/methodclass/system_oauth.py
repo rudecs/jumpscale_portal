@@ -17,7 +17,7 @@ class system_oauth(j.code.classGetBase()):
     def authenticate(self, type='', **kwargs):
         cache = j.clients.redis.getByInstance('system')
 
-        if j.core.portal.active.force_oauth_instance:
+        if j.core.portal.active.force_oauth_instance and not type:
             type = j.core.portal.active.force_oauth_instance
 
         if not type:
@@ -73,43 +73,32 @@ class system_oauth(j.code.classGetBase()):
 
         cache_result = json.loads(cache_result)
         client = j.clients.oauth.get(instance=cache_result['type'])
-        payload = {'code': code, 'client_id': client.id, 'client_secret': client.secret,
-                   'redirect_uri': client.redirect_url, 'grant_type': 'authorization_code'}
-        result = requests.post(client.accesstokenaddress, data=payload, headers={
-                               'Accept': 'application/json'})
-
-        if not result.ok or 'error' in result.json():
-            msg = 'Not Authorized -- %s' % result.json()['error']
-            j.logger.log(msg)
-            raise exceptions.Forbidden(msg)
-
-        result = result.json()
-        access_token = result['access_token']
-        params = {'access_token': access_token}
-        userinfo = requests.get('%s?%s' % (
-            client.user_info_url, urllib.urlencode(params))).json()
-        username = userinfo['login']
-        email = userinfo['email']
+        accesstoken = client.getAccessToken(code, state)
+        userinfo = client.getUserInfo(accesstoken)
 
         osis = j.clients.osis.getByInstance('main')
         user = j.clients.osis.getCategory(osis, "system", "user")
-        users = user.search({'id': username})[1:]
 
+        if cache_result['type'] != 'oauth':
+            userid = '{}@{}'.format(userinfo.username, cache_result['type'])
+
+        users = user.search({'id': userid})[1:]
         if not users:
             # register user
             u = user.new()
-            u.id = '{}@{}'.format(username, cache_result['type'])
-            u.emails = [email]
+            u.id = userid
+            u.groups = userinfo.groups
+            u.emails = [userinfo.emailaddress]
             user.set(u)
         else:
             u = users[0]
-            if email not in u['emails']:
+            if userinfo.emailaddress not in u['emails']:
                 raise exceptions.BadRequest(
                     'User with same name already exists')
 
         session = ctx.env['beaker.session']
-        session['user'] = username
-        session['email'] = email
+        session['user'] = userid
+        session['email'] = userinfo.emailaddress
         session['oauth'] = {'authorized': True,
                             'type': str(cache_result['type']),
                             'logout_url': client.logout_url}
