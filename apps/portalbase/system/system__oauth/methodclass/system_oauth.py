@@ -24,7 +24,8 @@ class system_oauth(j.code.classGetBase()):
             type = 'github'
 
         ctx = kwargs['ctx']
-        redirect = kwargs.get('redirect', '/')
+        referer = ctx.env.get('HTTP_REFERER', '/')
+        redirect = kwargs.get('redirect', referer)
         client = j.clients.oauth.get(instance=type)
         cache_data = json.dumps({'type': type, 'redirect': redirect})
         cache.set(client.state, cache_data, ex=180)
