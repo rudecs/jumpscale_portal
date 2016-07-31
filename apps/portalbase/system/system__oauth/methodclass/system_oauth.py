@@ -81,6 +81,8 @@ class system_oauth(j.code.classGetBase()):
 
         if cache_result['type'] != 'oauth':
             userid = '{}@{}'.format(userinfo.username, cache_result['type'])
+        else:
+            userid = userinfo.username
 
         users = user.search({'id': userid})[1:]
         if not users:
