@@ -11,7 +11,7 @@
         var:name str,,optional name for process @tags: optional
         result:json
 
-    method:getProcessesActive
+    method:getProcessesActive @method:get,post
         """     
         ask the right processmanager on right node to get the info (this comes not from osis)
         output all relevant info (no stat info for that we have getProcessStats)
@@ -21,7 +21,7 @@
         var:domain str,,optional name for process domain (part of process domain) @tags: optional
         result:json
 
-    method:getJob
+    method:getJob @method:get,post
         """
         gets relevant info of job (also logs)
         can be used toreal time return job info
@@ -31,14 +31,14 @@
         var:includeloginfo bool,,True,if true fetch all logs of job & return as well @tags: optional
         var:includechildren bool,,True,if true look for jobs which are children & return that info as well @tags: optional
 
-    method:getNodeSystemStats
+    method:getNodeSystemStats @method:get,post
         """     
         ask the right processmanager on right node to get the information about node system
         """
         var:nid int,,id of node
         result:json
 
-    method:getStatImage
+    method:getStatImage @method:get,post
         """     
         get png image as binary format
         comes from right processmanager
@@ -48,7 +48,7 @@
         var:height int,,200, @tags: optional
         result:binary
 
-    method:getNodes
+    method:getNodes @method:get,post
         """     
         list found nodes (comes from osis)
         """
@@ -67,7 +67,7 @@
         var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find nodes with lastcheckTo  (-4d means 4 days ago) @tags: optional
         result:list(list)
 
-    method:getMachines
+    method:getMachines @method:get,post
         """     
         list found machines (comes from osis)
         """
@@ -90,7 +90,7 @@
         var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find machines with lastcheckFrom  (-4d means 4 days ago) @tags: optional
         var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find machines with lastcheckTo  (-4d means 4 days ago) @tags: optional
 
-    method:getDisks
+    method:getDisks @method:get,post
         """     
         list found disks (are really partitions) (comes from osis)
         """
@@ -115,7 +115,7 @@
         var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find disks with lastcheckFrom  (-4d means 4 days ago) @tags: optional
         var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find disk with lastcheckTo  (-4d means 4 days ago) @tags: optional
 
-    method:getVDisks
+    method:getVDisks @method:get,post
         """     
         list found vdisks (virtual disks like qcow2 or sections on fs as used by a container or virtual machine) (comes from osis)
         """
@@ -149,7 +149,7 @@
         var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find vdisks with lastcheckFrom  (-4d means 4 days ago) @tags: optional
         var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find vdisks with lastcheckTo  (-4d means 4 days ago) @tags: optional
 
-    method:getLogs
+    method:getLogs @method:get,post
         """     
         interface to get log information
         #result:json array
@@ -167,7 +167,7 @@
         var:tags str,,comma separted list of tags/labels @tags: optional
 
         
-    method:getJobs
+    method:getJobs @method:get,post
         """     
         interface to get job information
         #result:json array
@@ -188,7 +188,7 @@
         var:source str,, who asked for the job is free text @tags: optional
 
 
-    method:getErrorconditions
+    method:getErrorconditions @method:get,post
         """     
         interface to get errorcondition information (eco)
         #result:json array
@@ -209,7 +209,7 @@
         var:jsorganization str,,find ecos coming from scripts from this org @tags: optional
         var:jsname str,,find ecos coming from scripts with this name @tags: optional
 
-    method:getAlerts
+    method:getAlerts @method:get,post
         """     
         interface to get alert (is optionally the result of an eco)
         #result:json array
@@ -233,7 +233,7 @@
         var:errorcondition str,,errorcondition(s) which caused this alert @tags: optional
 
 
-    method:getProcesses
+    method:getProcesses @method:get,post
         """     
         list processes (comes from osis), are the grid unique processes (not integrated with processmanager yet)
         """
@@ -253,14 +253,14 @@
         var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckTo  (-4d means 4 days ago) @tags: optional
         result:list(list)
 
-    method:getGrids
+    method:getGrids @method:get,post
         """     
         list grids
         """
         result:list(list)
 
 
-    method:getJumpscripts
+    method:getJumpscripts @method:get,post
         """
         calls internally the agentcontroller
         return: lists the jumpscripts with main fields (organization, name, category, descr)
@@ -268,14 +268,14 @@
         var:organization str,,find jumpscripts @tags: optional
         var:active bool,,is session active or not @tags: optional
         
-    method:getJumpscript
+    method:getJumpscript @method:get,post
         """
         calls internally the agentcontroller to fetch detail for 1 jumpscript
         """
         var:organization str,,
         var:name str,,
 
-    method:getAgentControllerSessions
+    method:getAgentControllerSessions @method:get,post
         """
         calls internally the agentcontroller
         """ 
@@ -283,7 +283,7 @@
         var:nid int,,find for specified node (on which agents are running which have sessions with the agentcontroller) @tags: optional
         var:active bool,,is session active or not @tags: optional
 
-    method:getAgentControllerActiveJobs
+    method:getAgentControllerActiveJobs @method:get,post
         """
         calls internally the agentcontroller
         list jobs now running on agentcontroller

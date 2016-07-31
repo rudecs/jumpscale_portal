@@ -1251,7 +1251,7 @@ class PortalServer:
         start_response('200 OK', [('Content-Type', "text/html")])
         return str(page)
 
-    def addRoute(self, function, appname, actor, method, params, description="", auth=True, returnformat=None):
+    def addRoute(self, function, appname, actor, method, params, description="", auth=True, returnformat=None, httpmethod='POST'):
         """
         @param function is the function which will be called as follows: function(webserver,path,params):
             function can also be a string, then only the string will be returned
@@ -1280,9 +1280,10 @@ class PortalServer:
         self.app_actor_dict["%s_%s" % (appname, actor)] = 1
 
         methoddict = {'get': 'GET', 'set': 'PUT', 'new': 'POST', 'delete': 'DELETE',
+                      'post': 'POST',
                       'find': 'GET', 'list': 'GET', 'datatables': 'GET', 'create': 'POST'}
         route = {'func': function, 'params': params, 'description': description, 'auth': auth, 'returnformat': returnformat}
-        self.routes["%s_%s_%s_%s" % ('GET', appname, actor, method)] = route
+        self.routes["%s_%s_%s_%s" % (methoddict.get(httpmethod, 'POST'), appname, actor, method)] = route
 
 ##################### SCHEDULING
 

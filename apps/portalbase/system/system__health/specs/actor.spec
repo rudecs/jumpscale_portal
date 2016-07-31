@@ -9,19 +9,19 @@
 		var:nid int,,node id @optional
         result:bool
 
-    method:getOverallStatus
+    method:getOverallStatus @method:get,post
         """
         get the status of the system
         """
         result:json
 
-    method:getStatusSummary
+    method:getStatusSummary @method:get,post
         """
         get the status summary for the nodes
         """
         result:json
 
-    method:getDetailedStatus
+    method:getDetailedStatus @method:get,post
         """
         get detailed status for a node
         """

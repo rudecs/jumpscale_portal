@@ -185,7 +185,7 @@ class PortalRest():
         if routekey not in routes:
             self.activateActor(paths[0], paths[1])
         if routekey not in routes:
-            routekey="GET_%s"%routekey
+            routekey="%s_%s"% (ctx.env['REQUEST_METHOD'], routekey)
         if routekey in routes:
             if human:
                 ctx.fformat = "human"
