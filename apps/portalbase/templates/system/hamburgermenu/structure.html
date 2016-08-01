@@ -8,10 +8,8 @@
 							<ul class='panel-heading clearfix'>
 								{% if portal.children %}
 									<a class='accordion-toggle margin-right-medium left padding-right-none' data-toggle='collapse' data-parent='.accordion' href='#collapse-{{loop.index}}'></a>
-									<a class='space openIframe' href='{{portal.url}}' data-theme='{{portal.theme}}' data-external='{{portal.external}}'>{{portal.name}}</a>
-								{% else %}
-									<a class='space openIframe push-left' href='{{portal.url}}' data-theme='{{portal.theme}}' data-external='{{portal.external}}'>{{portal.name}}</a>
 								{% endif %}
+								<a class='space openIframe {{'' if portal.children else 'push-left'}}' href='{{portal.url}}' data-theme='{{portal.theme}}' data-external='{{portal.external}}'>{{portal.name}}</a>
 							</ul>
               {% if portal.children %}
                 <ul class='topics margin-left-xlarge'>

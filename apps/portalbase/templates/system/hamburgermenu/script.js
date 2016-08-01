@@ -105,7 +105,12 @@ $(function () {
     }
 
     $( ".openIframe" ).click(function(event) {
-        if( $(this).data().external === true ){
+        var $this = $(this);
+        if($this.attr('href') == '') {
+            event.preventDefault();
+            return;
+        }
+        if( $this.data().external === true ){
             event.preventDefault();
             window.location.replace("/home/external?url=" + this["href"]);
         }
