@@ -1,4 +1,5 @@
 import os
+import re
 from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
@@ -14,6 +15,9 @@ def main(j, args, params, tags, tasklet):
         raise exceptions.BadRequest("BadRequest", "text/plain")
 
     page_name = args.paramsExtra.get('page_name')
+    if not re.search('^[\s\w\d]+$', page_name):
+        page.addMessage('***ERROR***: The page name should not contain any special characters')
+        return params
     # Creating a new page
     page.addMessage('''<h2>Create a new page in '%s' space</h2>''' % j.html.escape(page_space) )
     if page_name and page_space:
