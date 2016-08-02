@@ -1,6 +1,6 @@
 import JumpScale.grid.gridhealthchecker
 import JumpScale.baselib.redis
-import ujson
+import itertools
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
@@ -18,14 +18,13 @@ def main(j, args, params, tags, tasklet):
             if nid in errors:
                 level = -1
                 categories = errors.get(nid, [])
-                runningstring = '{color:orange}*DEGRADED** (issues in %s){color}' % ', '.join(categories)
+                flatchecks = itertools.chain(*checks.values())
+                state = j.core.grid.healthchecker.getNodeDataState(flatchecks)
+                text = "(issues in %s)" % ', '.join(categories)
+                runningstring = j.core.grid.healthchecker.getWikiStatus(state, text)
             else:
                 level = 0
                 runningstring = '{color:green}*RUNNING*{color}'
-            status = checks.get('JSAgent', [{'state': 'UNKOWN'}])[0]
-            if status and status['state'] != 'OK':
-                level = -2
-                runningstring = '{color:red}*HALTED*{color}'
             gid = j.core.grid.healthchecker.getGID(nid)
             link = '[Details|nodestatus?nid=%s&gid=%s]' % (nid, gid) 
             row = {'level': level, 'gid': gid, 'nid': nid}

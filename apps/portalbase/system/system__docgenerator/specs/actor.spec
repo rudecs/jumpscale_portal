@@ -1,5 +1,5 @@
 [actor] @dbtype:mem #tasklets
-    method: prepareCatalog @method:get
+    method: prepareCatalog @method:get,post
         """
         Initializes the swagger entry point for listing the available APIs
         """
