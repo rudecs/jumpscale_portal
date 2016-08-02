@@ -57,6 +57,7 @@ Documentation:/Help
 '''
 
 def main(j, args, params, tags, tasklet):
+    import re
     params.result = page = args.page
 
     portal = j.core.portal.active
@@ -72,6 +73,11 @@ def main(j, args, params, tags, tasklet):
             page.addMessage('***ERROR***: The space path should only be under {}' \
                 .format(" or ".join(permitted_dirs)))
             return params
+
+        if not re.search('^[/\w\d]+$', real_space_path):
+            page.addMessage('***ERROR***: The space path should not contain any special characters')
+            return params
+
         if os.path.exists(space_path):
             page.addMessage('***ERROR***: The space path "{}" already exists'.format(space_path))
             return params
