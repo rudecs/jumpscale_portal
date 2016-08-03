@@ -99,11 +99,12 @@ eg:
                         label = var['label']
                         name = var['name']
                         default = var.get('default', '')
+                        required = var.get('required', False)
                         placeholder = var.get('placeholder', '')
                         if var['type'] == 'float':
-                            popup.addText(label, name, type='number', value=default, placeholder=placeholder, step="0.1")
+                            popup.addText(label, name, required, type='number', value=default, placeholder=placeholder, step="0.1")
                         else:
-                            popup.addText(label, name, type=var['type'], value=default, placeholder=placeholder)
+                            popup.addText(label, name, required, type=var['type'], value=default, placeholder=placeholder)
                     elif var['type'] == 'hidden':
                         popup.addHiddenField(var['name'], var['value'])
                     elif var['type'] == 'message':

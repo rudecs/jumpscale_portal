@@ -13,11 +13,18 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-function injectIframe() {
+function injectIframe(url) {
+    if (url === undefined) {
+        url = getUrlParameter('url')
+    }
     $('.flatTheme > .container').html('')
     .addClass('height-full')
-    .html("<iframe id='external-iframe' class='border-none' src='" + getUrlParameter('url') + "'></iframe>")
+    .html("<iframe id='external-iframe' class='border-none' src='" + url + "'></iframe>")
     .removeClass('container');
+    if (window.history.pushState) {
+        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({path:newurl},'',newurl);
+    }
     $('.flatTheme').addClass('padding-top-none');
     $('.navbar-inverse').remove();
     $('.navmenu-fixed-left.offcanvas').remove();
