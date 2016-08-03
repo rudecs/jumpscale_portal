@@ -15,16 +15,12 @@ def main(j, args, params, tags, tasklet):
         raise exceptions.BadRequest("BadRequest", "text/plain")
 
     page_name = args.paramsExtra.get('page_name')
-    if not re.search('^[\s\w\d]+$', page_name):
-        page.addMessage('***ERROR***: The page name should not contain any special characters')
-        return params
     # Creating a new page
     page.addMessage('''<h2>Create a new page in '%s' space</h2>''' % j.html.escape(page_space) )
     if page_name and page_space:
-        space = j.core.portal.active.getSpace(page_space)
-        if not page_name:
-            page.addMessage("ERROR: page name must be specified")
-            return
+        if not re.search('^[\s\w\d]+$', page_name):
+            page.addMessage('***ERROR***: The page name should not contain any special characters')
+            return params
 
         space = j.core.portal.active.getSpace(page_space)
         j.system.fs.createDir(os.path.join(space.model.path, page_name))
