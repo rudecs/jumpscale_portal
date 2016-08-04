@@ -53,16 +53,18 @@ def main(j, args, params, tags, tasklet):
                         portal['children'].append({'url': link, 'name': name})
 
     params.result = page
+
+    script = j.core.portal.active.templates.render('system/hamburgermenu/script.js')
+    page.addJS(jsContent=script, header=False)
+    style = j.core.portal.active.templates.render('system/hamburgermenu/style.css')
+    page.addCSS(cssContent=style)
+
     if not menulinks or len(menulinks) == 1 and not menulinks[0]['children']:
         return params
 
-    hrdListHTML = j.core.portal.active.templates.render('system/hamburgermenu/structure.html', menulinks=menulinks)
-    script = j.core.portal.active.templates.render('system/hamburgermenu/script.js')
-    style = j.core.portal.active.templates.render('system/hamburgermenu/style.css')
 
-    page.addCSS(cssContent=style)
+    hrdListHTML = j.core.portal.active.templates.render('system/hamburgermenu/structure.html', menulinks=menulinks)
     page.addMessage('''<script id="portalsHamburgerStructure" type="text/x-jQuery-tmpl">%s</script>''' % hrdListHTML)
-    page.addJS(jsContent=script, header=False)
 
     return params
 
