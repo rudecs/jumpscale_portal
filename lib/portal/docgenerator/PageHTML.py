@@ -33,6 +33,7 @@ class PageHTML(Page):
         self._timestampsAdded = set()
         self.projectname = ""
         self.logo = ""
+        self.favicon = ""
         self.scriptBody = ""
         self.jscsslinks = {}
         self.login = False
@@ -1046,6 +1047,9 @@ function copyText$id() {
     def addHTMLHeader(self, header):
         self.head += header
 
+    def addFavicon(self, href, type):
+        self.favicon = '<link rel="shortcut icon" type="%s" href="%s" />' % (type, href)
+
     def addHTMLBody(self, body):
         self.body += body
 
@@ -1087,6 +1091,7 @@ function copyText$id() {
         docdata = {'head': jsHead,
                    'bodyattrib': ' '.join(self.bodyattributes),
                    'body': self.body,
+                   'favicon': self.favicon,
                    'tail': '\n'.join(self.tail)}
         for key, val in docdata.iteritems():
             docdata[key] = j.tools.text.toStr(val, normalize=False)
@@ -1096,6 +1101,7 @@ function copyText$id() {
 <html>
 <head>
  <meta charset="UTF-8">
+%(favicon)s
 %(head)s</head>
 <body %(bodyattrib)s>%(body)s
 %(tail)s</body>
