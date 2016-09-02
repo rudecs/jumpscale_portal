@@ -14,26 +14,25 @@ h2. Statistics ${gridname}: ${nodename} ([$$gid:$$id|/grid/grid node?id=$$id&gid
 
 @row
 @col 6
-{{include:graph_cpustats}}
+{{include:graph_memory2}}
 @colend
 @col 6
-{{include:graph_systemload}}
-@colend
-@rowend
-@row
-@col 6
-{{include:graph_cputime}}
+{{include:graph_cpu_contextswitch}}
 @colend
 @col 6
-{{include:graph_memory}}
-@colend
-@rowend
-@row
-@col 6
-{{include:graph_network}}
+{{include:graph_cpu_time}}
 @colend
 @col 6
-{{include:graph_networkerror}}
+{{include:graph_network_packet}}
+@colend
+@col6
+{{include:graph_network_throughput}}
+@colend
+@col6
+{{include:graph_disk_iops}}
+@colend
+@col6
+{{include:graph_disk_throughput}}
 @colend
 @rowend
 

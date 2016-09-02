@@ -1,0 +1,22 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value,
+    series:machine.CPU.utilisation|m,
+    alias:CPU time $tag_cpu_nr,
+    interval:1m,
+    condition:gid={gid} AND nid={id},
+    groupby:gid nid cpu_nr,
+    query:'SELECT mean(value) FROM "machine.CPU.utilisation|m" WHERE "gid" = "106" AND "nid" = "2" AND $timeFilter GROUP BY time($interval), "gid", "nid", "cpu_nr"',
+
+cfg.title = 'CPU time'
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) CPU time 2'
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = true
+cfg.fill = 3
+cfg.y_format = s
+cfg.datasource = influxdb_controller
+
+}}

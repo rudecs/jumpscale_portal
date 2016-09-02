@@ -1,0 +1,30 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value,
+    series:disk.throughput.read|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={id} type=physical,
+    alias:read $tag_device,
+    interval:1m,
+
+target.2 =
+    function:mean,
+    value:value,
+    series:disk.throughput.write|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={id} type=physical,
+    alias:write $tag_device,
+    interval:1m,
+
+cfg.title = 'Disk throughput'
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) disk throughput'
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = true
+cfg.fill = 3
+cfg.y_format = mbytes
+cfg.datasource = influxdb_controller
+
+}}

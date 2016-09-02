@@ -13,10 +13,10 @@ h3. CPU Statistics
 
 @row
 @col 6
-{{include:graph_cpustats}}
+{{include:graph_cpu_time}}
 @colend
 @col 6
-{{include:graph_systemload}}
+{{include:graph_memory2}}
 @colend
 @endrow
 

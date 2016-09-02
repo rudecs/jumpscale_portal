@@ -1,0 +1,30 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value,
+    series:disk.iops.read|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={id} type=physical,
+    alias:read $tag_device,
+    interval:1m,
+
+target.2 =
+    function:mean,
+    value:value,
+    series:disk.iops.write|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={id} type=physical,
+    alias:write $tag_device,
+    interval:1m,
+
+cfg.title = 'IOPS'
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) iops'
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = true
+cfg.fill = 3
+cfg.y_format = short
+cfg.datasource = influxdb_controller
+
+}}

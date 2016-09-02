@@ -1,0 +1,21 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value,
+    series:machine.CPU.contextswitch|m,
+    groupby: gid nid,
+    condition: gid={gid} AND nid={id},
+    alias:Context Switch,
+    interval:1m,
+
+cfg.title = 'CPU context switch'
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) CPU context switch'
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = true
+cfg.fill = 3
+cfg.y_format = short
+cfg.datasource = influxdb_controller
+
+}}

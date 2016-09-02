@@ -1,0 +1,40 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value,
+    series:machine.memory.ram.available|m,
+    query:'SELECT mean(value) FROM "machine.memory.ram.available|m" WHERE "gid" = "106" AND "nid" = "2" AND $timeFilter GROUP BY time($interval), "gid", "nid"',
+    groupby:gid nid,
+    condition:gid={gid} AND nid={id},
+    alias:Ram available,
+    interval:1m,
+
+target.2 = 
+    function:mean,
+    value:value,
+    series:machine.memory.swap.left|m,
+    groupby:gid nid,
+    condition:gid={gid} AND nid={id},   
+    alias:Swap available,
+    interval:1m,
+
+target.3 = 
+    function:mean,
+    value:value,
+    series:machine.memory.swap.used|m,
+    alias:Swap used,
+    groupby:gid nid,
+    condition:gid={gid} AND nid={id}, 
+    interval:1m,
+
+cfg.title = 'Memory'
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) Memory 2'
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = true
+cfg.fill = 3
+cfg.y_format = mbytes
+cfg.datasource = influxdb_controller
+
+}}

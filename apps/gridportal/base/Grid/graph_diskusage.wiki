@@ -3,26 +3,30 @@
 target.1 =
     function:mean,
     value:value,
-    series:{gid}_{nid}_disk_{bpath}_space_used_mb.gauge,
-    alias:Used,
+    series:disk.iops.read|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={nid} AND device={bpath},
+    alias:read,
     interval:5m,
 
 target.2 =
-    function:difference,
+    function:mean,
     value:value,
-    series:{gid}_{nid}_disk_{bpath}_space_free_mb.gauge,
-    alias:Free,
+    series:disk.throughput.write|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={nid} AND device={bpath},
+    alias:write,
     interval:5m,
 
 
-cfg.title = Disk Usage
-cfg.dashboardtitle = 'Disk {bpath} ({gid}:{nid}) Disk Usage'
+cfg.title = Disk IOPS
+cfg.dashboardtitle = 'Disk {bpath} ({gid}:{nid}) Disk IOPS'
 cfg.height = 275px
 cfg.width = 1000px
 cfg.stack = true
 cfg.stack = true
 cfg.fill = 20
-cfg.y_format = mbytes
-
+cfg.y_format = short
+cfg.datasource = influxdb_controller
 
 }}

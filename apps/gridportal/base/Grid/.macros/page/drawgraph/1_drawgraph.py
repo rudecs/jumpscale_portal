@@ -1,4 +1,22 @@
 import json
+
+def generate_tags(line):
+    tags = []
+    state = 0
+    for w in line.split(' '):
+        if state == 0:
+            obj = {}
+        if w in ['AND', 'OR']:
+            state = 1
+            obj['conditions'] = w
+        else:
+            state = 0
+            ss = w.split('=')
+            obj['key'] = ss[0]
+            obj['value'] = ss[1]
+            tags.append(obj)
+    return tags
+
 def main(j, args, params, tags, tasklet):
     page = args.page
     graphdata = args.cmdstr.format(**args.doc.appliedparams)
@@ -10,6 +28,8 @@ def main(j, args, params, tags, tasklet):
     cfg.update(graphdata.getDictFromPrefix('cfg'))
     if 'dashboardtitle' not in cfg:
         cfg['dashboardtitle'] = checksum
+    
+    cfg['datasource'] = cfg.get('datasource', 'inflxudb_controller')
 
     targetsstr = ''
     grafanatargets = []
@@ -17,152 +37,149 @@ def main(j, args, params, tags, tasklet):
     for target in targets.values():
         target['value'] = target.get('value', 'value')
         targetvalue = {
-                            "fields": [
-                                {
-                                    "func": target['function'],
-                                    "name": target['value']
-                                }
-                            ],
-                            "measurement": target['series'],
-                            "alias": target['alias'],
-                            "interval": target['interval']
-                        }
+                        "fields": [
+                            {
+                                "func": target['function'],
+                                "name": target['value']
+                            }
+                        ],
+                        "measurement": target['series'],
+                        "alias": target['alias'],
+                        "interval": target['interval'],
+                      }
+
+        if 'query' in target:
+            targetvalue['query'] = target['query']
+
+        if 'condition' in target:
+            targetvalue['tags'] = generate_tags(target['condition'])
+
+        if 'groupby' in target:
+            targetvalue['groupByTags'] = target['groupby'].split(' ')
+
         grafanatargets.append(targetvalue)
     cfg['target'] = targetsstr.strip(',')
 
     dashboard = {
-    "title": cfg['dashboardtitle'],
-    "tags": [],
-    "style": "light",
-    "timezone": "browser",
-    "editable": False,
-    "rows": [
+      "id": None,
+      "title": cfg['dashboardtitle'],
+      "tags": [],
+      "style": "dark",
+      "timezone": "browser",
+      "editable": False,
+      "hideControls": True,
+      "sharedCrosshair": False,
+      "rows": [
         {
-            "title": cfg['title'],
-            "height": "250px",
-            "editable": False,
-            "collapse": False,
-            "collapsable": True,
-            "panels": [
-                {
-                    "editable": False,
-                    "type": "graph",
-                    "x-axis": True,
-                    "y-axis": True,
-                    "scale": 1,
-                    "y_formats": [
-                        cfg['y_format'],
-                        cfg['y_format'],
-                    ],
-                    "grid": {
-                        "max": None,
-                        "min": None,
-                        "leftMax": None,
-                        "rightMax": None,
-                        "leftMin": None,
-                        "rightMin": None,
-                        "threshold1": None,
-                        "threshold2": None,
-                        "threshold1Color": "rgba(216,200,27,0.27)",
-                        "threshold2Color": "rgba(234,112,112,0.22)"
-                    },
-                    "lines": True,
-                    "fill": cfg['fill'],
-                    "linewidth": 2,
-                    "points": False,
-                    "pointradius": 5,
-                    "bars": False,
-                    "stack": cfg['stack'],
-                    "spyable": True,
-                    "options": False,
-                    "legend": {
-                        "show": True,
-                        "values": False,
-                        "min": False,
-                        "max": False,
-                        "current": False,
-                        "total": False,
-                        "avg": False
-                    },
-                    "interactive": True,
-                    "legend_counts": True,
-                    "timezone": "browser",
-                    "percentage": cfg['percentage'],
-                    "zerofill": True,
-                    "nullPointMode": "connected",
-                    "steppedLine": False,
-                    "tooltip": {
-                        "value_type": "cumulative",
-                        "query_as_alias": True
-                    },
-                    "targets": grafanatargets,
-                    "aliasColors": {},
-                    "aliasYAxis": {},
-                    "title": cfg['title'],
-                    "datasource": "influxdb_main",
-                    "renderer": "flot",
-                    "annotate": {
-                        "enable": False
-                    }
-                }
-            ],
-            "notice": False
+          "height": "250px",
+          "panels": [
+            {
+              "title": cfg['title'],
+              "error": False,
+              "span": 12,
+              "editable": False,
+              "type": "graph",
+              "id": 1,
+              "datasource": cfg['datasource'],
+              "renderer": "flot",
+              "x-axis": True,
+              "y-axis": True,
+              "y_formats": [
+                cfg['y_format'],
+                cfg['y_format']
+              ],
+              "grid": {
+                "leftLogBase": 1,
+                "leftMax": None,
+                "rightMax": None,
+                "leftMin": None,
+                "rightMin": None,
+                "rightLogBase": 1,
+                "threshold1": None,
+                "threshold2": None,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+              "lines": True,
+              "fill": 1,
+              "linewidth": 2,
+              "points": False,
+              "pointradius": 5,
+              "bars": False,
+              "stack": cfg['stack'],
+              "percentage": cfg['percentage'],
+              "legend": {
+                "show": True,
+                "values": False,
+                "min": False,
+                "max": False,
+                "current": False,
+                "total": False,
+                "avg": False
+              },
+              "NonePointMode": "connected",
+              "steppedLine": False,
+              "tooltip": {
+                "value_type": "cumulative",
+                "shared": True
+              },
+              "timeFrom": None,
+              "timeShift": None,
+              "targets": grafanatargets,
+              }
+           ],
+          "title": cfg['title'],
+          "collapse": False,
+          "editable": False
         }
-    ],
-    "pulldowns": [
+      ],
+      "nav": [
         {
-            "type": "filtering",
-            "collapse": False,
-            "notice": False,
-            "enable": False
-        },
-        {
-            "type": "annotations",
-            "enable": False
+          "type": "timepicker",
+          "collapse": False,
+          "notice": False,
+          "enable": True,
+          "status": "Stable",
+          "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d"
+          ],
+          "refresh_intervals": [
+            "5s",
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
+          ],
+          "now": True
         }
-    ],
-    "nav": [
-        {
-            "type": "timepicker",
-            "collapse": False,
-            "notice": False,
-            "enable": True,
-            "status": "Stable",
-            "time_options": [
-                "5m",
-                "15m",
-                "1h",
-                "6h",
-                "12h",
-                "24h",
-                "2d",
-                "7d",
-                "30d"
-            ],
-            "refresh_intervals": [
-                "5s",
-                "10s",
-                "30s",
-                "1m",
-                "5m",
-                "15m",
-                "30m",
-                "1h",
-                "2h",
-                "1d"
-            ],
-            "now": True
-        }
-    ],
-    "time": {
-        "from": "now-1h",
+      ],
+      "time": {
+        "from": "now-6h",
         "to": "now"
-    },
-    "templating": {
+      },
+      "templating": {
         "list": []
-    },
-    "version": 2
-}
+      },
+      "annotations": {
+        "list": []
+      },
+      "schemaVersion": 6,
+      "version": 0,
+      "links": []
+    }
 
     grafclient = j.clients.grafana.getByInstance('main')
     result = grafclient.updateDashboard(dashboard)
@@ -175,3 +192,4 @@ def main(j, args, params, tags, tasklet):
 
 def match(j, args, params, tags, tasklet):
     return True
+
