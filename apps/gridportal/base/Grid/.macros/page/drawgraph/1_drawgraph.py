@@ -17,6 +17,16 @@ def generate_tags(line):
             tags.append(obj)
     return tags
 
+def generate_groupby(line):
+    tags = line.split(' ')
+    groupby = []
+    for tag in tags:
+        obj = {'params':[tag],'type':'tag'}
+        groupby.append(obj)
+    groupby.append({'params':['$interval'],'type':'time'})
+    return groupby
+
+
 def main(j, args, params, tags, tasklet):
     page = args.page
     graphdata = args.cmdstr.format(**args.doc.appliedparams)
@@ -56,6 +66,7 @@ def main(j, args, params, tags, tasklet):
 
         if 'groupby' in target:
             targetvalue['groupByTags'] = target['groupby'].split(' ')
+            targetvalue['groupBy'] = generate_groupby(target['groupby'])
 
         grafanatargets.append(targetvalue)
     cfg['target'] = targetsstr.strip(',')
@@ -66,7 +77,7 @@ def main(j, args, params, tags, tasklet):
       "tags": [],
       "style": "dark",
       "timezone": "browser",
-      "editable": False,
+      "editable": True,
       "hideControls": True,
       "sharedCrosshair": False,
       "rows": [
@@ -77,7 +88,7 @@ def main(j, args, params, tags, tasklet):
               "title": cfg['title'],
               "error": False,
               "span": 12,
-              "editable": False,
+              "editable": True,
               "type": "graph",
               "id": 1,
               "datasource": cfg['datasource'],
