@@ -19,14 +19,14 @@ target.2 =
     interval:5m,
 
 
-cfg.title = Disk IOPS
+cfg.title = Disk IOPS for {bpath}
 cfg.dashboardtitle = 'Disk {bpath} ({gid}:{nid}) Disk IOPS'
 cfg.height = 275px
 cfg.width = 1000px
 cfg.stack = true
 cfg.stack = true
 cfg.fill = 20
-cfg.y_format = short
+cfg.y_format = MBs
 cfg.datasource = influxdb_controller
 
 }}

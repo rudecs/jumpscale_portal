@@ -19,13 +19,13 @@ target.2 =
     interval:10m,
 
 
-cfg.title = Disk Traffic
+cfg.title = Disk Traffic for {bpath}
 cfg.dashboardtitle = 'Disk {bpath} ({gid}:{nid}) Disk Traffic'
 cfg.height = 275px
 cfg.width = 1000px
 cfg.stack = false
 cfg.fill = 0
-cfg.y_format = mbytes
+cfg.y_format = MBs
 cfg.datasource = influxdb_controller
 
 }}

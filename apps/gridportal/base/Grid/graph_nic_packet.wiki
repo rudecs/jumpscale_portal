@@ -18,13 +18,13 @@ target.2 =
     alias:out $tag_nic,
     interval:1m,
 
-cfg.title = 'Network packets'
+cfg.title = 'Network packets for {nic}'
 cfg.dashboardtitle = 'Node {nodename} ({gid}:{nid}) network packet for {nic}'
 cfg.height = 275px
 cfg.width = 500px
 cfg.stack = true
 cfg.fill = 3
-cfg.y_format = mbytes
+cfg.y_format = pps
 cfg.datasource = influxdb_controller
 
 }}
