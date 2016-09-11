@@ -1,5 +1,5 @@
 
-{{title:System Portal}}
+{{title:System Portal - $$page}}
 
 {{ApplyFlatTheme}}
 
