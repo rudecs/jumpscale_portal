@@ -42,9 +42,9 @@ def main(j, args, params, tags, tasklet):
             pass
         return j.html.escape(str(result))
 
-    fieldnames = ['Create Time', 'Start', 'Stop', 'Category', 'Command', 'Queue', 'State']
-    fieldvalues = [makeLink, modifier.makeTimeOnly, modifier.makeTimeOnly, 'category', 'cmd', 'queue', 'state']
-    fieldids = ['timeCreate', 'timeStart', 'timeStop', 'category', 'cmd', 'queue', 'state']
+    fieldnames = ['Create Time', 'Start', 'Stop', 'Command', 'Queue', 'State']
+    fieldvalues = [makeLink, modifier.makeTimeOnly, modifier.makeTimeOnly, 'cmd', 'queue', 'state']
+    fieldids = ['timeCreate', 'timeStart', 'timeStop', 'cmd', 'queue', 'state']
     tableid = modifier.addTableForModel('system', 'job', fieldids, fieldnames, fieldvalues, nativequery=filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
