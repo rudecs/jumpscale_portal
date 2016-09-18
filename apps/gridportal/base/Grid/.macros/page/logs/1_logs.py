@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
         elif val:
             filters[tag] = val
 
-    fieldnames = ['Start Time', 'App Name', 'Category', 'Message', 'Level', 'Process ID', 'Node ID', 'Job ID']
+    fieldnames = ['Start Time', 'App Name', 'Category', 'Message', 'Level', 'Node ID', 'Job ID']
 
     def makeTime(row, field):
         time = modifier.makeTime(row, field)
@@ -34,8 +34,8 @@ def main(j, args, params, tags, tasklet):
 
     nidstr = '[%(nid)s|/grid/grid node?id=%(nid)s&gid=%(gid)s]'
     jidstr = '[%(jid)s|/grid/job?id=%(jid)s]'
-    fieldids = ['epoch', 'appname', 'category', 'message', 'level', 'pid', 'nid', 'jid']
-    fieldvalues = [makeTime, 'appname', 'category', cleanUp, 'level', pidStr, nidstr, jidstr]
+    fieldids = ['epoch', 'appname', 'category', 'message', 'level', 'nid', 'jid']
+    fieldvalues = [makeTime, 'appname', 'category', cleanUp, 'level', nidstr, jidstr]
     tableid = modifier.addTableForModel('system', 'log', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
