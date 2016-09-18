@@ -4,7 +4,6 @@
 {% if jid %}
 h2. Log Details
 
-<<<<<<< Updated upstream
 |*Log ID*|${guid}|
 |*Application Name*|${appname}|
 |*Category*|${category}|
@@ -15,28 +14,10 @@ h2. Log Details
 |*Process ID*|[${pid}|process?id=${pid}]|
 |*Node ID*|[${nid}|grid node?id=${nid}&gid=${gid}]|
 |*Order*|${order}|
-|*Grid ID*|[${gid}|grid?id=${gid}]|
+|*Grid ID*|[${gid}|/grid?id=${gid}]|
 |*Private*|${private}|
 |*Application ID*|${aid}|
 |*Tags*|${tags}|
 {% else %}
 Invalid log id
 {% endif %}
-=======
-|*Log ID*|$$guid|
-|*Application Name*|$$appname|
-|*Category*|$$category|
-|*Message*|$$message|
-|*Time*|$$epoch|
-|*Job ID*|$$jid|
-|*Level*|$$level|
-|*Parent Job ID*|$$parentjid|
-|*Process ID*|[$$pid|process?id=$$pid]|
-|*Node ID*|[$$nid|grid node?id=$$nid&gid=$$gid]|
-|*Order*|$$order|
-|*Master Job ID*|[$$masterjid|
-|*Grid ID*|[$$gid|/grid?id=$$gid]|
-|*Private*|$$private|
-|*Application ID*|$$aid|
-|*Tags*|$$tags|
->>>>>>> Stashed changes
