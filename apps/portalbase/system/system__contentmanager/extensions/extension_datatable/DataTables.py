@@ -114,7 +114,7 @@ class DataTables():
                 colidx = kwargs['iSortCol_%s' % i]
                 key = 'bSortable_%s' % colidx
                 if kwargs[key] == 'true':
-                    colname = fieldids[int(colidx)]
+                    colname = fieldids[int(colidx)-1]
                     sort.append((colname,  1 if kwargs['sSortDir_%s' % i] == 'asc' else -1))
         if sort:
             fullquery['$orderby'] = sort
