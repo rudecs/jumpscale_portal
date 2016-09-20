@@ -56,6 +56,9 @@ Documentation:/Help
 </html>
 '''
 
+def errmsg(s):
+    return '<div class="alert alert-danger" role="alert">%s</div>'%(s)
+
 def main(j, args, params, tags, tasklet):
     import re
     params.result = page = args.page
@@ -70,20 +73,20 @@ def main(j, args, params, tags, tasklet):
         real_space_path = os.path.realpath(space_path)
         permitted_dirs = [j.dirs.baseDir, j.dirs.codeDir]
         if not any(not os.path.relpath(real_space_path, p).startswith('..') for p in permitted_dirs):
-            page.addMessage('***ERROR***: The space path should only be under {}' \
-                .format(" or ".join(permitted_dirs)))
+            page.addMessage(errmsg('***ERROR***: The space path should only be under {}' \
+                .format(" or ".join(permitted_dirs))))
             return params
 
         if not re.search('^[/\w\d]+$', real_space_path):
-            page.addMessage('***ERROR***: The space path should not contain any special characters')
+            page.addMessage(errmsg('***ERROR***: The space path should not contain any special characters'))
             return params
 
         if os.path.exists(space_path):
-            page.addMessage('***ERROR***: The space path "{}" already exists'.format(space_path))
+            page.addMessage(errmsg('***ERROR***: The space path "{}" already exists'.format(space_path)))
             return params
 
         if not os.path.exists(contentdir):
-            page.addMessage('***ERROR***: The content dir "{}" does not exist'.format(contentdir))
+            page.addMessage(errmsg('***ERROR***: The content dir "{}" does not exist'.format(contentdir)))
             return params
 
         portal.spacesloader = j.core.portalloader.getSpacesLoader()
