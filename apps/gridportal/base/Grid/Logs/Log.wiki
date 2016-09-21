@@ -11,7 +11,6 @@ h2. Log Details
 |*Time*|${epoch}|
 |*Job ID*|${jid}|
 |*Level*|${level}|
-|*Process ID*|[${pid}|process?id=${pid}]|
 |*Node ID*|[${nid}|grid node?id=${nid}&gid=${gid}]|
 |*Order*|${order}|
 |*Grid ID*|[${gid}|/grid?id=${gid}]|
