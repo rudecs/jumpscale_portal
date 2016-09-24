@@ -1,13 +1,22 @@
 [actor] @dbtype:fs
 	"""
-    heathcheck	
-	"""    
+    heathcheck
+	"""
     method:run
-		"""	
-	    Run full healtcheck	
+		"""
+	    Run full healtcheck
 		"""
 		var:nid int,,node id @optional
         result:bool
+
+
+    method:refreshCommand
+		"""
+	    Refresh a single healthcheck
+		"""
+		var:nid int,,node id
+		var:cmd str,,command to refresh
+        result:str
 
     method:getOverallStatus @method:get,post
         """
@@ -27,4 +36,3 @@
         """
         var:nid int,,id of node
         result:json
-

@@ -5,7 +5,7 @@ class system_health(j.code.classGetBase()):
 
     """
     Alerts handler
-    
+
     """
 
     def __init__(self):
@@ -72,6 +72,11 @@ class system_health(j.code.classGetBase()):
         result json
         """
         return {'state': j.core.grid.healthchecker.fetchState()}
+
+    def refreshCommand(self, nid, cmd, **kwargs):
+        org, name = cmd.split('_', 1)
+        self.acl.executeJumpscript(org, name, nid=nid, wait=False)
+        return "Scheduled reload of command"
 
     def getStatusSummary(self, **kwargs):
         """

@@ -14,11 +14,17 @@ def main(j, args, params, tags, tasklet):
                 'HALTED': 'danger',
                 'ERROR': 'danger'}
 
-    def makeStatusLabel(status, guid=None):
-        html = '<span class="label label-%s pull-right status-label">%s</span>' % (classmap.get(status, 'default'), status)
+    def makeStatusLabel(status, guid=None, direction='left'):
+        html = '<span class="label label-%s pull-%s status-label">%s</span>' % (classmap.get(status, 'default'), direction, status)
         if guid:
             html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
         return html
+
+    def addAction(cmd):
+        if not cmd:
+            return ''
+        action = "{{action id:action-RefreshHealth class:'glyphicon glyphicon-refresh pull-right' data-cmd:'%s' label:''}}" % cmd
+        return action
 
     results = j.core.grid.healthchecker.fetchMonitoringOnNode(nidint)
     _, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(results)
@@ -64,8 +70,13 @@ $(function () {
                     interval = ''
 
                 message = dataitem.get('message', '')
-                table += '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s|{{html: %(status)s}} |\n' % \
-                         {'msg': message, 'lasterror': lasterror, 'last': lastchecked, 'interval': interval, 'status': status}
+                table += '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s| {{html: %(status)s}} %(refresh)s  |\n' % \
+                         {'msg': message,
+                          'lasterror': lasterror,
+                          'last': lastchecked,
+                          'interval': interval,
+                          'status': status,
+                          'refresh': addAction(dataitem.get('cmd'))}
             else:
                 table += dataitem
         if skipcount == len(data):
@@ -90,7 +101,7 @@ $(function () {
 </div>
 }}
 ''' % {'headingid': headingid, 'sectionid': sectionid, 'table': table,
-         'category': category, 'status': makeStatusLabel(categorystatus)}
+         'category': category, 'status': makeStatusLabel(categorystatus, direction='right')}
 
         out.append(html)
 
@@ -104,5 +115,3 @@ $(function () {
 
 def match(j, args, params, tags, tasklet):
     return True
-
-

@@ -21,6 +21,13 @@ h3. Actions
   showresponse: true
   data:
    nid: $$nid
+
+- display: Refresh Health
+  action: /restmachine/system/health/refreshCommand
+  hide: true
+  showresponse: true
+  data:
+   nid: $$nid
 }}
 
 
