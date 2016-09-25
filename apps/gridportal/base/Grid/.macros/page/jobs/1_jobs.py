@@ -47,7 +47,7 @@ def main(j, args, params, tags, tasklet):
     fieldids = ['timeCreate', 'timeStart', 'timeStop', 'cmd', 'queue', 'state']
     tableid = modifier.addTableForModel('system', 'job', fieldids, fieldnames, fieldvalues, nativequery=filters)
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
     return params

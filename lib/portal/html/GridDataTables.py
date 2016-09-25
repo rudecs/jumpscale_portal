@@ -171,7 +171,7 @@ $fields
             });''' % tableid
         , header=False)
 
-    def addSorting(self, tableid=".dataTable", columnindx=0, order='asc'):
+    def addSorting(self, tableid=".dataTable", columnindx=1, order='asc'):
         self.page.addJS(jsContent='''
             $(document).ready( function() {
               $('%s').dataTable().fnSort( [ [ %s, '%s' ] ] );

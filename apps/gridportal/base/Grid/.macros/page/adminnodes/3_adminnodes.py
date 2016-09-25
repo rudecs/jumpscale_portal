@@ -59,7 +59,7 @@ def main(j, args, params, tags, tasklet):
     tableid = modifier.addTableFromData(resultdata, fieldnames)
 
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'asc')
+    modifier.addSorting('#%s' % tableid, 1, 'asc')
 
     params.result = page
     return params
