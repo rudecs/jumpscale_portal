@@ -5,11 +5,16 @@ import urllib
 import types
 import cgi
 import re
+import gevent
+import uuid
+import json
 from . import Validators
 
 class PortalRest():
 
     def __init__(self, webserver):
+        self.redis = j.clients.redis.getByInstance('system')
+        self.tasks = {}
         self.ws = webserver
 
     def validate(self, auth, ctx):
@@ -230,7 +235,22 @@ class PortalRest():
         routes = self.ws.routes
         try:
             method = routes[routekey]['func']
-            result = method(ctx=ctx, **ctx.params)
+            if '_async' in ctx.params:
+                taskguid = str(uuid.uuid4())
+
+                def exec_async():
+                    try:
+                        result = True, method(ctx=ctx, **ctx.params)
+                    except Exception as e:
+                        result = False, e.msg
+                    self.redis.set('tasks.{}'.format(taskguid), json.dumps(result), ex=600)
+                    self.tasks.pop(taskguid, None)
+
+                greenlet = gevent.spawn(exec_async)
+                self.tasks[taskguid] = greenlet
+                result = taskguid
+            else:
+                result = method(ctx=ctx, **ctx.params)
 
             return (True, result)
         except RemoteException as error:
