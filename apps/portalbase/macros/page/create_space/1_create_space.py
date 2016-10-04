@@ -85,9 +85,19 @@ def main(j, args, params, tags, tasklet):
             page.addMessage(errmsg('***ERROR***: The space path "{}" already exists'.format(space_path)))
             return params
 
+
         if not os.path.exists(contentdir):
             page.addMessage(errmsg('***ERROR***: The content dir "{}" does not exist'.format(contentdir)))
             return params
+
+        for directory in os.listdir(contentdir):
+            space_name = os.path.basename(space_path)
+            if space_name == directory or\
+               space_name == os.path.basename(os.readlink(os.path.join(contentdir, directory))):
+                page.addMessage(
+                    errmsg('***ERROR***: The space name "{0}" with contentdir "{1}" already exists'.format(space_name,
+                                                                                                           contentdir)))
+                return params
 
         portal.spacesloader = j.core.portalloader.getSpacesLoader()
         os.makedirs(os.path.join(space_path, '.space'))
