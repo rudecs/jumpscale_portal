@@ -447,7 +447,10 @@ class PortalServer:
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
             ctx.params["error"] = cgi.escape("Could not find space %s\n" % space)
             print("could not find space %s" % space)
-            space = self.defaultspace or 'system'
+            if self.defaultspace and self.defaultspace in self.spacesloader.spaces:
+                space = self.defaultspace
+            else:
+                space = 'system'
             name = "pagenotfound"
         else:
             spaceObject = self.spacesloader.getLoaderFromId(space)
@@ -499,7 +502,7 @@ class PortalServer:
         params['name'] = name
 
         if not spacedocgen:
-            doc, params = self.getDoc(space,name, ctx, params)
+            doc, params = self.getDoc(space, name, ctx, params)
         else:
             doc = spacedocgen.name2doc[name]
 
