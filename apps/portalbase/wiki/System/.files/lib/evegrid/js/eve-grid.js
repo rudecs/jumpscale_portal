@@ -92,7 +92,7 @@ eveModule.directive('eveGrid', function($http, $filter) {
                                 };
                             }
                             if( column.type == "string"){
-                                columnText = jQuery('<span>' + columnText + '</span>').text();
+                                columnText = jQuery('<span>').text(columnText).attr('title', columnText)[0].outerHTML;
                             }
                             return columnText;
                         },
