@@ -15,7 +15,7 @@ h3. Actions
 
 {{actions:
 
-- display: Run Healthcheck on Node
+- display: Run Health Check on Node
   action: /restmachine/system/health/run
   hide: true
   showresponse: true
@@ -31,7 +31,7 @@ h3. Actions
 }}
 
 
-{{action id:action-RunHealthcheckonNode class:'glyphicon glyphicon-refresh' label:'Run Healthcheck on Node'}}
+{{action id:action-RunHealthCheckonNode class:'glyphicon glyphicon-refresh' label:'Run Health Check on Node'}}
 
 {{monitorstatus nid:$$nid}}
 

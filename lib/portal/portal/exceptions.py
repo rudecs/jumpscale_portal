@@ -13,6 +13,11 @@ class BaseError(BaseException):
         if status is None:
             status = codemapping.get(code, 'Unkonwn')
         self.status = status
+        try:
+            eco = json.loads(msg)
+            msg = eco['backtrace']
+        except:
+            pass
         super(BaseError, self).__init__("%s: %s %s" % (code, status, msg))
 
 class Error(BaseError):
