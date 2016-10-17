@@ -981,3 +981,6 @@ input.todo-search-field.placeholder {
 table.table thead .sorting {
   min-width: 105px;
 }
+.elfinder {
+  min-height: 540px !important;
+}
