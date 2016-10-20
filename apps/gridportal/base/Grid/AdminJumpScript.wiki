@@ -1,5 +1,5 @@
 @usedefault
 
-h2. Admin Jumpscript
+h2. Admin Jumpscripts
 
-{{adminjumpscript name:$$name}}
+{{adminjumpscripts name:$$name}}
