@@ -39,6 +39,17 @@ class GridDataTables:
         tableid = 'table_%s_%s' % (namespace, category)
         return self.addTableFromURL(url, fieldnames, tableid, selectable)
 
+    def addTableFromModel(self, namespace, category, fields, filters=None, nativequery=None, selectable=False):
+        fieldids = [x['id'] for x in fields]
+        fieldnames = [x['name'] for x in fields]
+        fieldvalues = [x['value'] for x in fields]
+        sortables = [x.get('sortable', True) for x in fields]
+        filterables = [x.get('filterable', True) for x in fields]
+        key = j.apps.system.contentmanager.extensions.datatables.storInCache(fieldids=fieldids, fieldname=fieldnames, fieldvalues=fieldvalues, filters=filters, nativequery=nativequery)
+        tableid = 'table_%s_%s' % (namespace, category)
+        url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
+        return self.addTableFromURL(url, fieldnames, tableid, selectable, sortables, filterables)
+
     def addTableFromData(self, data, fieldnames):
         import random
         tableid = 'table%s' % random.randint(0, 1000)
@@ -91,11 +102,23 @@ $fields
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False):
-        import random
+    def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False, sortables=None, filterable=None):
         tableid = tableid or 'table'
-        basename = tableid
         counter = 1
+        columnDefs = [{"targets": [0], "visible": False}]
+        if sortables is not None:
+            targets = []
+            columnDefs.append({'targets': targets, 'sortable': False})
+            for idx, item in enumerate(sortables):
+                if item is False:
+                    targets.append(idx + 1)
+
+        filters = []
+        if filterable is not None:
+            for idx, item in enumerate(sortables):
+                if item is False:
+                    filters.append(fieldnames[idx])
+
         while tableid in self._tableids:
             tableid = "%s_%" % counter
             counter += 1
@@ -107,7 +130,7 @@ $(document).ready(function() {
         "bServerSide": true,
         "bDestroy": true,
         "select": $selectable,
-        "columnDefs": [{"targets": [0], "visible": false}],
+        "columnDefs": $columnDefs,
         "sAjaxSource": "$url"
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -117,6 +140,7 @@ $(document).ready(function() {
         C = C.replace("$url", url)
         C = C.replace("$tableid", tableid)
         C = C.replace("$selectable", json.dumps(selectable))
+        C = C.replace("$columnDefs", json.dumps(columnDefs))
         self.page.addJS(jsContent=C, header=False)
 
 #<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
@@ -142,29 +166,31 @@ $fields
         fieldnames.insert(0, "id")
         for name in fieldnames:
             classname = re.sub('[^\w]', '', name)
-            fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname,name)
+            if name in filters:
+                classname += ' nofilter'
+            fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname, name)
         C = C.replace("$fields", fieldstext)
         C = C.replace("$tableid", tableid)
 
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addSearchOptions(self, tableid=".dataTable"):
+    def addSearchOptions(self, tableid=".dataTable", fields=None):
         self.page.addJS(jsContent='''
           $(function() {
               $('%s').each(function() {
                   var table = $(this);
-                  var numOfColumns = table.find('th').length;
                   var tfoot = $('<tfoot />');
-                  for (var i = 0; i < numOfColumns; i++) {
+                  table.find('th').each(function () {
                       var td = $('<td />');
-                      td.append(
-                          $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {
-                              table.dataTable().fnFilter(this.value, tfoot.find('input').index(this));
-                          })
-                      );
+                      if (!$(this).hasClass('nofilter')) {
+                        var cell = $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {
+                            table.dataTable().fnFilter(this.value, tfoot.find('input').index(this));
+                        });
+                        td.append(cell);
+                      }
                       tfoot.append(td);
-                  }
+                  });
                   if (table.find('tfoot').length == 0)
                     table.append(tfoot);
               });
