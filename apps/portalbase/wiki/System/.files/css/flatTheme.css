@@ -1010,7 +1010,7 @@ table.table thead .sorting {
   margin-right: 10px;
   border: 1px solid #345e79;
 }
-.col-md-4 .title, .ui-datepicker-title{
+.col-md-4 .title, .col-md-6 h6, .ui-datepicker-title{
   text-align: center !important;
 }
 .clearfix .jgauge {
