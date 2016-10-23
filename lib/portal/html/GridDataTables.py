@@ -43,12 +43,10 @@ class GridDataTables:
         fieldids = [x['id'] for x in fields]
         fieldnames = [x['name'] for x in fields]
         fieldvalues = [x['value'] for x in fields]
-        sortables = [x.get('sortable', True) for x in fields]
-        filterables = [x.get('filterable', True) for x in fields]
         key = j.apps.system.contentmanager.extensions.datatables.storInCache(fieldids=fieldids, fieldname=fieldnames, fieldvalues=fieldvalues, filters=filters, nativequery=nativequery)
         tableid = 'table_%s_%s' % (namespace, category)
         url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
-        return self.addTableFromURL(url, fieldnames, tableid, selectable, sortables, filterables)
+        return self.addTableFromURLFields(url, fields, tableid, selectable)
 
     def addTableFromData(self, data, fieldnames):
         import random
@@ -102,22 +100,20 @@ $fields
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False, sortables=None, filterable=None):
+    def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False):
+        fields = [{'name': field} for field in fieldnames]
+        return self.addTableFromURLFields(url, fields, tableid, selectable)
+
+    def addTableFromURLFields(self, url, fields, tableid=None, selectable=False):
         tableid = tableid or 'table'
         counter = 1
         columnDefs = [{"targets": [0], "visible": False}]
-        if sortables is not None:
-            targets = []
-            columnDefs.append({'targets': targets, 'sortable': False})
-            for idx, item in enumerate(sortables):
-                if item is False:
-                    targets.append(idx + 1)
-
-        filters = []
-        if filterable is not None:
-            for idx, item in enumerate(sortables):
-                if item is False:
-                    filters.append(fieldnames[idx])
+        nonesortabletargets = []
+        for idx, field in enumerate(fields):
+            if not field.get('sortable', True):
+                nonesortabletargets.append(idx + 1)
+        if nonesortabletargets:
+            columnDefs.append({'targets': nonesortabletargets, 'sortable': False})
 
         while tableid in self._tableids:
             tableid = "%s_%" % counter
@@ -163,11 +159,16 @@ $fields
 </div>"""
 
         fieldstext = ""
-        fieldnames.insert(0, "id")
-        for name in fieldnames:
+        fields.insert(0, {'name': 'id'})
+        for field in fields:
+            name = field['name']
             classname = re.sub('[^\w]', '', name)
-            if name in filters:
+            if field.get('filterable', True) is False:
                 classname += ' nofilter'
+            if field.get('type', 'text') == 'date':
+                self.page.addJS("%s/jquery/jquery-ui.min.js" % self.liblocation)
+                self.page.addJS("%s/jquery/jquery-timepicker.js" % self.liblocation)
+                classname += ' datefield'
             fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname, name)
         C = C.replace("$fields", fieldstext)
         C = C.replace("$tableid", tableid)
@@ -181,13 +182,30 @@ $fields
               $('%s').each(function() {
                   var table = $(this);
                   var tfoot = $('<tfoot />');
-                  table.find('th').each(function () {
+                  table.find('th').each(function (idx) {
                       var td = $('<td />');
                       if (!$(this).hasClass('nofilter')) {
-                        var cell = $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {
-                            table.dataTable().fnFilter(this.value, tfoot.find('input').index(this));
-                        });
-                        td.append(cell);
+                        if ($(this).hasClass('datefield')) {
+                            var start = $('<input />', {type: 'text', placeholder: '>=', 'class': 'datatables_filter'});
+                            var end = $('<input />', {type: 'text', placeholder: '<=', 'class': 'datatables_filter'});
+                            var getvalues = function() {
+                                return JSON.stringify({'$gt': new Date(start.val()).getTime() / 1000, '$lt': new Date(end.val()).getTime() / 1000});
+                            };
+                            td.append(start);
+                            td.append($('<br/>'));
+                            td.append(end);
+                            $.timepicker.datetimeRange(start, end, {
+                              minInterval: (1000*60*60),
+                              onSelect: function () {
+                                table.dataTable().fnFilter(getvalues(), idx);
+                              }
+                            });
+                        } else {
+                            var cell = $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {
+                                table.dataTable().fnFilter(this.value, idx);
+                            });
+                            td.append(cell);
+                        }
                       }
                       tfoot.append(td);
                   });

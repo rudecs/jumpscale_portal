@@ -984,3 +984,11 @@ table.table thead .sorting {
 .elfinder {
   min-height: 540px !important;
 }
+
+.ui-datepicker {
+   background: #ccc;
+}
+
+.ui-datepicker td {
+   min-width: 25px !important;
+}

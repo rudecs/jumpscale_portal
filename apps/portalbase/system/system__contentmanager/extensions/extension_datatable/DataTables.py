@@ -3,6 +3,7 @@ from JumpScale.portal.portal import exceptions
 from JumpScale.portal.docgenerator.Confluence2HTML import Confluence2HTML
 import copy
 import cgi
+import json
 
 class DataTables():
 
@@ -22,7 +23,7 @@ class DataTables():
 
     def getTableDefFromActorModel(self, appname, actorname, modelname, excludes=[]):
         """
-        @return fields : array where int of each col shows position in the listProps e.g. [3,4] 
+        @return fields : array where int of each col shows position in the listProps e.g. [3,4]
               means only col 3 & 4 from listprops are levant, you can also use it to define the order
               there can be special columns added which are wiki templates to form e.g. an url or call a macro, formatted as a string
               e.g. [3,4,"{{amacro: name:$3 descr:$4}}","[$1|$3]"]
@@ -138,7 +139,15 @@ class DataTables():
                     if fieldname not in filters:
                         nativequery[fieldname] = int(svalue)
                 else:
-                    nativequery[fieldname] = getRegexQuery(svalue)
+                    try:
+                        q = json.loads(svalue)
+                        if isinstance(q, dict):
+                            nativequery[fieldname] = q
+                        else:
+                            nativequery[fieldname] = getRegexQuery(svalue)
+                    except:
+                        nativequery[fieldname] = getRegexQuery(svalue)
+
 
         #top search field
         if 'sSearch' in kwargs and kwargs['sSearch']:
