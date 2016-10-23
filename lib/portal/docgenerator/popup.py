@@ -126,7 +126,7 @@ class Popup(object):
 
     def write_html(self, page):
         template = self.jinja.from_string('''
-        <form role="form" method="post" action="${submit_url}" class="popup_form"
+        <form role="form" method="post" action="${submit_url}" class="popup_form" autocomplete="off"
         {% for key, value in data.iteritems() -%}
             data-${key}="${value}"
         {%- endfor %}
@@ -148,6 +148,8 @@ class Popup(object):
                     <div class="modal-body modal-body-message alert alert-success padding-all-small padding-left-large">
                     </div>
                     <div class="modal-body modal-body-form">
+                    <input type="text" style="display:none" />
+                    <input type="password" style="display:none" />
                     {% for widget in widgets %}${widget}{% endfor %}
                     </div>
                   </div>
