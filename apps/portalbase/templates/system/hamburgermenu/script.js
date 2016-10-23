@@ -13,10 +13,13 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-function injectIframe() {
+function injectIframe(url) {
+    if (url === undefined) {
+        url = getUrlParameter('url')
+    }
     $('.flatTheme > .container').html('')
     .addClass('height-full')
-    .html("<iframe id='external-iframe' class='border-none' src='" + getUrlParameter('url') + "'></iframe>")
+    .html("<iframe id='external-iframe' class='border-none' src='" + url + "'></iframe>")
     .removeClass('container');
     $('.flatTheme').addClass('padding-top-none');
     $('.navbar-inverse').remove();
@@ -105,7 +108,12 @@ $(function () {
     }
 
     $( ".openIframe" ).click(function(event) {
-        if( $(this).data().external === true ){
+        var $this = $(this);
+        if($this.attr('href') == '') {
+            event.preventDefault();
+            return;
+        }
+        if( $this.data().external === true ){
             event.preventDefault();
             window.location.replace("/home/external?url=" + this["href"]);
         }
