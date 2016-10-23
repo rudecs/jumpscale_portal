@@ -2,6 +2,8 @@ from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from JumpScale.portal.docgenerator.Confluence2HTML import Confluence2HTML
 import copy
+import cgi
+import json
 
 class DataTables():
 
@@ -21,7 +23,7 @@ class DataTables():
 
     def getTableDefFromActorModel(self, appname, actorname, modelname, excludes=[]):
         """
-        @return fields : array where int of each col shows position in the listProps e.g. [3,4] 
+        @return fields : array where int of each col shows position in the listProps e.g. [3,4]
               means only col 3 & 4 from listprops are levant, you can also use it to define the order
               there can be special columns added which are wiki templates to form e.g. an url or call a macro, formatted as a string
               e.g. [3,4,"{{amacro: name:$3 descr:$4}}","[$1|$3]"]
@@ -113,7 +115,7 @@ class DataTables():
                 colidx = kwargs['iSortCol_%s' % i]
                 key = 'bSortable_%s' % colidx
                 if kwargs[key] == 'true':
-                    colname = fieldids[int(colidx)]
+                    colname = fieldids[int(colidx)-1]
                     sort.append((colname,  1 if kwargs['sSortDir_%s' % i] == 'asc' else -1))
         if sort:
             fullquery['$orderby'] = sort
@@ -137,7 +139,15 @@ class DataTables():
                     if fieldname not in filters:
                         nativequery[fieldname] = int(svalue)
                 else:
-                    nativequery[fieldname] = getRegexQuery(svalue)
+                    try:
+                        q = json.loads(svalue)
+                        if isinstance(q, dict):
+                            nativequery[fieldname] = q
+                        else:
+                            nativequery[fieldname] = getRegexQuery(svalue)
+                    except:
+                        nativequery[fieldname] = getRegexQuery(svalue)
+
 
         #top search field
         if 'sSearch' in kwargs and kwargs['sSearch']:
@@ -157,10 +167,11 @@ class DataTables():
         for row in inn:
             r = [row.get('id', 'NA')]
             for field, fieldid in zip(fieldvalues, fieldids):
-                if field in row:
-                    r.append(row[field])
-                elif j.basetype.integer.check(field):
-                    r.append(row[field])
+                if field in row or j.basetype.integer.check(field):
+                    value = row[field]
+                    if isinstance(value, basestring):
+                        value = cgi.escape(value)
+                    r.append(value)
                 elif j.basetype.string.check(field):
                     r.append(self.executeMacro(row, field))
                 else:

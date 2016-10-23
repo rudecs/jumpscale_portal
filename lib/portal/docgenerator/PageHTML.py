@@ -8,6 +8,7 @@ except:
     import json
 import inspect
 import jinja2
+import re
 
 class PageHTML(Page):
 
@@ -32,6 +33,7 @@ class PageHTML(Page):
         self._timestampsAdded = set()
         self.projectname = ""
         self.logo = ""
+        self.favicon = ""
         self.scriptBody = ""
         self.jscsslinks = {}
         self.login = False
@@ -358,8 +360,7 @@ class PageHTML(Page):
         # if codeblock no postprocessing(e.g replacing $$space, ...) should be
         # done
 
-        if edit:
-            self.processparameters['postprocess'] = False
+        code = re.sub('($$[a-zA-Z0-9_]+)', '\\\1', code)
         self.addJS("%s/old/codemirror/lib/codemirror.js" % self.liblocation)
         self.addCSS("%s/old/codemirror/lib/codemirror.css" % self.liblocation)
         self.addJS("%s/old/codemirror/mode/javascript/javascript.js" % self.liblocation)
@@ -750,7 +751,6 @@ function copyText$id() {
             js = "<script type='text/javascript'>\n%s</script>\n" % jsContent
         else:
             js = "<script  src='%s' type='text/javascript'></script>\n" % jsLink
-        # import ipdb; ipdb.set_trace()
         self.head = self.head.replace(js.strip(), '')
         self.body = self.body.replace(js.strip(), '')
        
@@ -1047,6 +1047,9 @@ function copyText$id() {
     def addHTMLHeader(self, header):
         self.head += header
 
+    def addFavicon(self, href, type):
+        self.favicon = '<link rel="shortcut icon" type="%s" href="%s" />' % (type, href)
+
     def addHTMLBody(self, body):
         self.body += body
 
@@ -1088,15 +1091,17 @@ function copyText$id() {
         docdata = {'head': jsHead,
                    'bodyattrib': ' '.join(self.bodyattributes),
                    'body': self.body,
+                   'favicon': self.favicon,
                    'tail': '\n'.join(self.tail)}
         for key, val in docdata.iteritems():
-            docdata[key] = j.tools.text.toStr(val)
+            docdata[key] = j.tools.text.toStr(val, normalize=False)
 
         return '''
 <!DOCTYPE html>
 <html>
 <head>
  <meta charset="UTF-8">
+%(favicon)s
 %(head)s</head>
 <body %(bodyattrib)s>%(body)s
 %(tail)s</body>

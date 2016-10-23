@@ -7,12 +7,12 @@ h3. Process Status
 {{datatables_use: displaylength:100 autosort:false}}
 
 {{actions:
-- display: Run Healthcheck
+- display: Run Health Check
   hide: true
   showresponse: true
   action: /restmachine/system/health/run
 }}
 
-{{action id:'action-RunHealthcheck' class:'glyphicon glyphicon-refresh' label:'Run Healthcheck'}}
+{{action id:'action-RunHealthCheck' class:'glyphicon glyphicon-refresh' label:'Run Health Check'}}
 
 {{processchecks}}

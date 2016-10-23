@@ -13,14 +13,20 @@ class BaseError(BaseException):
         if status is None:
             status = codemapping.get(code, 'Unkonwn')
         self.status = status
+        try:
+            eco = json.loads(msg)
+            msg = eco['backtrace']
+        except:
+            pass
         super(BaseError, self).__init__("%s: %s %s" % (code, status, msg))
 
 class Error(BaseError):
     CODE = 500
 
-    def __init__(self, msg):
-        msg = json.dumps(msg)
-        BaseError.__init__(self, self.CODE, [('Content-Type', 'application/json')], msg)
+    def __init__(self, msg, content_type='application/json'):
+        if content_type == 'application/json':
+            msg = json.dumps(msg)
+        BaseError.__init__(self, self.CODE, [('Content-Type', content_type)], msg)
 
 
 class Redirect(BaseError):

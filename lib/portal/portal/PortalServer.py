@@ -5,6 +5,13 @@ import pprint
 import os
 import sys
 import requests
+import gevent
+import time
+import urllib
+import cgi
+import json
+import mimeparse
+import mimetypes
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -20,14 +27,6 @@ from JumpScale.portal.html import multipart
 
 from JumpScale import j
 from gevent.pywsgi import WSGIServer
-import gevent
-import time
-
-import mimeparse
-import mimetypes
-import urllib
-import cgi
-import JumpScale.grid.agentcontroller
 from PortalAuthenticatorGitlab import PortalAuthenticatorGitlab
 from PortalAuthenticatorMinimal import PortalAuthenticatorMinimal
 from PortalAuthenticatorOSIS import PortalAuthenticatorOSIS
@@ -446,9 +445,12 @@ class PortalServer:
         if space not in self.spacesloader.spaces:
             if space == "system":
                 raise RuntimeError("wiki has not loaded system space, cannot continue")
-            ctx.params["error"] = "Could not find space %s\n" % space
+            ctx.params["error"] = cgi.escape("Could not find space %s\n" % space)
             print("could not find space %s" % space)
-            space = self.defaultspace or 'system'
+            if self.defaultspace and self.defaultspace in self.spacesloader.spaces:
+                space = self.defaultspace
+            else:
+                space = 'system'
             name = "pagenotfound"
         else:
             spaceObject = self.spacesloader.getLoaderFromId(space)
@@ -465,11 +467,11 @@ class PortalServer:
                 elif "home" in spacedocgen.name2doc:
                     name = 'home'
                 else:
-                    ctx.params["path"] = "space:%s pagename:%s" % (space, name)
+                    ctx.params["path"] = cgi.escape("space:%s pagename:%s" % (space, name))
                     name = "pagenotfound"
                     spacedocgen = None
             else:
-                ctx.params["path"] = "space:%s pagename:%s" % (space, name)
+                ctx.params["path"] = cgi.escape("space:%s pagename:%s" % (space, name))
                 name = "pagenotfound"
                 spacedocgen = None
 
@@ -500,20 +502,23 @@ class PortalServer:
         params['name'] = name
 
         if not spacedocgen:
-            doc, params = self.getDoc(space,name, ctx, params)
+            doc, params = self.getDoc(space, name, ctx, params)
         else:
             doc = spacedocgen.name2doc[name]
 
         doc.loadFromDisk()
 
+        headers = [('Content-Type', 'text/html')]
         if name == "pagenotfound":
-            ctx.start_response("404 Not found", [])
+            ctx.start_response("404 Not found", headers)
         elif name == 'accessdenied':
-            ctx.start_response("403 Not authorized", [])
+            ctx.start_response("403 Not authorized", headers)
+        else:
+            ctx.start_response('200 OK', headers)
 
         return doc, params
 
-    def returnDoc(self, ctx, start_response, space, docname, extraParams={}):
+    def returnDoc(self, ctx, space, docname, extraParams={}):
         doc, params = self.getDoc(space, docname, ctx, params=ctx.params)
 
         if doc.dirty or "reload" in ctx.params:
@@ -523,7 +528,6 @@ class PortalServer:
         ctx.params.update(extraParams)
 
         # doc.applyParams(ctx.params)
-        ctx.start_response('200 OK', [('Content-Type', "text/html"), ])
         return doc.getHtmlBody(paramsExtra=extraParams, ctx=ctx)
 
     def processor_page(self, environ, start_response, wwwroot, path, prefix="", webprefix="", index=False,includedocs=False,ctx=None,space=None):
@@ -557,12 +561,14 @@ class PortalServer:
                     content2,doc = doc.executeMacrosDynamicWiki(paramsExtra={}, ctx=ctx)
 
                     page = self.confluence2htmlconvertor.convert(content2, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
-
-                    page.body = page.body.replace("$$space", space)
-                    page.body = page.body.replace("$$page", doc.original_name)
-                    page.body = page.body.replace("$$path", doc.path)
-                    page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-                    page.body = page.body.replace("$$$menuright", "")
+                    replace_obj = {
+                        "space", space,
+                        "page", doc.original_name,
+                        "path", doc.path,
+                        "querystr", ctx.env['QUERY_STRING'],
+                        "$menuright", ""
+                    }
+                    page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
 
                     content=content.replace(match.founditem,page.body)
 
@@ -614,9 +620,12 @@ class PortalServer:
 
         if path == "favicon.ico":
             pathfull = "wiki/System/favicon.ico"
+        else:
+            if not os.path.abspath(pathfull).startswith(os.path.abspath(wwwroot)):
+                raise exceptions.NotFound('Not found')
 
-        if not j.system.fs.exists(pathfull):
-            if j.system.fs.exists(pathfull + '.gz') and 'gzip' in environ.get('HTTP_ACCEPT_ENCODING'):
+        if not j.system.fs.isFile(pathfull):
+            if j.system.fs.isFile(pathfull + '.gz') and 'gzip' in environ.get('HTTP_ACCEPT_ENCODING'):
                 pathfull += ".gz"
                 headers.append(('Vary', 'Accept-Encoding'))
                 headers.append(('Content-Encoding', 'gzip'))
@@ -657,15 +666,25 @@ class PortalServer:
             return send_file(pathfull, size)
 
     def process_elfinder(self, path, ctx):
+        if not self.isAdminFromCTX(ctx):
+            raise exceptions.NotFound('Not Found')
+
         from JumpScale.portal.html import elFinder
         db = j.db.keyvaluestore.getMemoryStore('elfinder')
-        rootpath = db.cacheGet(path)
+        try:
+            rootpath = db.cacheGet(path)
+        except:
+            raise exceptions.NotFound('Not Found')
+
         options = {'root': rootpath, 'dotFiles': True}
         con = elFinder.connector(options)
         params = ctx.params.copy()
 
         if params.get('init') == '1':
             params.pop('target', None)
+        if 'target' in params:
+            if j.system.fs.exists(params['target']):
+                raise exceptions.NotFound('Not Found')
         status, header, response = con.run(params)
         status = '%s' % status
         headers = [ (k, v) for k,v in header.items() ]
@@ -677,22 +696,32 @@ class PortalServer:
         return [response]
 
     def process_proxy(self, ctx, proxy):
+        if not self.isAdminFromCTX(ctx):
+            self.raiseError(ctx, httpcode='403 Forbidden')
+            return 'Only admin can access that'
+            return
         path = ctx.env['PATH_INFO']
         method = ctx.env['REQUEST_METHOD']
         query = ctx.env['QUERY_STRING']
         headers = {}
         for name, value in ctx.env.iteritems():
             if name.startswith('HTTP_'):
-                headers[name[5:].replace('_', '-')] = value
+                headers[name[5:].replace('_', '-').title()] = value
+        for key in ('CONTENT_TYPE', 'CONTENT_LENGTH'):
+            if key in ctx.env:
+                headers[key.replace('_', '-').title()] = ctx.env[key]
         desturl = proxy['dest'] + path[len(proxy['path']):]
         if query:
             desturl += "?%s" % query
-        req = requests.Request(method, desturl, data=ctx.env['wsgi.input'], headers=headers).prepare()
+        headers.pop('Connection', None)
+        data = ctx.env['wsgi.input'].read()
+        req = requests.Request(method, desturl, data=data, headers=headers).prepare()
         session = requests.Session()
-        resp = session.send(req, stream=True)
+        resp = session.send(req, stream=True, allow_redirects=False)
+        resp.headers.pop("transfer-encoding", None)
         ctx.start_response('%s %s' % (resp.status_code, resp.reason), headers=resp.headers.items())
-        for chunk in resp.raw:
-            yield chunk
+        rawdata = resp.raw.read()
+        return rawdata
 
     def path2spacePagename(self, path):
 
@@ -904,14 +933,41 @@ class PortalServer:
                     session.save()
                 else:
                     ctx.start_response('419 Authentication Timeout', [])
-                    return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "accessdenied", extraParams={"path": path}))]
+                    return False, [str(self.returnDoc(ctx, "system", "accessdenied", extraParams={"path": path}))]
+
+        # validate JWT token
+        if 'HTTP_AUTHORIZATION' in ctx.env:
+            authorization = ctx.env['HTTP_AUTHORIZATION']
+            type, _, token = authorization.partition(' ')
+            if type.lower() == 'bearer':
+                import jose.jwt
+                payload = json.loads(jose.jwt.get_unverified_claims(token))
+                issuer = payload.get('iss', 'main')
+                payload['iss'] = issuer
+                for service in j.atyourservice.findServices(name='jwt_client', instance=issuer):
+                    secret = service.hrd.getStr('instance.jwt.secret')
+                    algo = service.hrd.getStr('instance.jwt.algo')
+                    try:
+                        jose.jws.verify(token, secret, algorithms=[algo])
+                    except jose.JWSError:
+                        raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
+                                                                         extraParams={"path": path}))
+                                                      , 'text/html')
+                    break
+                else:
+                    raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
+                                                                     extraParams={"path": path}))
+                                                  , 'text/html')
+
+                session['user'] = '{username}@{iss}'.format(**payload)
+                session.save()
 
         if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
             if session.get('user', '') not in ['guest', '']:
                 # If user session is oauth session and logout url is provided, redirect user to that URL
                 # after deleting session which will invalidate the oauth server session
                 # then redirects user back to where he was in portal
-                oauth =  session.get('oauth')
+                oauth = session.get('oauth')
                 oauth_logout_url = ''
                 if oauth:
                     oauth_logout_url = oauth.get('logout_url')
@@ -955,7 +1011,7 @@ class PortalServer:
                 session['user'] = ""
                 session["querystr"] = ""
                 session.save()
-                return False, [str(self.returnDoc(ctx, ctx.start_response, "system", "login", extraParams={"path": path}))]
+                return False, [str(self.returnDoc(ctx, "system", "login", extraParams={"path": path}))]
 
         if "user" not in session or session["user"] == "":
             session['user'] = "guest"
@@ -1033,13 +1089,15 @@ class PortalServer:
 
         ctx = RequestContext(application="", actor="", method="",
                              env=environ, start_response=start_response,
-                             path=path, params=None, server=self)
-        ctx.params = self._getParamsFromEnv(environ, ctx)
-        ctx.env['JS_CTX'] = ctx
+                             path=path, params={}, server=self)
 
         for proxypath, proxy in self.proxies.iteritems():
             if path.startswith(proxypath.lstrip('/')):
                 return self.process_proxy(ctx, proxy)
+
+
+        ctx.params = self._getParamsFromEnv(environ, ctx)
+        ctx.env['JS_CTX'] = ctx
 
         if path.find("jslib/") == 0:
             path = path[6:]
@@ -1048,7 +1106,12 @@ class PortalServer:
             return self.processor_page(environ, start_response, self.jslibroot, path, prefix="jslib/")
 
         if path.find("images/") == 0:
-            space, image = pathparts[1:3]
+            try:
+                space, image = pathparts[1:3]
+            except ValueError:
+                # not a valid path
+                return self.returnDoc(ctx, 'system', 'pagenotfound', {'path': path})
+
             spaceObject = self.getSpace(space)
             image = image.lower()
 
@@ -1056,7 +1119,7 @@ class PortalServer:
                 path2 = spaceObject.docprocessor.images[image]
 
                 return self.processor_page(environ, start_response, j.system.fs.getDirName(path2), j.system.fs.getBaseName(path2), prefix="images")
-            ctx.start_response('404', [])
+            return self.returnDoc(ctx, 'system', 'pagenotfound', {'path': path})
 
         if path.find("files/specs/") == 0:
             path = path[6:]
@@ -1095,7 +1158,7 @@ class PortalServer:
             path = "/".join(pathparts[1:])
 
         if match == "restmachine":
-            return self.rest.processor_rest(environ, start_response, path, human=False, ctx=ctx)
+            return self.rest.processor_rest(environ, start_response, path, ctx=ctx)
 
         elif match == "elfinder":
             return self.process_elfinder(path, ctx)
@@ -1106,18 +1169,8 @@ class PortalServer:
                     j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
                 except Exception, e:
                     self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
-            return self.rest.processor_restext(environ, start_response, path, human=False, ctx=ctx)
+            return self.rest.processor_restext(environ, start_response, path, ctx=ctx)
 
-        elif match == "rest":
-            space, pagename = self.path2spacePagename(path.strip("/"))
-            self.log(ctx, user, path, space, pagename)
-            return self.rest.processor_rest(environ, start_response, path, ctx=ctx)
-
-        elif match == "restext":
-            space, pagename = self.path2spacePagename(path.strip("/"))
-            self.log(ctx, user, path, space, pagename)
-            return self.rest.processor_restext(environ, start_response, path,
-                                          ctx=ctx)
         elif match == "ping":
             status = '200 OK'
             headers = [
@@ -1148,7 +1201,7 @@ class PortalServer:
             ctx.params["path"] = '/'.join(pathparts)
             space, pagename = self.path2spacePagename(path)
             self.log(ctx, user, path, space, pagename)
-            pagestring = str(self.returnDoc(ctx, start_response, space, pagename, {}))
+            pagestring = str(self.returnDoc(ctx, space, pagename, {}))
             return [pagestring]
 
     def render(self, environ, start_response):
@@ -1186,13 +1239,14 @@ class PortalServer:
 
         page = self.confluence2htmlconvertor.convert(content, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
 
-        if not 'postprocess' in page.processparameters or page.processparameters['postprocess']:
-            page.body = page.body.replace("$$space", space)
-            page.body = page.body.replace("$$page", doc.original_name)
-            page.body = page.body.replace("$$path", doc.path)
-            page.body = page.body.replace("$$querystr", ctx.env['QUERY_STRING'])
-
-        page.body = page.body.replace("$$$menuright", "")
+        replace_obj = {
+            "space", space,
+            "page", doc.original_name,
+            "path", doc.path,
+            "querystr", ctx.env['QUERY_STRING'],
+            "$menuright", ""
+        }
+        page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
 
         if "todestruct" in doc.__dict__:
             doc.destructed = True
@@ -1200,7 +1254,7 @@ class PortalServer:
         start_response('200 OK', [('Content-Type', "text/html")])
         return str(page)
 
-    def addRoute(self, function, appname, actor, method, params, description="", auth=True, returnformat=None):
+    def addRoute(self, function, appname, actor, method, params, description="", auth=True, returnformat=None, httpmethod='POST'):
         """
         @param function is the function which will be called as follows: function(webserver,path,params):
             function can also be a string, then only the string will be returned
@@ -1229,9 +1283,10 @@ class PortalServer:
         self.app_actor_dict["%s_%s" % (appname, actor)] = 1
 
         methoddict = {'get': 'GET', 'set': 'PUT', 'new': 'POST', 'delete': 'DELETE',
+                      'post': 'POST',
                       'find': 'GET', 'list': 'GET', 'datatables': 'GET', 'create': 'POST'}
         route = {'func': function, 'params': params, 'description': description, 'auth': auth, 'returnformat': returnformat}
-        self.routes["%s_%s_%s_%s" % ('GET', appname, actor, method)] = route
+        self.routes["%s_%s_%s_%s" % (methoddict.get(httpmethod, 'POST'), appname, actor, method)] = route
 
 ##################### SCHEDULING
 

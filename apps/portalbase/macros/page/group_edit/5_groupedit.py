@@ -1,9 +1,12 @@
 from JumpScale.portal.docgenerator.popup import Popup
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
 
     params.result = page = args.page
     groupguid = args.getTag('guid')
+    if groupguid is None:
+        raise exceptions.BadRequest("BadRequest", "text/plain")
     scl = j.clients.osis.getNamespace('system')
     group = scl.group.get(groupguid)
 

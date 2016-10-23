@@ -1,0 +1,30 @@
+{{drawgraph:
+
+target.1 =
+    function:mean,
+    value:value,
+    series:network.packet.rx|m,
+    groupby:gid nid nic,
+    condition:gid={gid} AND nid={nid} AND nic={nic},
+    alias:in $tag_nic,
+    interval:1m,
+
+target.2 =
+    function:mean,
+    value:value,
+    series:network.packets.tx|m,
+    groupby:gid nid nic,
+    condition:gid={gid} AND nid={nid} AND nic={nic},
+    alias:out $tag_nic,
+    interval:1m,
+
+cfg.title = 'Network packets for {nic}'
+cfg.dashboardtitle = 'Node {nodename} ({gid}:{nid}) network packet for {nic}'
+cfg.height = 275px
+cfg.width = 500px
+cfg.stack = true
+cfg.fill = 3
+cfg.y_format = pps
+cfg.datasource = influxdb_controller
+
+}}

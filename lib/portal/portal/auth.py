@@ -74,6 +74,7 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             if self.groups:
                 userobj = j.core.portal.active.auth.getUserInfo(user)
+                groups = set()
                 if userobj:
                     groups = set(userobj.groups)
                 if not groups.intersection(self.groups):

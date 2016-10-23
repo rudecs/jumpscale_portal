@@ -24,10 +24,10 @@ h3. Statistics
 
 @row
 @col 6
-{{include:graph_nic}}
+{{include:graph_nic_throughput}}
 @colend
 @col 6
-{{include:graph_nicerrors}}
+{{include:graph_nic_packet}}
 @colend
 @endrow
 

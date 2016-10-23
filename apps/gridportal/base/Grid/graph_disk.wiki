@@ -1,26 +1,31 @@
 {{drawgraph:
 
 target.1 =
-    function:difference,
+    function:mean,
     value:value,
-    series:{gid}_{nid}_disk_{bpath}_kbytes_read.gauge,
+    series:disk.throughput.read|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={nid} AND device={bpath},
     alias:Read,
     interval:10m,
 
 target.2 =
-    function:difference,
+    function:mean,
     value:value,
-    series:{gid}_{nid}_disk_{bpath}_kbytes_write.gauge,
+    series:disk.throughput.write|m,
+    groupby:gid nid device,
+    condition:gid={gid} AND nid={nid} AND device={bpath},
     alias:Write,
     interval:10m,
 
 
-cfg.title = Disk Traffic
+cfg.title = Disk Traffic for {bpath}
 cfg.dashboardtitle = 'Disk {bpath} ({gid}:{nid}) Disk Traffic'
 cfg.height = 275px
 cfg.width = 1000px
 cfg.stack = false
 cfg.fill = 0
-cfg.y_format = bytes
+cfg.y_format = MBs
+cfg.datasource = influxdb_controller
 
 }}

@@ -3,6 +3,8 @@ from JumpScale.portal.portal import exceptions
 import time
 import re
 import random
+import json
+from JumpScale.grid.serverbase.Exceptions import RemoteException
 
 class PortalAuthenticatorOSIS(object):
 
@@ -39,7 +41,7 @@ class PortalAuthenticatorOSIS(object):
         return self._getkey(user, self.osisuser) is not None
 
     def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
+        r = re.compile('^[a-z0-9]{2,40}$')
         return r.match(username) is not None
 
     def _isValidEmailAddress(self, emailaddress):
@@ -51,13 +53,16 @@ class PortalAuthenticatorOSIS(object):
             return False
         return re.search(r"\s",password) is None
 
-    def createUser(self, username, password, emailaddress, groups, domain):
-        if not self._isValidUserName(username):
-            raise exceptions.BadRequest('Username may not exceed 20 characters and may only '
-                                        'contain lower case characters and numbers.')
-        else:
-            if self.osisuser.search({'id': username})[1:]:
-                    raise exceptions.Conflict('Username %s already exists.' % username)
+    def createUser(self, username, password, emailaddress, groups, domain, provider=None,
+                   protected=False):
+        username, _, userprovider = username.partition('@')
+        if userprovider and userprovider != provider:
+            raise exceptions.BadRequest('Username may not contain @ unless suffix matches provider')
+        if provider:
+            username = "{}@{}".format(username, provider)
+
+        if self.osisuser.search({'id': username})[1:]:
+            raise exceptions.Conflict('Username %s already exists.' % username)
 
         if not emailaddress:
             raise exceptions.BadRequest('Email address cannot be empty.')
@@ -67,15 +72,21 @@ class PortalAuthenticatorOSIS(object):
             if not self._isValidEmailAddress(emailaddress[0]):
                 raise exceptions.BadRequest('Email address %s is in an invalid format.'
                                             % emailaddress[0])
-            if self.osisuser.search({'emails': emailaddress})[1:]:
-                raise exceptions.Conflict('Email address %s is already registered in the '
-                                          'system.' % emailaddress[0])
+
+            # only require unique email for users that dont have a provider set
+            if not provider:
+                emailusers = self.osisuser.search({'emails': emailaddress})[1:]
+                for user in emailusers:
+                    if '@' not in user['id']:
+                        raise exceptions.Conflict('Email address %s is already registered in the '
+                                                  'system.' % emailaddress[0])
 
         user = self.osisuser.new()
         user.id = username
         user.groups = groups
         user.emails = emailaddress
         user.domain = domain
+        user.protected = protected
         if not password:
             password = str(random.random())
         elif not self._isValidPassword(password):
@@ -83,7 +94,15 @@ class PortalAuthenticatorOSIS(object):
                                         "than 60 characters.")
 
         user.passwd = j.tools.hash.md5_string(password)
-        return self.osisuser.set(user)
+        try:
+            self.osisuser.set(user)
+            return user.id
+        except RemoteException as e:
+            if e.eco['exceptionclassname'] == "ValueError":
+                raise exceptions.BadRequest(json.loads(e.eco['exceptioninfo'])['message'])
+            else:
+                raise
+
 
     def updateUser(self, username, password, emailaddress, groups, domain=None):
         users = self.osisuser.search({'id': username})[1:]

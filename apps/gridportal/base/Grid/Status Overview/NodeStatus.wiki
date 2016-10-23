@@ -6,6 +6,7 @@
 h2. Monitoring Status
 
 {{node_getdata: gid:$$gid id:$$nid}}
+{% if id %}
 {{timestamp}}
 
 h4. ${gridname}: ${nodename} ([$$gid:$$nid|/grid/grid node?id=$$nid&gid=$$gid])
@@ -14,8 +15,15 @@ h3. Actions
 
 {{actions:
 
-- display: Run Healthcheck on Node
+- display: Run Health Check on Node
   action: /restmachine/system/health/run
+  hide: true
+  showresponse: true
+  data:
+   nid: $$nid
+
+- display: Refresh Health
+  action: /restmachine/system/health/refreshCommand
   hide: true
   showresponse: true
   data:
@@ -23,7 +31,7 @@ h3. Actions
 }}
 
 
-{{action id:action-RunHealthcheckonNode class:'glyphicon glyphicon-refresh' label:'Run Healthcheck on Node'}}
+{{action id:action-RunHealthCheckonNode class:'glyphicon glyphicon-refresh' label:'Run Health Check on Node'}}
 
 {{monitorstatus nid:$$nid}}
 
@@ -32,3 +40,6 @@ h3. Actions
 		width: 75%;
 	}
 }}
+{% else %}
+Invalid node parameters
+{% endif %}

@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.docgenerator.Page import Page
+from JumpScale.portal.portal import exceptions
 from JumpScale.baselib import taskletengine
 import traceback
 import re
@@ -18,21 +19,63 @@ class MacroExecutorBase(object):
         self.taskletsgroup[spacename] = taskletsgroup
 
     def getMacroCandidates(self, txt):
-        result = []
-        items = txt.split("{{")
-        for item in items:
-            if item.find("}}") != -1:
-                item = item.split("}}")[0]
-                if item not in result:
-                    result.append("{{%s}}" % item)
-        return result
+        """
+        >>> getMacroCandidates(None, "{{asdf asdf}}")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asddf{{asdf asdf}}")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "{{asdf asdf}}asddf")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asddf{{asdf asdf}}asddf")
+        ['{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}f{{asdf asdf}}asddf")
+        ['{{d}}', '{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{asdf asdf}}asddf")
+        ['{{d}}', '{{asdf asdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{as{{df a}}sdf}}asddf")
+        ['{{d}}', '{{as{{df a}}sdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{as{{d{{f}} a}}sdf}}asddf")
+        ['{{d}}', '{{as{{d{{f}} a}}sdf}}']
+        >>> getMacroCandidates(None, "asd{{d}}{{as{{d}}f{{ a}}sdf}}asddf")
+        ['{{d}}', '{{as{{d}}f{{ a}}sdf}}']
+        >>> getMacroCandidates(None, "asd{{{{asd}}}}sdf")
+        ['{{{{asd}}}}']
+        >>> getMacroCandidates(None, "asd{{s{{asd}}}}sdf")
+        ['{{s{{asd}}}}']
+        >>> getMacroCandidates(None, "asd{{s{{asd}}a}}sdf")
+        ['{{s{{asd}}a}}']
+        >>> getMacroCandidates(None, "asd{{%s{{asd}}a%}}sdf")
+        ['{{asd}}', '{{%s{{asd}}a%}}']
+        """
+        s = 0
+        n = 0
+        ss = [0]*100
+        items = list()
+        lc = None
+        for i in range(1,len(txt)):
+            if txt[i-1] == txt[i] == '{' != lc and (i < 1 or txt[i-2]!='\\'):
+                if s == n:
+                    ss[n] = i-1
+                s += 1
+                if txt[i+1] == '%':
+                    n += 1
+                lc = '{'
+            elif txt[i-1] == txt[i] == '}' != lc and (i < 1 or txt[i-2]!='\\'):
+                s -= 1
+                if txt[i-2] == '%':
+                    n -= 1
+                if s == n:
+                    items.append(txt[ss[n]:i+1])
+                lc = '}'
+            else:
+                lc = None
+        return items
 
     def _getTaskletGroup(self, doc, macrospace, macro):
         # if macrospace specified check there first
         spacename = doc.getSpaceName().lower()
         if macrospace is not None:
-            macrospace = macrospace or None
-            if macrospace:
+            if macrospace in  j.core.portal.active.spacesloader.spaces:
                 j.core.portal.active.spacesloader.spaces[macrospace].loadDocProcessor()
             if macrospace in self.taskletsgroup and self.taskletsgroup[macrospace].hasGroup(macro):
                 return self.taskletsgroup[macrospace]
@@ -40,8 +83,8 @@ class MacroExecutorBase(object):
         if spacename in self.taskletsgroup and self.taskletsgroup[spacename].hasGroup(macro):
             return self.taskletsgroup[spacename]
         # last fall back to default macros
-        if self.taskletsgroup[macrospace].hasGroup(macro):
-            return self.taskletsgroup[macrospace]
+        if self.taskletsgroup[None].hasGroup(macro):
+            return self.taskletsgroup[None]
         return None
 
     def parseMacroStr(self, macrostr):
@@ -49,7 +92,7 @@ class MacroExecutorBase(object):
         @param macrostr full string like {{test something more}}
         @return macroname,jumpscaletags
         """
-        cmdstr = macrostr.replace("{{", "").replace("}}", "").strip()
+        cmdstr = macrostr.replace("{{", "").replace("}}", "").strip().strip('%')
         if cmdstr.find("\n") != -1:
             # multiline
             cmdbody = "\n".join(cmdstr.split("\n")[1:])
@@ -73,11 +116,15 @@ class MacroExecutorBase(object):
         if cmdbody != "":
             cmdstr = cmdbody
 
+        cmdstr = cmdstr.replace(r'\{', '{').replace(r'\}', '}')
         macroparts = macro.split('.', 1)
         if len(macroparts) == 2:
             space, macro  = macroparts
         else:
             space = None
+
+        space = space and ''.join(re.findall('[a-zA-Z0-9_]+', space))
+        macro = ''.join(re.findall('[a-zA-Z0-9_]+', macro))
 
         return space, macro, tags, cmdstr
 
@@ -209,6 +256,8 @@ class MacroExecutorPage(MacroExecutorBase):
             try:
                 page = taskletgroup.executeV2(macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                  paramsExtra=paramsExtra, cmdstr=cmdstr, page=page, requestContext=requestContext)
+            except exceptions.BaseError:
+                raise
             except:
                 e = traceback.format_exc()
                 result = "***ERROR***: Could not execute macro %s on %s, error in macro." % (macro, doc.name)
@@ -314,14 +363,15 @@ class MacroExecutorWiki(MacroExecutorBase):
             try:
                 result, doc = taskletgroup.executeV2(groupname=macro, doc=doc, tags=tags, macro=macro, macrostr=macrostr,
                                                             paramsExtra=paramsExtra, cmdstr=cmdstr, requestContext=ctx, content=content, page=page)
-            except Exception:
-                e = traceback.format_exc()
-                if str(e).find("non-sequence") != -1:
-                    result = "***ERROR***: Could not execute macro %s on %s, did not return (out,doc)." % (macro, doc.name)
+            except Exception, error:
+                eco = j.errorconditionhandler.processPythonExceptionObject(error)
+                if str(eco).find("non-sequence") != -1:
+                    result = "*ERROR*: Could not execute macro `%s` on page `%s`, did not return (out,doc). " % (macro, doc.name)
                 else:
-                    result = "***ERROR***: Could not execute macro %s on %s, error in macro." % (macro, doc.name)
+                    result = "*ERROR*: Could not execute macro `%s` on page `%s`. " % (macro, doc.name)
                     if j.application.debug:
-                        result += " Error was:\n%s " % (e)
+                        result += " Error was:\n%s\n" % (eco)
+                result += "@LF If error persist please contact support with reference `%s`" % eco.guid
                 result = j.html.escape(result)
             if result == doc:
                 # means we did manipulate the doc.content

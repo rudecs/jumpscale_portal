@@ -981,3 +981,14 @@ input.todo-search-field.placeholder {
 table.table thead .sorting {
   min-width: 105px;
 }
+.elfinder {
+  min-height: 540px !important;
+}
+
+.ui-datepicker {
+   background: #ccc;
+}
+
+.ui-datepicker td {
+   min-width: 25px !important;
+}

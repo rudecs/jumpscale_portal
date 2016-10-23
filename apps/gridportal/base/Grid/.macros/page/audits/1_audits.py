@@ -22,11 +22,24 @@ def main(j, args, params, tags, tasklet):
         link = "[%s|audit?id=%s]" % (time, row['guid'])
         return link
 
-    fieldnames = ['Time', 'User', 'Call', 'Status Code']
-    fieldvalues = [makeTime, 'user', 'call', 'statuscode']
-    tableid = modifier.addTableForModel('system', 'audit', fieldids, fieldnames, fieldvalues, filters)
+    fields = [
+        {'name': 'Time',
+         'type': 'date',
+         'id': 'timestamp',
+         'value': makeTime},
+        {'name': 'User',
+         'id': 'user',
+         'value': 'user'},
+        {'name': 'Call',
+         'id': 'call',
+         'value': 'call'},
+        {'name': 'Status Code',
+         'id': 'statuscode',
+         'value': 'statuscode'},
+    ]
+    tableid = modifier.addTableFromModel('system', 'audit', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
     return params

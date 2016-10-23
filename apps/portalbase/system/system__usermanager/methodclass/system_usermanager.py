@@ -76,6 +76,9 @@ class system_usermanager(j.code.classGetBase()):
 
     @auth(['admin'])
     def delete(self, username, **kwargs):
+        u = self.modelUser.get(username)
+        if u.protected:
+            raise exceptions.BadRequest('Cannot delete protected user.')
         self.modelUser.delete(username)
         return True
 
@@ -127,9 +130,9 @@ class system_usermanager(j.code.classGetBase()):
         return True
     
     @auth(['admin'])
-    def create(self, username, password, groups, emails, domain, **kwargs):
+    def create(self, username, password, groups, emails, domain, provider=None, **kwargs):
         groups = groups or []
-        return j.core.portal.active.auth.createUser(username, password, emails, groups, None)
+        return j.core.portal.active.auth.createUser(username, password, emails, groups, domain, provider)
 
     def _checkUser(self, username):
         users = self.modelUser.search({'id': username})[1:]
@@ -152,16 +155,3 @@ class system_usermanager(j.code.classGetBase()):
         ctx = kwargs["ctx"]
         return str(ctx.env['beaker.session']["user"])
 
-    def userregister(self, name, passwd, emails, reference, remarks, config, **args):
-        """
-        param:name name of user
-        param:passwd chosen passwd (will be stored hashed in DB)
-        param:emails comma separated list of email addresses
-        param:reference reference as used in other application using this API (optional)
-        param:remarks free to be used field by client
-        param:config free to be used field to store config information e.g. in json or xml format
-        result bool
-
-        """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method userregister")

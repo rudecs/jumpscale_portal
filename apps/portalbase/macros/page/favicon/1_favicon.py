@@ -11,11 +11,7 @@ def main(j, args, params, tags, tasklet):
     icon_path = args.cmdstr
     _, extension = os.path.splitext(icon_path)
     image_type = {'.png': 'png', '.ico': 'x-icon'}.get(extension, 'png')
-
-    page.addHTMLHeader(
-        '<link rel="shortcut icon" type="image/{2}" href="/{0}/{1}" />'.format(args.doc.getSpaceName(),
-                                                                               icon_path,
-                                                                               image_type))
+    page.addFavicon("/{0}/{1}".format(args.doc.getSpaceName(), icon_path), 'image/%s' % image_type)
 
     params.result = page
     return params

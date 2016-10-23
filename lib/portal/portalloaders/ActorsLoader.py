@@ -125,8 +125,12 @@ class ActorsLoader(LoaderBase):
         return key in self.id2object
 
     def existsActor(self, appname, actorname):
-        key = "%s__%s" % (appname.lower(), actorname.lower())
-        return key in j.core.portal.active.actors
+        try:
+            key = "%s__%s" % (appname.lower(), actorname.lower())
+            app = getattr(j.apps, appname, False)
+            return app and getattr(app, actorname, False)
+        except RuntimeError:
+            return False
 
     def scan(self, path, reset=False):
         paths = path
@@ -313,7 +317,7 @@ def match(j, args, params, actor, tags, tasklet):
 
                 params = {}
                 for var in methodspec.vars:
-                    param = {'optional': False, 'description': '', 'default': None, 'type': None}
+                    param = {'optional': False, 'description': '', 'default': None, 'type': None, 'tags': None}
                     tags = j.core.tags.getObject(var.tags)
                     if tags.labelExists("optional"):
                         param['optional'] = True
@@ -325,6 +329,7 @@ def match(j, args, params, actor, tags, tasklet):
                     if var.defaultvalue:
                         param['default'] = var.defaultvalue
                     params[var.name] = param
+                    param['tags'] = tags
 
                 tags = j.core.tags.getObject(methodspec.tags)
                 if tags.tagExists("returnformat"):
@@ -334,8 +339,16 @@ def match(j, args, params, actor, tags, tasklet):
 
                 auth = not tags.labelExists("noauth")
                 methodcall = getattr(actorobject, methodspec.name)
-                j.core.portal.active.addRoute(methodcall, appname, actorname, methodspec.name, params=params,
-                                              description=methodspec.description, auth=auth, returnformat=returnformat)
+                methodtags = j.core.tags.getObject(methodspec.tags)
+
+                methodtypes = ('post', )
+                if 'method' in methodtags.tags:
+                    methodtypes = [tag for tag in methodtags.tags['method'].split(',') if tag]
+                for methodtype in methodtypes:
+                    j.core.portal.active.addRoute(methodcall, appname, actorname, methodspec.name, params=params,
+                                                  description=methodspec.description, auth=auth, returnformat=returnformat,
+                                                  httpmethod=methodtype)
+
 
         # load taskletengines if they do exist
         tepath = j.system.fs.joinPaths(actorpath, "taskletengines")

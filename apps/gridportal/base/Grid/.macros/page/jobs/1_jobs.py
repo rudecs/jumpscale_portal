@@ -30,9 +30,10 @@ def main(j, args, params, tags, tasklet):
             filters[tag] = val
 
     modifier = j.html.getPageModifierGridDataTables(page)
+
     def makeLink(row, field):
         time = modifier.makeTime(row, field)
-        return '[%s|/grid/job?id=%s]'  % (time, row['guid'])
+        return '[%s|/grid/job?id=%s]' % (time, row['guid'])
 
     def makeResult(row, field):
         result = row[field]
@@ -42,12 +43,30 @@ def main(j, args, params, tags, tasklet):
             pass
         return j.html.escape(str(result))
 
-    fieldnames = ['Create Time', 'Start', 'Stop', 'Category', 'Command', 'Queue', 'State']
-    fieldvalues = [makeLink, modifier.makeTimeOnly, modifier.makeTimeOnly, 'category', 'cmd', 'queue', 'state']
-    fieldids = ['timeCreate', 'timeStart', 'timeStop', 'category', 'cmd', 'queue', 'state']
-    tableid = modifier.addTableForModel('system', 'job', fieldids, fieldnames, fieldvalues, nativequery=filters)
+    fields = [
+        {'name': 'Create Time',
+         'value': makeLink,
+         'type': 'date',
+         'id': 'timeCreate'},
+        {'name': 'Start',
+         'value': modifier.makeTimeOnly,
+         'id': 'timeStart'},
+        {'name': 'Stop',
+         'value': modifier.makeTimeOnly,
+         'id': 'timeStop'},
+        {'name': 'Command',
+         'value': 'cmd',
+         'id': 'cmd'},
+        {'name': 'Queue',
+         'value': 'queue',
+         'id': 'queue'},
+        {'name': 'State',
+         'value': 'state',
+         'id': 'state'},
+    ]
+    tableid = modifier.addTableFromModel('system', 'job', fields, nativequery=filters)
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
     return params

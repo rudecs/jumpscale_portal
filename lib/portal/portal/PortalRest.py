@@ -3,11 +3,18 @@ from JumpScale.portal.portal import exceptions
 from JumpScale.grid.serverbase.Exceptions import RemoteException
 import urllib
 import types
+import cgi
 import re
+import gevent
+import uuid
+import json
+from . import Validators
 
 class PortalRest():
 
     def __init__(self, webserver):
+        self.redis = j.clients.redis.getByInstance('system')
+        self.tasks = {}
         self.ws = webserver
 
     def validate(self, auth, ctx):
@@ -20,9 +27,17 @@ class PortalRest():
             ctx.start_response('401 Unauthorized', [])
             return False, msg
 
-        convertermap = {'int': (int, j.basetype.integer.fromString),
-                        'float': (float, j.basetype.float.fromString),
-                        'bool': (bool, j.basetype.boolean.fromString)
+        def emptyisnone(func):
+            def wrapper(val):
+                if val == '':
+                    return None
+                else:
+                    return func(val)
+            return wrapper
+
+        convertermap = {'int': ((int, types.NoneType), emptyisnone(j.basetype.integer.fromString)),
+                        'float': ((float, int, types.NoneType), emptyisnone(j.basetype.float.fromString)),
+                        'bool': ((bool,  types.NoneType), emptyisnone(j.basetype.boolean.fromString))
                         }
         params = self.ws.routes[ctx.path]['params']
         def loadList(key):
@@ -34,37 +49,72 @@ class PortalRest():
                 raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
 
         for key, param in params.iteritems():
-            if key not in ctx.params:
+            is_default = False
+            if key not in ctx.params or ctx.params[key] in ('', None):
                 if param['optional']:
                     # means is optional
+                    if param['tags'].labelExists('default_is_none'):
+                        ctx.params[key] = None
+                        continue
                     ctx.params[key] = param['default']
+                    is_default = True
                 else:
                     raise exceptions.BadRequest('Param with name:%s is missing.' % key)
-            elif param['type'] in convertermap:
+            if param['type'] in convertermap:
                 type_, converter = convertermap[param['type']]
-                if isinstance(ctx.params[key], (type_, types.NoneType)):
-                    continue
-                try:
-                    ctx.params[key] = converter(ctx.params[key])
-                except ValueError:
-                    raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+                if not isinstance(ctx.params[key], type_):
+                    try:
+                        ctx.params[key] = converter(ctx.params[key])
+                    except ValueError:
+                        raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
             elif param['type'] == 'list':
                 loadList(key)
             elif param['type'] in ['list(int)', 'list(bool)', 'list(float)']:
-                if ctx.params[key] is None:
-                    continue
-                loadList(key)
-                m = re.search("list\((?P<type>\w+)\)", param['type'])
-                if not m:
-                    continue
-                type_, converter = convertermap[m.group('type')]
-                for i in xrange(len(ctx.params[key])):
-                    try:
-                        if not isinstance(ctx.params[key][i], type_):
-                            ctx.params[key][i] = converter(ctx.params[key][i])
+                if not ctx.params[key] is None:
+                    loadList(key)
+                    m = re.search("list\((?P<type>\w+)\)", param['type'])
+                    if m:
+                        type_, converter = convertermap[m.group('type')]
+                        for i in xrange(len(ctx.params[key])):
+                            try:
+                                if not isinstance(ctx.params[key][i], type_):
+                                    ctx.params[key][i] = converter(ctx.params[key][i])
 
-                    except ValueError:
-                        raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+                            except ValueError:
+                                raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
+
+            if not is_default:
+                if param['tags'].tagExists('validator'):
+                    validator_name = param['tags'].tagGet('validator').upper()
+                    validator = getattr(Validators, validator_name)
+
+                    if isinstance(validator, str):
+                        def validator_callable(val):
+                            m = re.match(validator, val)
+                            return m and m.end() == len(val)
+                    else:
+                        validator_callable = validator
+
+                    if not validator_callable(ctx.params[key]):
+                        raise exceptions.BadRequest('Value of param %s is not a valid %s' % (key, validator_name.lower()))
+
+                if param['tags'].tagExists('validator-max'):
+                    validator_max = int(param['tags'].tagGet('validator-max'))
+                    if param['type'] == 'str':
+                        if len(ctx.params[key]) > validator_max:
+                            raise exceptions.BadRequest("Length of param %s should be smaller than %d" % (key, validator_max))
+                    if param['type'] in ('int', 'float'):
+                        if ctx.params[key] > validator_max:
+                            raise exceptions.BadRequest("Value of param %s should be smaller than %d" % (key, validator_max))
+
+                if param['tags'].tagExists('validator-min'):
+                    validator_min = int(param['tags'].tagGet('validator-min'))
+                    if param['type'] == 'str':
+                        if len(ctx.params[key]) < validator_min:
+                            raise exceptions.BadRequest("Length of param %s should be larger than %d" % (key, validator_min))
+                    if param['type'] in ('int', 'float'):
+                        if ctx.params[key] < validator_min:
+                            raise exceptions.BadRequest("Value of param %s should be larger than %d" % (key, validator_min))
 
         return True, ""
 
@@ -140,7 +190,7 @@ class PortalRest():
         if routekey not in routes:
             self.activateActor(paths[0], paths[1])
         if routekey not in routes:
-            routekey="GET_%s"%routekey
+            routekey="%s_%s"% (ctx.env['REQUEST_METHOD'], routekey)
         if routekey in routes:
             if human:
                 ctx.fformat = "human"
@@ -162,15 +212,14 @@ class PortalRest():
                     params["appname"] = ctx.application
                     params["actorname"] = ctx.actor
                     params["method"] = ctx.method
-                    page = self.ws.returnDoc(ctx, start_response, "system",
-                                          "restvalidationerror", extraParams=params)
+                    page = self.ws.returnDoc(ctx, "system", "restvalidationerror", extraParams=params)
                     return (False, ctx, [str(page)])
                 else:
                     return (False, ctx, msg)
             else:
                 return (True, ctx, routekey)
         else:
-            msg = "Could not find method, path was %s" % (path)
+            msg = cgi.escape("Could not find method, path was %s" % (path))
             appname = paths[0]
             actor = paths[1]
             contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=not human)
@@ -186,7 +235,22 @@ class PortalRest():
         routes = self.ws.routes
         try:
             method = routes[routekey]['func']
-            result = method(ctx=ctx, **ctx.params)
+            if '_async' in ctx.params:
+                taskguid = str(uuid.uuid4())
+
+                def exec_async():
+                    try:
+                        result = True, method(ctx=ctx, **ctx.params)
+                    except Exception as e:
+                        result = False, e.msg
+                    self.redis.set('tasks.{}'.format(taskguid), json.dumps(result), ex=600)
+                    self.tasks.pop(taskguid, None)
+
+                greenlet = gevent.spawn(exec_async)
+                self.tasks[taskguid] = greenlet
+                result = taskguid
+            else:
+                result = method(ctx=ctx, **ctx.params)
 
             return (True, result)
         except RemoteException as error:
@@ -199,7 +263,7 @@ class PortalRest():
             msg = "Execute method %s failed." % (routekey)
             return (False, self.ws.raiseError(ctx=ctx, msg=msg, errorObject=eco))
 
-    def processor_rest(self, env, start_response, path, human=True, ctx=False):
+    def processor_rest(self, env, start_response, path, ctx=False):
         """
         orignal rest processor (get statements)
         e.g. http://localhost/restmachine/system/contentmanager/notifySpaceModification?name=www_openvstorage&authkey=1234
@@ -219,19 +283,14 @@ class PortalRest():
             success, msg, params = self.restPathProcessor(path)
             if not success:
                 params["error"] = msg
-                if human:
-                    page = self.ws.returnDoc(ctx, start_response, "system", "rest",
-                                          extraParams=params)
-                    return [str(page)]
-                else:
-                    httpcode = "404 Not Found"
-                    contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=True)
-                    ctx.start_response(httpcode, [('Content-Type', contentType)])
-                    return data
+                httpcode = "404 Not Found"
+                contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=True)
+                ctx.start_response(httpcode, [('Content-Type', contentType)])
+                return data
             paths = params['paths']
 
             success, ctx, routekey = self.restRouter(env, start_response, path,
-                                                   paths, ctx, human=human)
+                                                   paths, ctx)
             if not success:
                 #in this case routekey is really the errormsg
                 return routekey
@@ -241,14 +300,8 @@ class PortalRest():
             if not success:
                 return result
 
-            if human:
-                ctx.format = "json"
-                params = {}
-                params["result"] = result
-                return [str(self.ws.returnDoc(ctx, start_response, "system", "restresult", extraParams=params))]
-            else:
-                contentType, result = self.ws.reformatOutput(ctx, result)
-                return respond(contentType, result)
+            contentType, result = self.ws.reformatOutput(ctx, result)
+            return respond(contentType, result)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             if ctx == False:
@@ -258,13 +311,15 @@ class PortalRest():
             else:
                 return self.ws.raiseError(ctx, errorObject=eco)
 
-    def processor_restext(self, env, start_response, path, human=True, ctx=False):
+    def processor_restext(self, env, start_response, path, ctx=False):
 
         """
         rest processer gen 2 (not used by the original get code)
         """
         if ctx == False:
             raise RuntimeError("ctx cannot be empty")
+        if not self.ws.isAdminFromCTX(ctx):
+            raise exceptions.NotFound('Not Found')
         try:
             j.logger.log("Routing request to %s" % path, 9)
 
@@ -277,12 +332,7 @@ class PortalRest():
 
             if not success:
                 params["error"] = message
-                if human:
-                    page = self.ws.returnDoc(ctx, start_response, "system", "rest",
-                                          extraParams=params)
-                    return [str(page)]
-                else:
-                    return self.ws.raiseError(ctx, message)
+                return self.ws.raiseError(ctx, message)
             requestmethod = ctx.env['REQUEST_METHOD']
             paths = params['paths']
             appname = paths[0]
@@ -305,15 +355,9 @@ class PortalRest():
                 start_response('405 Method not allowed', [('Content-Type', 'text/html')])
                 return 'Requested method is not allowed'
 
-            if human:
-                ctx.fformat = "json"
-                params = {}
-                params["result"] = result
-                return [str(self.ws.returnDoc(ctx, start_response, "system", "restresult", extraParams=params))]
-            else:
-                ctx.fformat = 'jsonraw'
-                contentType, result = self.ws.reformatOutput(ctx, result)
-                return respond(contentType, result)
+            ctx.fformat = 'jsonraw'
+            contentType, result = self.ws.reformatOutput(ctx, result)
+            return respond(contentType, result)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             if ctx == False:

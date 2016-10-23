@@ -1,3 +1,4 @@
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
     import os
@@ -16,10 +17,12 @@ def main(j, args, params, tags, tasklet):
 
     if args.tags.tagExists("ppath"):
         path = args.tags.tagGet("ppath").replace("+", ":").replace("___", ":").replace("\\", "/")
+        if path.startswith('$$'):
+            raise exceptions.BadRequest('BadRequest', 'text/plain')
         origpath = path
         path = j.dirs.replaceTxtDirVars(path)
         if not j.system.fs.exists(path):
-            page.addMessage("ERROR:could not find file %s" % path)
+            page.addMessage("ERROR:could not find file %s" % j.html.escape(path))
         apppath = j.core.portal.active.basepath
         codepath = os.getcwd()
         if path.startswith('/') and not (path.startswith(apppath) or path.startswith(codepath) or origpath != path):
@@ -29,7 +32,7 @@ def main(j, args, params, tags, tasklet):
         bucket = args.tags.tagGet("bucket").lower()
 
         if bucket not in j.core.portal.active.bucketsloader.buckets:
-            page.addMessage("Could not find bucket %s" % bucket)
+            page.addMessage("Could not find bucket %s" % j.html.escape(bucket))
             return params
         bucket = j.core.portal.active.bucketsloader.buckets[bucket]
         path = bucket.model.path.replace("\\", "/")

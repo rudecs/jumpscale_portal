@@ -5,11 +5,12 @@ except:
     import json
 def main(j, args, params, tags, tasklet):
 
+    params.result = (args.doc, args.doc)
     #macro puts obj info as params on doc, when show used as label, shows the content of the obj in nicely structured code block
     nid = args.getTag('id')
     gid = args.getTag('gid')
-    if not nid or not gid:
-        params.result = ('Node "id" and "gid" must be passed.', args.doc)
+    if not nid or not gid or not gid.isdigit():
+        args.doc.applyTemplate({})
         return params
     gid = int(gid)
     osis = j.core.portal.active.osis
@@ -21,7 +22,7 @@ def main(j, args, params, tags, tasklet):
     if osis.exists('system', 'grid', gid):
         grid = osis.get('system', 'grid', gid)
     if not node:
-        params.result = ('Node with and id %s_%s not found' % (gid, nid), args.doc)
+        args.doc.applyTemplate({})
         return params
 
     #obj is a dict
@@ -40,7 +41,6 @@ def main(j, args, params, tags, tasklet):
     node['nodename'] = node['name']
 
     args.doc.applyTemplate(node)
-    params.result = (args.doc, args.doc)
     return params
 
 

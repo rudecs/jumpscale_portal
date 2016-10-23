@@ -39,6 +39,15 @@ class GridDataTables:
         tableid = 'table_%s_%s' % (namespace, category)
         return self.addTableFromURL(url, fieldnames, tableid, selectable)
 
+    def addTableFromModel(self, namespace, category, fields, filters=None, nativequery=None, selectable=False):
+        fieldids = [x['id'] for x in fields]
+        fieldnames = [x['name'] for x in fields]
+        fieldvalues = [x['value'] for x in fields]
+        key = j.apps.system.contentmanager.extensions.datatables.storInCache(fieldids=fieldids, fieldname=fieldnames, fieldvalues=fieldvalues, filters=filters, nativequery=nativequery)
+        tableid = 'table_%s_%s' % (namespace, category)
+        url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
+        return self.addTableFromURLFields(url, fields, tableid, selectable)
+
     def addTableFromData(self, data, fieldnames):
         import random
         tableid = 'table%s' % random.randint(0, 1000)
@@ -92,10 +101,20 @@ $fields
         return tableid
 
     def addTableFromURL(self, url, fieldnames, tableid=None, selectable=False):
-        import random
+        fields = [{'name': field} for field in fieldnames]
+        return self.addTableFromURLFields(url, fields, tableid, selectable)
+
+    def addTableFromURLFields(self, url, fields, tableid=None, selectable=False):
         tableid = tableid or 'table'
-        basename = tableid
         counter = 1
+        columnDefs = [{"targets": [0], "visible": False}]
+        nonesortabletargets = []
+        for idx, field in enumerate(fields):
+            if not field.get('sortable', True):
+                nonesortabletargets.append(idx + 1)
+        if nonesortabletargets:
+            columnDefs.append({'targets': nonesortabletargets, 'sortable': False})
+
         while tableid in self._tableids:
             tableid = "%s_%" % counter
             counter += 1
@@ -107,7 +126,7 @@ $(document).ready(function() {
         "bServerSide": true,
         "bDestroy": true,
         "select": $selectable,
-        "columnDefs": [{"targets": [0], "visible": false}],
+        "columnDefs": $columnDefs,
         "sAjaxSource": "$url"
     } );
     $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -117,6 +136,7 @@ $(document).ready(function() {
         C = C.replace("$url", url)
         C = C.replace("$tableid", tableid)
         C = C.replace("$selectable", json.dumps(selectable))
+        C = C.replace("$columnDefs", json.dumps(columnDefs))
         self.page.addJS(jsContent=C, header=False)
 
 #<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
@@ -139,39 +159,63 @@ $fields
 </div>"""
 
         fieldstext = ""
-        fieldnames.insert(0, "id")
-        for name in fieldnames:
+        fields.insert(0, {'name': 'id'})
+        for field in fields:
+            name = field['name']
             classname = re.sub('[^\w]', '', name)
-            fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname,name)
+            if field.get('filterable', True) is False:
+                classname += ' nofilter'
+            if field.get('type', 'text') == 'date':
+                self.page.addJS("%s/jquery/jquery-ui.min.js" % self.liblocation)
+                self.page.addJS("%s/jquery/jquery-timepicker.js" % self.liblocation)
+                classname += ' datefield'
+            fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname, name)
         C = C.replace("$fields", fieldstext)
         C = C.replace("$tableid", tableid)
 
         self.page.addMessage(C, isElement=True, newline=True)
         return tableid
 
-    def addSearchOptions(self, tableid=".dataTable"):
+    def addSearchOptions(self, tableid=".dataTable", fields=None):
         self.page.addJS(jsContent='''
           $(function() {
               $('%s').each(function() {
                   var table = $(this);
-                  var numOfColumns = table.find('th').length;
                   var tfoot = $('<tfoot />');
-                  for (var i = 0; i < numOfColumns; i++) {
+                  table.find('th').each(function (idx) {
                       var td = $('<td />');
-                      td.append(
-                          $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {
-                              table.dataTable().fnFilter(this.value, tfoot.find('input').index(this));
-                          })
-                      );
+                      if (!$(this).hasClass('nofilter')) {
+                        if ($(this).hasClass('datefield')) {
+                            var start = $('<input />', {type: 'text', placeholder: '>=', 'class': 'datatables_filter'});
+                            var end = $('<input />', {type: 'text', placeholder: '<=', 'class': 'datatables_filter'});
+                            var getvalues = function() {
+                                return JSON.stringify({'$gt': new Date(start.val()).getTime() / 1000, '$lt': new Date(end.val()).getTime() / 1000});
+                            };
+                            td.append(start);
+                            td.append($('<br/>'));
+                            td.append(end);
+                            $.timepicker.datetimeRange(start, end, {
+                              minInterval: (1000*60*60),
+                              onSelect: function () {
+                                table.dataTable().fnFilter(getvalues(), idx);
+                              }
+                            });
+                        } else {
+                            var cell = $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {
+                                table.dataTable().fnFilter(this.value, idx);
+                            });
+                            td.append(cell);
+                        }
+                      }
                       tfoot.append(td);
-                  }
+                  });
                   if (table.find('tfoot').length == 0)
                     table.append(tfoot);
               });
             });''' % tableid
         , header=False)
 
-    def addSorting(self, tableid=".dataTable", columnindx=0, order='asc'):
+    def addSorting(self, tableid=".dataTable", columnindx=1, order='asc'):
         self.page.addJS(jsContent='''
             $(document).ready( function() {
               $('%s').dataTable().fnSort( [ [ %s, '%s' ] ] );

@@ -123,3 +123,12 @@ class DocPreprocessorFactory():
     def getMacroPath(self):
         dirname = j.system.fs.getDirName(__file__)
         return j.system.fs.joinPaths(dirname, 'macros')
+
+    def replace_params(self, body, obj):
+        def repl(matchobj):
+            slashes = '\\' * (len(matchobj.group(1))//2)
+            if len(matchobj.group(1))%2 == 0 and matchobj.group(3) in obj:
+                return slashes + obj[matchobj.group(3)]
+            else:
+                return slashes + matchobj.group(2)
+        return re.sub(r'(\\*)(\$\$([$a-zA-Z_0-9]+))',repl, body)

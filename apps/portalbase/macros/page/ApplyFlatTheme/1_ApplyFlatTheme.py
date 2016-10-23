@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     params.extend(args)
     page.addBootstrap()
-    page.addHTMLHeader('''<link rel="shortcut icon" type="image/png" href="/system/.files/img/favicon.png">''')
+    page.addFavicon("/system/.files/img/favicon/png", 'image/png')
     page.addCSS('/jslib/flatui/css/flat-ui.css')
     page.addCSS('/jslib/new-ui/new-ui.css')
     page.addCSS('/jslib/new-ui/oocss.css')

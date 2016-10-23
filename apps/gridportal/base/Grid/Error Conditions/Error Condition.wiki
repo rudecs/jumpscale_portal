@@ -27,7 +27,6 @@ ${errormessage}
 |*Job*|${jid}|
 |*Type*|${type}|
 |*Level*|${level}|
-|*Process ID*|[${pid}|process?id=${pid}]|
 |*Creation Time*|${epoch}|
 |*Last Time*|${lasttime}|
 |*Occurrences*|${occurrences}|
@@ -41,14 +40,14 @@ ${errormessage}
 |*Tags*|${tags}|
 #{% if level < 3 %}|*Alerts*|[show | alerts?eco=${id}]|{% endif %}
 
-*Code* 
-{{code: 
+*Code*
+{{code:
 ${code}
 }}
 
 *BackTrace*
-{{code: 
-${backtrace}
+{{code:
+${backtrace|replace('}}', '\}\}')}
 }}
 {% else %}
 Error Condition not found.

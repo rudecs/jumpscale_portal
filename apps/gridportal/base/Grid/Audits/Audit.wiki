@@ -1,6 +1,7 @@
 @usedefaults
 {{audit: id:$$id}}
 
+{% if id %}
 h2. Audit:
 
 |*Time*|${time}|
@@ -24,3 +25,9 @@ h3. Result:
 {{code: 
 ${result}
 }}
+
+{% else %}
+
+Invalid audit id
+
+{% endif %}

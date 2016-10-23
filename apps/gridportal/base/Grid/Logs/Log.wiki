@@ -1,21 +1,22 @@
 @usedefaults
 {{Grid.log: id:$$id}}
 
+{% if jid %}
 h2. Log Details
 
-|*Log ID*|$$guid|
-|*Application Name*|$$appname|
-|*Category*|$$category|
-|*Message*|$$message|
-|*Time*|$$epoch|
-|*Job ID*|$$jid|
-|*Level*|$$level|
-|*Parent Job ID*|$$parentjid|
-|*Process ID*|[$$pid|process?id=$$pid]|
-|*Node ID*|[$$nid|grid node?id=$$nid&gid=$$gid]|
-|*Order*|$$order|
-|*Master Job ID*|[$$masterjid|
-|*Grid ID*|[$$gid|grid?id=$$gid]|
-|*Private*|$$private|
-|*Application ID*|$$aid|
-|*Tags*|$$tags|
+|*Log ID*|${guid}|
+|*Application Name*|${appname}|
+|*Category*|${category}|
+|*Message*|${message}|
+|*Time*|${epoch}|
+|*Job ID*|${jid}|
+|*Level*|${level}|
+|*Node ID*|[${nid}|grid node?id=${nid}&gid=${gid}]|
+|*Order*|${order}|
+|*Grid ID*|[${gid}|/grid?id=${gid}]|
+|*Private*|${private}|
+|*Application ID*|${aid}|
+|*Tags*|${tags}|
+{% else %}
+Invalid log id
+{% endif %}

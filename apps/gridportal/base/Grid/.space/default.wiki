@@ -1,5 +1,5 @@
 
-{{title:GRID}}
+{{title:Grid $$page}}
 {{ApplyFlatTheme}}
 
 {{find}}
