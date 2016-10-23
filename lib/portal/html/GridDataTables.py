@@ -166,7 +166,6 @@ $fields
             if field.get('filterable', True) is False:
                 classname += ' nofilter'
             if field.get('type', 'text') == 'date':
-                self.page.addJS("%s/jquery/jquery-ui.min.js" % self.liblocation)
                 self.page.addJS("%s/jquery/jquery-timepicker.js" % self.liblocation)
                 classname += ' datefield'
             fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname, name)

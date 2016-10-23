@@ -101,7 +101,7 @@ class PageHTML(Page):
         message = message.replace("text:u", "")
         message.strip("'")
         message = message.strip()
-        message = message.replace("\r", "")        
+        message = message.replace("\r", "")
         if message != '' and isElement:
             message = "%s" % message
         elif newline and message != '':
@@ -184,7 +184,7 @@ class PageHTML(Page):
             self.addMessage("", True, isElement=True)
 
     def addHeading(self, message, level=1):
-        message = str(message)        
+        message = str(message)
 
         heading = "<h%s class=\"title\">%s</h%s>" % (level, message, level)
         self.addMessage(heading, isElement=True)
@@ -196,7 +196,7 @@ class PageHTML(Page):
         @param linkcolumns has pos (starting 0) of columns which should be formatted as links  (in that column format needs to be $description__$link
         """
         if rows==[[]]:
-            return 
+            return
         if "datatables" in self.functionsAdded:
             classparams += 'cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display dataTable'
             if headers:
@@ -355,7 +355,7 @@ class PageHTML(Page):
         """
         @todo define types of templates supported
         @template e.g. python
-        if path is given and edit=True then file can be editted and a edit button will appear on editor             
+        if path is given and edit=True then file can be editted and a edit button will appear on editor
         """
         # if codeblock no postprocessing(e.g replacing $$space, ...) should be
         # done
@@ -373,15 +373,15 @@ class PageHTML(Page):
         height: auto;
         border: $linecolor;
         border-top: $linecolortopbottom;
-        border-bottom: $linecolortopbottom                
+        border-bottom: $linecolortopbottom
     }
     .CodeMirror-scroll {
         overflow-y: hidden;
         overflow-x: auto;
     }
-        
+
 </style>
-"""     
+"""
         CSS = CSS.replace("$linecolortopbottom", linecolortopbottom)
         CSS = CSS.replace("$linecolor", linecolor)
 
@@ -506,15 +506,15 @@ function copyText$id() {
 
         C = """
     var line = new RGraph.Line("{lineId}", {lineData});
-    
+
     line.Set('chart.title', '{lineTitle}');
     line.Set('chart.linewidth', 1);
     line.Set('chart.labels', {lineHeaders});
     line.Set('chart.key', {lineLegend});
     line.Set('chart.gutter.left', 90);
     RGraph.Effects.Line.jQuery.Trace(line);
-    
-    line.Draw();        
+
+    line.Draw();
         """
 
         jsContent = te.replace(C)
@@ -687,7 +687,7 @@ function copyText$id() {
             if key in self.jscsslinks:
                 return
             self.jscsslinks[key] = True
-        
+
         mediatag = ""
         if media:
             mediatag = "media='%s'" % media
@@ -753,7 +753,7 @@ function copyText$id() {
             js = "<script  src='%s' type='text/javascript'></script>\n" % jsLink
         self.head = self.head.replace(js.strip(), '')
         self.body = self.body.replace(js.strip(), '')
-       
+
 
     def addScriptBodyJS(self, jsContent):
         self.scriptBody = "%s%s\n" % (self.scriptBody, jsContent)
@@ -775,6 +775,7 @@ function copyText$id() {
     def addJQuery(self):
         self.addJS('/jslib/jquery/jquery-2.2.1.min.js')
         self.addJS('/jslib/jquery/jquery-migrate-1.2.1.js')
+        self.addJS("/jslib/jquery/jquery-ui.min.js")
 
     def addBootstrap(self, jquery=True):
         if jquery:
@@ -870,12 +871,12 @@ function copyText$id() {
             // this.shortcuts = [{
             //     pattern     : 'ctrl+t'
             // }];
-            
+
             // return 0 to enable command, -1 to disable
             this.getstate = function(sel) {
                 return 0;
             }
-            
+
             // execute the command business itself
             this.exec = function(hashes) {
                 $.each(this.files(hashes), function(i, file) {
