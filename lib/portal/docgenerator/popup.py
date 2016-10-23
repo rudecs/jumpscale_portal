@@ -101,6 +101,14 @@ class Popup(object):
         content = template.render(label=label, name=name, options=options, required=required)
         self.widgets.append(content)
 
+    def addAutoCompleteDisabler(self):
+        template = self.jinja.from_string('''
+            <input type="text" style="display:none">
+            <input type="password" style="display:none">
+        ''')
+        content = template.render()
+        self.widgets.append(content)
+
     def addCheckboxes(self, label, name, options, required=False):
         template = self.jinja.from_string('''
             <div class="form-group">

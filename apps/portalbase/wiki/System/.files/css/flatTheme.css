@@ -991,4 +991,10 @@ table.table thead .sorting {
 
 .ui-datepicker td {
    min-width: 25px !important;
+
+.col-md-4 .title{
+  text-align: center;
+}
+.clearfix .jgauge {
+  margin: 0 auto !important;
 }
