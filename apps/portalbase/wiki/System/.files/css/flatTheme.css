@@ -1011,7 +1011,7 @@ table.table thead .sorting {
   border: 1px solid #345e79;
 }
 .col-md-4 .title, .ui-datepicker-title{
-  text-align: center;
+  text-align: center !important;
 }
 .clearfix .jgauge {
   margin: 0 auto !important;
