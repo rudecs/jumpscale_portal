@@ -168,6 +168,8 @@ $fields
             if field.get('type', 'text') == 'date':
                 self.page.addJS("%s/jquery/jquery-timepicker.js" % self.liblocation)
                 classname += ' datefield'
+            elif field.get('type', 'text') == 'int':
+                classname += ' intfield'
             fieldstext += "<th class='datatables-row-%s'>%s</th>\n" % (classname, name)
         C = C.replace("$fields", fieldstext)
         C = C.replace("$tableid", tableid)
@@ -198,6 +200,30 @@ $fields
                               onSelect: function () {
                                 table.dataTable().fnFilter(getvalues(), idx);
                               }
+                            });
+                        } else if ($(this).hasClass('intfield')) {
+                            var start = $('<input />', {type: 'text', placeholder: '>=', 'class': 'datatables_filter'});
+                            var end = $('<input />', {type: 'text', placeholder: '<=', 'class': 'datatables_filter'});
+                            var getvalues = function() {
+                                var query = {};
+                                var begin = parseInt(start.val());
+                                var last = parseInt(end.val());
+                                if (!isNaN(begin)) {
+                                    query['$gte'] = begin;
+                                }
+                                if (!isNaN(last)) {
+                                    query['$lte'] = last;
+                                }
+                                return JSON.stringify(query);
+                            };
+                            td.append(start);
+                            td.append($('<br/>'));
+                            td.append(end);
+                            start.keyup(function() {
+                                table.dataTable().fnFilter(getvalues(), idx);
+                            });
+                            end.keyup(function() {
+                                table.dataTable().fnFilter(getvalues(), idx);
                             });
                         } else {
                             var cell = $('<input />', {type: 'text', 'class': 'datatables_filter'}).keyup(function() {

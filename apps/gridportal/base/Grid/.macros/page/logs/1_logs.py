@@ -1,4 +1,4 @@
-import datetime
+
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -16,8 +16,6 @@ def main(j, args, params, tags, tasklet):
         elif val:
             filters[tag] = val
 
-    fieldnames = ['Start Time', 'App Name', 'Category', 'Message', 'Level', 'Node ID', 'Job ID']
-
     def makeTime(row, field):
         time = modifier.makeTime(row, field)
         return '[%s|log?id=%s]' % (time, row['guid'])
@@ -25,24 +23,38 @@ def main(j, args, params, tags, tasklet):
     def cleanUp(row, field):
         return j.html.escape(row[field])
 
-    def pidStr(row, field):
-        if row[field]:
-            return '[%(pid)s|/grid/process?id=%(pid)s]' % row
-        else:
-            return ''
-
-
     nidstr = '[%(nid)s|/grid/grid node?id=%(nid)s&gid=%(gid)s]'
     jidstr = '[%(jid)s|/grid/job?id=%(jid)s]'
-    fieldids = ['epoch', 'appname', 'category', 'message', 'level', 'nid', 'jid']
-    fieldvalues = [makeTime, 'appname', 'category', cleanUp, 'level', nidstr, jidstr]
-    tableid = modifier.addTableForModel('system', 'log', fieldids, fieldnames, fieldvalues, filters)
+    fields = [
+        {'id': 'epoch',
+         'name': 'Start Time',
+         'value': makeTime,
+         'type': 'date'},
+        {'id': 'appname',
+         'name': 'App Name',
+         'value': 'appname'},
+        {'id': 'category',
+         'name': 'Category',
+         'value': 'category'},
+        {'id': 'message',
+         'name': 'Message',
+         'value': 'message'},
+        {'id': 'level',
+         'name': 'level',
+         'type': 'int',
+         'value': 'level'},
+        {'id': 'nid',
+         'name': 'Node ID',
+         'value': nidstr},
+        {'id': 'jid',
+         'name': 'Job ID',
+         'value': jidstr},
+    ]
+    tableid = modifier.addTableFromModel('system', 'log', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 
-
     params.result = page
-
     return params
 
 
