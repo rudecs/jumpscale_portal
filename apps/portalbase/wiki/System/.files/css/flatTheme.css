@@ -984,13 +984,11 @@ table.table thead .sorting {
 .elfinder {
   min-height: 540px !important;
 }
-
 .ui-datepicker {
    background: #f8f8f8;
    width: 20%;
    padding: 20px;
    border: 1px solid #345e79;
-   display: none;
 }
 .ui-datepicker-header a:last-of-type{
   float: right;
@@ -1016,4 +1014,23 @@ table.table thead .sorting {
 }
 .clearfix .jgauge {
   margin: 0 auto !important;
+}
+tfoot td{
+  position: relative;
+}
+tfoot td input {
+  position: absolute;
+  top: 0;
+}
+.multiinput{
+  position: static;
+}
+.ui-datepicker:last-of-type{
+  display: none;
+}
+.ui-corner-all{
+  cursor: pointer;
+}
+.dataTable td{
+  min-width: 160px !important;
 }

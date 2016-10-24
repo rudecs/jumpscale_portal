@@ -187,8 +187,8 @@ $fields
                       var td = $('<td />');
                       if (!$(this).hasClass('nofilter')) {
                         if ($(this).hasClass('datefield')) {
-                            var start = $('<input />', {type: 'text', placeholder: '>=', 'class': 'datatables_filter'});
-                            var end = $('<input />', {type: 'text', placeholder: '<=', 'class': 'datatables_filter'});
+                            var start = $('<input />', {type: 'text', placeholder: 'Start date', 'class': 'datatables_filter multiinput'});
+                            var end = $('<input />', {type: 'text', placeholder: 'End date', 'class': 'datatables_filter multiinput'});
                             var getvalues = function() {
                                 return JSON.stringify({'$gt': new Date(start.val()).getTime() / 1000, '$lt': new Date(end.val()).getTime() / 1000});
                             };
@@ -202,8 +202,8 @@ $fields
                               }
                             });
                         } else if ($(this).hasClass('intfield')) {
-                            var start = $('<input />', {type: 'text', placeholder: '>=', 'class': 'datatables_filter'});
-                            var end = $('<input />', {type: 'text', placeholder: '<=', 'class': 'datatables_filter'});
+                            var start = $('<input />', {type: 'text', placeholder: 'min', 'class': 'datatables_filter multiinput'});
+                            var end = $('<input />', {type: 'text', placeholder: 'max', 'class': 'datatables_filter multiinput'});
                             var getvalues = function() {
                                 var query = {};
                                 var begin = parseInt(start.val());
