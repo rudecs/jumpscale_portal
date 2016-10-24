@@ -35,6 +35,7 @@ def main(j, args, params, tags, tasklet):
          'value': 'call'},
         {'name': 'Status Code',
          'id': 'statuscode',
+         'type': 'int',
          'value': 'statuscode'},
     ]
     tableid = modifier.addTableFromModel('system', 'audit', fields, filters)
