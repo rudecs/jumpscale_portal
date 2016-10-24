@@ -986,14 +986,32 @@ table.table thead .sorting {
 }
 
 .ui-datepicker {
-   background: #ccc;
+   background: #f8f8f8;
+   width: 20%;
+   padding: 20px;
+   border: 1px solid #345e79;
 }
-
-.ui-datepicker td {
-   min-width: 25px !important;
-
-.col-md-4 .title{
-  text-align: center;
+.ui-datepicker-header a:last-of-type{
+  float: right;
+}
+.ui-datepicker-calendar{
+  margin: 0 auto;
+  width: 100%;
+}
+.ui-datepicker-week-end:first-of-type{
+  padding-left: 10px;
+}
+.ui-slider-handle, .ui-datepicker-buttonpane button, .ui-slider-handle:hover,
+.ui-slider-handle:focus {
+  background-color: #345e79;
+}
+.ui-datepicker-buttonpane button {
+  color: #fff;
+  margin-right: 10px;
+  border: 1px solid #345e79;
+}
+.col-md-4 .title, .col-md-6 h6, .ui-datepicker-title{
+  text-align: center !important;
 }
 .clearfix .jgauge {
   margin: 0 auto !important;
