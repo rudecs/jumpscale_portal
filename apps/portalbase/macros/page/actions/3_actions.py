@@ -124,27 +124,48 @@ eg:
         var actionid = '#actions_' + settings.sTableId;
         var action = $(actionid);
         if (action) {
+            var button = action.find('button');
+            button.prop('disabled', true);
             action.css('margin', '10px');
             var container = '#' + settings.sTableId + '_length';
             $(container).append(action);
             var tableid = '#' + settings.sTableId;
             var table = $(tableid);
             if (table.dataTable().fnSettings().oInit.select) {
-                var link = $('<a href="#">Select All</a>');
-                var selected = false;
-                link.click(function (e) {
+                var linka = $('<a href="#">Select All</a>');
+                var linkn = $('<a href="#">Clear Selection</a>');
+                linkn.hide();
+                linka.click(function (e) {
                     e.preventDefault();
                     var rows = table.DataTable().rows();
-                    if (!selected) {
-                        rows.select();
-                        $(this).text('Clear Selection');
-                    } else {
-                        rows.deselect();
-                        $(this).text('Select All');
-                    }
-                    selected = !selected;
+                    rows.select();
                 });
-                $(container).append(link);
+                linkn.click(function (e) {
+                    e.preventDefault();
+                    var rows = table.DataTable().rows();
+                    rows.deselect();
+                });
+                $(container).append(linka);
+                $(container).append('&nbsp;');
+                $(container).append(linkn);
+                var onselect = function (e, dt, type, indexes) {
+                    var count = dt.rows({'selected': true}).count()
+                    var totalcount = dt.rows().count()
+                    if (count == 0){
+                        linkn.hide();
+                        button.prop('disabled', true);
+                    } else {
+                        linkn.show();
+                        button.prop('disabled', false);
+                    }
+                    if (totalcount == count) {
+                        linka.hide();
+                    } else {
+                        linka.show();
+                    }
+                };
+                table.DataTable().on('select', onselect);
+                table.DataTable().on('deselect', onselect);
             }
         }
     });
