@@ -1016,14 +1016,7 @@ table.table thead .sorting {
   margin: 0 auto !important;
 }
 tfoot td{
-  position: relative;
-}
-tfoot td input {
-  position: absolute;
-  top: 0;
-}
-.multiinput{
-  position: static;
+  vertical-align: top;
 }
 .ui-datepicker:last-of-type{
   display: none;
