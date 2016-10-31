@@ -59,20 +59,21 @@ class AuditMiddleWare(object):
 
 class auth(object):
 
-    def __init__(self, groups=None, audit=True, **kwargs): 
+    def __init__(self, groups=None, audit=True, **kwargs):
         if isinstance(groups, str):
             groups = [groups]
         if groups is None:
             groups = list()
         self.groups = set(groups)
         self.audit = audit
-        self.tags = ' '.join(["%s:%s" % (k, v) for k, v in kwargs.iteritems()])
+        self.tags = kwargs
 
     def __call__(self, func):
         def wrapper(*args, **kwargs):
+            self.tags_str = ' '.join(["%s:%s" % (k, kwargs[v]) for k, v in self.tags.iteritems()])
             ctx = kwargs['ctx']
-            if self.cloudspaceIdKwArg:
-                ctx.env['beaker.session']['tags'] = self.tags 
+            if self.tags:
+                ctx.env['beaker.session']['tags'] = self.tags_str 
 
             if 'ctx' not in kwargs:
                 # call is not performed over rest let it pass
