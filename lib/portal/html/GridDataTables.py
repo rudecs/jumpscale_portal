@@ -190,16 +190,45 @@ $fields
                             var start = $('<input />', {type: 'text', placeholder: 'Start date', 'class': 'datatables_filter'});
                             var end = $('<input />', {type: 'text', placeholder: 'End date', 'class': 'datatables_filter'});
                             var getvalues = function() {
-                                return JSON.stringify({'$gt': new Date(start.val()).getTime() / 1000, '$lt': new Date(end.val()).getTime() / 1000});
+                                var q = {};
+                                if (start.val() != '') {
+                                    q['$gt'] = new Date(start.val()).getTime() / 1000;
+                                }
+                                if (end.val() != '') {
+                                    q['$lt'] = new Date(end.val()).getTime() / 1000;
+                                }
+                                return JSON.stringify(q);
                             };
                             td.append(start);
                             td.append($('<br/>'));
                             td.append(end);
-                            $.timepicker.datetimeRange(start, end, {
-                              minInterval: (1000*60*60),
-                              onSelect: function () {
-                                table.dataTable().fnFilter(getvalues(), idx);
-                              }
+                            start.datetimepicker({
+                                onClose: function(dateText, inst) {
+                                    if (end.val() != '') {
+                                        var testStartDate = start.datetimepicker('getDate');
+                                        var testEndDate = end.datetimepicker('getDate');
+                                        if (testStartDate > testEndDate)
+                                            end.datetimepicker('setDate', testStartDate);
+                                    }
+                                    table.dataTable().fnFilter(getvalues(), idx);
+                                },
+                                onSelect: function (selectedDateTime){
+                                    end.datetimepicker('option', 'minDate', start.datetimepicker('getDate') );
+                                }
+                            });
+                            end.datetimepicker({
+                                onClose: function(dateText, inst) {
+                                    if (start.val() != '') {
+                                        var testStartDate = start.datetimepicker('getDate');
+                                        var testEndDate = end.datetimepicker('getDate');
+                                        if (testStartDate > testEndDate)
+                                            start.datetimepicker('setDate', testEndDate);
+                                    }
+                                    table.dataTable().fnFilter(getvalues(), idx);
+                                },
+                                onSelect: function (selectedDateTime){
+                                    start.datetimepicker('option', 'maxDate', end.datetimepicker('getDate') );
+                                }
                             });
                         } else if ($(this).hasClass('intfield')) {
                             var start = $('<input />', {type: 'text', placeholder: 'min', 'class': 'datatables_filter'});
