@@ -16,9 +16,16 @@ def main(j, args, params, tags, tasklet):
     except:
         args.doc.applyTemplate({'id': None})
         return params
-    
+
     for key in ('kwargs', 'args', 'result'):
-        audit[key] = yaml.dump(json.loads(audit[key])).replace("!!python/unicode ", "")
+        obj = json.loads(audit[key])
+        if key == 'result' and isinstance(obj, list) and len(obj) == 1:
+            obj = obj[0]
+            try:
+                obj = json.loads(obj)
+            except:
+                pass
+        audit[key] = yaml.safe_dump(obj, default_flow_style=False)
 
 
     audit['time'] = datetime.datetime.fromtimestamp(audit['timestamp']).strftime('%m-%d %H:%M:%S') or 'N/A'

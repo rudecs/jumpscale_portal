@@ -9,20 +9,21 @@ h2. Audit:
 |*Call*|${call}|
 |*Statuscode*|${statuscode}|
 |*ResponseTime*|${'%0.2f' % ((responsetime or 0) * 1000)} ms|
+|*Tags*|${tags}|
 
 h3. Arguments:
 
-{{code: 
+{{code:
 ${args}
 }}
 
 h3. Keyword Arguments:
-{{code: 
+{{code:
 ${kwargs}
 }}
 
 h3. Result:
-{{code: 
+{{code:
 ${result}
 }}
 
