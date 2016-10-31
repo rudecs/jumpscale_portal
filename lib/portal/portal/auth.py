@@ -14,12 +14,13 @@ def getClient(namespace):
     return clients[namespace]
 
 
-def doAudit(user, path, kwargs, responsetime, statuscode, result):
+def doAudit(user, path, kwargs, responsetime, statuscode, result,  tags):
     client = getClient('system')
     audit = client.audit.new()
     audit.user = user
     audit.call = path
     audit.statuscode = statuscode
+    audit.tags = tags
     audit.args = json.dumps([])  # we dont want to log self
     auditkwargs = kwargs.copy()
     auditkwargs.pop('ctx', None)
@@ -42,35 +43,40 @@ class AuditMiddleWare(object):
         def my_response(status, headers, exc_info=None):
             statinfo['status'] = int(status.split(" ", 1)[0])
             return start_response(status, headers, exc_info)
-
+        
         start = time.time()
         result = self.app(env, my_response)
         responsetime = time.time() - start
         audit = env.get('JS_AUDIT')
         if audit or statinfo['status'] >= 400:
             ctx = env.get('JS_CTX')
+            tags = env['beaker.session'].get("tags", "")
             user = env['beaker.session'].get('user', 'Unknown')
             kwargs = ctx.params.copy() if ctx else {}
             if j.core.portal.active.authentication_method:
-                doAudit(user, env['PATH_INFO'], kwargs, responsetime, statinfo['status'], result)
+                doAudit(user, env['PATH_INFO'], kwargs, responsetime, statinfo['status'], result, tags)
         return result
 
 class auth(object):
 
-    def __init__(self, groups=None, audit=True):
+    def __init__(self, groups=None, audit=True, **kwargs): 
         if isinstance(groups, str):
             groups = [groups]
         if groups is None:
             groups = list()
         self.groups = set(groups)
         self.audit = audit
+        self.tags = ' '.join(["%s:%s" % (k, v) for k, v in kwargs.iteritems()])
 
     def __call__(self, func):
         def wrapper(*args, **kwargs):
+            ctx = kwargs['ctx']
+            if self.cloudspaceIdKwArg:
+                ctx.env['beaker.session']['tags'] = self.tags 
+
             if 'ctx' not in kwargs:
                 # call is not performed over rest let it pass
                 return func(*args, **kwargs)
-            ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
             if self.groups:
                 userobj = j.core.portal.active.auth.getUserInfo(user)
