@@ -125,13 +125,13 @@ eg:
         var action = $(actionid);
         if (action) {
             var button = action.find('button');
-            button.prop('disabled', true);
             action.css('margin', '10px');
             var container = '#' + settings.sTableId + '_length';
             $(container).append(action);
             var tableid = '#' + settings.sTableId;
             var table = $(tableid);
             if (table.dataTable().fnSettings().oInit.select) {
+                button.prop('disabled', true);
                 var linka = $('<a href="#">Select All</a>');
                 var linkn = $('<a href="#">Clear Selection</a>');
                 linkn.hide();
