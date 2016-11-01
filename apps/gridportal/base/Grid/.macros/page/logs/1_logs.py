@@ -1,5 +1,3 @@
-
-
 def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
@@ -24,7 +22,6 @@ def main(j, args, params, tags, tasklet):
         return j.html.escape(row[field])
 
     nidstr = '[%(nid)s|/grid/grid node?id=%(nid)s&gid=%(gid)s]'
-    jidstr = '[%(jid)s|/grid/job?id=%(jid)s]'
     fields = [
         {'id': 'epoch',
          'name': 'Start Time',
@@ -46,9 +43,6 @@ def main(j, args, params, tags, tasklet):
         {'id': 'nid',
          'name': 'Node ID',
          'value': nidstr},
-        {'id': 'jid',
-         'name': 'Job ID',
-         'value': jidstr},
     ]
     tableid = modifier.addTableFromModel('system', 'log', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
