@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
             filters[tag] = val
         else:
             val = args.getTag(tag)
-            filters["tags"] = {"$regex":("%s.* (?=.*%s:%s).*" % (filters["tags"], tag, val))} if "tags" in filters else {"$regex":"(?=.*%s:%s)" % (tag, val)}
+            filters["tags"] = {"$regex": ("%s|(?=.*%s:%s)" % (filters["tags"]['$regex'], tag, val))} if "tags" in filters else {"$regex":"(?=.*%s:%s)" % (tag, val)}
 
     modifier = j.html.getPageModifierGridDataTables(page)
 
