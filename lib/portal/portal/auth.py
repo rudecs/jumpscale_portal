@@ -43,7 +43,7 @@ class AuditMiddleWare(object):
         def my_response(status, headers, exc_info=None):
             statinfo['status'] = int(status.split(" ", 1)[0])
             return start_response(status, headers, exc_info)
-        
+
         start = time.time()
         result = self.app(env, my_response)
         responsetime = time.time() - start
@@ -71,13 +71,14 @@ class auth(object):
     def __call__(self, func):
         def wrapper(*args, **kwargs):
             self.tags_str = ' '.join(["%s:%s" % (k, kwargs[v]) for k, v in self.tags.iteritems()])
-            ctx = kwargs['ctx']
-            if self.tags:
-                ctx.env['beaker.session']['tags'] = self.tags_str 
 
             if 'ctx' not in kwargs:
                 # call is not performed over rest let it pass
                 return func(*args, **kwargs)
+
+            ctx = kwargs['ctx']
+            if self.tags:
+                ctx.env['beaker.session']['tags'] = self.tags_str
             user = ctx.env['beaker.session']['user']
             if self.groups:
                 userobj = j.core.portal.active.auth.getUserInfo(user)
