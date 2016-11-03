@@ -25,10 +25,13 @@ def doAudit(user, path, kwargs, responsetime, statuscode, result,  tags):
     auditkwargs = kwargs.copy()
     auditkwargs.pop('ctx', None)
     audit.kwargs = json.dumps(auditkwargs)
-    if not isinstance(result, types.GeneratorType):
-        audit.result = json.dumps(result)
-    else:
-        audit.result = json.dumps('Result of type generator')
+    try:
+        if not isinstance(result, types.GeneratorType):
+            audit.result = json.dumps(result)
+        else:
+            audit.result = json.dumps('Result of type generator')
+    except:
+        audit.result = json.dumps('binary data')
 
     audit.responsetime = responsetime
     client.audit.set(audit)
