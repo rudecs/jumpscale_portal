@@ -5,12 +5,12 @@
 @row
 @col 5
 #{{html:<center>}}
-h6. Events in Last 24 hours
+h6. Events in the last 24 hours
 {{eventgauge: id:4 width:200 height:114}}
 #   {{html:</center>}}
 @divend
 @col 5
-h6. Virtual Machines Running
+h6. Running Virtual Machines
 #*From Total Deployed:45*
 {{vmgauge: id:5 width:200 height:114}}
 @divend
