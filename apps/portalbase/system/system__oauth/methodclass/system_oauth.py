@@ -98,6 +98,9 @@ class system_oauth(j.code.classGetBase()):
             if userinfo.emailaddress not in u['emails']:
                 raise exceptions.BadRequest(
                     'User with same name already exists')
+            u['groups'] = userinfo.groups
+            u['emails'] = [userinfo.emailaddress]
+            user.set(u)
 
         session = ctx.env['beaker.session']
         session['user'] = userid
