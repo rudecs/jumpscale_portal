@@ -37,7 +37,7 @@ def main(j, args, params, tags, tasklet):
          'name': 'Message',
          'value': 'message'},
         {'id': 'level',
-         'name': 'level',
+         'name': 'Level',
          'type': 'int',
          'value': 'level'},
         {'id': 'nid',
