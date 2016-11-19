@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
     id = args.getTag('id')
     client = j.clients.osis.getNamespace('system').audit
 
-    if not id or not id.isalnum():
+    if not id:
         args.doc.applyTemplate({})
         return params
 
@@ -26,7 +26,6 @@ def main(j, args, params, tags, tasklet):
             except:
                 pass
         audit[key] = yaml.safe_dump(obj, default_flow_style=False)
-
 
     audit['time'] = datetime.datetime.fromtimestamp(audit['timestamp']).strftime('%m-%d %H:%M:%S') or 'N/A'
     audit['id'] = id
