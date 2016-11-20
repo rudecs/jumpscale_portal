@@ -94,10 +94,8 @@ class system_oauth(j.code.classGetBase()):
             u.emails = [userinfo.emailaddress]
             user.set(u)
         else:
+            # update user info
             u = users[0]
-            if userinfo.emailaddress not in u['emails']:
-                raise exceptions.BadRequest(
-                    'User with same name already exists')
             u['groups'] = userinfo.groups
             u['emails'] = [userinfo.emailaddress]
             user.set(u)
