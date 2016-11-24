@@ -96,7 +96,8 @@ class system_oauth(j.code.classGetBase()):
         else:
             # update user info
             u = users[0]
-            u['groups'] = userinfo.groups
+            if cache_result['type'] != 'oauth':
+                u['groups'] = userinfo.groups
             u['emails'] = [userinfo.emailaddress]
             user.set(u)
 
