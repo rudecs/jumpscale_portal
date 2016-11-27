@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     obj['epoch'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['epoch']
-    obj['lasttime'] = "{{div: class=jstimestamp data-ts=%s}}{{div}}" % obj['lasttime']
+    obj['lasttime'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['lasttime']
     for attr in ['errormessage', 'errormessagePub']:
         obj[attr] = j.html.escape(obj[attr])
     for attr in ['jid']:
