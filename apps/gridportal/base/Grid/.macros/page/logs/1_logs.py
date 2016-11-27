@@ -35,6 +35,8 @@ def main(j, args, params, tags, tasklet):
          'value': 'category'},
         {'id': 'message',
          'name': 'Message',
+         'filterable': False,
+         'sortable': False,
          'value': 'message'},
         {'id': 'level',
          'name': 'Level',

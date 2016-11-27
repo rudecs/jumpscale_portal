@@ -5,12 +5,13 @@ import copy
 import cgi
 import json
 
+
 class DataTables():
 
     def __init__(self):
         self.inited = False
         self.cache = j.db.keyvaluestore.getMemoryStore('datatables')
-        self._osiscl =j.core.portal.active.osis
+        self._osiscl = j.core.portal.active.osis
         self._catclient = dict()
 
     def getClient(self, namespace, category):
@@ -53,7 +54,8 @@ class DataTables():
                 # if lprop.find("name") != -1 and iddone==False and guidpos != None:
                 #     fprop="[$%s|%s]"%(counter,"/%s/%s/view_%s?guid=$%s"%(appname,actorname,modelname,getGuidPos()))
                 #     iddone=True
-                fprop = "[$%s|%s]" % (counter, "/space_%s__%s/form_%s?guid=$%s" % (appname, actorname, modelname, getGuidPos()))
+                fprop = "[$%s|%s]" % (counter, "/space_%s__%s/form_%s?guid=$%s" %
+                                      (appname, actorname, modelname, getGuidPos()))
                 iddone = True
                 fields.append(fprop)
                 fieldids.append(lprop)
@@ -103,19 +105,18 @@ class DataTables():
 
         client = self.getClient(namespace, category)
 
-        #pagin
-        start = kwargs['iDisplayStart']
-        size = kwargs['iDisplayLength']
+        # pagin
+        start = int(kwargs['iDisplayStart'])
+        size = int(kwargs['iDisplayLength'])
 
-
-        #sort
+        # sort
         sort = []
         if kwargs['iSortCol_0']:
             for i in range(int(kwargs['iSortingCols'])):
                 colidx = kwargs['iSortCol_%s' % i]
                 key = 'bSortable_%s' % colidx
                 if kwargs[key] == 'true':
-                    colname = fieldids[int(colidx)-1]
+                    colname = fieldids[int(colidx) - 1]
                     sort.append((colname,  1 if kwargs['sSortDir_%s' % i] == 'asc' else -1))
         if sort:
             fullquery['$orderby'] = sort
@@ -129,7 +130,7 @@ class DataTables():
             query = {'$regex': regextmpl % value, '$options': 'i'}
             return query
 
-        #filters
+        # filters
         partials = dict()
         for x in range(len(fieldids)):
             svalue = kwargs.get('sSearch_%s' % x)
@@ -148,8 +149,7 @@ class DataTables():
                     except:
                         nativequery[fieldname] = getRegexQuery(svalue)
 
-
-        #top search field
+        # top search field
         if 'sSearch' in kwargs and kwargs['sSearch']:
             orquery = []
             nativequery['$or'] = orquery
