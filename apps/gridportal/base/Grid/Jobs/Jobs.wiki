@@ -21,7 +21,7 @@
  }}
 
 h2. Jobs
-{{jobs id:$$id lock:$$lock timeStop:$$timeStop nid:$$nid gid:$$gid lockduration:$$lockduration result:$$result category:$$category jsname:$$jsname children:$$children source:$$source state:$$state gid:$$gid childrenActive:$$childrenActive jscriptid:$$jscriptid description:$$description parent:$$parent args:$$args sessionid:$$sessionid jsorganization:$$jsorganization roles:$$roles timeStart:$$timeStart timeout:$$timeout resultcode:$$resultcode}}
+{{jobs id:$$id lock:$$lock timeStop:$$timeStop nid:$$nid gid:$$gid lockduration:$$lockduration result:$$result category:$$category cmd:$$cmd jsname:$$jsname children:$$children source:$$source state:$$state gid:$$gid childrenActive:$$childrenActive jscriptid:$$jscriptid description:$$description parent:$$parent args:$$args sessionid:$$sessionid jsorganization:$$jsorganization roles:$$roles timeStart:$$timeStart timeout:$$timeout resultcode:$$resultcode}}
 
 h2. Jobs (Agent Controller 2)
 {{agentcontroller2jobs}}

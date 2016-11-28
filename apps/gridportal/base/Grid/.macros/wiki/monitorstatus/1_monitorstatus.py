@@ -70,13 +70,21 @@ $(function () {
                     interval = ''
 
                 message = dataitem.get('message', '')
-                table += '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s| {{html: %(status)s}} %(refresh)s  |\n' % \
-                         {'msg': message,
-                          'lasterror': lasterror,
-                          'last': lastchecked,
-                          'interval': interval,
-                          'status': status,
-                          'refresh': addAction(dataitem.get('cmd'))}
+                cmd = dataitem.get('cmd')
+                if cmd:
+                    jobcategory, jobcmd = cmd.split('_', 1)
+                    message = '[%(msg)s|/grid/jobs?nid=%(nid)s&cmd=%(jobcmd)s&category=%(category)s]' % {
+                        'jobcmd': jobcmd,
+                        'nid': nid,
+                        'msg': message,
+                        'category': jobcategory, }
+                row = '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s| {{html: %(status)s}} %(refresh)s  |\n'
+                table += row % {'msg': message,
+                                'lasterror': lasterror,
+                                'last': lastchecked,
+                                'interval': interval,
+                                'status': status,
+                                'refresh': addAction(cmd)}
             else:
                 table += dataitem
         if skipcount == len(data):
@@ -104,7 +112,6 @@ $(function () {
          'category': category, 'status': makeStatusLabel(categorystatus, direction='right')}
 
         out.append(html)
-
 
     out.append('{{html: </div>}}')
 
