@@ -14,10 +14,13 @@ def main(j, args, params, tags, tasklet):
                 'HALTED': 'danger',
                 'ERROR': 'danger'}
 
-    def makeStatusLabel(status, guid=None, direction='left'):
-        html = '<span class="label label-%s pull-%s status-label">%s</span>' % (classmap.get(status, 'default'), direction, status)
-        if guid:
-            html = '<a href="/grid/job?id=%s">%s</a>' % (guid, html)
+    def makeStatusLabel(status, cmd=None, direction='left'):
+        html = '<span class="label label-%s pull-%s status-label">%s</span>' % (
+            classmap.get(status, 'default'), direction, status)
+        if cmd:
+            jobcategory, jobcmd = cmd.split('_', 1)
+            html = '<a href="/grid/jobs?nid={nid}&cmd={cmd}&category={category}">{html}</a>'.format(
+                nid=nid, cmd=jobcmd, category=jobcategory, html=html)
         return html
 
     def addAction(cmd):
@@ -52,15 +55,17 @@ $(function () {
         for dataitem in data:
             if isinstance(dataitem, dict):
                 status = dataitem.get('state')
+                cmd = dataitem.get('cmd')
+                message = dataitem.get('message', '')
+                lastchecked = dataitem.get('lastchecked', '')
+                lasterror = dataitem.get('lasterror', '') or ''
                 if status == 'SKIPPED':
                     skipcount += 1
                 if categorystatus != 'ERROR' and status not in ['OK', 'SKIPPED']:
                     categorystatus = status
-                lasterror = dataitem.get('lasterror', '') or ''
                 if lasterror:
                     lasterror = '%s ago' % j.base.time.getSecondsInHR(now - lasterror)
-                lastchecked = dataitem.get('lastchecked', '')
-                status = makeStatusLabel(status, dataitem.get('guid'))
+                status = makeStatusLabel(status, cmd)
                 if lastchecked:
                     lastchecked = '%s ago' % j.base.time.getSecondsInHR(now - lastchecked)
                 interval = dataitem.get('interval')
@@ -69,15 +74,6 @@ $(function () {
                 else:
                     interval = ''
 
-                message = dataitem.get('message', '')
-                cmd = dataitem.get('cmd')
-                if cmd:
-                    jobcategory, jobcmd = cmd.split('_', 1)
-                    message = '[%(msg)s|/grid/jobs?nid=%(nid)s&cmd=%(jobcmd)s&category=%(category)s]' % {
-                        'jobcmd': jobcmd,
-                        'nid': nid,
-                        'msg': message,
-                        'category': jobcategory, }
                 row = '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s| {{html: %(status)s}} %(refresh)s  |\n'
                 table += row % {'msg': message,
                                 'lasterror': lasterror,
@@ -109,7 +105,7 @@ $(function () {
 </div>
 }}
 ''' % {'headingid': headingid, 'sectionid': sectionid, 'table': table,
-         'category': category, 'status': makeStatusLabel(categorystatus, direction='right')}
+            'category': category, 'status': makeStatusLabel(categorystatus, direction='right')}
 
         out.append(html)
 
