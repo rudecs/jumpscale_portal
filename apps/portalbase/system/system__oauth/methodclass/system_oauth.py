@@ -1,8 +1,8 @@
 import urllib
-import requests
 
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
+from JumpScale.baselib.oauth.OauthInstance import AuthError
 try:
     import ujson as json
 except:
@@ -28,7 +28,7 @@ class system_oauth(j.code.classGetBase()):
         redirect = kwargs.get('redirect', referer)
         client = j.clients.oauth.get(instance=type)
         cache_data = json.dumps({'type': type, 'redirect': redirect})
-        cache.set(client.state, cache_data, ex=180)
+        cache.set(client.state, cache_data, ex=600)
         ctx.start_response('302 Found', [('Location', client.url)])
         return 'OK'
 
@@ -54,28 +54,43 @@ class system_oauth(j.code.classGetBase()):
 
     def authorize(self, **kwargs):
         ctx = kwargs['ctx']
+        session = ctx.env['beaker.session']
         code = kwargs.get('code')
+        cache_result = None
+
+        def authfailure(msg):
+            session['autherror'] = msg
+            session.save()
+            j.logger.log(msg)
+            j.console.warning(msg)
+            if cache_result:
+                redirecturl = str(cache_result['redirect'])
+            else:
+                redirecturl = '/'
+            raise exceptions.Redirect(redirecturl)
+
         if not code:
-            raise exceptions.Forbidden('Not Authorized -- Code is missing')
+            return authfailure('Code is missing')
 
         state = kwargs.get('state')
         if not state:
-            return exceptions.Forbidden('Not Authorized -- State is missing')
+            return authfailure('State is missing')
 
         cache = j.clients.redis.getByInstance('system')
         cache_result = cache.get(state)
 
         if not cache_result:
-            unauthorized_redirect_url = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({
-                                                   'type': j.core.portal.active.force_oauth_instance or 'github'}))
-            msg = 'Not Authorized -- Invalid or expired state'
-            j.logger.log(msg)
-            raise exceptions.Redirect(unauthorized_redirect_url)
+            return authfailure(' Invalid or expired state')
 
         cache_result = json.loads(cache_result)
         client = j.clients.oauth.get(instance=cache_result['type'])
-        accesstoken = client.getAccessToken(code, state)
-        userinfo = client.getUserInfo(accesstoken)
+        try:
+            accesstoken = client.getAccessToken(code, state)
+            userinfo = client.getUserInfo(accesstoken)
+        except AuthError as e:
+            return authfailure(str(e))
+        except Exception as e:
+            return authfailure('Failed to retreive user details')
 
         osis = j.clients.osis.getByInstance('main')
         user = j.clients.osis.getCategory(osis, "system", "user")

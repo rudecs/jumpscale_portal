@@ -9,9 +9,7 @@
 
 @col 12
 
-h4. Access Denied - [Logout|/system/login?user_logoff_=1].
-
+{{accessdenied}}
 
 @divend
 @divend
-

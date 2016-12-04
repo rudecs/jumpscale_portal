@@ -63,9 +63,10 @@ def exhaustgenerator(func):
             return result
     return wrapper
 
+
 class PortalServer:
 
-    ##################### INIT
+    # INIT
     def __init__(self):
 
         self.hrd = j.application.instanceconfig
@@ -74,11 +75,15 @@ class PortalServer:
         self.libpath = j.html.getHtmllibDir()
         self.started = False
         self.epoch = time.time()
-        self.force_oauth_url = None
         self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
         self.force_oauth_instance = self.cfg.get('force_oauth_instance', "")
+        if self.force_oauth_instance:
+            self.force_oauth_url = '%s?%s' % ('/restmachine/system/oauth/authenticate',
+                                              urllib.urlencode({'type': self.force_oauth_instance}))
+        else:
+            self.force_oauth_url = None
 
-        j.core.portal.active=self
+        j.core.portal.active = self
 
         self.watchedspaces = []
         self.pageKey2doc = {}
@@ -123,7 +128,8 @@ class PortalServer:
         self.macroexecutorPage = MacroExecutorPage(macroPathsPage)
         self.macroexecutorMarkDown = MacroexecutorMarkDown(macroPathsMarkDown)
         self.macroexecutorWiki = MacroExecutorWiki(macroPathsWiki)
-        templatedirs = [j.system.fs.joinPaths(self.portaldir, 'templates'),j.system.fs.joinPaths(self.appdir, 'templates')]
+        templatedirs = [j.system.fs.joinPaths(self.portaldir, 'templates'),
+                        j.system.fs.joinPaths(self.appdir, 'templates')]
         self.templates = PortalTemplate(templatedirs)
         self.bootstrap()
 
@@ -141,10 +147,10 @@ class PortalServer:
         self.rediscache = j.clients.redis.getByInstance('system')
         self.redisprod = j.clients.redis.getByInstance('system')
 
-        self.jslibroot=j.system.fs.joinPaths(j.dirs.baseDir,"apps","portals","jslib")
+        self.jslibroot = j.system.fs.joinPaths(j.dirs.baseDir, "apps", "portals", "jslib")
 
         #  Load local spaces
-        self.rest=PortalRest(self)
+        self.rest = PortalRest(self)
         self.spacesloader = j.core.portalloader.getSpacesLoader()
         self.loadSpaces()
 
@@ -158,21 +164,20 @@ class PortalServer:
             txt = txt.replace("\\", "/")
             return txt
 
-
-        ######INIT FILE
+        # INIT FILE
         self.portaldir = j.system.fs.getcwd()
 
         self.appdir = replaceVar(self.cfg.get("appdir", self.portaldir))
-        self.appdir = self.appdir.replace("$base",j.dirs.baseDir)
+        self.appdir = self.appdir.replace("$base", j.dirs.baseDir)
 
-        self.getContentDirs() #contentdirs need to be loaded before we go to other dir of base server
+        self.getContentDirs()  # contentdirs need to be loaded before we go to other dir of base server
         j.system.fs.changeDir(self.appdir)
 
         self.listenip = self.cfg.get('listenip', '0.0.0.0')
         self.port = int(self.cfg.get("port", 82))
         self.addr = self.cfg.get("pubipaddr", '127.0.0.1')
         self.secret = self.cfg.get("secret")
-        self.admingroups = self.cfg.get("admingroups","").split(",")
+        self.admingroups = self.cfg.get("admingroups", "").split(",")
 
         self.filesroot = replaceVar(self.cfg.get("filesroot"))
         j.system.fs.createDir(self.filesroot)
@@ -181,7 +186,7 @@ class PortalServer:
 
         self.gitlabinstance = self.cfg.get("gitlab.connection")
 
-        self.logdir= j.system.fs.joinPaths(j.dirs.logDir,"portal",str(self.port))
+        self.logdir = j.system.fs.joinPaths(j.dirs.logDir, "portal", str(self.port))
         j.system.fs.createDir(self.logdir)
 
         self.getContentDirs()
@@ -191,7 +196,7 @@ class PortalServer:
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
-        self.routes={}
+        self.routes = {}
         self.loadConfig()
         self.bootstrap()
         j.core.codegenerator.resetMemNonSystem()
@@ -243,14 +248,13 @@ class PortalServer:
         contentdirs = self.cfg.get('contentdirs', '')
 
         def append(path):
-            path=j.system.fs.pathNormalize(path)
+            path = j.system.fs.pathNormalize(path)
             if path not in self.contentdirs:
                 self.contentdirs.append(path)
 
-
         paths = contentdirs.split(",")
 
-        #add own base path
+        # add own base path
         self.basepath = j.system.fs.joinPaths(self.portaldir, "base")
         j.system.fs.createDir(self.basepath)
         append(self.basepath)
@@ -259,15 +263,15 @@ class PortalServer:
         paths = list(set(paths))
         for path in paths:
             path = path.strip()
-            if path=="" or path[0]=="#":
+            if path == "" or path[0] == "#":
                 continue
-            path=path.replace("\\","/")
+            path = path.replace("\\", "/")
             if path.find(":") == -1:
                 if path not in self.watchedspaces:
                     SpaceWatcher(path)
             append(path)
 
-        #add base path of parent portal
+        # add base path of parent portal
         if self.authentication_method:
             appdir = self.appdir
             append(j.system.fs.joinPaths(appdir, "wiki"))
@@ -280,7 +284,7 @@ class PortalServer:
             if appn == appname and actorn == actorname:
                 self.routes.pop(key)
 
-##################### USER RIGHTS
+# USER RIGHTS
 
     def getAccessibleLocalSpacesForGitlabUser(self, gitlabspaces):
         """
@@ -306,7 +310,7 @@ class PortalServer:
         if not hasattr(ctx, 'env') or "user" not in ctx.env['beaker.session']:
             return []
         username = ctx.env['beaker.session']["user"]
-        spaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
+        spaces = self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
 
         # In case of gitlab, we want to get the local osis spaces tha user has access to
         if self.authentication_method == 'gitlab':
@@ -334,7 +338,7 @@ class PortalServer:
                 for name in self.getAccessibleLocalSpacesForGitlabUser(keys):
                     if username in name and name.replace("%s_" % username, '') in keys:
                         continue
-                    gitlabobjects.append({'name':name, 'namespace':{'name':''}})
+                    gitlabobjects.append({'name': name, 'namespace': {'name': ''}})
                 return gitlabobjects
 
     def getSpaceLinks(self, ctx):
@@ -369,8 +373,10 @@ class PortalServer:
             return []
         username = ctx.env['beaker.session']["user"]
 
-        clonedspaces = set([s.model.id[s.model.id.index('portal_'):] for s in self.spacesloader.spaces.values() if 'portal_' in s.model.id])
-        gitlabspaces = set([s[s.index('portal_'):] for s in self.auth.getUserSpaces(username, spaceloader=self.spacesloader)])
+        clonedspaces = set([s.model.id[s.model.id.index('portal_'):]
+                            for s in self.spacesloader.spaces.values() if 'portal_' in s.model.id])
+        gitlabspaces = set([s[s.index('portal_'):]
+                            for s in self.auth.getUserSpaces(username, spaceloader=self.spacesloader)])
         return gitlabspaces.difference(clonedspaces)
 
     def getUserSpaceRights(self, ctx, space):
@@ -386,8 +392,8 @@ class PortalServer:
             return username, 'rwa'
 
         if self.authentication_method == 'gitlab':
-            gitlabspaces =  self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
-            localspaceswithguestaccess =  self.getAccessibleLocalSpacesForGitlabUser(gitlabspaces)
+            gitlabspaces = self.auth.getUserSpaces(username, spaceloader=self.spacesloader)
+            localspaceswithguestaccess = self.getAccessibleLocalSpacesForGitlabUser(gitlabspaces)
             if space in localspaceswithguestaccess:
                 return username, localspaceswithguestaccess[space]
 
@@ -395,30 +401,30 @@ class PortalServer:
 
         return username, rights
 
-    def getUserFromCTX(self,ctx):
+    def getUserFromCTX(self, ctx):
         user = ctx.env["beaker.session"].get('user')
         return user or "guest"
 
-    def getGroupsFromCTX(self,ctx):
+    def getGroupsFromCTX(self, ctx):
         user = self.getUserFromCTX(ctx)
         if user:
-            groups=self.auth.getGroups(user)
+            groups = self.auth.getGroups(user)
             return [str(item.lower()) for item in groups]
         else:
             return []
 
-    def isAdminFromCTX(self,ctx):
-        usergroups=set(self.getGroupsFromCTX(ctx))
+    def isAdminFromCTX(self, ctx):
+        usergroups = set(self.getGroupsFromCTX(ctx))
         admingroups = set(self.admingroups)
-        return  bool(admingroups.intersection(usergroups))
+        return bool(admingroups.intersection(usergroups))
 
-    def isLoggedInFromCTX(self,ctx):
-        user=self.getUserFromCTX(ctx)
+    def isLoggedInFromCTX(self, ctx):
+        user = self.getUserFromCTX(ctx)
         if user != "" and user != "guest":
             return True
         return False
 
-##################### process pages, get docs
+# process pages, get docs
     def getpage(self):
         page = j.tools.docgenerator.pageNewHTML("index.html", htmllibPath="/jslib")
         return page
@@ -458,7 +464,7 @@ class PortalServer:
 
             if name in spacedocgen.name2doc:
                 pass
-            elif name in standard_pages: # One of the standard pages not found in that space, fall back to system space
+            elif name in standard_pages:  # One of the standard pages not found in that space, fall back to system space
                 space = "system"
                 spacedocgen = None
             elif name == "":
@@ -478,19 +484,16 @@ class PortalServer:
         username, right = self.getUserSpaceRights(ctx, space)
 
         if name in standard_pages:
-            if not "r" in right:
+            if "r" not in right:
                 right = "r" + right
 
-        if not "r" in right:
-            if self.force_oauth_instance and not loggedin:
-                redirect = ctx.env['PATH_INFO']
-                if ctx.env['QUERY_STRING']:
-                    redirect += "?%s" % ctx.env['QUERY_STRING']
-                queryparams = {'type':self.force_oauth_instance, 'redirect': redirect}
-                location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode(queryparams))
-                raise exceptions.Redirect(location)
-
-            name = "accessdenied" if loggedin else "login"
+        if "r" not in right:
+            if loggedin:
+                name = "accessdenied"
+            elif self.force_oauth_instance:
+                name = "accessdenied"
+            else:
+                name = "login"
             if not spaceObject.docprocessor.docExists(name):
                 space = 'system'
                 spacedocgen = None
@@ -530,7 +533,7 @@ class PortalServer:
         # doc.applyParams(ctx.params)
         return doc.getHtmlBody(paramsExtra=extraParams, ctx=ctx)
 
-    def processor_page(self, environ, start_response, wwwroot, path, prefix="", webprefix="", index=False,includedocs=False,ctx=None,space=None):
+    def processor_page(self, environ, start_response, wwwroot, path, prefix="", webprefix="", index=False, includedocs=False, ctx=None, space=None):
         def indexignore(item):
             ext = item.split(".")[-1].lower()
             if ext in ["pyc", "pyo", "bak"]:
@@ -548,19 +551,20 @@ class PortalServer:
             start_response('200 OK', [('Content-Type', contenttype), ])
             return [str(page).encode('utf-8')]
 
-        def processHtml(contenttype, path, start_response,ctx,space):
+        def processHtml(contenttype, path, start_response, ctx, space):
             content = j.system.fs.fileGetContents(path)
-            r = r"\[\[.*\]\]"  #@todo does not seem right to me
+            r = r"\[\[.*\]\]"  # @todo does not seem right to me
             for match in j.codetools.regex.yieldRegexMatches(r, content):
                 docname = match.founditem.replace("[", "").replace("]", "")
                 doc, params = self.getDoc(space, docname, ctx, params=ctx.params)
 
-                if doc.name=='pagenotfound':
-                    content=content.replace(match.founditem,"*****CONTENT '%s' NOT FOUND******"%docname)
+                if doc.name == 'pagenotfound':
+                    content = content.replace(match.founditem, "*****CONTENT '%s' NOT FOUND******" % docname)
                 else:
-                    content2,doc = doc.executeMacrosDynamicWiki(paramsExtra={}, ctx=ctx)
+                    content2, doc = doc.executeMacrosDynamicWiki(paramsExtra={}, ctx=ctx)
 
-                    page = self.confluence2htmlconvertor.convert(content2, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
+                    page = self.confluence2htmlconvertor.convert(
+                        content2, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
                     replace_obj = {
                         "space", space,
                         "page", doc.original_name,
@@ -570,7 +574,7 @@ class PortalServer:
                     }
                     page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
 
-                    content=content.replace(match.founditem,page.body)
+                    content = content.replace(match.founditem, page.body)
 
             start_response('200 OK', [('Content-Type', "text/html"), ])
             return [content.encode('utf-8')]
@@ -638,7 +642,7 @@ class PortalServer:
         size = os.path.getsize(pathfull)
 
         if ext == "html":
-            return processHtml(contenttype, pathfull, start_response,ctx,space)
+            return processHtml(contenttype, pathfull, start_response, ctx, space)
         elif ext == "wiki":
             contenttype = "text/html"
             # return formatWikiContent(pathfull,start_response)
@@ -687,7 +691,7 @@ class PortalServer:
                 raise exceptions.NotFound('Not Found')
         status, header, response = con.run(params)
         status = '%s' % status
-        headers = [ (k, v) for k,v in header.items() ]
+        headers = [(k, v) for k, v in header.items()]
         ctx.start_response(status, headers)
         if 'download' not in params:
             response = j.db.serializers.getSerializerType('j').dumps(response)
@@ -812,8 +816,8 @@ class PortalServer:
                     except AttributeError:
                         data[key] = value
                 return data
-            eco.tb=""
-            eco.frames=[]
+            eco.tb = ""
+            eco.frames = []
             msg = j.db.serializers.getSerializerType('j').dumps(todict(eco))
 
         ctx.start_response(httpcode, [('Content-Type', 'text/html')])
@@ -869,20 +873,16 @@ class PortalServer:
         }
 
         if '_jsonp' in ctx.params:
-           result = {'httpStatus': ctx.httpStatus, 'httpMessage': ctx.httpMessage, 'body': result}
-           return CONTENT_TYPE_JS, "%s(%s);" % (ctx.params['_jsonp'], j.db.serializers.getSerializerType('j').dumps(result))
-
-
+            result = {'httpStatus': ctx.httpStatus, 'httpMessage': ctx.httpMessage, 'body': result}
+            return CONTENT_TYPE_JS, "%s(%s);" % (ctx.params['_jsonp'], j.db.serializers.getSerializerType('j').dumps(result))
 
         if ctx._response_started:
             return None, result
 
         fformat = ctx.fformat
 
-
         if '_png' in ctx.params:
             return CONTENT_TYPE_PNG, result
-
 
         if "CONTENT_TYPE" not in ctx.env:
             ctx.env['CONTENT_TYPE'] = CONTENT_TYPE_PLAIN
@@ -901,13 +901,12 @@ class PortalServer:
             content_type, serializer = self.getMimeType(returntype, FFORMAT_TYPES, result)
             return content_type, serializer(result)
 
-##################### router
+# router
 
     def startSession(self, ctx, path):
         session = ctx.env['beaker.session']
-        if 'user_login_' in ctx.params and ctx.params.get('user_login_') == 'guest' and  self.force_oauth_instance:
-            location = '%s?%s' % ('/restmachine/system/oauth/authenticate', urllib.urlencode({'type':self.force_oauth_instance}))
-            raise exceptions.Redirect(location)
+        if 'user_login_' in ctx.params and ctx.params.get('user_login_') == 'guest' and self.force_oauth_instance:
+            raise exceptions.Redirect(self.force_oauth_url)
 
         # Already logged in user can't access login page again
         if 'user_logoff_' not in ctx.params and path.endswith('system/login') and 'user' in session and session['user'] != 'guest':
@@ -951,13 +950,11 @@ class PortalServer:
                         jose.jws.verify(token, secret, algorithms=[algo])
                     except jose.JWSError:
                         raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
-                                                                         extraParams={"path": path}))
-                                                      , 'text/html')
+                                                                         extraParams={"path": path})), 'text/html')
                     break
                 else:
                     raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
-                                                                     extraParams={"path": path}))
-                                                  , 'text/html')
+                                                                     extraParams={"path": path})), 'text/html')
 
                 session['user'] = '{username}@{iss}'.format(**payload)
                 session.save()
@@ -978,7 +975,8 @@ class PortalServer:
             session.save()
             if oauth_logout_url:
                 backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
-                ctx.start_response('302 Found', [('Location', '%s?%s' % (str(oauth_logout_url), str(urllib.urlencode({'redirect_uri':backurl}))))])
+                ctx.start_response('302 Found', [('Location', '%s?%s' % (
+                    str(oauth_logout_url), str(urllib.urlencode({'redirect_uri': backurl}))))])
                 return False, session
             return True, session
 
@@ -986,7 +984,7 @@ class PortalServer:
             # user has filled in his login details, this is response on posted info
             name = ctx.params['user_login_']
             if 'passwd' not in ctx.params:
-                secret=""
+                secret = ""
             else:
                 secret = ctx.params['passwd']
             if self.auth.authenticate(name, secret):
@@ -1025,6 +1023,7 @@ class PortalServer:
 
     def _getParamsFromEnv(self, env, ctx):
         params = urlparse.parse_qs(env["QUERY_STRING"], 1)
+
         def simpleParams(params):
             # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
             # Example: a=1&b=2&a=3
@@ -1073,7 +1072,7 @@ class PortalServer:
                 content_type, parameters = parse_options_header(env.get('CONTENT_TYPE'))
                 boundary = parameters.get(b'boundary')
                 inp = env.get('wsgi.input')
-                params.update({'FILES':{'data':inp, 'boundary':boundary}})
+                params.update({'FILES': {'data': inp, 'boundary': boundary}})
         return params
 
     @exhaustgenerator
@@ -1094,7 +1093,6 @@ class PortalServer:
         for proxypath, proxy in self.proxies.iteritems():
             if path.startswith(proxypath.lstrip('/')):
                 return self.process_proxy(ctx, proxy)
-
 
         ctx.params = self._getParamsFromEnv(environ, ctx)
         ctx.env['JS_CTX'] = ctx
@@ -1145,7 +1143,7 @@ class PortalServer:
             sploader = self.spacesloader.getSpaceFromId(space)
             filesroot = j.system.fs.joinPaths(sploader.model.path, ".static")
 
-            return self.processor_page(environ, start_response, filesroot, path, prefix="",includedocs=True,ctx=ctx,space=space)
+            return self.processor_page(environ, start_response, filesroot, path, prefix="", includedocs=True, ctx=ctx, space=space)
 
         # user is logged in now
         is_session, session = self.startSession(ctx, path)
@@ -1168,7 +1166,8 @@ class PortalServer:
                 try:
                     j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
                 except Exception, e:
-                    self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured", msginfo="", errorObject=None, httpcode="500 Internal Server Error")
+                    self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured",
+                                    msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, ctx=ctx)
 
         elif match == "ping":
@@ -1237,7 +1236,8 @@ class PortalServer:
 
         content, doc = doc.executeMacrosDynamicWiki(ctx=ctx)
 
-        page = self.confluence2htmlconvertor.convert(content, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
+        page = self.confluence2htmlconvertor.convert(
+            content, doc=doc, requestContext=ctx, page=self.getpage(), paramsExtra=ctx.params)
 
         replace_obj = {
             "space", space,
@@ -1285,10 +1285,11 @@ class PortalServer:
         methoddict = {'get': 'GET', 'set': 'PUT', 'new': 'POST', 'delete': 'DELETE',
                       'post': 'POST',
                       'find': 'GET', 'list': 'GET', 'datatables': 'GET', 'create': 'POST'}
-        route = {'func': function, 'params': params, 'description': description, 'auth': auth, 'returnformat': returnformat}
+        route = {'func': function, 'params': params, 'description': description,
+                 'auth': auth, 'returnformat': returnformat}
         self.routes["%s_%s_%s_%s" % (methoddict.get(httpmethod, 'POST'), appname, actor, method)] = route
 
-##################### SCHEDULING
+# SCHEDULING
 
     def _timer(self):
         """
@@ -1337,7 +1338,7 @@ class PortalServer:
     def addSchedule60MinPeriod(self, name, method, *args, **kwargs):
         self.schedule60min[name] = (method, args, kwargs)
 
-##################### START-STOP / get spaces/actors/buckets / addgreenlet
+# START-STOP / get spaces/actors/buckets / addgreenlet
 
     def start(self):
         """
@@ -1367,7 +1368,6 @@ class PortalServer:
     def stop(self):
         self._webserver.stop()
 
-
     def getSpaces(self):
         return list(self.spacesloader.id2object.keys())
 
@@ -1391,7 +1391,6 @@ class PortalServer:
         bucket = self.bucketsloader.buckets(name)
         return bucket
 
-
     def addGreenlet(self, appName, greenlet):
         """
         """
@@ -1403,13 +1402,13 @@ class PortalServer:
 
         greenletObject.server = self
         self.addRoute(function=greenletObject.wscall,
-                                appname=appName,
-                                actor=greenletObject.actor,
-                                method=greenletObject.method,
-                                paramvalidation=greenletObject.paramvalidation,
-                                paramdescription=greenletObject.paramdescription,
-                                paramoptional=greenletObject.paramoptional,
-                                description=greenletObject.description, auth=greenletObject.auth)
+                      appname=appName,
+                      actor=greenletObject.actor,
+                      method=greenletObject.method,
+                      paramvalidation=greenletObject.paramvalidation,
+                      paramdescription=greenletObject.paramdescription,
+                      paramoptional=greenletObject.paramoptional,
+                      description=greenletObject.description, auth=greenletObject.auth)
 
     def restartInProcess(self, app):
         import fcntl
@@ -1427,15 +1426,15 @@ class PortalServer:
         os.execv(sys.executable, args)
 
     def __str__(self):
-        out=""
-        for key,val in self.__dict__.items():
+        out = ""
+        for key, val in self.__dict__.items():
             if key[0] != "_" and key not in ["routes"]:
-                out+="%-35s :  %s\n"%(key,val)
-        routes=",".join(list(self.routes.keys()))
-        out+="%-35s :  %s\n"%("routes",routes)
-        items=out.split("\n")
+                out += "%-35s :  %s\n" % (key, val)
+        routes = ",".join(list(self.routes.keys()))
+        out += "%-35s :  %s\n" % ("routes", routes)
+        items = out.split("\n")
         items.sort()
-        out="portalserver:"+"\n".join(items)
+        out = "portalserver:" + "\n".join(items)
         return out
 
     __repr__ = __str__
