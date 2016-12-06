@@ -18,10 +18,6 @@ def main(j, args, params, tags, tasklet):
         time = modifier.makeTime(row, field)
         return '[%s|error condition?id=%s]' % (time, row['guid'])
 
-    def level(row, field):
-        value = row[field]
-        return "%s (%s)" % (j.errorconditionhandler.getLevelName(value), value)
-
     nidstr = '[%(nid)s|grid node?id=%(nid)s&gid=%(gid)s]'
 
     fields = [{'name': 'Last Occurence',
@@ -31,13 +27,13 @@ def main(j, args, params, tags, tasklet):
               {'name': 'Error Message',
                'id': 'errormessage',
                'value': 'errormessage'},
-              {'name': 'Level',
-               'id': 'level',
-               'type': 'int',
-               'value': level},
               {'name': 'App name',
                'id': 'appname',
                'value': 'appname'},
+              {'name': 'Occurrences',
+               'id': 'occurrences',
+               'type': 'int',
+               'value': 'occurrences'},
               {'name': 'Node ID',
                'id': 'nid',
                'type': 'int',

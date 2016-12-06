@@ -504,6 +504,12 @@ a:focus {
 .datatables-row-GridNodeID {
   width: 125px !important;
 }
+.datatables-row-NodeID {
+  width: 75px !important;
+}
+.datatables-row-Occurences {
+  width: 75px !important;
+}
 .datatables-row-Call {
   width: 400px !important;
 }
