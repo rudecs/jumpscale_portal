@@ -30,6 +30,8 @@ def generate_groupby(line):
 def main(j, args, params, tags, tasklet):
     page = args.page
     graphdata = args.cmdstr.format(**args.doc.appliedparams)
+    scl = j.clients.osis.getNamespace('system')
+
     checksum = j.tools.hash.md5_string(graphdata)
     graphdata = j.core.hrd.get(content=graphdata)
 
@@ -38,8 +40,18 @@ def main(j, args, params, tags, tasklet):
     cfg.update(graphdata.getDictFromPrefix('cfg'))
     if 'dashboardtitle' not in cfg:
         cfg['dashboardtitle'] = checksum
-    
-    cfg['datasource'] = cfg.get('datasource', 'inflxudb_controller')
+
+    datasource = cfg.get('datasource')
+    if datasource is None:
+        # get location specific influxdb
+        gid = int(args.doc.appliedparams.get('gid', '-1'))
+        if gid != -1:
+            grid = scl.grid.get(gid)
+            datasource = 'controller_{}'.format(grid.name)
+        else:
+            datasource = 'influxdb_main'
+
+    cfg['datasource'] = datasource
 
     targetsstr = ''
     grafanatargets = []
@@ -203,4 +215,3 @@ def main(j, args, params, tags, tasklet):
 
 def match(j, args, params, tags, tasklet):
     return True
-

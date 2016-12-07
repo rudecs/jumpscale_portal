@@ -27,6 +27,5 @@ cfg.stack = true
 cfg.stack = true
 cfg.fill = 20
 cfg.y_format = MBs
-cfg.datasource = influxdb_controller
 
 }}

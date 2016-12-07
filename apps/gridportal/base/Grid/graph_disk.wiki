@@ -26,6 +26,5 @@ cfg.width = 1000px
 cfg.stack = false
 cfg.fill = 0
 cfg.y_format = MBs
-cfg.datasource = influxdb_controller
 
 }}

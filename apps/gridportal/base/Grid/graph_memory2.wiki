@@ -10,22 +10,22 @@ target.1 =
     alias:Ram available,
     interval:1m,
 
-target.2 = 
+target.2 =
     function:mean,
     value:value,
     series:machine.memory.swap.left|m,
     groupby:gid nid,
-    condition:gid={gid} AND nid={id},   
+    condition:gid={gid} AND nid={id},
     alias:Swap available,
     interval:1m,
 
-target.3 = 
+target.3 =
     function:mean,
     value:value,
     series:machine.memory.swap.used|m,
     alias:Swap used,
     groupby:gid nid,
-    condition:gid={gid} AND nid={id}, 
+    condition:gid={gid} AND nid={id},
     interval:1m,
 
 cfg.title = 'Memory'
@@ -35,6 +35,5 @@ cfg.width = 500px
 cfg.stack = true
 cfg.fill = 3
 cfg.y_format = mbytes
-cfg.datasource = influxdb_controller
 
 }}
