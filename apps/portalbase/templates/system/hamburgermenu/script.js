@@ -175,4 +175,8 @@ $(function () {
     };
     if (location.hash) shiftWindow();
     window.addEventListener("hashchange", shiftWindow);
+
+    $('#dynamic').find('th').click(function(event){
+      event.stopPropagation();
+    });
 });
