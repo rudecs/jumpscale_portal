@@ -1029,6 +1029,9 @@ table.dataTable thead .sorting_desc_disabled:after {
 .clearfix .jgauge {
   margin: 0 auto !important;
 }
+td {
+  max-width: 460px !important;
+}
 tfoot td{
   vertical-align: top;
 }
