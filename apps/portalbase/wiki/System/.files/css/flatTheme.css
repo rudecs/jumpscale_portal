@@ -213,12 +213,12 @@ table thead {
   background: #345E79;
   color: #ECF0F1;
 }
-.dataTables_wrapper table.table thead .sorting_asc {
+/*.dataTables_wrapper table.table thead .sorting_asc {
   background: url('/jslib/old/datatables/images/white-theme/sort_asc.png') no-repeat center right;
 }
 .dataTables_wrapper table.table thead .sorting_desc {
   background: url('/jslib/old/datatables/images/white-theme/sort_desc.png') no-repeat center right;
-}
+}*/
 div.dataTables_length select {
   border-radius: 4px;
   height: 35px;
@@ -987,6 +987,14 @@ input.todo-search-field.placeholder {
 table.table thead .sorting {
   min-width: 105px;
 }
+table.table-bordered.dataTable th{
+  vertical-align: middle;
+}
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:after {
+  bottom: 25% !important;
+}
 .elfinder {
   min-height: 540px !important;
 }
@@ -1031,5 +1039,13 @@ tfoot td{
   cursor: pointer;
 }
 .dataTable td{
-  min-width: 160px !important;
+  max-width: 205px !important;
+}
+.dataTable .datatables_filter{
+  width: 100%;
+}
+table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_desc,
+table.dataTable thead>tr>td.sorting_asc, table.dataTable thead>tr>td.sorting_desc,
+table.dataTable thead>tr>td.sorting{
+  padding-right: 0 !important;
 }
