@@ -1,5 +1,3 @@
-from itertools import count
-
 def main(j, args, params, tags, tasklet):
     import copy
     page = args.page
@@ -19,7 +17,6 @@ def main(j, args, params, tags, tasklet):
                 for key, value in children.iteritems():
                     section['children'].append({'url': value, 'name': key})
 
-
     groups = j.core.portal.active.getGroupsFromCTX(args.requestContext)
     for portal in menulinks[:]:
         scope = portal.get('scope')
@@ -30,7 +27,7 @@ def main(j, args, params, tags, tasklet):
             portal['children'] = list()
         external = portal.get('external', 'false').lower()
         portal['external'] = external
-        if external != 'true':
+        if external == 'false':
             spacename = j.system.fs.getBaseName(portal['url']).lower()
             if spacename in j.core.portal.active.spacesloader.spaces:
                 space = j.core.portal.active.spacesloader.spaces[spacename]
@@ -61,7 +58,6 @@ def main(j, args, params, tags, tasklet):
 
     if not menulinks or len(menulinks) == 1 and not menulinks[0]['children']:
         return params
-
 
     hrdListHTML = j.core.portal.active.templates.render('system/hamburgermenu/structure.html', menulinks=menulinks)
     page.addMessage('''<script id="portalsHamburgerStructure" type="text/x-jQuery-tmpl">%s</script>''' % hrdListHTML)
