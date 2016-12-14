@@ -4,7 +4,6 @@ import datetime
 def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
-    userdetails = '/system/user?id'
 
     filters = dict()
 
@@ -17,14 +16,20 @@ def main(j, args, params, tags, tasklet):
             val = ', '.join(val)
         filters[tag] = val
 
-    fieldnames = ['ID', 'Email', 'Groups']
+    fields = [
+        {'id': 'id',
+         'name': 'ID',
+         'value': "[%(id)s|/system/user?id=%(id)s]"},
+        {'id': 'emails',
+         'name': 'Email',
+         'value': 'emails'},
+        {'id': 'groups',
+         'name': 'Groups',
+         'value': 'groups',
+         'sortable': False}
+    ]
 
-    def makeLink(row, field):
-        return '[%s|%s=%s]' % (row[field], userdetails, row['guid'])
-
-    fieldids = ['id', 'emails', 'groups']
-    fieldvalues = [makeLink, 'emails', 'groups']
-    tableid = modifier.addTableForModel('system', 'user', fieldids, fieldnames, fieldvalues, filters)
+    tableid = modifier.addTableFromModel('system', 'user', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 
