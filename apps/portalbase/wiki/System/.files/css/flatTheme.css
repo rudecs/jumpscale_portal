@@ -672,7 +672,7 @@ div.jgauge {
   font-size: 18px !important;
 }
 .status-label {
-  width: 62px;
+  min-width: 82px;
 }
 /*Imported from flat ui css*/
 .dropdown-arrow-inverse {
