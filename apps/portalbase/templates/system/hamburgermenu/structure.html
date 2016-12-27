@@ -9,9 +9,11 @@
 								{% if portal.children %}
 									<a class='accordion-toggle margin-right-medium left padding-right-none' data-toggle='collapse' data-parent='.accordion' href='#collapse-{{loop.index}}'></a>
 								{% endif %}
-								{% if portal.external in ['true', 'ifram'] %}
+								{% if not portal.url %}
+								<a class='space {{'' if portal.children else 'push-left'}}' href='#collapse-{{loop.index}}' data-toggle='collapse' data-parent='.accordion' data-theme='{{portal.theme}}'>{{portal.name}}</a>
+								{% elif portal.external in ['true', 'ifram'] %}
 								<a class='space openIframe {{'' if portal.children else 'push-left'}}' href='{{portal.url}}' data-theme='{{portal.theme}}' data-external='{{portal.external}}'>{{portal.name}}</a>
-								{% elif portal.external == 'blank' %}
+								{% elif portal.external == 'blank'%}
 								<a class='space {{'' if portal.children else 'push-left'}}' target='_blank' href='{{portal.url}}' data-theme='{{portal.theme}}'>{{portal.name}}</a>
 								{% else %}
 								<a class='space {{'' if portal.children else 'push-left'}}' href='{{portal.url}}' data-theme='{{portal.theme}}'>{{portal.name}}</a>
@@ -19,13 +21,17 @@
 							</ul>
               {% if portal.children %}
                 <ul class='topics margin-left-xlarge'>
-									<div id='collapse-{{loop.index}}' class='panel-collapse collapse'>
+						<div id='collapse-{{loop.index}}' class='panel-collapse collapse'>
 	                  {% for child in portal.children %}
 	                      <li>
+								 {% if portal.external == 'blank' %}
+	                          <a class='openIframe' target='_blank' data-external="{{portal.external}}" href='{{child.url}}'>{{child.name}}</a>
+							    {% else %}
 	                          <a class='openIframe' data-external="{{portal.external}}" href='{{child.url}}'>{{child.name}}</a>
+								 {% endif %}
 	                      </li>
 	                  {% endfor %}
-									</div>
+						</div>
                 </ul>
               {% endif %}
             </li>
