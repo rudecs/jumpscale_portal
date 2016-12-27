@@ -66,6 +66,7 @@ def main(j, args, params, tags, tasklet):
      ''')
 
     page.addCSS('/system/.files/css/flatTheme.css')
+    page.addCSS('/system/.files/css/default.css')
 
     params.result = page
 

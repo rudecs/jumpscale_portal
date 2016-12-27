@@ -1029,9 +1029,6 @@ table.dataTable thead .sorting_desc_disabled:after {
 .clearfix .jgauge {
   margin: 0 auto !important;
 }
-td {
-  max-width: 460px !important;
-}
 tfoot td{
   vertical-align: top;
 }
@@ -1043,6 +1040,12 @@ tfoot td{
 }
 .dataTable td{
   max-width: 205px !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.dataTable td:hover{
+  text-overflow: clip;
+  overflow-wrap: break-word;
 }
 .dataTable .datatables_filter{
   width: 100%;

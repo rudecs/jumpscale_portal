@@ -31,18 +31,8 @@ def main(j, args, params, tags, tasklet):
 
     results = j.core.grid.healthchecker.fetchMonitoringOnNode(nidint)
     _, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(results)
-
+    
     out.append('Node was last checked at: {{ts:%s}}' % oldestdate)
-    out.append('''
-{{jscript:
-$(function () {
-    $('#accordion td:first-child').each(function() {
-        var $this = $(this);
-        $this.attr('title', $this.text());
-    });
-});
-}}
-''')
 
     out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
     noderesults = results.get(nidint, dict())
