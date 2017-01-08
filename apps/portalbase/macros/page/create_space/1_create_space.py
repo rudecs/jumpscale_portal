@@ -71,6 +71,9 @@ def main(j, args, params, tags, tasklet):
     space_type = args.paramsExtra.get('space_type')
 
     if contentdir and space_path:
+        if not (j.dirs.baseDir in space_path or j.dirs.codeDir in space_path):
+            page.addMessage(errmsg('The space path is incorrect, please add full path.'))
+
         real_space_path = os.path.realpath(space_path)
         permitted_dirs = [j.dirs.baseDir, j.dirs.codeDir]
         if not any(not os.path.relpath(real_space_path, p).startswith('..') for p in permitted_dirs):
