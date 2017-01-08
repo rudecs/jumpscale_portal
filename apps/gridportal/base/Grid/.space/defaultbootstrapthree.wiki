@@ -1,7 +1,6 @@
 {{title:GRID}}
 
 {{css:/jslib/bootstrap/css/bootstrap.css}}
-{{find}}
 
 {{menu:
 #System:/System
@@ -61,5 +60,3 @@ td{
 }
 
 }}
-
-

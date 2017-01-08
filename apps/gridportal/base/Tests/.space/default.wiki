@@ -1,7 +1,6 @@
 
 {{title:TESTRUNS}}
 
-{{find}}
 
 {{menu:
 $$$spaces
@@ -31,5 +30,3 @@ td {
     text-overflow: ellipsis;
     white-space: nowrap;}
 }}
-
-

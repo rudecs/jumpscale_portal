@@ -4,7 +4,6 @@
 
 {{projectname:TestSpace}}
 
-{{find}}
 
 {{menu:
 Documentation:/Help
@@ -26,4 +25,3 @@ Incubaid:http://www.incubaid.com
 
 @divend
 @divend
-

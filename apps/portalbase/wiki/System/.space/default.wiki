@@ -4,7 +4,6 @@
 {{ApplyFlatTheme}}
 
 
-{{find}}
 {{logo:/cbgrid/.files/green.png}}
 
 {{PortalsHamburgerMenu}}

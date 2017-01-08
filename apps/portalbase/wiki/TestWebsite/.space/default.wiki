@@ -3,7 +3,6 @@
 
 {{projectname:TestSpace}}
 
-{{find}}
 
 {{menu:
 Incubaid:http://www.incubaid.com
@@ -18,6 +17,4 @@ Access:/system/OverviewAccess?space=$$space
 
 @block
 {content}
-@divend 
-
-
+@divend

@@ -5,7 +5,6 @@
 
 {{projectname:DocPortal}}
 {{css:/jslib/bootstrap/css/bootstrap.css}}
-{{find}}
 
 {{menu:
 #System:/System
@@ -64,6 +63,3 @@ td{
 }
 
 }}
-
-
-

@@ -3,7 +3,6 @@
 {{ApplyFlatTheme}}
 
 
-{{find}}
 {{PortalsHamburgerMenu}}
 
 

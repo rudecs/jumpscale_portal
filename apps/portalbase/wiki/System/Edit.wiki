@@ -2,7 +2,6 @@
 {{ApplyFlatTheme}}
 
 {{projectname:System Portal}}
-{{find}}
 {{menu:
 Help:https://gig.gitbooks.io/jumpscale/content/:target=_blank
 }}
@@ -24,4 +23,3 @@ More Info on [WIKI syntax|https://github.com/Jumpscale7/jumpscale_portal/wiki/Wi
 {{edit: app:$$app actor:$$actor space:$$edit_space bucket:$$bucket path:$$path page:$$edit_page}}
 @colend
 @blockend
-
