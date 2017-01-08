@@ -91,7 +91,7 @@ body input[type=text]:focus {
   max-height: 30px;
 }
 .navbar-form {
-  padding-bottom: 0;
+  padding-bottom: 7px;
 }
 .search-query {
   margin-bottom: 7px;
