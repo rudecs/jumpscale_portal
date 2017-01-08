@@ -1033,21 +1033,20 @@ table.dataTable thead .sorting_desc_disabled:after {
 tfoot td{
   vertical-align: top;
 }
-.ui-datepicker:last-of-type{
-  display: none;
-}
 #ui-datepicker-div{
-  display: none !important;
+  display: none;
 }
 .ui-corner-all{
   cursor: pointer;
 }
 .dataTable td{
   max-width: 205px !important;
+  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 .dataTable td:hover{
+  -o-text-overflow: clip;
   text-overflow: clip;
   overflow-wrap: break-word;
 }
