@@ -21,7 +21,7 @@ h6. Running Virtual Machines
 
 @row gray-background clearfix
 @col 6
-h5. Performance Dashboard
+h5. Grid Nodes
 
 {{html: <p><a href="/grid/Grid Nodes"><i class="glyphicon glyphicon-tasks margin-right-small"></i>Grid Nodes</a></p> }}
 
