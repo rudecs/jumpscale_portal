@@ -153,5 +153,8 @@ class system_usermanager(j.code.classGetBase()):
         result current user
         """
         ctx = kwargs["ctx"]
-        return str(ctx.env['beaker.session']["user"])
+        return {
+            "name": ctx.env['beaker.session']["user"],
+            "admin": j.core.portal.active.isAdminFromCTX(ctx)
+        }
 
