@@ -31,7 +31,7 @@ def main(j, args, params, tags, tasklet):
 
     results = j.core.grid.healthchecker.fetchMonitoringOnNode(nidint)
     _, oldestdate = j.core.grid.healthchecker.getErrorsAndCheckTime(results)
-    
+
     out.append('Node was last checked at: {{ts:%s}}' % oldestdate)
 
     out.append('{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}')
@@ -65,7 +65,7 @@ def main(j, args, params, tags, tasklet):
                     interval = ''
 
                 row = '|%(msg)s |%(lasterror)s |%(last)s |  %(interval)s| {{html: %(status)s}} %(refresh)s  |\n'
-                table += row % {'msg': message,
+                table += row % {'msg': message.replace('\n', ' @LF '),
                                 'lasterror': lasterror,
                                 'last': lastchecked,
                                 'interval': interval,
