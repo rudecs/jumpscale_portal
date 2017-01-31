@@ -1,5 +1,5 @@
 @usedefaults
-{{actions:
+{{actions: gridbinding:'table_system_eco ecoids'
 - display: Purge
   action: /restmachine/system/errorconditionhandler/purge
   input:
