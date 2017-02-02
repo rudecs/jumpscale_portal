@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
         'jsorganization': 'organization',
     }
 
-    fieldids = ['jsname', 'jsorganization', 'category', 'descr']
+    fieldids = ['id', 'jsname', 'jsorganization', 'category', 'descr']
     for tag, val in args.tags.tags.iteritems():
         key = tagsmap.get(tag, tag)
         if tag in fieldids:
@@ -23,14 +23,18 @@ def main(j, args, params, tags, tasklet):
 
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    def makeName(row, field):
-        link = "[%s|/grid/jumpscript?organization=%s&jsname=%s]" % (row['name'], row['organization'], row['name'])
+    def makeID(row, field):
+        _id = row[field]
+        link = "[%s|/grid/jumpscript?id=%s]" % (_id, _id)
         return link
 
     fields = [
+        {'name': 'ID',
+         'id': 'id',
+         'value': makeID},
         {'name': 'Name',
          'id': 'name',
-         'value': makeName},
+         'value': 'name'},
         {'name': 'Organization',
          'id': 'organization',
          'value': 'organization'},

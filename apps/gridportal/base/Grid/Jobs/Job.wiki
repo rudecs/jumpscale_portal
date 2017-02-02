@@ -7,8 +7,8 @@ h2. Job Details
 
 | *Grid ID* | ${gid} |
 | *Node* | [${node.name}|/grid/grid node?id=${nid}&gid=${gid}] |
-| *Roles* | ${roles} | 
-| *Jumpscript* | [${organization}:${cmd}|jumpscript?organization=${organization}&jsname=${cmd}] | 
+| *Roles* | ${roles} |
+| *Jumpscript* | [${organization}:${cmd}|jumpscript?id=${jscriptid}] | 
 | *Start* | {{div: data-ts=${timeStart}|class=jstimestamp}}{{div}} (*Timeout*: ${timeout}) |
 | *Stop* | {{div: data-ts=${timeStop}|class=jstimestamp}}{{div}} |
 | *Queue* | ${queue} |

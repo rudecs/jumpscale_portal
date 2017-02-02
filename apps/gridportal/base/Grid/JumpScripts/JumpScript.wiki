@@ -1,11 +1,11 @@
 @usedefaults
 
-@@title JumpScript: ${name}
-
 h5. JumpScript Details
-{{jumpscript: organization:$$organization jsname:$$jsname}}
+{{jumpscript: id:$$id}}
 
 {% if jumpscript %}
+@@title JumpScript: ${name}
+
 ||Propert||Value||
 {% for k, v in jumpscript.iteritems() -%}
 	|${k} | ${v}|

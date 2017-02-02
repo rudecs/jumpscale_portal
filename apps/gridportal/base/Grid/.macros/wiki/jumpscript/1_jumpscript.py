@@ -6,37 +6,31 @@ def main(j, args, params, tags, tasklet):
     doc = params.doc
     # tags = params.tags
 
-    actor=j.apps.actorsloader.getActor("system","gridmanager")
+    jsid = args.getTag("id")
+    if not jsid:
+        doc.applyTemplate({})
+        return params
 
-    organization = args.getTag("organization")
-    name = args.getTag("jsname")
-
-    for k,v in {'organization':organization, 'name':name}.iteritems():
-        if not v:
-            doc.applyTemplate({})
-            return params
-
+    osis = j.clients.osis.getNamespace('system')
     try:
-        obj = actor.getJumpscript(organization=organization, name=name)
+        obj = osis.jumpscript.get(int(jsid)).__dict__
         jumpscript = {}
 
-        for k,v in obj.iteritems():
+        for k, v in obj.iteritems():
             if k in ('args', 'roles'):
                 v = ' ,'.join(v)
             if k == 'source':
                 continue
             if "_" == k[0]:
-                continue 
+                continue
             vstr = j.tools.text.toStr(v)
             if isinstance(v, list):
                 vstr.replace("[", "\[")
                 vstr.replace("]", "\]")
             jumpscript[k.capitalize()] = vstr.replace('\n', '') if vstr else vstr
-        doc.applyTemplate({'jumpscript': jumpscript, 'source': obj['source'], 'name': name})
-
+        doc.applyTemplate({'jumpscript': jumpscript, 'source': obj['source'], 'name': obj['name']})
     except:
         doc.applyTemplate({})
-
 
     return params
 
