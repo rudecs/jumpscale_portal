@@ -11,10 +11,8 @@ def main(j, args, params, tags, tasklet):
             parent = parent.replace(j.dirs.baseDir, '$base')
             codepaths[parent] = '%s Actors' % j.system.fs.getBaseName(parent).capitalize()
 
-
     codepaths[j.system.fs.joinPaths('$base', 'apps', 'osis', 'logic')] = 'Models'
-
-    codepaths[j.system.fs.joinPaths('$jumpscriptsdir', 'jumpscripts')] = 'JumpScripts'
+    codepaths[j.system.fs.joinPaths('$base', 'apps', 'agentcontroller', 'jumpscripts')] = 'JumpScripts'
     codepaths[j.system.fs.joinPaths(j.core.portal.active.portaldir, 'templates').replace(j.dirs.baseDir, '$base')] = 'Templates'
 
     result = list()
