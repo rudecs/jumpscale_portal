@@ -1,8 +1,5 @@
-import smtplib, os
 from JumpScale import j
-import JumpScale.baselib.mailclient
 from JumpScale.portal.portal import exceptions
-
 
 ujson = j.db.serializers.getSerializerType('j')
 
@@ -22,10 +19,10 @@ class system_emailsender(j.code.classGetBase()):
         self.actorname = "emailsender"
         self.appname = "system"
 
-   def format(self, obj, format=None):		
-        if not format or format not in self.output_format_mapping:		
-            format = 'json'		
-        output_formatter = self.output_format_mapping[format]		
+    def format(self, obj, format=None):
+        if not format or format not in self.output_format_mapping:
+            format = 'json'
+        output_formatter = self.output_format_mapping[format]
         return output_formatter(obj)
 
     def send(self, sender_name, sender_email, receiver_email, subject, body, *args, **kwargs):
@@ -67,4 +64,3 @@ class system_emailsender(j.code.classGetBase()):
         j.clients.email.send(receivers, sender, subject, body)
 
         return 'Success'
-
