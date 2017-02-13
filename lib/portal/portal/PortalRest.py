@@ -226,7 +226,7 @@ class PortalRest():
             ctx.start_response("404 Not Found", [('Content-Type', contentType)])
             if human:
                 page = self.getServicesInfo(appname, actor)
-                return (False, ctx, self.ws.raiseError(ctx=ctx, msg=msg,msginfo=str(page)))
+                return (False, ctx, self.ws.raiseError(ctx=ctx, msg=msg, msginfo=str(page)))
             else:
                 contentType, data = self.ws.reformatOutput(ctx, msg, restreturn=False)
                 return (False, ctx, data)
@@ -240,10 +240,11 @@ class PortalRest():
 
                 def exec_async():
                     try:
-                        result = True, method(ctx=ctx, **ctx.params)
+                        mresult = method(ctx=ctx, **ctx.params)
+                        result = json.dumps([True, mresult])
                     except Exception as e:
-                        result = False, e.msg
-                    self.redis.set('tasks.{}'.format(taskguid), json.dumps(result), ex=600)
+                        result = json.dumps([False, str(e)])
+                    self.redis.set('tasks.{}'.format(taskguid), result, ex=600)
                     self.tasks.pop(taskguid, None)
 
                 greenlet = gevent.spawn(exec_async)
