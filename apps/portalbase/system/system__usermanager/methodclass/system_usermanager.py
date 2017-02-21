@@ -18,6 +18,7 @@ class system_usermanager(j.code.classGetBase()):
         self.osiscl = j.core.portal.active.osis
         self.modelUser = j.clients.osis.getCategory(self.osiscl, 'system', 'user')
         self.modelGroup = j.clients.osis.getCategory(self.osiscl, 'system', 'group')
+        self.modelSession = j.clients.osis.getCategory(self.osiscl, 'system', 'sessioncache')
 
     def authenticate(self, name, secret, **kwargs):
         """
@@ -77,9 +78,10 @@ class system_usermanager(j.code.classGetBase()):
     @auth(['admin'])
     def delete(self, username, **kwargs):
         u = self.modelUser.get(username)
-        if u.protected:
+        if getattr(u, 'protected', False):
             raise exceptions.BadRequest('Cannot delete protected user.')
         self.modelUser.delete(username)
+        self.modelSession.deleteSearch({'user': username})
         return True
 
     @auth(['admin'])
@@ -128,7 +130,7 @@ class system_usermanager(j.code.classGetBase()):
         group['users'] = users
         self.modelGroup.set(group)
         return True
-    
+
     @auth(['admin'])
     def create(self, username, password, groups, emails, domain, provider=None, **kwargs):
         groups = groups or []
@@ -157,4 +159,3 @@ class system_usermanager(j.code.classGetBase()):
             "name": ctx.env['beaker.session']["user"],
             "admin": j.core.portal.active.isAdminFromCTX(ctx)
         }
-
