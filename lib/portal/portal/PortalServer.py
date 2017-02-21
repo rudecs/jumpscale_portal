@@ -827,7 +827,8 @@ class PortalServer:
         if j.application.debug:
             return msg
         else:
-            return "An unexpected error has occurred, please try again later."
+            msg = 'Your service request could not be fulfilled correctly, please contact support and mention "eco-{}-{}".'
+            return msg.format(j.application.whoAmI.gid, eco.guid)
 
     def _text2html(self, text):
         text = text.replace("\n", "<br>")
