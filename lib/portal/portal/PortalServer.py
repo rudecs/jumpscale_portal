@@ -47,7 +47,7 @@ def exhaustgenerator(func):
     def wrapper(self, env, start_response):
         try:
             result = func(self, env, start_response)
-        except exceptions.BaseError, e:
+        except exceptions.BaseError as e:
             start_response("%s %s" % (e.code, e.status), e.headers)
             return [e.msg]
         if isinstance(result, basestring):
@@ -334,7 +334,6 @@ class PortalServer:
             if self.authentication_method == 'gitlab':
                 gitlabobjects = self.auth.getUserSpacesObjects(username)
                 keys = [x['name'] for x in gitlabobjects]
-                res = {}
                 for name in self.getAccessibleLocalSpacesForGitlabUser(keys):
                     if username in name and name.replace("%s_" % username, '') in keys:
                         continue
@@ -381,7 +380,6 @@ class PortalServer:
 
     def getUserSpaceRights(self, ctx, space):
         spaceobject = self.spacesloader.spaces.get(space)
-        defaultspace = self.defaultspace
 
         if hasattr(ctx, 'env') and "user" in ctx.env['beaker.session']:
             username = ctx.env['beaker.session']["user"]
@@ -740,17 +738,19 @@ class PortalServer:
             splitted = path.split("/")
             space = splitted[0].lower()
             pagename = splitted[-1].lower()
+        if not space:
+            space = self.defaultspace
 
         return space, pagename
 
-##################### FORMATTING + logs/raiseerror
+    # #################### FORMATTING + logs/raiseerror
     def log(self, ctx, user, path, space="", pagename=""):
         path2 = j.system.fs.joinPaths(self.logdir, "user_%s.log" % user)
 
         epoch = j.base.time.getTimeEpoch() + 3600 * 6
         hrtime = j.base.time.epoch2HRDateTime(epoch)
 
-        if False and self.geoIP != None:  # @todo fix geoip, also make sure nginx forwards the right info
+        if False and self.geoIP is not None:  # @todo fix geoip, also make sure nginx forwards the right info
             ee = self.geoIP.record_by_addr(ctx.env["REMOTE_ADDR"])
             loc = "%s_%s_%s" % (ee["area_code"], ee["city"], ee["region_name"])
         else:
@@ -774,7 +774,7 @@ class PortalServer:
             eco.type = "INPUT"
             print("WRONG FORMAT")
         else:
-            if errorObject != None:
+            if errorObject is not None:
                 eco = errorObject
             else:
                 eco = j.errorconditionhandler.getErrorConditionObject()
@@ -798,7 +798,7 @@ class PortalServer:
         eco.process()
 
         if ctx.fformat == "human" or ctx.fformat == "text":
-            if msginfo != None and msginfo != "":
+            if msginfo is not None and msginfo != "":
                 msg += "\n<br>%s" % msginfo
             else:
                 msg += "\n%s" % eco
@@ -959,7 +959,7 @@ class PortalServer:
                 session['user'] = '{username}@{iss}'.format(**payload)
                 session.save()
 
-        if "user_logoff_" in ctx.params and not "user_login_" in ctx.params:
+        if "user_logoff_" in ctx.params and "user_login_" not in ctx.params:
             if session.get('user', '') not in ['guest', '']:
                 # If user session is oauth session and logout url is provided, redirect user to that URL
                 # after deleting session which will invalidate the oauth server session
@@ -971,13 +971,16 @@ class PortalServer:
                 session.delete()
                 session = ctx.env['beaker.get_session']()
                 ctx.env['beaker.session'] = session
+                session['user'] = 'guest'
+                session.save()
+
+                if oauth_logout_url:
+                    backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
+                    ctx.start_response('302 Found', [('Location', '%s?%s' % (
+                        str(oauth_logout_url), str(urllib.urlencode({'redirect_uri': backurl}))))])
+                    return False, session
             session['user'] = 'guest'
             session.save()
-            if oauth_logout_url:
-                backurl = urlparse.urljoin(ctx.env['HTTP_REFERER'], ctx.env['PATH_INFO'])
-                ctx.start_response('302 Found', [('Location', '%s?%s' % (
-                    str(oauth_logout_url), str(urllib.urlencode({'redirect_uri': backurl}))))])
-                return False, session
             return True, session
 
         if "user_login_" in ctx.params:
@@ -1129,7 +1132,11 @@ class PortalServer:
             user = "None"
             self.log(ctx, user, path)
             space = pathparts[0].lower()
-            path = "/".join(pathparts[2:])
+            if space == '.files':
+                space = self.defaultspace
+                path = "/".join(pathparts[1:])
+            else:
+                path = "/".join(pathparts[2:])
             sploader = self.spacesloader.getSpaceFromId(space)
             filesroot = j.system.fs.joinPaths(sploader.model.path, ".files")
             return self.processor_page(environ, start_response, filesroot, path, prefix="")
@@ -1165,7 +1172,7 @@ class PortalServer:
             if not self.authentication_method:
                 try:
                     j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
-                except Exception, e:
+                except Exception as e:
                     self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured",
                                     msginfo="", errorObject=None, httpcode="500 Internal Server Error")
             return self.rest.processor_restext(environ, start_response, path, ctx=ctx)

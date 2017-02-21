@@ -1,4 +1,6 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
+
 
 class LoaderBase(object):
     """
@@ -18,7 +20,7 @@ class LoaderBase(object):
         if id in self.id2object:
             return self.id2object[id]
         else:
-            raise RuntimeError("Could not find loader with id %s" % id)
+            raise exceptions.NotFound("Could not find loader with id %s" % id)
 
     def removeLoader(self, id):
         id = id.lower()
@@ -88,7 +90,7 @@ class LoaderBaseObject():
     def _createDefaults(self, path):
         src = j.system.fs.joinPaths(j.core.portalloader.getTemplatesPath(), "%s" % self.type)
         dest = j.system.fs.joinPaths(path)
-        j.system.fs.copyDirTree(src, dest, keepsymlinks=False, eraseDestination=False, skipProtectedDirs=False, overwriteFiles=False)        
+        j.system.fs.copyDirTree(src, dest, keepsymlinks=False, eraseDestination=False, skipProtectedDirs=False, overwriteFiles=False)
 
     def _loadFromDisk(self, path, reset=False):
         # path=path.replace("\\","/")
@@ -187,5 +189,3 @@ class LoaderBaseObject():
 
     def reset(self):
         self.loadFromDisk(self.model.path, reset=True)
-
-
