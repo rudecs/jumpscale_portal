@@ -65,7 +65,7 @@ class system_gridmanager(j.code.classGetBase()):
         result json
         """
         nid = int(nid)
-        client = self.getClient(nid, 'stats') 
+        client = self.getClient(nid, 'stats')
 
         try:
             stats = client.listStatKeys('n%s.system.' % nid)
@@ -74,14 +74,14 @@ class system_gridmanager(j.code.classGetBase()):
             # print "DEBUG NOW getNodeSystemStats"
             # embed()
             pass
-            
+
 
         cpupercent = [ stats['n%s.system.cpu.percent' % nid][-1] ]
         mempercent = [ stats['n%s.system.memory.percent' % nid][-1] ]
         netstat = [ stats['n%s.system.network.kbytes.recv' % nid][-1], stats['n%s.system.network.kbytes.send' % nid][-1] ]
 
-        result = {'cpupercent': [cpupercent, {'series': [{'label': 'CPU PERCENTAGE'}]}], 
-                  'mempercent': [mempercent, {'series': [{'label': 'MEMORY PERCENTAGE'}]}], 
+        result = {'cpupercent': [cpupercent, {'series': [{'label': 'CPU PERCENTAGE'}]}],
+                  'mempercent': [mempercent, {'series': [{'label': 'MEMORY PERCENTAGE'}]}],
                   'netstat': [netstat, {'series': [{'label': 'KBytes Recieved'}, {'label': 'KBytes Sent'}]}]}
         return result
 
@@ -113,31 +113,34 @@ class system_gridmanager(j.code.classGetBase()):
         param:lastcheckTo str,-1h,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find nodes with lastcheckTo  (-4d means 4 days ago)
         result:list(list)
         """
+        args = locals()
         lastcheckFrom = self._getEpoch(lastcheckFrom)
         lastcheckTo = self._getEpoch(lastcheckTo)
-        params = {'gid': getInt(gid),
-                  'name': name,
-                  'guid': guid,
-                  'active': active,
-                  'lastcheckFrom': {'name': 'lastcheck', 'value': lastcheckFrom, 'eq': 'gte'},
-                  'lastcheckTo': {'name': 'lastcheck', 'value': lastcheckTo, 'eq': 'lte'},
-                  'peer_stats': peer_stats,
-                  'peer_log': peer_log,
-                  'peer_backup': peer_backup,
-                  'id': getInt(id),
-                  }
-        results = self.osis_node.simpleSearch(params)
-        def myfilter(node):
-            self._nodeMap[node['id']] = node
-            if roles and not set(roles).issubset(set(node['roles'])):
-                return False
-            if ipaddr and ipaddr not in node['ipaddr']:
-                return False
-            if macaddr and macaddr not in node['netaddr']:
-                return False
-            return True
+        queries = []
+        query = {'$and': queries}
+        for name in ['gid', 'guid', 'name', 'active']:
+            if args[name] is not None:
+                queries.append({name: args[name]})
+        if roles:
+            rolequery = []
+            for role in roles.split(','):
+                rolequery.append({'roles': role.strip()})
+            queries.append({'$and': rolequery})
+        if ipaddr:
+            ipquery = []
+            for ip in ipaddr.split(','):
+                ipquery.append({'netaddr.ip': ip.strip()})
+            queries.append({'$and': ipquery})
+        if lastcheckFrom or lastcheckTo:
+            lastcheckq = {}
+            if lastcheckFrom:
+                lastcheckq['$gte'] = lastcheckFrom
+            if lastcheckTo:
+                lastcheckq['$lte'] = lastcheckTo
+            queries.append({'lastcheck': lastcheckq})
 
-        return filter(myfilter, results)
+        results = self.osis_node.search(query)[1:]
+        return results
 
     def getProcessStats(self, nid, domain="", name="", **kwargs):
         """
@@ -160,14 +163,14 @@ class system_gridmanager(j.code.classGetBase()):
         import StringIO
 
         size = (int(width), int(height))
-        im = Image.new('RGB', size, 'white') 
-        draw = ImageDraw.Draw(im)   
+        im = Image.new('RGB', size, 'white')
+        draw = ImageDraw.Draw(im)
         red = (255,0,0)
         text_pos = (size[0]/2,size[1]/2)
         text = message
         draw.text(text_pos, text, fill=red)
-        
-        del draw 
+
+        del draw
         output = StringIO.StringIO()
         im.save(output, 'PNG')
         del im
@@ -212,7 +215,7 @@ class system_gridmanager(j.code.classGetBase()):
         r = requests.get(url)
         try:
             result = r.send()
-        except Exception:        
+        except Exception:
             return self._showUnavailable(width, height, "GRAPHITE UNAVAILABLE")
         return result.content
 
@@ -697,5 +700,3 @@ class system_gridmanager(j.code.classGetBase()):
                   'active': active
                  }
         return self.osis_nic.simpleSearch(params)
-
-
