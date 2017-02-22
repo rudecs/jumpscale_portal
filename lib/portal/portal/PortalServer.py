@@ -1026,7 +1026,14 @@ class PortalServer:
         return True, session
 
     def _getParamsFromEnv(self, env, ctx):
+
         params = urlparse.parse_qs(env["QUERY_STRING"], 1)
+        for k, v_list in params.items():
+            escaped_vals = []
+            for v in v_list:
+                escaped_vals.append(j.html.escape(v))
+
+            params[k] = escaped_vals
 
         def simpleParams(params):
             # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
