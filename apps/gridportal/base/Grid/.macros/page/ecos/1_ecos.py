@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
 
     nidstr = '[%(nid)s|grid node?id=%(nid)s&gid=%(gid)s]'
 
-    fields = [{'name': 'Last Occurence',
+    fields = [{'name': 'Last Occurrence',
                'id': 'lasttime',
                'value': makeTime,
                'type': 'date'},
