@@ -117,7 +117,6 @@ class system_gridmanager(j.code.classGetBase()):
         lastcheckFrom = self._getEpoch(lastcheckFrom)
         lastcheckTo = self._getEpoch(lastcheckTo)
         queries = []
-        query = {'$and': queries}
         for name in ['gid', 'guid', 'name', 'active']:
             if args[name] is not None:
                 queries.append({name: args[name]})
@@ -138,6 +137,11 @@ class system_gridmanager(j.code.classGetBase()):
             if lastcheckTo:
                 lastcheckq['$lte'] = lastcheckTo
             queries.append({'lastcheck': lastcheckq})
+
+        if queries:
+            query = {'$and': queries}
+        else:
+            query = {}
 
         results = self.osis_node.search(query)[1:]
         return results
