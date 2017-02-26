@@ -1085,7 +1085,18 @@ class PortalServer:
                 inp = env.get('wsgi.input')
                 params.update({'FILES': {'data': inp, 'boundary': boundary}})
         return params
+        
+    @property
+    def requestContext(self):
+        currentframe = None
+        currentframe = inspect.currentframe()
+        backframe = currentframe.f_back
+        while backframe is not None:
+            ctx = backframe.f_locals.get('ctx', None)
+            if isinstance(ctx, RequestContext):
+                return ctx
 
+            backframe = backframe.f_back
     @exhaustgenerator
     def router(self, environ, start_response):
         path = environ["PATH_INFO"].lstrip("/")
