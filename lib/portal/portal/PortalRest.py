@@ -255,7 +255,7 @@ class PortalRest():
 
             return (True, result)
         except RemoteException as error:
-            if error.eco.get('exceptionclassname') == 'KeyError':
+            if error.eco.get('exceptionclassname') == 'KeyError' or error.eco['category'] == 'osis.objectnotfound':
                 data = error.eco['data'] or {'categoryname': 'unknown', 'key': '-1'}
                 raise exceptions.NotFound("Could not find %(key)s of type %(categoryname)s" % data)
             raise
@@ -269,7 +269,7 @@ class PortalRest():
         orignal rest processor (get statements)
         e.g. http://localhost/restmachine/system/contentmanager/notifySpaceModification?name=www_openvstorage&authkey=1234
         """
-        if ctx == False:
+        if ctx is False:
             raise RuntimeError("ctx cannot be empty")
         try:
             j.logger.log("Routing request to %s" % path, 9)
