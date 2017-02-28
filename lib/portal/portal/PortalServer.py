@@ -12,6 +12,7 @@ import cgi
 import json
 import mimeparse
 import mimetypes
+import inspect
 
 from beaker.middleware import SessionMiddleware
 from .MacroExecutor import MacroExecutorPage, MacroExecutorWiki, MacroExecutorPreprocess, MacroexecutorMarkDown
@@ -1085,7 +1086,7 @@ class PortalServer:
                 inp = env.get('wsgi.input')
                 params.update({'FILES': {'data': inp, 'boundary': boundary}})
         return params
-        
+
     @property
     def requestContext(self):
         currentframe = None
