@@ -7,8 +7,8 @@ h2. Audit:
 |*Time*|${time}|
 |*User*|${user}|
 |*Call*|${call}|
-|*Statuscode*|${statuscode}|
-|*ResponseTime*|${'%0.2f' % ((responsetime or 0) * 1000)} ms|
+|*Status Code*|${statuscode}|
+|*Response Time*|${'%0.2f' % ((responsetime or 0) * 1000)} ms|
 |*Tags*|${tags}|
 
 h3. Arguments:
