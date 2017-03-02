@@ -2,6 +2,7 @@ def main(j, args, params, tags, tasklet):
     import yaml
     import ujson as json
     import datetime
+    import re
 
     params.result = (args.doc, args.doc)
     id = args.getTag('id')
@@ -16,7 +17,9 @@ def main(j, args, params, tags, tasklet):
     except:
         args.doc.applyTemplate({'id': None})
         return params
-
+    r = re.search(r'eco-\d+-(?P<ecoguid>\w{8}-\w{4}-\w{4}-\w{4}-\w{12})', audit['result'])
+    if r:
+        audit['link'] = r.group('ecoguid')
     for key in ('kwargs', 'args', 'result'):
         obj = json.loads(audit[key])
         if key == 'result' and isinstance(obj, list) and len(obj) == 1:
