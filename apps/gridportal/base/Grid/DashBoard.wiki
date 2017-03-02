@@ -21,16 +21,30 @@ h6. Running Virtual Machines
 
 @row gray-background clearfix
 @col 6
+
+@col 3
+@colend
+
+@col 9
 h5. Grid Nodes
 
 {{html: <p><a href="/grid/Grid Nodes"><i class="glyphicon glyphicon-tasks margin-right-small"></i>Grid Nodes</a></p> }}
+@colend
 
 @colend
 @col 6
+
+@col 1
+@colend
+
+@col 11
 h5. Events Dashboard
 {{html: <p><a href="/grid/jobs?state=ERROR"><i class="glyphicon glyphicon-remove margin-right-small"></i>Failed Jobs</a></p> }}
 @colend
+
+@colend
 @rowend
+
 
 {{html: <hr />}}
 
