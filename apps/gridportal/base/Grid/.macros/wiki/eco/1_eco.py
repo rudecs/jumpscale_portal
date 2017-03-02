@@ -18,7 +18,11 @@ def main(j, args, params, tags, tasklet):
         obj['nodename'] = node.name
     except:
         obj['nodename'] = 'N/A'
-
+    grid = scl.grid.get(obj['gid'])
+    if grid:
+        obj['gridname'] = grid.name
+    else:
+        obj['gridname'] = 'Not Found'
     obj['epoch'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['epoch']
     obj['lasttime'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['lasttime']
     for attr in ['errormessage', 'errormessagePub']:
