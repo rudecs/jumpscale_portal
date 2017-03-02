@@ -1093,11 +1093,16 @@ class PortalServer:
         currentframe = inspect.currentframe()
         backframe = currentframe.f_back
         while backframe is not None:
-            ctx = backframe.f_locals.get('ctx', None)
-            if isinstance(ctx, RequestContext):
-                return ctx
+            for vars in (backframe.f_locals, backframe.f_globals):
+                ctx = vars.get('ctx')
+                if isinstance(ctx, RequestContext):
+                    return ctx
+                ctx = vars.get('kwargs', {}).get('ctx')
+                if isinstance(ctx, RequestContext):
+                    return ctx
 
             backframe = backframe.f_back
+
     @exhaustgenerator
     def router(self, environ, start_response):
         path = environ["PATH_INFO"].lstrip("/")
