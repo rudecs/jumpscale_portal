@@ -3,30 +3,36 @@
 target.1 =
     function:mean,
     value:value,
-    series:{gid}_{id}_memory.used.gauge,
-    alias:Used,
+    series:machine.memory.ram.available|m,
+    groupby:gid nid,
+    condition:gid={gid} AND nid={id},
+    alias:Ram available,
     interval:1m,
 
 target.2 =
     function:mean,
     value:value,
-    series:{gid}_{id}_memory.cached.gauge,
-    alias:Cached,
+    series:machine.memory.swap.left|m,
+    groupby:gid nid,
+    condition:gid={gid} AND nid={id},
+    alias:Swap available,
     interval:1m,
 
 target.3 =
     function:mean,
     value:value,
-    series:{gid}_{id}_memory.free.gauge,
-    alias:Free,
+    series:machine.memory.swap.used|m,
+    alias:Swap used,
+    groupby:gid nid,
+    condition:gid={gid} AND nid={id},
     interval:1m,
 
-cfg.title = Memory
+cfg.title = 'Memory'
 cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) Memory'
 cfg.height = 275px
 cfg.width = 500px
 cfg.stack = true
 cfg.fill = 3
-cfg.y_format = kbytes
+cfg.y_format = mbytes
 
 }}

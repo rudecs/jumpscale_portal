@@ -14,7 +14,7 @@ h2. Statistics ${gridname}: ${nodename} ([$$gid:$$id|/grid/grid node?id=$$id&gid
 
 @row
 @col 6
-{{include:graph_memory2}}
+{{include:graph_memory}}
 @colend
 @col 6
 {{include:graph_cpu_contextswitch}}
@@ -35,4 +35,3 @@ h2. Statistics ${gridname}: ${nodename} ([$$gid:$$id|/grid/grid node?id=$$id&gid
 {{include:graph_disk_throughput}}
 @colend
 @rowend
-

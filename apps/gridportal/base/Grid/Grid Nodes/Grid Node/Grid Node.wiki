@@ -5,7 +5,7 @@
 {{node_getdata: gid:$$gid id:$$id}}
 {% if id %}
 h2. Grid Node: ${nodename} (Reference ID: $$id)
-h2. Grid ID: $$gid 
+h2. Grid ID: $$gid
 
 {{toc: start=3}}
 
@@ -16,7 +16,7 @@ h3. CPU Statistics
 {{include:graph_cpu_time}}
 @colend
 @col 6
-{{include:graph_memory2}}
+{{include:graph_memory}}
 @colend
 @endrow
 
