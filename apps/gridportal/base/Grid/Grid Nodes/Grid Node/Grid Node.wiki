@@ -8,7 +8,7 @@ h2. Grid Node: ${nodename} (Reference ID: $$id)
 h2. Grid ID: $$gid
 
 {{toc: start=3}}
-
+{% if 'stats' in roles %}
 h3. CPU Statistics
 
 @row
@@ -19,7 +19,7 @@ h3. CPU Statistics
 {{include:graph_memory}}
 @colend
 @endrow
-
+{% endif %}
 h3. Info
 
 |*GID:NID*|${gid}:${id}|
@@ -29,11 +29,12 @@ h3. Info
 |*Description*|${description}|
 |*IP Address*|${ipaddr}|
 
+{% if 'stats' in roles %}
 h3. Statistics
 
 * [*Statistics*|Node Stats?id=${id}&gid=${gid}]
 #* [*Real Time Statistics*|RealTimeStatsNode?nid=${id}]
-
+{% endif %}
 h3. NICs
 {{nics: nid:$$id}}
 
