@@ -1026,15 +1026,16 @@ class PortalServer:
 
         return True, session
 
-    def _getParamsFromEnv(self, env, ctx):
+    def _getParamsFromEnv(self, env, ctx, escape=True):
 
         params = urlparse.parse_qs(env["QUERY_STRING"], 1)
-        for k, v_list in params.items():
-            escaped_vals = []
-            for v in v_list:
-                escaped_vals.append(j.html.escape(v))
+        if escape:
+            for k, v_list in params.items():
+                escaped_vals = []
+                for v in v_list:
+                    escaped_vals.append(j.html.escape(v))
 
-            params[k] = escaped_vals
+                params[k] = escaped_vals
 
         def simpleParams(params):
             # HTTP parameters can be repeated multiple times, i.e. in case of using <select multiple>
@@ -1122,7 +1123,10 @@ class PortalServer:
             if path.startswith(proxypath.lstrip('/')):
                 return self.process_proxy(ctx, proxy)
 
-        ctx.params = self._getParamsFromEnv(environ, ctx)
+        if path.startswith('restmachine'):
+            ctx.params = self._getParamsFromEnv(environ, ctx, False)
+        else:
+            ctx.params = self._getParamsFromEnv(environ, ctx, True)
         ctx.env['JS_CTX'] = ctx
 
         if path.find("jslib/") == 0:
