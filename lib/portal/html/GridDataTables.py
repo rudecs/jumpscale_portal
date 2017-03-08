@@ -198,7 +198,7 @@ $fields
                                     q['$lt'] = new Date(end.val()).getTime() / 1000;
                                 }
                                 if ($.isEmptyObject(q)){
-                                    return [];
+                                    return '';
                                 }
                                 return JSON.stringify(q);
                             };
@@ -247,7 +247,7 @@ $fields
                                     query['$lte'] = last;
                                 }
                                 if ($.isEmptyObject(query)){
-                                    return [];
+                                    return '';
                                 }
                                 return JSON.stringify(query);
                             };
