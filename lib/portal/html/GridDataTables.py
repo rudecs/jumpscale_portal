@@ -197,6 +197,9 @@ $fields
                                 if (end.val() != '') {
                                     q['$lt'] = new Date(end.val()).getTime() / 1000;
                                 }
+                                if ($.isEmptyObject(q)){
+                                    return '';
+                                }
                                 return JSON.stringify(q);
                             };
                             td.append(start);
@@ -242,6 +245,9 @@ $fields
                                 }
                                 if (!isNaN(last)) {
                                     query['$lte'] = last;
+                                }
+                                if ($.isEmptyObject(query)){
+                                    return '';
                                 }
                                 return JSON.stringify(query);
                             };
