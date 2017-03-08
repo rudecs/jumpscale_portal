@@ -8,8 +8,12 @@ def main(j, args, params, tags, tasklet):
     if groupguid is None:
         raise exceptions.BadRequest("BadRequest", "text/plain")
     scl = j.clients.osis.getNamespace('system')
-    group = scl.group.get(groupguid)
-
+    group = None
+    guidExists = scl.group.search({'id': groupguid})[1:]
+    if guidExists:
+        group = scl.group.get(groupguid)
+    if not group:
+        return params
     popup = Popup(id='group_edit', header='Change Group', clearForm=False, submit_url='/restmachine/system/usermanager/editGroup')
 
     options = list()

@@ -1,5 +1,5 @@
 @usedefaults
-
+{% if id %}
 @@title Group: ${id}
 
 h1. Group $$id
@@ -22,11 +22,14 @@ h1. Group $$id
 
 {{group_info: guid:$$id}}
 {{group_edit: guid:$$id}}
-
 * *Name*: ${id}
 * *Domain*: ${domain}
 * *Description*: ${description}
 
+
 h2. Users:
 
 {{users: groups:$$id}}
+{% else %}
+No Group provided
+{% endif %}
