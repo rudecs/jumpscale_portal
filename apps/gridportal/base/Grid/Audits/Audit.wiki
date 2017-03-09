@@ -10,9 +10,7 @@ h2. Audit:
 |*Status Code*|${statuscode}|
 |*Response Time*|${'%0.2f' % ((responsetime or 0) * 1000)} ms|
 |*Tags*|${tags}|
-{% if link %}
-|*Link to Error Condition*|[${link}|/grid/error condition?id=${link}]|
-{% endif %}
+|*Link to Error Condition*|{% if link %}[${link}|/grid/error condition?id=${link}]{% else%} N/A{% endif %}|
 h3. Arguments:
 
 {{code:
