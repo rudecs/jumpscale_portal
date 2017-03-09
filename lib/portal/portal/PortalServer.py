@@ -960,6 +960,10 @@ class PortalServer:
 
                 session['user'] = '{username}@{iss}'.format(**payload)
                 session.save()
+            elif type.lower() == 'authkey':
+                if token == self.secret:
+                    session['user'] = 'admin'
+                    session.save()
 
         if "user_logoff_" in ctx.params and "user_login_" not in ctx.params:
             if session.get('user', '') not in ['guest', '']:
