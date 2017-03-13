@@ -43,7 +43,7 @@ class system_usermanager(j.code.classGetBase()):
         get a user
         param:name name of user
         """
-        return self.modelUser.get("%s_%s"%(j.application.whoAmI.gid,name))
+        return self.modelUser.get("%s_%s"%(j.application.whoAmI.gid,name)).dump()
 
     def usergroupsget(self, user, **args):
         """
