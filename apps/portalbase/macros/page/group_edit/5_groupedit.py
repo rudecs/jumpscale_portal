@@ -22,7 +22,6 @@ def main(j, args, params, tags, tasklet):
     for user in scl.user.search({})[1:]:
         available = user['id'] in group.users
         options.append((user['id'], user['id'], available))
-
     popup.addCheckboxes('Select Users', 'users', options)
     popup.addHiddenField('name', group.id)
     popup.write_html(page)

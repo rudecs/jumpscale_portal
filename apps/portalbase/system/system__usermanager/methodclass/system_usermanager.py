@@ -124,6 +124,8 @@ class system_usermanager(j.code.classGetBase()):
             group = groups[0]
         if users and isinstance(users, basestring):
             users = users.split(',')
+        if not users:
+            users = []
         group['id'] = name
         group['domain'] = domain
         group['description'] = description
