@@ -9,6 +9,7 @@ import gevent
 import uuid
 import json
 from . import Validators
+from JumpScale.grid.osis.OSISClientForCat import ObjectNotFound
 
 class PortalRest():
 
@@ -254,11 +255,8 @@ class PortalRest():
                 result = method(ctx=ctx, **ctx.params)
 
             return (True, result)
-        except RemoteException as error:
-            if error.eco.get('exceptionclassname') == 'KeyError' or error.eco['category'] == 'osis.objectnotfound':
-                data = error.eco['data'] or {'categoryname': 'unknown', 'key': '-1'}
-                raise exceptions.NotFound("Could not find %(key)s of type %(categoryname)s" % data)
-            raise
+        except ObjectNotFound as err:
+            raise exceptions.NotFound("Could not find %s " % err.message)
         except Exception as errorObject:
             eco = j.errorconditionhandler.parsePythonErrorObject(errorObject)
             msg = "Execute method %s failed." % (routekey)
