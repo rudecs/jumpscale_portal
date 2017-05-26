@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.grid.serverbase.Exceptions import RemoteException
 from beaker.container import NamespaceManager
 import json
 
@@ -47,7 +48,12 @@ class OsisBeaker(NamespaceManager):
 
     def _remove(self, key):
         key = "%s_%s" % (self.namespace, key)
-        self._client.delete(categoryname=self._category, namespace=self._namespace, key=key)
+        try:
+            self._client.delete(categoryname=self._category, namespace=self._namespace, key=key)
+        except RemoteException as error:
+            if error.eco.get('exceptionclassname') == 'KeyError' or error.eco['category'] == 'osis.objectnotfound':
+                return
+            raise
 
     def __contains__(self, key):
         key = "%s_%s" % (self.namespace, key)
