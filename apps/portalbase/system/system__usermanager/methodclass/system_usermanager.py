@@ -43,7 +43,7 @@ class system_usermanager(j.code.classGetBase()):
         get a user
         param:name name of user
         """
-        return self.modelUser.get("%s_%s"%(j.application.whoAmI.gid,name))
+        return self.modelUser.get("%s_%s"%(j.application.whoAmI.gid,name)).dump()
 
     def usergroupsget(self, user, **args):
         """
@@ -124,6 +124,8 @@ class system_usermanager(j.code.classGetBase()):
             group = groups[0]
         if users and isinstance(users, basestring):
             users = users.split(',')
+        if not users:
+            users = []
         group['id'] = name
         group['domain'] = domain
         group['description'] = description
