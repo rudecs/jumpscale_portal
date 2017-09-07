@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 import time
 
 class system_health(j.code.classGetBase()):
@@ -74,8 +75,11 @@ class system_health(j.code.classGetBase()):
         return {'state': j.core.grid.healthchecker.fetchState()}
 
     def refreshCommand(self, nid, cmd, **kwargs):
+        if not self.scl.node.exists(nid):
+            raise exceptions.NotFound("Could find not with id %s" % nid)
+        node = self.scl.node.get(nid)
         org, name = cmd.split('_', 1)
-        self.acl.executeJumpscript(org, name, nid=nid, wait=False)
+        self.acl.executeJumpscript(org, name, nid=nid, gid=node.gid, wait=False)
         return "Scheduled reload of command"
 
     def getStatusSummary(self, **kwargs):
