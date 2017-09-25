@@ -63,6 +63,10 @@ def main(j, args, params, tags, tasklet):
         {'name': 'State',
          'value': 'state',
          'id': 'state'},
+        {'name': 'Node',
+         'value': '[%(nid)s|/grid/node?id=%(nid)s&gid=%(gid)s]',
+         'type': 'int',
+         'id': 'nid'},
     ]
     tableid = modifier.addTableFromModel('system', 'job', fields, nativequery=filters)
     modifier.addSearchOptions('#%s' % tableid)
