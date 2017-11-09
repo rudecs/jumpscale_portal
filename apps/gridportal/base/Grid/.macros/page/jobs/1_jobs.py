@@ -64,7 +64,7 @@ def main(j, args, params, tags, tasklet):
          'value': 'state',
          'id': 'state'},
         {'name': 'Node',
-         'value': '[%(nid)s|/grid/node?id=%(nid)s&gid=%(gid)s]',
+         'value': '[%(nid)s|/grid/grid node?id=%(nid)s&gid=%(gid)s]',
          'type': 'int',
          'id': 'nid'},
     ]
