@@ -55,7 +55,7 @@ class GridDataTables:
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
-        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": false,
         "bDestroy": true,
         "sPaginationType": "bootstrap",
@@ -122,7 +122,7 @@ $fields
         C = """
 $(document).ready(function() {
     $('#$tableid').dataTable( {
-        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "bServerSide": true,
         "bDestroy": true,
         "select": $selectable,
@@ -283,7 +283,7 @@ $fields
         , header=False)
 
     def prepare4DataTables(self, autosort=True, displaylength=None):
-        data = {"sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
+        data = {"sDom": "<'row'<'col-md-6'l><'col-md-6'>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
                 "bDestroy": True,
                 "oLanguage": {
                         "sLengthMenu": "_MENU_ records per page"
