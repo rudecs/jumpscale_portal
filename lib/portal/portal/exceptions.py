@@ -65,5 +65,9 @@ class PreconditionFailed(Error):
     CODE = 412
 
 
+class NotImplemented(Error):
+    CODE = 501
+
+
 class ServiceUnavailable(Error):
     CODE = 503
