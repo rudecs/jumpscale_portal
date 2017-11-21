@@ -33,7 +33,7 @@ def main(j, args, params, tags, tasklet):
     except:
         obj['args'] = {}
 
-    if obj["state"] == "ERROR":
+    if obj["state"] in ["ERROR", "TIMEOUT"]:
         obj['state'] = "FAILED"
         try:
             eco = json.loads(obj['result'])

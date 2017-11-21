@@ -45,9 +45,15 @@ ${code}
 }}
 
 *BackTrace*
+{% if backtraceDetailed %}
+{{code:
+${backtraceDetailed|replace('}}', '\}\}')}
+}}
+{% else %}
 {{code:
 ${backtrace|replace('}}', '\}\}')}
 }}
+{% endif %}
 {% else %}
 Error Condition not found.
 {% endif %}
