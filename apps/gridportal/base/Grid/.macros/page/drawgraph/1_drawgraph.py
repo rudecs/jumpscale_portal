@@ -89,7 +89,7 @@ def main(j, args, params, tags, tasklet):
       "tags": [],
       "style": "dark",
       "timezone": "browser",
-      "editable": True,
+      "editable": False,
       "hideControls": True,
       "sharedCrosshair": False,
       "rows": [
@@ -100,7 +100,7 @@ def main(j, args, params, tags, tasklet):
               "title": cfg['title'],
               "error": False,
               "span": 12,
-              "editable": True,
+              "editable": False,
               "type": "graph",
               "id": 1,
               "datasource": cfg['datasource'],

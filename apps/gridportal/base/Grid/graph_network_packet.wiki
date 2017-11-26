@@ -4,18 +4,18 @@ target.1 =
     function:mean,
     value:value,
     series:network.packets.rx|m,
-    groupby:gid nid nic,
+    groupby:gid nid,
     condition:gid={gid} AND nid={id} type=physical,
-    alias:rx $tag_nic,
+    alias:rx,
     interval:1m,
 
 target.2 =
     function:mean,
     value:value,
     series:network.packets.tx|m,
-    groupby:gid nid nic,
+    groupby:gid nid,
     condition:gid={gid} AND nid={id} type=physical,
-    alias:tx $tag_nic,
+    alias:tx,
     interval:1m,
 
 cfg.title = 'Packet sent/recv'

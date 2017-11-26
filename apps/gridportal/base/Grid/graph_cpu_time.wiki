@@ -4,10 +4,10 @@ target.1 =
     function:mean,
     value:value,
     series:machine.CPU.utilisation|m,
-    alias:CPU time $tag_cpu_nr,
+    alias:CPU time,
     interval:1m,
     condition:gid={gid} AND nid={id},
-    groupby:gid nid cpu_nr,
+    groupby:gid nid,
 
 cfg.title = 'CPU time'
 cfg.dashboardtitle = 'Node {nodename} ({gid}:{id}) CPU time'
