@@ -2,6 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from JumpScale.portal.portal.auth import auth
 import re
+import uuid
 
 class system_usermanager(j.code.classGetBase()):
 
@@ -135,6 +136,8 @@ class system_usermanager(j.code.classGetBase()):
 
     @auth(['admin'])
     def create(self, username, password, groups, emails, domain, provider=None, **kwargs):
+        if password is None:
+            password = str(uuid.uuid4())
         groups = groups or []
         return j.core.portal.active.auth.createUser(username, password, emails, groups, domain, provider)
 

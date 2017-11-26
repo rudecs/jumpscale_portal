@@ -17,7 +17,8 @@ def main(j, args, params, tags, tasklet):
     disk = j.core.portal.active.osis.get('system', 'disk', key)
     node = j.core.portal.active.osis.get('system', 'node', disk['nid'])
 
-    disk['usage'] = 100 - int(100.0 * float(disk['free']) / float(disk['size']))
+    if disk['size'] != 0.0:
+        disk['usage'] = 100 - int(100.0 * float(disk['free']) / float(disk['size']))
     disk['dpath'] = disk['path'] # path is reserved variable for path of request
     disk['bpath'] = j.system.fs.getBaseName(disk['path'])
     disk['name'] = disk['path'].split('/')[-1]

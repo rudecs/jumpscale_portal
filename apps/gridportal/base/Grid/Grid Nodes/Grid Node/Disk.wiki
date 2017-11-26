@@ -15,7 +15,9 @@ h2. Disk ${dpath}
 |*Path*|${dpath}|
 |*Size*|${size}|
 |*Free*|${free}|
+{% if usage -%}
 |*Usage*|${usage} %|
+{% endif -%}
 |*File System*|${fs}|
 |*Mounted*|${mounted}|
 |*Description*|${description}|
