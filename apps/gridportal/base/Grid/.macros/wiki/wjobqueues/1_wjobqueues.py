@@ -36,7 +36,7 @@ def main(j, args, params, tags, tasklet):
 
         if jobs is None:
             addnote = True
-            out.append('|N/A*|N/A*|N/A*|N/A*|%(nodename)s|[Details|workersjobs?nid=%(nid)s]|' % (data))
+            out.append('|N/A*|N/A*|N/A*|N/A*|%(nodename)s|No details available|' % (data))
             continue
 
 

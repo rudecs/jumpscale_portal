@@ -1,5 +1,6 @@
 @usedefault
 
+{% if name %}
 h2. Queued Jobs on Node: ${name}
 
 {{workersjobs nid:$$nid}}
@@ -14,7 +15,14 @@ h2. Queued Jobs on Node: ${name}
 {% for job in jobs -%}
 |[${job.id}|/grid/job?id=${job.guid}]|${job.state}|${job.queue}|${job.category}|${job.cmd}|${job.jscriptid}|{{ts:${job.timeStart}}}|{{ts:${job.timeStop}}}|
 {% endfor %}
-{% else %}
+{% elif jobs is defined %}
 _No Queued Jobs_
+{% else %}
+_Retrieving workers jobs has timed out_
 {% endif %}
+{% else %}
+_Specified node id doesn't exist_
+{% endif %}
+
+
 
