@@ -94,9 +94,8 @@ class DataTables():
             datainfo = self.getFromCache(key)
         except:
             raise exceptions.Gone('Table is not available anymore. Please refresh')
-        fieldids = datainfo['fieldids']
-        fieldvalues = datainfo['fieldvalues'] or fieldids
-        filters = datainfo["filters"] or dict()
+        fields = datainfo['fields']
+        filters = datainfo.get("filters") or dict()
         nativequery = datainfo.get('nativequery') or dict()
         nativequery = copy.deepcopy(nativequery)
         filters = filters.copy()
@@ -116,7 +115,7 @@ class DataTables():
                 colidx = kwargs['iSortCol_%s' % i]
                 key = 'bSortable_%s' % colidx
                 if kwargs[key] == 'true':
-                    colname = fieldids[int(colidx) - 1]
+                    colname = fields[int(colidx)]['id']
                     sort.append((colname,  1 if kwargs['sSortDir_%s' % i] == 'asc' else -1))
         if sort:
             fullquery['$orderby'] = sort
@@ -131,12 +130,13 @@ class DataTables():
             return query
 
         # filters
-        partials = dict()
-        for x in range(len(fieldids)):
+        for x in range(len(fields)):
             svalue = kwargs.get('sSearch_%s' % x)
             if kwargs.get('bSearchable_%s' % x) == 'true' and svalue:
-                fieldname = fieldids[x]
-                if svalue.isdigit():
+                x += 1
+                fieldname = fields[x]['id']
+                fieldtype = fields[x].get('type', 'auto')
+                if svalue.isdigit() and fieldtype != 'text':
                     if fieldname not in filters:
                         nativequery[fieldname] = int(svalue)
                 else:
@@ -153,8 +153,8 @@ class DataTables():
         if 'sSearch' in kwargs and kwargs['sSearch']:
             orquery = []
             nativequery['$or'] = orquery
-            for idname in fieldids:
-                orquery.append({idname: getRegexQuery(kwargs['sSearch'])})
+            for field in fields:
+                orquery.append({field['id']: getRegexQuery(kwargs['sSearch'])})
 
         queryresult = client.search(fullquery, size=size, start=start)
         total = queryresult[0]
@@ -165,8 +165,10 @@ class DataTables():
         result["iTotalDisplayRecords"] = total
         result["data"] = []
         for row in inn:
-            r = [row.get('id', 'NA')]
-            for field, fieldid in zip(fieldvalues, fieldids):
+            r = []
+            for fieldobj in fields:
+                field = fieldobj['value']
+                fieldid = fieldobj['id']
                 if field in row or j.basetype.integer.check(field):
                     value = row[field]
                     if isinstance(value, basestring):

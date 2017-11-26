@@ -1,6 +1,7 @@
 from JumpScale import j
 import re
 import json
+import itertools
 
 class GridDataTables:
 
@@ -32,18 +33,23 @@ class GridDataTables:
         @param fieldnames: list of str showed in the table header if ommited fieldids will be used
         @param fieldvalues: list of items resprenting the value of the data can be a callback
         """
-        key = j.apps.system.contentmanager.extensions.datatables.storInCache(fieldids=fieldids, fieldname=fieldnames, fieldvalues=fieldvalues, filters=filters, nativequery=nativequery)
+        fields = []
+        fieldnames = fieldnames or []
+        fieldvalues = fieldvalues or []
+        for fieldid, fieldname, fieldvalue in itertools.izip_longest(fieldids, fieldnames, fieldvalues):
+            if fieldname is None:
+                fieldname = fieldid
+            if fieldvalue is None:
+                fieldvalue = fieldid
+            fields.append({'id': fieldid, 'value': fieldvalue, 'name': fieldname})
+
+        key = j.apps.system.contentmanager.extensions.datatables.storInCache(fields=fields, filters=filters, nativequery=nativequery)
         url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
-        if not fieldnames:
-            fieldnames = fieldids
         tableid = 'table_%s_%s' % (namespace, category)
-        return self.addTableFromURL(url, fieldnames, tableid, selectable)
+        return self.addTableFromURLFields(url, fields, tableid, selectable)
 
     def addTableFromModel(self, namespace, category, fields, filters=None, nativequery=None, selectable=False):
-        fieldids = [x['id'] for x in fields]
-        fieldnames = [x['name'] for x in fields]
-        fieldvalues = [x['value'] for x in fields]
-        key = j.apps.system.contentmanager.extensions.datatables.storInCache(fieldids=fieldids, fieldname=fieldnames, fieldvalues=fieldvalues, filters=filters, nativequery=nativequery)
+        key = j.apps.system.contentmanager.extensions.datatables.storInCache(fields=fields, nativequery=nativequery)
         tableid = 'table_%s_%s' % (namespace, category)
         url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
         return self.addTableFromURLFields(url, fields, tableid, selectable)
@@ -159,7 +165,7 @@ $fields
 </div>"""
 
         fieldstext = ""
-        fields.insert(0, {'name': 'id'})
+        fields.insert(0, {'name': 'id', 'value': 'id', 'id': 'id'})
         for field in fields:
             name = field['name']
             classname = re.sub('[^\w]', '', name)
