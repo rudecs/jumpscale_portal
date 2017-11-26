@@ -3,7 +3,6 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    fieldnames = ['Grid ID', 'Name', 'Grid Node ID', 'IP Address', 'Roles']
     filters = dict()
     for tag, val in args.tags.tags.iteritems():
         if tag in ('gid', ) and val and not val.startswith("$$"):
@@ -12,9 +11,31 @@ def main(j, args, params, tags, tasklet):
         filters['roles'] = args.getTag('roles')
 
     namelink = '[%(name)s|/grid/Grid Node?id=%(id)s&gid=%(gid)s]'
-    fieldvalues = ['gid', namelink, 'id','ipaddr', 'roles']
-    fieldids = ['gid', 'name', 'id', 'ipaddr', 'roles']
-    tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters)
+    fields = [
+            {'name': 'Grid ID',
+             'id': 'gid',
+             'value': 'gid',
+            },
+            {'name': 'Name',
+             'id': 'name',
+             'value': namelink,
+            },
+            {'name': 'Grid Node ID',
+             'id': 'id',
+             'value': 'id',
+            },
+            {'name': 'IP Address',
+             'id': 'ipaddr',
+             'value': 'ipaddr',
+             'type': 'text',
+            },
+            {'name': 'Roles',
+             'id': 'roles',
+             'type': 'text',
+             'value': 'roles',
+            },
+    ]
+    tableid = modifier.addTableFromModel('system', 'node', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page

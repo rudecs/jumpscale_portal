@@ -23,14 +23,6 @@ def main(j, args, params, tags, tasklet):
     def makeLink(row, field):
         return '[%s|/grid/virtual machine?guid=%s]' % (row['name'], row['guid'])
 
-    def makeResult(row, field):
-        result = row[field]
-        try:
-            result = json.loads(result)
-        except:
-            pass
-        return j.html.escape(str(result))
-
     def makeMac(row, field):
         return '<br/>'.join(row[field])
 
@@ -38,10 +30,38 @@ def main(j, args, params, tags, tasklet):
         return '[%s|/grid/grid node?id=%s&gid=%s]' % (row['nid'], row['nid'], row['gid'])
 
 
-    fieldnames = ['Name', 'Status', 'Active', 'Memory', 'MAC Address', 'Node', 'CPU Cores']
-    fieldvalues = [makeLink, "state", "active", "mem", makeMac, makeNode, "cpucore"]
-    fieldids = ["name", "state", "active", "mem", "netaddr", "nid", "cpucore"]
-    tableid = modifier.addTableForModel('system', 'machine', fieldids, fieldnames, fieldvalues, nativequery=filters)
+    fields = [
+            {'name': 'Name',
+             'id': 'name',
+             'value': makeLink,
+             'type': 'text'
+            },
+            {'name': 'Status',
+             'id': 'state',
+             'value': 'state'
+            },
+            {'name': 'Memory (KiB)',
+             'id': 'mem',
+             'value': 'mem',
+             'type': 'int'
+            },
+            {'name': 'Mac Address',
+             'id': 'netaddr',
+             'value': makeMac,
+             'sortable': False,
+             'filterable': False,
+            },
+            {'name': 'Node',
+             'id': 'nid',
+             'value': makeNode,
+            },
+            {'name': 'CPU Cores',
+             'id': 'cpucore',
+             'value': 'cpucore',
+             'type': 'int'
+            },
+    ]
+    tableid = modifier.addTableFromModel('system', 'machine', fields, nativequery=filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 
