@@ -11,11 +11,11 @@ def main(j, args, params, tags, tasklet):
     now = datetime.datetime.now()
     aweekago = j.base.time.getEpochAgo('-7d')
     ecl = j.clients.osis.getCategory(cl, 'system', 'eco')
-    query = {'epoch': {'eq':'gt', 'value': aweekago, 'name': 'epoch'}}
+    query = {'epoch': {'eq':'gte', 'value': aweekago, 'name': 'lasttime'}}
     total, firsteco = ecl.simpleSearch(query, size=1, withtotal=True)
 
     last24h = j.base.time.getEpochAgo('-1d')
-    query = {'epoch': {'eq':'gt', 'value': last24h, 'name': 'epoch'}}
+    query = {'epoch': {'eq':'gte', 'value': last24h, 'name': 'lasttime'}}
     current, _ = ecl.simpleSearch(query, size=1, withtotal=True)
     average = total
 

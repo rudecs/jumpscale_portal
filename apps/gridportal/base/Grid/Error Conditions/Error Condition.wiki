@@ -27,6 +27,7 @@ ${errormessage}
 |*Job*|${jid}|
 |*Type*|${type}|
 |*Level*|${levelname}|
+|*State*|${state}|
 |*Creation Time*|${epoch}|
 |*Last Time*|${lasttime}|
 |*Occurrences*|${occurrences}|
