@@ -86,11 +86,9 @@ class system_contentmanager(j.code.classGetBase()):
 
     def modelobjectlist(self, namespace, category, key, **args):
         """
-        @todo describe what the goal is of this method
-        param:appname 
-        param:actorname 
-        param:modelname 
-        param:key         
+        param:namespace namespace of the model
+        param:cateogry cateogry of the model
+        param:key      
         """
         dtext = j.apps.system.contentmanager.extensions.datatables
         data = dtext.getData(namespace, category, key, **args)
@@ -147,7 +145,6 @@ class system_contentmanager(j.code.classGetBase()):
             j.core.portal.active.reset()
 
         j.core.portal.active.actorsloader.id2object.pop(id)
-
         j.core.portal.active.scheduler.scheduleFromNow(2, 9, reloadApp)
         j.core.portal.active.scheduler.scheduleFromNow(10, 9, reloadApp)
 

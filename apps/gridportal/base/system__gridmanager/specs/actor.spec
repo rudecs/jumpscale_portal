@@ -2,24 +2,24 @@
     """
     gateway to grid
     """    
-    method:getProcessStats
-        """     
-        ask the right processmanager on right node to get the information
-        """
-        var:nid int,,id of node 
-        var:domain str,,optional domain name for process @tags: optional
-        var:name str,,optional name for process @tags: optional
-        result:json
+    #method:getProcessStats
+    #    """     
+    #    ask the right processmanager on right node to get the information
+    #    """
+    #    var:nid int,,id of node 
+    #    var:domain str,,optional domain name for process @tags: optional
+    #    var:name str,,optional name for process @tags: optional
+    #    result:json
 
-    method:getProcessesActive @method:get,post
-        """     
-        ask the right processmanager on right node to get the info (this comes not from osis)
-        output all relevant info (no stat info for that we have getProcessStats)
-        """
-        var:nid int,,id of node (if not specified goes to all nodes and aggregates) @tags: optional
-        var:name str,,optional name for process name (part of process name) @tags: optional
-        var:domain str,,optional name for process domain (part of process domain) @tags: optional
-        result:json
+    #method:getProcessesActive @method:get,post
+    #    """     
+    #    ask the right processmanager on right node to get the info (this comes not from osis)
+    #    output all relevant info (no stat info for that we have getProcessStats)
+    #    """
+    #    var:nid int,,id of node (if not specified goes to all nodes and aggregates) @tags: optional
+    #    var:name str,,optional name for process name (part of process name) @tags: optional
+    #    var:domain str,,optional name for process domain (part of process domain) @tags: optional
+    #    result:json
 
     method:getJob @method:get,post
         """
@@ -28,15 +28,13 @@
         """
         var:id str,,obliged id of job @tags: optional
         var:guid str,,find based on guid @tags: optional
-        var:includeloginfo bool,,True,if true fetch all logs of job & return as well @tags: optional
-        var:includechildren bool,,True,if true look for jobs which are children & return that info as well @tags: optional
 
-    method:getNodeSystemStats @method:get,post
-        """     
-        ask the right processmanager on right node to get the information about node system
-        """
-        var:nid int,,id of node
-        result:json
+    #method:getNodeSystemStats @method:get,post
+    #    """     
+    #    ask the right processmanager on right node to get the information about node system
+    #    """
+    #    var:nid int,,id of node
+    #    result:json
 
     method:getStatImage @method:get,post
         """     
@@ -67,28 +65,28 @@
         var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find nodes with lastcheckTo  (-4d means 4 days ago) @tags: optional
         result:list(list)
 
-    method:getMachines @method:get,post
-        """     
-        list found machines (comes from osis)
-        """
-        result:list(list)
-        var:id int,,find based on id @tags: optional
-        var:guid str,,find based on guid @tags: optional
-        var:otherid str,,find based on 2nd id @tags: optional
-        var:gid int,,find nodes for specified grid @tags: optional
-        var:nid int,,find nodes for specified node @tags: optional
-        var:name str,,match on text in name @tags: optional
-        var:description str,,match on text in name @tags: optional
-        var:state str,,STARTED,STOPPED,RUNNING,FROZEN,CONFIGURED,DELETED @tags: optional
-        var:roles str,,match on comma separated list of roles (subsets also ok e.g. kvm.  would match all roles starting with kvm.) @tags: optional
-        var:ipaddr str,,comma separated list of ip addr to match against @tags: optional
-        var:macaddr str,,comma separated list of mac addr to match against @tags: optional
-        var:active bool,,True,is the machine still active @tags: optional
-        var:cpucore int,,find based on nr cpucore @tags: optional
-        var:mem int,,find based on mem in MB @tags: optional
-        var:type str,,KVM or LXC @tags: optional
-        var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find machines with lastcheckFrom  (-4d means 4 days ago) @tags: optional
-        var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find machines with lastcheckTo  (-4d means 4 days ago) @tags: optional
+    #method:getMachines @method:get,post
+    #    """     
+    #    list found machines (comes from osis)
+    #    """
+    #    result:list(list)
+    #    var:id int,,find based on id @tags: optional
+    #    var:guid str,,find based on guid @tags: optional
+    #    var:otherid str,,find based on 2nd id @tags: optional
+    #    var:gid int,,find nodes for specified grid @tags: optional
+    #    var:nid int,,find nodes for specified node @tags: optional
+    #    var:name str,,match on text in name @tags: optional
+    #    var:description str,,match on text in name @tags: optional
+    #    var:state str,,STARTED,STOPPED,RUNNING,FROZEN,CONFIGURED,DELETED @tags: optional
+    #    var:roles str,,match on comma separated list of roles (subsets also ok e.g. kvm.  would match all roles starting with kvm.) @tags: optional
+    #    var:ipaddr str,,comma separated list of ip addr to match against @tags: optional
+    #    var:macaddr str,,comma separated list of mac addr to match against @tags: optional
+    #    var:active bool,,True,is the machine still active @tags: optional
+    #    var:cpucore int,,find based on nr cpucore @tags: optional
+    #    var:mem int,,find based on mem in MB @tags: optional
+    #    var:type str,,KVM or LXC @tags: optional
+    #    var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find machines with lastcheckFrom  (-4d means 4 days ago) @tags: optional
+    #    var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find machines with lastcheckTo  (-4d means 4 days ago) @tags: optional
 
     method:getDisks @method:get,post
         """     
@@ -188,70 +186,70 @@
         var:source str,, who asked for the job is free text @tags: optional
 
 
-    method:getErrorconditions @method:get,post
-        """     
-        interface to get errorcondition information (eco)
-        #result:json array
-        """
-        var:id str,,only find 1 eco entry @tags: optional
-        var:level int,,level between 1 & 3; all levels underneath are found e.g. level 3 means all levels @tags: optional
-        var:descr str,,match on text in descr @tags: optional  
-        var:descrpub str,,match on text in descrpub @tags: optional
-        var:from_ str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find ecos from date specified  (-4d means 4 days ago) @tags: optional
-        var:to str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find ecos to date specified  @tags: optional
-        var:nid int,,find ecos for specified node @tags: optional
-        var:gid int,,find ecos for specified grid @tags: optional
-        var:category str,,match on multiple categories; are comma separated @tags: optional
-        var:tags str,,comma separted list of tags/labels @tags: optional
-        var:type int,,  optional unique type id for eco @tags: optional
-        var:jid int,,find ecos for specified job @tags: optional
-        var:jidparent str,,find ecos which are children of specified parent job @tags: optional        
-        var:jsorganization str,,find ecos coming from scripts from this org @tags: optional
-        var:jsname str,,find ecos coming from scripts with this name @tags: optional
+    #method:getErrorconditions @method:get,post
+    #    """     
+    #    interface to get errorcondition information (eco)
+    #    #result:json array
+    #    """
+    #    var:id str,,only find 1 eco entry @tags: optional
+    #    var:level int,,level between 1 & 3; all levels underneath are found e.g. level 3 means all levels @tags: optional
+    #    var:descr str,,match on text in descr @tags: optional  
+    #    var:descrpub str,,match on text in descrpub @tags: optional
+    #    var:from_ str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find ecos from date specified  (-4d means 4 days ago) @tags: optional
+    #    var:to str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find ecos to date specified  @tags: optional
+    #    var:nid int,,find ecos for specified node @tags: optional
+    #    var:gid int,,find ecos for specified grid @tags: optional
+    #    var:category str,,match on multiple categories; are comma separated @tags: optional
+    #    var:tags str,,comma separted list of tags/labels @tags: optional
+    #    var:type int,,  optional unique type id for eco @tags: optional
+    #    var:jid int,,find ecos for specified job @tags: optional
+    #    var:jidparent str,,find ecos which are children of specified parent job @tags: optional        
+    #    var:jsorganization str,,find ecos coming from scripts from this org @tags: optional
+    #    var:jsname str,,find ecos coming from scripts with this name @tags: optional
 
-    method:getAlerts @method:get,post
-        """     
-        interface to get alert (is optionally the result of an eco)
-        #result:json array
-        """
-        var:id str,,only find 1 alert entry @tags: optional
-        var:level int,,level between 1 & 3; all levels underneath are found e.g. level 3 means all levels, 1:critical, 2:warning, 3:info @tags: optional
-        var:descr str,,match on text in descr @tags: optional  
-        var:descrpub str,,match on text in descrpub @tags: optional
-        var:nid int,,find alerts for specified node @tags: optional
-        var:gid int,,find alerts for specified grid @tags: optional
-        var:category str,,match on multiple categories; are comma separated  @tags: optional
-        var:tags str,,comma separted list of tags/labels @tags: optional
-        var:state str,,NEW ALERT CLOSED @tags: optional
-        var:from_inittime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts from date specified when they happened first (-4d means 4 days ago) @tags: optional
-        var:to_inittime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts to date specified when they happened first  @tags: optional
-        var:from_lasttime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts from date specified when they happened last  (-4d means 4 days ago) @tags: optional
-        var:to_lasttime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts to date specified when they happened last  @tags: optional
-        var:from_closetime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts from date specified when they were closed  (-4d means 4 days ago) @tags: optional
-        var:to_closetime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts to date specified when they were closed  @tags: optional
-        var:nrerrorconditions int,,nr of times errorcondition happened @tags: optional
-        var:errorcondition str,,errorcondition(s) which caused this alert @tags: optional
+    #method:getAlerts @method:get,post
+    #    """     
+    #    interface to get alert (is optionally the result of an eco)
+    #    #result:json array
+    #    """
+    #    var:id str,,only find 1 alert entry @tags: optional
+    #    var:level int,,level between 1 & 3; all levels underneath are found e.g. level 3 means all levels, 1:critical, 2:warning, 3:info @tags: optional
+    #    var:descr str,,match on text in descr @tags: optional  
+    #    var:descrpub str,,match on text in descrpub @tags: optional
+    #    var:nid int,,find alerts for specified node @tags: optional
+    #    var:gid int,,find alerts for specified grid @tags: optional
+    #    var:category str,,match on multiple categories; are comma separated  @tags: optional
+    #    var:tags str,,comma separted list of tags/labels @tags: optional
+    #    var:state str,,NEW ALERT CLOSED @tags: optional
+    #    var:from_inittime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts from date specified when they happened first (-4d means 4 days ago) @tags: optional
+    #    var:to_inittime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts to date specified when they happened first  @tags: optional
+    #    var:from_lasttime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts from date specified when they happened last  (-4d means 4 days ago) @tags: optional
+    #    var:to_lasttime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts to date specified when they happened last  @tags: optional
+    #    var:from_closetime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts from date specified when they were closed  (-4d means 4 days ago) @tags: optional
+    #    var:to_closetime str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find alerts to date specified when they were closed  @tags: optional
+    #    var:nrerrorconditions int,,nr of times errorcondition happened @tags: optional
+    #    var:errorcondition str,,errorcondition(s) which caused this alert @tags: optional
 
 
-    method:getProcesses @method:get,post
-        """     
-        list processes (comes from osis), are the grid unique processes (not integrated with processmanager yet)
-        """
-        var:id str,,only find 1 process entry @tags: optional
-        var:guid str,,find based on guid @tags: optional
-        var:name str,,match on text in name @tags: optional
-        var:nid int,,find logs for specified node @tags: optional
-        var:gid int,,find logs for specified grid @tags: optional        
-        var:from_ str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes from date specified  (-4d means 4 days ago) @tags: optional
-        var:to str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes to date specified @tags: optional
-        var:active bool,,True,is the process still active @tags: optional
-        var:aysdomain str,, AYS domain of process @tags: optional
-        var:aysname str,, AYS name of process @tags: optional
-        var:instance str,, instance of process @tags: optional
-        var:systempid int,, pid on the system of process @tags: optional
-        var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckFrom  (-4d means 4 days ago) @tags: optional
-        var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckTo  (-4d means 4 days ago) @tags: optional
-        result:list(list)
+    #method:getProcesses @method:get,post
+    #    """     
+    #    list processes (comes from osis), are the grid unique processes (not integrated with processmanager yet)
+    #    """
+    #    var:id str,,only find 1 process entry @tags: optional
+    #    var:guid str,,find based on guid @tags: optional
+    #    var:name str,,match on text in name @tags: optional
+    #    var:nid int,,find logs for specified node @tags: optional
+    #    var:gid int,,find logs for specified grid @tags: optional        
+    #    var:from_ str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes from date specified  (-4d means 4 days ago) @tags: optional
+    #    var:to str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes to date specified @tags: optional
+    #    var:active bool,,True,is the process still active @tags: optional
+    #    var:aysdomain str,, AYS domain of process @tags: optional
+    #    var:aysname str,, AYS name of process @tags: optional
+    #    var:instance str,, instance of process @tags: optional
+    #    var:systempid int,, pid on the system of process @tags: optional
+    #    var:lastcheckFrom str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckFrom  (-4d means 4 days ago) @tags: optional
+    #    var:lastcheckTo str,,-4d;-4w;-4m;-1h;-1s  d=day w=week m=month s=sec  find processes with lastcheckTo  (-4d means 4 days ago) @tags: optional
+    #    result:list(list)
 
     method:getGrids @method:get,post
         """     
@@ -260,33 +258,33 @@
         result:list(list)
 
 
-    method:getJumpscripts @method:get,post
-        """
-        calls internally the agentcontroller
-        return: lists the jumpscripts with main fields (organization, name, category, descr)
-        """
-        var:organization str,,find jumpscripts @tags: optional
-        var:active bool,,is session active or not @tags: optional
+    #method:getJumpscripts @method:get,post
+    #    """
+    #    calls internally the agentcontroller
+    #    return: lists the jumpscripts with main fields (organization, name, category, descr)
+    #    """
+    #    var:organization str,,find jumpscripts @tags: optional
+    #    var:active bool,,is session active or not @tags: optional
         
-    method:getJumpscript @method:get,post
-        """
-        calls internally the agentcontroller to fetch detail for 1 jumpscript
-        """
-        var:organization str,,
-        var:name str,,
+    #method:getJumpscript @method:get,post
+    #    """
+    #    calls internally the agentcontroller to fetch detail for 1 jumpscript
+    #    """
+    #    var:organization str,,
+    #    var:name str,,
 
-    method:getAgentControllerSessions @method:get,post
-        """
-        calls internally the agentcontroller
-        """ 
-        var:roles str,,match on comma separated list of roles (subsets also ok e.g. kvm.  would match all roles starting with kvm.) @tags: optional
-        var:nid int,,find for specified node (on which agents are running which have sessions with the agentcontroller) @tags: optional
-        var:active bool,,is session active or not @tags: optional
+    #method:getAgentControllerSessions @method:get,post
+    #    """
+    #    calls internally the agentcontroller
+    #    """ 
+    #    var:roles str,,match on comma separated list of roles (subsets also ok e.g. kvm.  would match all roles starting with kvm.) @tags: optional
+    #    var:nid int,,find for specified node (on which agents are running which have sessions with the agentcontroller) @tags: optional
+    #    var:active bool,,is session active or not @tags: optional
 
-    method:getAgentControllerActiveJobs @method:get,post
-        """
-        calls internally the agentcontroller
-        list jobs now running on agentcontroller
-        """
+    #method:getAgentControllerActiveJobs @method:get,post
+    #    """
+    #    calls internally the agentcontroller
+    #    list jobs now running on agentcontroller
+    #    """
 
 

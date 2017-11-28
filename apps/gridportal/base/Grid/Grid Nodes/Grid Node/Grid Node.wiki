@@ -32,7 +32,7 @@ h3. Info
 h3. Statistics
 
 * [*Statistics*|Node Stats?id=${id}&gid=${gid}]
-#* [*Real Time Statistics*|RealTimeStatsNode?nid=${id}]
+
 
 h3. NICs
 {{nics: nid:$$id}}

@@ -235,7 +235,7 @@ class system_gridmanager(j.code.classGetBase()):
         client = self.getClient(nid)
         return client.getProcessesActive(domain, name)
 
-    def getJob(self, id, includeloginfo, includechildren, guid=None, **kwargs):
+    def getJob(self, id, guid=None, **kwargs):
         """
         gets relevant info of job (also logs)
         can be used toreal time return job info

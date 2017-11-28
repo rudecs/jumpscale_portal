@@ -14,15 +14,6 @@ class system_contentmanager(j.code.classGetBase()):
         #system_contentmanager_osis.__init__(self)
 
 
-    def bitbucketreload(self, spacename, **kwargs):
-        """
-        Reload all spaces from bitbucket post
-        param:spacename 
-        result list
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method bitbucketreload")
-
     def checkEvents(self, cursor, **kwargs):
         """
         Check for events
@@ -46,28 +37,6 @@ class system_contentmanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getActorsWithPaths")
 
-    def getBuckets(self, **kwargs):
-        """
-        result list(str)
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getBuckets")
-
-    def getBucketsWithPaths(self, **kwargs):
-        """
-        result list([name,path])
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getBucketsWithPaths")
-
-    def getContentDirsWithPaths(self, **kwargs):
-        """
-        return root dirs of content (actors,buckets,spaces)
-        result list([name,path])
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getContentDirsWithPaths")
-
     def getSpaces(self, **kwargs):
         """
         result list(str)
@@ -85,8 +54,8 @@ class system_contentmanager(j.code.classGetBase()):
     def modelobjectlist(self, namespace, category, key, **kwargs):
         """
         @todo describe what the goal is of this method
-        param:namespace 
-        param:category 
+        param:namespace namespace of the model
+        param:category category of the model
         param:key 
         result list
         """
@@ -104,14 +73,6 @@ class system_contentmanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method modelobjectupdate")
 
-    def notifyActorDelete(self, id, **kwargs):
-        """
-        param:id id of space which changed
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifyActorDelete")
-
     def notifyActorModification(self, id, **kwargs):
         """
         param:id id of actor which changed
@@ -123,61 +84,11 @@ class system_contentmanager(j.code.classGetBase()):
     def notifyActorNew(self, path, name, **kwargs):
         """
         param:path path of content which got changed
-        param:name name
+        param:name name of actor
         result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method notifyActorNew")
-
-    def notifyActorNewDir(self, actorname, path, actorpath='', **kwargs):
-        """
-        param:actorname 
-        param:actorpath  default=
-        param:path 
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifyActorNewDir")
-
-    def notifyBucketDelete(self, id, **kwargs):
-        """
-        param:id id of bucket which changed
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifyBucketDelete")
-
-    def notifyBucketModification(self, id, **kwargs):
-        """
-        param:id id of bucket which changed
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifyBucketModification")
-
-    def notifyBucketNew(self, path, name, **kwargs):
-        """
-        param:path path of content which got changed
-        param:name name
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifyBucketNew")
-
-    def notifyFiledir(self, path, **kwargs):
-        """
-        param:path path of content which got changed
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifyFiledir")
-
-    def notifySpaceDelete(self, id, **kwargs):
-        """
-        param:id id of space which changed
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifySpaceDelete")
 
     def notifySpaceModification(self, id, **kwargs):
         """
@@ -195,18 +106,6 @@ class system_contentmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method notifySpaceNew")
-
-    def notifySpaceNewDir(self, spacename, path, spacepath='', **kwargs):
-        """
-        param:spacename 
-        param:spacepath  default=
-        param:path 
-        """
-        args={}
-        args["spacename"]=spacename
-        args["spacepath"]=spacepath
-        args["path"]=path
-        return self._te["notifySpaceNewDir"].execute4method(args,params={},actor=self)
 
     def prepareActorSpecs(self, app, actor, **kwargs):
         """

@@ -3,11 +3,11 @@
 	this actor manages all content on the wiki
 	can e.g. notify wiki/appserver of updates of content
 	"""    
-    method:notifyFiledir @method:get,post
-		"""		
-		"""
-		var:path str,,path of content which got changed
-        result:bool    
+    #method:notifyFiledir @method:get,post
+	#	"""		
+	#	"""
+	#	var:path str,,path of content which got changed
+    #   result:bool    
 
     method:getSpaces @method:get,post
 		"""		
@@ -19,26 +19,26 @@
 		"""
         result:list([name,path])
 
-    method:getContentDirsWithPaths @method:get,post
-		"""		
-		return root dirs of content (actors,buckets,spaces)
-		"""
-        result:list([name,path])
+    #method:getContentDirsWithPaths @method:get,post
+	#	"""		
+	#	return root dirs of content (actors,buckets,spaces)
+	#	"""
+    #   result:list([name,path])
 
-    method:getBucketsWithPaths @method:get,post
-		"""		
-		"""
-        result:list([name,path])
+    #method:getBucketsWithPaths @method:get,post
+	#	"""		
+	#	"""
+    #    result:list([name,path])
  
     method:getActorsWithPaths @method:get,post
         """		
         """
         result:list([name,path])
  
-    method:getBuckets @method:get,post
-		"""		
-		"""
-        result:list(str)
+    #method:getBuckets @method:get,post
+	#	"""		
+	#	"""
+    #    result:list(str)
 
     method:getActors @method:get,post
 		"""		
@@ -60,36 +60,36 @@
 		var:name str,,name 
 		result:bool    
 
-    method:notifySpaceDelete @method:get,post
-		"""		
-		"""
-		var:id str,,id of space which changed
-		result:bool    
+    #method:notifySpaceDelete @method:get,post
+	#	"""		
+	#	"""
+	#	var:id str,,id of space which changed
+	#	result:bool    
 
-    method:notifyBucketDelete @method:get,post
-		"""		
-		"""
-		var:id str,,id of bucket which changed
-		result:bool  
+    #method:notifyBucketDelete @method:get,post
+	#	"""		
+	#	"""
+	#	var:id str,,id of bucket which changed
+	#	result:bool  
 
-    method:notifyBucketModification @method:get,post
-		"""		
-		"""
-		var:id str,,id of bucket which changed
-        result:bool    
+    #method:notifyBucketModification @method:get,post
+	#	"""		
+	#	"""
+	#	var:id str,,id of bucket which changed
+    #   result:bool    
 
-    method:notifyBucketNew @method:get,post
-		"""		
-		"""
-		var:path str,,path of content which got changed
-		var:name str,,name 
-		result:bool    
+    #method:notifyBucketNew @method:get,post
+	#	"""		
+	#	"""
+	#	var:path str,,path of content which got changed
+	#	var:name str,,name 
+	#	result:bool    
 
     method:notifyActorNew @method:get,post
 		"""		
 		"""
 		var:path str,,path of content which got changed
-		var:name str,,name 
+		var:name str,,name of actor
 		result:bool 
 
     method:notifyActorModification @method:get,post
@@ -98,11 +98,11 @@
 		var:id str,,id of actor which changed
         result:bool  
 
-    method:notifyActorDelete @method:get,post
-		"""		
-		"""
-		var:id str,,id of space which changed
-		result:bool 
+    #method:notifyActorDelete @method:get,post
+	#	"""		
+	#	"""
+	#	var:id str,,id of space which changed
+	#	result:bool 
 
 
     method:prepareActorSpecs
@@ -124,17 +124,17 @@
         """
         @todo describe what the goal is of this method
         """
-        var:namespace str,,
-        var:category str,,
+        var:namespace str,, namespace of the model
+        var:category str,, category of the model
         var:key str,,
         result:list
 
-    method:bitbucketreload @noauth method:get,post
-        """
-        Reload all spaces from bitbucket post
-        """
-        var:spacename str,,
-        result:list
+    #method:bitbucketreload @noauth method:get,post
+    #    """
+    #    Reload all spaces from bitbucket post
+    #   """
+    #   var:spacename str,,
+    #   result:list
 
     method:modelobjectupdate @noauth returnformat:html
         """
@@ -145,19 +145,19 @@
         var:key str,,
         result:html
 
-    method:notifySpaceNewDir @noauth tasklets method:get,post
-        """
-        """
-        var:spacename str,,
-        var:spacepath str,"",
-        var:path str,,
+    #method:notifySpaceNewDir @noauth tasklets method:get,post
+    #    """
+    #    """
+    #    var:spacename str,,
+    #    var:spacepath str,"",
+    #    var:path str,,
 
-    method:notifyActorNewDir @noauth method:get,post
-        """
-        """
-        var:actorname str,,
-        var:actorpath str,"",
-        var:path str,,
+    #method:notifyActorNewDir @noauth method:get,post
+    #    """
+    #    """
+    #    var:actorname str,,
+    #    var:actorpath str,"",
+    #    var:path str,,
 
 
     method:checkEvents @method:get

@@ -78,12 +78,12 @@
         var:id str,,id/name of group @tags validator:groupname
         result:bool    #True if successful, False otherwise
 
-    method:usergroupsget
-        """
-        return list of groups in which user is member of
-        """
-        var:user str,,name of user @tags validator:username
-        result:list(str)
+    #method:usergroupsget
+    #    """
+    #    return list of groups in which user is member of
+    #    """
+    #    var:user str,,name of user @tags validator:username
+    #    result:list(str)
 
     method:whoami @noauth
         """
