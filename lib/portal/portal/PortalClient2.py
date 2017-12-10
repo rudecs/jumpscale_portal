@@ -1,10 +1,22 @@
 import requests
 import os
+import json
 
 
 class ApiError(Exception):
+
     def __init__(self, response):
-        super(ApiError, self).__init__('%s %s' % (response.status_code, response.reason))
+        msg = '%s %s' % (response.status_code, response.reason)
+        try:
+            message = response.json()
+        except BaseException:
+            message = response.content
+        if isinstance(message, (str, bytes)):
+            msg += '\n%s' % message
+        elif isinstance(message, dict) and 'errormessage' in message:
+            msg += '\n%s' % message['errormessage']
+
+        super(ApiError, self).__init__(msg)
         self._response = response
 
     @property
@@ -13,9 +25,11 @@ class ApiError(Exception):
 
 
 class BaseResource(object):
+
     def __init__(self, session, url):
         self._session = session
         self._url = url
+        self._method = 'POST'
 
     def __getattr__(self, item):
         url = os.path.join(self._url, item)
@@ -24,7 +38,7 @@ class BaseResource(object):
         return resource
 
     def __call__(self, **kwargs):
-        response = self._session.post(self._url, kwargs)
+        response = self._session.request(self._method, self._url, kwargs)
 
         if not response.ok:
             raise ApiError(response)
@@ -36,13 +50,39 @@ class BaseResource(object):
 
 
 class Resource(BaseResource):
+
     def __init__(self, ip, port, secret, path):
         session = requests.Session()
 
         if secret is not None:
-            session.cookies['beaker.session.id'] = secret
+            session.headers['Authorization'] = 'authkey {}'.format(secret)
 
         scheme = "http" if port != 443 else "https"
         url = "%s://%s:%s/%s" % (scheme, ip, port, path.lstrip('/'))
 
         super(Resource, self).__init__(session, url)
+
+    def load_swagger(self, file=None, group=None):
+        if file:
+            with open(file) as fd:
+                swagger = json.load(fd)
+        else:
+            swagger = self.system.docgenerator.prepareCatalog(group=group)
+
+        for methodpath, methodspec in swagger['paths'].items():
+            api = self
+            for path in methodpath.split('/')[1:]:
+                api = getattr(api, path)
+            method = 'post'
+            if 'post' not in methodspec and methodspec:
+                method = list(methodspec.keys())[0]
+            api._method = method
+            docstring = methodspec[method]['description']
+            for param in methodspec[method].get('parameters', list()):
+                param['type'] = param['type'] if 'type' in param else str(
+                    param.get('$ref', 'unknown'))
+                docstring += """
+                :param %(name)s: %(description)s required %(required)s
+                :type %(name)s: %(type)s""" % param
+            api.__doc__ = docstring
+        return swagger
