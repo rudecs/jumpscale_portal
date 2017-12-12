@@ -105,15 +105,6 @@ class system_usermanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method userget")
 
-    def usergroupsget(self, user, **kwargs):
-        """
-        return list of groups in which user is member of
-        param:user name of user
-        result list(str)
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method usergroupsget")
-
     def whoami(self, **kwargs):
         """
         return username

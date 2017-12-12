@@ -786,9 +786,7 @@ class PortalServer:
 
         eco.caller = remoteAddress
         if msg != "":
-            eco.errormessage = msg
-        else:
-            eco.errormessage = ""
+            eco.errormessage += "\n" + msg
         if msginfo != "":
             eco.errormessage += "\msginfo was:\n%s" % msginfo
         if queryString != "":
