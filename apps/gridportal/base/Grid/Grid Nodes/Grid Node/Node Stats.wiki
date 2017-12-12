@@ -12,6 +12,7 @@
 
 h2. Statistics ${gridname}: ${nodename} ([$$gid:$$id|/grid/grid node?id=$$id&gid=$$gid])
 
+{%if stats%}
 @row
 @col 6
 {{include:graph_memory}}
@@ -35,3 +36,7 @@ h2. Statistics ${gridname}: ${nodename} ([$$gid:$$id|/grid/grid node?id=$$id&gid
 {{include:graph_disk_throughput}}
 @colend
 @rowend
+{% else %}
+No statistics information available for this node.
+Only available for nodes with following roles: cpunode, storagenode, controller.
+{% endif %}

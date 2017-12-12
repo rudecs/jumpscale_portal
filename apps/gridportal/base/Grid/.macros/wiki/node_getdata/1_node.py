@@ -16,6 +16,8 @@ def main(j, args, params, tags, tasklet):
     osis = j.core.portal.active.osis
 
     node = None
+    stat_roles = ['controller', 'cpunode', 'storagenode']
+
     if osis.exists('system', 'node', '%s_%s' % (gid, nid)):
         node = osis.get('system', 'node', '%s_%s' % (gid, nid))
     grid = {'name': 'N/A'}
@@ -28,6 +30,11 @@ def main(j, args, params, tags, tasklet):
     #obj is a dict
     node["ipaddr"]=", ".join(node["ipaddr"])
     node["roles"]=", ".join(node["roles"])
+    node['stats'] = False
+    for stat_role in stat_roles:
+        if stat_role in node["roles"]:
+            node['stats'] = True
+            break
 
     r=""
     for netitem in node["netaddr"]:
