@@ -35,6 +35,10 @@ class Redirect(BaseError):
         BaseError.__init__(self, 302, headers, "")
 
 
+class Accepted(Error):
+    CODE = 202
+
+
 class BadRequest(Error):
     CODE = 400
 
