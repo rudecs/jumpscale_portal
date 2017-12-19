@@ -35,7 +35,7 @@ class PortalRest():
                     return func(val)
             return wrapper
 
-        convertermap = {'int': ((int, types.NoneType), emptyisnone(j.basetype.integer.fromString)),
+        convertermap = {'int': ((int, long, types.NoneType), emptyisnone(j.basetype.integer.fromString)),
                         'float': ((float, int, types.NoneType), emptyisnone(j.basetype.float.fromString)),
                         'bool': ((bool,  types.NoneType), emptyisnone(j.basetype.boolean.fromString))
                         }
@@ -65,7 +65,7 @@ class PortalRest():
                 if not isinstance(ctx.params[key], type_):
                     try:
                         ctx.params[key] = converter(ctx.params[key])
-                    except ValueError:
+                    except (ValueError, TypeError):
                         raise exceptions.BadRequest('Value of param %s not correct needs to be of type %s' % (key, param['type']))
             elif param['type'] == 'list':
                 loadList(key)
