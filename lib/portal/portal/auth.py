@@ -54,7 +54,7 @@ class AuditMiddleWare(object):
         audit = env.get('JS_AUDIT')
         if audit or statinfo['status'] >= 400:
             ctx = env.get('JS_CTX')
-            tags = env['beaker.session']["tags"]
+            tags = env['beaker.session'].get('tags', '')
             user = env['beaker.session'].get('user', 'Unknown')
             kwargs = ctx.params.copy() if ctx else {}
             if j.core.portal.active.authentication_method:

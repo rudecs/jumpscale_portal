@@ -1,5 +1,5 @@
 import urllib
-
+import requests
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from JumpScale.baselib.oauth.OauthInstance import AuthError
@@ -87,6 +87,9 @@ class system_oauth(j.code.classGetBase()):
         try:
             accesstoken = client.getAccessToken(code, state)
             userinfo = client.getUserInfo(accesstoken)
+            session = ctx.env['beaker.session']
+            if hasattr(client, "extra"):
+                client.extra(session, accesstoken)
         except AuthError as e:
             return authfailure(str(e))
         except Exception as e:
