@@ -24,6 +24,7 @@ def generate_groupby(line):
         obj = {'params':[tag],'type':'tag'}
         groupby.append(obj)
     groupby.append({'params':['$interval'],'type':'time'})
+    groupby.append({'params':['none'],'type':'fill'})
     return groupby
 
 
