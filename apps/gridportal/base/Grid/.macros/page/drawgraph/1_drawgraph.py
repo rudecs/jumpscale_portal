@@ -209,7 +209,7 @@ def main(j, args, params, tags, tasklet):
     result = grafclient.updateDashboard(dashboard)
     cfg['slug'] = result['slug']
     page.addHTML("""
-        <iframe width="%(width)s" height="%(height)s" src="/grafana/dashboard-solo/db/%(slug)s?panelId=1&fullscreen&theme=light" frameborder="0"></iframe>""" % cfg)
+        <iframe width="%(width)s" height="%(height)s" src="/grafana/dashboard-solo/db/%(slug)s?panelId=1&theme=light" frameborder="0"></iframe>""" % cfg)
     params.result = page
     return params
 
