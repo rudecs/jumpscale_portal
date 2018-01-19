@@ -6,6 +6,7 @@ import os.path
 import copy
 
 fs = j.system.fs
+jenv = jinja2.Environment(variable_start_string="${", variable_end_string="}")
 
 class HeaderTools():
 
@@ -45,9 +46,8 @@ def _escape(object, cb):
     return object
 
 class Doc(object):
-
     def __init__(self, docpreprocessor):
-        self.jenv = jinja2.Environment(variable_start_string="${", variable_end_string="}")
+        self.jenv = jenv
         self.name = ""
         self.appliedparams = dict()
         self.alias = []

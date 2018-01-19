@@ -508,8 +508,9 @@ class PortalServer:
         else:
             doc = spacedocgen.name2doc[name]
 
-        doc.loadFromDisk()
 
+        doc = doc.copy()
+        doc.loadFromDisk()
         headers = [('Content-Type', 'text/html')]
         if name == "pagenotfound":
             ctx.start_response("404 Not found", headers)
