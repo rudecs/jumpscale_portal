@@ -8,7 +8,7 @@ class system_contentmanager(j.code.classGetBase()):
     """
     this actor manages all content on the wiki
     can e.g. notify wiki/appserver of updates of content
-    
+
     """
 
     def __init__(self):
@@ -20,15 +20,15 @@ class system_contentmanager(j.code.classGetBase()):
 
     def getActors(self, **args):
         """
-        result list(str) 
-        
+        result list(str)
+
         """
         return list(j.core.portal.active.actorsloader.actors.keys())
 
     def getActorsWithPaths(self, **args):
         """
-        result list([name,path]) 
-        
+        result list([name,path])
+
         """
         actors = []
         for actor in list(j.core.portal.active.actorsloader.id2object.keys()):
@@ -36,29 +36,11 @@ class system_contentmanager(j.code.classGetBase()):
             actors.append([actor.model.id, actor.model.path])
         return actors
 
-    def getBuckets(self, **args):
-        """
-        result list(str) 
-        
-        """
-        return list(j.core.portal.active.bucketsloader.buckets.keys())
-
-    def getBucketsWithPaths(self, **args):
-        """
-        result list([name,path]) 
-        
-        """
-        buckets = []
-        for bucket in list(j.core.portal.active.bucketsloader.id2object.keys()):
-            bucket = j.core.portal.active.bucketsloader.id2object[bucket]
-            buckets.append([bucket.model.id, bucket.model.path])
-        return buckets
-
     def getContentDirsWithPaths(self, **args):
         """
         return root dirs of content (actors,buckets,spaces)
-        result list([name,path]) 
-        
+        result list([name,path])
+
         """
         objects = []
         for objectname in list(j.core.portal.active.contentdirs.keys()):
@@ -68,15 +50,15 @@ class system_contentmanager(j.code.classGetBase()):
 
     def getSpaces(self, **args):
         """
-        result list(str) 
-        
+        result list(str)
+
         """
         return list(j.core.portal.active.spacesloader.spaces.keys())
 
     def getSpacesWithPaths(self, **args):
         """
-        result list([name,path]) 
-        
+        result list([name,path])
+
         """
         spaces = []
         for space in list(j.core.portal.active.spacesloader.spaces.keys()):
@@ -88,7 +70,7 @@ class system_contentmanager(j.code.classGetBase()):
         """
         param:namespace namespace of the model
         param:cateogry cateogry of the model
-        param:key      
+        param:key
         """
         dtext = j.apps.system.contentmanager.extensions.datatables
         data = dtext.getData(namespace, category, key, **args)
@@ -97,11 +79,11 @@ class system_contentmanager(j.code.classGetBase()):
     def modelobjectupdate(self, appname, actorname, key, **args):
         """
         post args with ref_$id which refer to the key which is stored per actor in the cache
-        param:appname 
-        param:actorname 
-        param:key 
-        result html 
-        
+        param:appname
+        param:actorname
+        param:key
+        result html
+
         """
         actor = j.apps.__dict__[appname].__dict__[actorname]
         ctx = args["ctx"]
@@ -122,37 +104,16 @@ class system_contentmanager(j.code.classGetBase()):
     def notifyActorDelete(self, id, **args):
         """
         param:id id of space which changed
-        result bool 
-        
+        result bool
+
         """
         self.reloadAll(id)
-
-    def bitbucketreload(self, spacename, **args):
-        import os
-        s = os.getcwd()
-        path = s.split('/apps/')[0]
-        mc = j.clients.mercurial.getClient(path)
-        mc.pullupdate()
-        if spacename != 'None':
-            j.core.portal.active.loadSpace(spacename)
-        else:
-            j.core.portal.active.loadSpace(self.appname)
-        return []
-
-    def reloadAll(self, id):
-        def reloadApp():
-            print("RELOAD APP FOR ACTORS Delete")
-            j.core.portal.active.reset()
-
-        j.core.portal.active.actorsloader.id2object.pop(id)
-        j.core.portal.active.scheduler.scheduleFromNow(2, 9, reloadApp)
-        j.core.portal.active.scheduler.scheduleFromNow(10, 9, reloadApp)
 
     def notifyActorModification(self, id, **args):
         """
         param:id id of actor which changed
-        result bool 
-        
+        result bool
+
         """
         loaders = j.core.portal.active.actorsloader
         loader = loaders.getLoaderFromId(id)
@@ -162,8 +123,8 @@ class system_contentmanager(j.code.classGetBase()):
         """
         param:path path of content which got changed
         param:name name
-        result bool 
-        
+        result bool
+
         """
         result = False
         key = name.strip().lower()
@@ -192,135 +153,29 @@ class system_contentmanager(j.code.classGetBase()):
 
     def notifyActorNewDir(self, actorname, actorpath, path, **args):
         """
-        param:actorname 
-        param:actorpath 
-        param:path 
-        
+        param:actorname
+        param:actorpath
+        param:path
+
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method notifyActorNewDir")
 
-    def notifyBucketDelete(self, id, **args):
-        """
-        param:id id of bucket which changed
-        result bool 
-        
-        """
-        result = None
-
-        # immediate remove
-        loaders = j.core.portal.active.bucketsloader
-        loaders.removeLoader(id)
-
-        def reloadApp(id=None):
-            j.core.portal.active.loadSpaces(reset=True)
-
-        # loader.pop(id)
-        # j.core.portal.active.scheduler.scheduleFromNow(1,9,reloadApp,id=id)
-        j.core.portal.active.scheduler.scheduleFromNow(10, 9, reloadApp, id=id)
-        return result
-
-    def notifyBucketModification(self, id, **args):
-        """
-        param:id id of bucket which changed
-        result bool 
-        
-        """
-        loaders = j.core.portal.active.bucketsloader
-        loader = loaders.getLoaderFromId(id)
-        loader.reset()
-
-    def notifyBucketNew(self, path, name, **args):
-        """
-        param:path path of content which got changed
-        param:name name
-        result bool 
-        
-        """
-        result = False
-
-        key = name.strip().lower()
-        path = path
-
-        loader = j.core.portal.active.bucketsloader
-
-        if key not in loader.id2object:
-            # does not exist yet, create required dirs in basedir
-            if path == "":
-                path = j.system.fs.joinPaths(j.core.portal.active.basepath, "buckets", key)
-                j.system.fs.createDir(path)
-                j.system.fs.createDir(j.system.fs.joinPaths(path, ".bucket"))
-            else:
-                j.system.fs.createDir(path)
-                j.system.fs.createDir(j.system.fs.joinPaths(path, ".bucket"))
-
-            loader.scan(path)
-            result = True
-        else:
-            result = False
-
-        return result
-
     def notifyFiledir(self, path, **args):
         """
         param:path path of content which got changed
-        result bool 
-        
+        result bool
+
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method notifyFiledir")
-
-    def notifySpaceDelete(self, id, **args):
-        """
-        param:id id of space which changed
-        result bool 
-        
-        """
-
-        # immediate remove
-        loaders = j.core.portal.active.spacesloader
-        loaders.removeLoader(id)
-
-        def reloadApp():
-            print("RELOAD APP SPACE DELETE")
-            j.core.portal.active.loadSpaces(reset=True)
-
-        # loader=j.core.portal.active.spacesloader.id2object
-        # loader.pop(id)
-
-        j.core.portal.active.scheduler.scheduleFromNow(10, 9, reloadApp)
-
-    def notifySpaceModification(self, id, **args):
-        """
-        param:id id of space which changed
-        result bool 
-        
-        """
-        id=id.lower()
-        loaders = j.core.portal.active.spacesloader
-        loader = loaders.getLoaderFromId(id)
-        loader.reset()
-
-        ctx=args["ctx"]
-
-        if "payload" in ctx.params:
-
-            payload=ujson.loads(ctx.params["payload"])
-
-            owner=payload["repository"]["owner"]
-            name=payload["repository"]["name"]
-
-            cmd="cd /opt/code/%s/%s;hg pull;hg update -C"%(owner,name)
-            print("execute %s"%cmd)
-            j.system.process.execute(cmd)
-
 
     def notifySpaceNew(self, path, name, **args):
         """
         param:path path of content which got changed
         param:name name
-        result bool 
-        
+        result bool
+
         """
         result = False
 
@@ -351,10 +206,10 @@ class system_contentmanager(j.code.classGetBase()):
 
     def notifySpaceNewDir(self, spacename, spacepath, path, **args):
         """
-        param:spacename 
-        param:spacepath 
-        param:path 
-        
+        param:spacename
+        param:spacepath
+        param:path
+
         """
         args = {}
         args["spacename"] = spacename
@@ -367,8 +222,8 @@ class system_contentmanager(j.code.classGetBase()):
         compress specs for specific actor and targz in appropriate download location
         param:app name of app
         param:actor name of actor
-        result bool 
-        
+        result bool
+
         """
         result = None
 
@@ -396,8 +251,8 @@ class system_contentmanager(j.code.classGetBase()):
         """
         param:cachekey key to the doc
         param:text content of file to edit
-        result bool 
-        
+        result bool
+
         """
         try:
             contents = j.apps.system.contentmanager.dbmem.cacheGet(cachekey)
