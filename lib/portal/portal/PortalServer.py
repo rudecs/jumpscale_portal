@@ -958,6 +958,7 @@ class PortalServer:
                                                                      extraParams={"path": path})), 'text/html')
 
                 session['user'] = '{username}@{iss}'.format(**payload)
+                session['jwt'] = token
                 session.save()
             elif type.lower() == 'authkey':
                 if token == self.secret:
