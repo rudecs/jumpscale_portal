@@ -11,3 +11,4 @@ API:/system/actorsdocs
 #Stats:/system/stats
 Portal Logs:/system/PortalLogs
 Access Overview:/system/overviewaccess
+Logo:/system/Logo
