@@ -225,6 +225,14 @@ class Popup(object):
                         return;
 
                     } else {
+                        try {
+                            if (responseText.redirect_url) {
+                                window.location = responseText.redirect_url;
+                                return;
+                            }
+                        } catch (e) {
+                            // dont do anything just use errortext
+                        }
                         this.popup.find('.modal').modal('hide');
                     }
                     if (this.popup.data('navigateback') === true) {
