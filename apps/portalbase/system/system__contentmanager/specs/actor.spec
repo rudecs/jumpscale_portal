@@ -84,3 +84,14 @@
         """
         var:cursor int,,cursor to get from
         result:dict
+
+
+    method:sendEvent
+        """
+        Send an event
+        """
+        var:title str,,title of the message
+        var:text str,,text of the message
+        var:level str,,level of the message
+        var:eventstreamid str,,stream id of the event @optional
+        result:bool

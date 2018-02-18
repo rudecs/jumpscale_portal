@@ -90,14 +90,6 @@ class system_contentmanager(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method notifyActorNew")
 
-    def notifySpaceModification(self, id, **kwargs):
-        """
-        param:id id of space which changed
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method notifySpaceModification")
-
     def notifySpaceNew(self, path, name, **kwargs):
         """
         param:path path of content which got changed
@@ -116,6 +108,18 @@ class system_contentmanager(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method prepareActorSpecs")
+
+    def sendEvent(self, title, text, level, eventstreamid, **kwargs):
+        """
+        Send an event
+        param:title title of the message
+        param:text text of the message
+        param:level level of the message
+        param:eventstreamid stream id of the event
+        result bool
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method sendEvent")
 
     def wikisave(self, cachekey, text, **kwargs):
         """

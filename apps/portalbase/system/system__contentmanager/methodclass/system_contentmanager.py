@@ -268,3 +268,12 @@ class system_contentmanager(j.code.classGetBase()):
     def checkEvents(self, cursor, **kwargs):
         ctx = kwargs['ctx']
         return ctx.events.get(cursor)
+
+    @auth(['admin'])
+    def sendEvent(self, title, text, level, eventstreamid=None, **kwargs):
+        ctx = kwargs.pop('ctx')
+        if eventstreamid is not None:
+            kwargs['eventstreamid'] = eventstreamid
+        ctx.events.sendMessage(title, text, level, **kwargs)
+        return True
+
