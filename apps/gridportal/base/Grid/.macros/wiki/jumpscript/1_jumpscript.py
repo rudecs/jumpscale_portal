@@ -20,8 +20,7 @@ def main(j, args, params, tags, tasklet):
         for k, v in obj.iteritems():
             if k in ('args', 'roles'):
                 if k == 'args':
-                    for arg in v:
-                        args.append(arg)
+                    args = v
                 v = ' ,'.join(v)
 
             if k == 'source':

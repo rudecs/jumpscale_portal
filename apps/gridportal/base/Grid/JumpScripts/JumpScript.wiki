@@ -6,7 +6,7 @@ h5. JumpScript Details
 {% if jumpscript %}
 @@title JumpScript: ${name}
 
-{{actions: gridbinding:'table_cloudbroker_vmachine machineIds'
+{{actions: 
 - display: Execute Jumpscript
   showresponse: true
   action: '/restmachine/system/agentcontroller/executeJumpscript'
