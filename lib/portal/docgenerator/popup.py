@@ -221,7 +221,7 @@ class Popup(object):
                         this.popup.find('.modal-footer > .btn-primary').hide();
                         this.popup.find('.modal-body-form').hide();
                         this.popup.find('.modal-body-message').show();
-                        this.popup.find('.modal-body-message').text(responseText);
+                        this.popup.find('.modal-body-message').html(responseText);
                         return;
 
                     } else {

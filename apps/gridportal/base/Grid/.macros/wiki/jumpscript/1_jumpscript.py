@@ -15,10 +15,15 @@ def main(j, args, params, tags, tasklet):
     try:
         obj = osis.jumpscript.get(int(jsid)).__dict__
         jumpscript = {}
+        args = []
 
         for k, v in obj.iteritems():
             if k in ('args', 'roles'):
+                if k == 'args':
+                    for arg in v:
+                        args.append(arg)
                 v = ' ,'.join(v)
+
             if k == 'source':
                 continue
             if "_" == k[0]:
@@ -28,7 +33,7 @@ def main(j, args, params, tags, tasklet):
                 vstr.replace("[", "\[")
                 vstr.replace("]", "\]")
             jumpscript[k.capitalize()] = vstr.replace('\n', '') if vstr else vstr
-        doc.applyTemplate({'jumpscript': jumpscript, 'source': obj['source'], 'name': obj['name']})
+        doc.applyTemplate({'jumpscript': jumpscript, 'source': obj['source'], 'name': obj['name'], 'args': args})
     except:
         doc.applyTemplate({})
 
