@@ -6,7 +6,34 @@ h5. JumpScript Details
 {% if jumpscript %}
 @@title JumpScript: ${name}
 
-||Propert||Value||
+{{actions: 
+- display: Execute Jumpscript
+  showresponse: true
+  action: '/restmachine/system/agentcontroller/executeJumpscript'
+  hide: false
+  data:
+   gid: ${jumpscript.Gid}
+   name: ${jumpscript.Name}
+   organization: ${jumpscript.Organization}
+  input:
+  - name: nid
+    label: NodeId 
+    placeholder: leave empty if you want to execute on roles
+    type: number
+  - name: roles
+    label: role 
+    placeholder: leave empty if you want to execute on nid
+    type: number
+{% for arg in args -%}
+{% if arg %}
+  - name: arg_"${arg}"
+    label: "${arg}"
+    type: text
+{% endif %}
+{% endfor -%}
+ }}
+
+||Property||Value||
 {% for k, v in jumpscript.iteritems() -%}
 	|${k} | ${v}|
 {% endfor %}

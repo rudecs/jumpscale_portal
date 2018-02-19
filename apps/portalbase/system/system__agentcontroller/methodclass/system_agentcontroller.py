@@ -25,11 +25,15 @@ class system_agentcontroller(j.code.classGetBase()):
         timeout=600,wait=True,queue="", gid=None, errorreport=True, session=None, **kwargs):
         if nid is None and role is None:
             raise exceptions.BadRequest("Need to specify a role or nid")
+        for arg, value in kwargs.items():
+            if arg.startswith('args_'):
+                args[arg.strip('args_')] = value
         if isinstance(args, basestring):
             args = json.loads(args)
-        msg = self.ac.executeJumpscript(organization, name, nid, role, args, all_,
+        job = self.ac.executeJumpscript(organization, name, nid, role, args, all_,
              timeout, wait, queue, gid, errorreport, session)
-        return msg
+        job_url = 'click here to go to <a href="grid/job?id={0}">job-{0}</a>'.format(job['id'])
+        return job_url
 
     @auth(['admin'])
     def loadJumpscripts(self, path, **kwargs):

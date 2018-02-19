@@ -28,6 +28,7 @@
         var:queue str,, @optional
         var:gid int,None,
         var:errorreport bool,True, @optional
+        result:str
     method:loadJumpscripts @method:get,post
         """
         Load available jumpscripts
