@@ -2,7 +2,7 @@
 
 {% if id %}
 h2. User: ${id}
-{{user_info: guid:$$id}}
+{{user_info: guid:'$$id'}}
 
 
 {{actions:
@@ -19,7 +19,7 @@ h2. User: ${id}
 |*Domain*|${domain} |
 |*Authkey*|${authkey} |
 
-{{user_edit: guid:$$id}}
+{{user_edit: guid:'$$id'}}
 
 {% else %}
 No user found with id $$id
