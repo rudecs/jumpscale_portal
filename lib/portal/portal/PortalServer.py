@@ -949,7 +949,7 @@ class PortalServer:
                     algo = service.hrd.getStr('instance.jwt.algo')
                     try:
                         jose.jwt.decode(token, secret, algorithms=[algo])
-                    except jose.JWSError:
+                    except (jose.JWTError, jose.JWSError):
                         raise exceptions.Unauthorized(str(self.returnDoc(ctx, "system", "accessdenied",
                                                                          extraParams={"path": path})), 'text/html')
                     break
