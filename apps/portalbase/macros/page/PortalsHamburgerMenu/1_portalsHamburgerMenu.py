@@ -47,6 +47,11 @@ def main(j, args, params, tags, tasklet):
                             name, link = line.split(':', 1)
                         except:
                             continue
+                        if ';' in link:
+                            link, scope = link.split(';', 1)
+                            link = link.strip()
+                            if scope not in groups:
+                                continue
                         portal['children'].append({'url': link, 'name': name})
 
     params.result = page
