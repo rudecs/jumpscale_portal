@@ -9,7 +9,7 @@ h5. JumpScript Details
 {{actions: 
 - display: Execute Jumpscript
   showresponse: true
-  action: '/restmachine/system/agentcontroller/executeJumpscript'
+  action: '/restmachine/system/agentcontroller/executeJumpscriptUi'
   hide: false
   data:
    gid: ${jumpscript.Gid}

@@ -29,6 +29,22 @@
         var:gid int,None,
         var:errorreport bool,True, @optional
         result:str
+    method:executeJumpscriptUi
+        """
+        Execute a jumpscript returning an html href to the job page
+        """
+        var:organization str,,
+        var:name str,,
+        var:nid int,None, @optional
+        var:role str,None, @optional
+        var:args dict,, @optional
+        var:all bool,False, @optional
+        var:timeout int,600, @optional
+        var:wait bool,True, @optional
+        var:queue str,, @optional
+        var:gid int,None,
+        var:errorreport bool,True, @optional
+        result:obj
     method:loadJumpscripts @method:get,post
         """
         Load available jumpscripts
