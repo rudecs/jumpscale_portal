@@ -22,7 +22,7 @@ class system_agentcontroller(j.code.classGetBase()):
 
     @auth(['admin'])
     def executeJumpscript(self, organization, name, nid=None, role=None, args={},all_=False,
-        timeout=600, wait=True, queue="", gid=None, errorreport=True, session=None, **kwargs):
+        timeout=600, wait=True, queue="", gid=None, errorreport=True, session=None, htmlFormat=False, **kwargs):
         """
         schedules jumpscripts for execution
         """
@@ -36,15 +36,10 @@ class system_agentcontroller(j.code.classGetBase()):
             args = json.loads(args)
         job = self.ac.executeJumpscript(organization, name, nid, role, args, all_,
              timeout, wait, queue, gid, errorreport, session)
+        if htmlFormat:
+            job_url = 'click here to go to <a href="grid/job?id={}">job-{}</a>'.format(job['guid'], job['id'])
+            return job_url
         return job
-
-    @auth(['admin'])
-    def executeJumpscriptUi(self, organization, name, nid=None, role=None, args={}, all_=False,
-        timeout=600,wait=True,queue="", gid=None, errorreport=True, session=None, **kwargs):
-        job = self.executeJumpscript(organization, name, nid, role, args,all_, timeout, wait, queue,
-                                     gid, errorreport, session, **kwargs)
-        job_url = 'click here to go to <a href="grid/job?id={}">job-{}</a>'.format(job['guid'], job['id'])
-        return job_url
 
     @auth(['admin'])
     def loadJumpscripts(self, path, **kwargs):
