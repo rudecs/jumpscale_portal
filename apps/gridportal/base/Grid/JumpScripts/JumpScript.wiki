@@ -14,6 +14,7 @@ h5. JumpScript Details
   data:
    gid: ${jumpscript.Gid}
    name: ${jumpscript.Name}
+   htmlFormat: true
    organization: ${jumpscript.Organization}
   input:
   - name: nid
@@ -26,7 +27,7 @@ h5. JumpScript Details
     type: number
 {% for arg in args -%}
 {% if arg %}
-  - name: arg_"${arg}"
+  - name: args_${arg}
     label: "${arg}"
     type: text
 {% endif %}
