@@ -32,7 +32,7 @@ class system_agentcontroller(j.code.classGetBase()):
             args = json.loads(args)
         job = self.ac.executeJumpscript(organization, name, nid, role, args, all_,
              timeout, wait, queue, gid, errorreport, session)
-        job_url = 'click here to go to <a href="grid/job?id={0}">job-{0}</a>'.format(job['id'])
+        job_url = 'click here to go to <a href="grid/job?id={}">job-{}</a>'.format(job['guid'], job['id'])
         return job_url
 
     @auth(['admin'])
