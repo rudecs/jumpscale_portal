@@ -26,6 +26,7 @@ class system_agentcontroller(j.code.classGetBase()):
         """
         schedules jumpscripts for execution
         """
+        args = args if args else dict()
         if nid is None and role is None:
             raise exceptions.BadRequest("Need to specify a role or nid")
         for arg, value in kwargs.items():

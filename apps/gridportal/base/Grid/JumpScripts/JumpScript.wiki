@@ -26,7 +26,7 @@ h5. JumpScript Details
     type: number
 {% for arg in args -%}
 {% if arg %}
-  - name: arg_"${arg}"
+  - name: args_${arg}
     label: "${arg}"
     type: text
 {% endif %}
