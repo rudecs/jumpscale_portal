@@ -24,7 +24,7 @@ h5. JumpScript Details
   - name: roles
     label: role 
     placeholder: leave empty if you want to execute on nid
-    type: number
+    type: text
 {% for arg in args -%}
 {% if arg %}
   - name: args_${arg}
