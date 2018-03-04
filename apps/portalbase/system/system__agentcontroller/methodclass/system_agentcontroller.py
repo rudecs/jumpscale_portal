@@ -7,6 +7,7 @@ import json
 class system_agentcontroller(j.code.classGetBase()):
 
     def __init__(self):
+        self.scl = j.clients.osis.getNamespace('system')
         self.ac = j.clients.agentcontroller.get()
 
     @auth(['admin'])
@@ -27,8 +28,23 @@ class system_agentcontroller(j.code.classGetBase()):
         schedules jumpscripts for execution
         """
         args = args if args else dict()
+        jumpscript = self.scl.jumpscript.searchOne({'name': name, 'organization': organization})
+        if not jumpscript:
+            raise exceptions.BadRequest("Clould not find JumpScript {}:{}".format(organization, name))
+        jsroles = jumpscript['roles']
         if nid is None and role is None:
             raise exceptions.BadRequest("Need to specify a role or nid")
+        if nid:
+            for (activegid, activenid), roles in self.listActiveSessions().items():
+                if activenid == nid:
+                    break
+            else:
+                raise exceptions.BadRequest("Nid {} is not active".format(nid))
+            if jsroles and not set(roles).intersection(set(jsroles)):
+                raise exceptions.BadRequest("Node specified can not execute JumpScript roles don't match")
+        elif jsroles and role not in jsroles:
+            raise exceptions.BadRequest("Specified role does not match JumpScript roles")
+
         for arg, value in kwargs.items():
             if arg.startswith('args_'):
                 args[arg.strip('args_')] = value
