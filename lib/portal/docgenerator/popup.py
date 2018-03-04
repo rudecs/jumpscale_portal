@@ -51,14 +51,14 @@ class Popup(object):
         content = template.render(value=value, name=name)
         self.widgets.append(content)
 
-    def addTextArea(self, label, name, required=False, placeholder=''):
+    def addTextArea(self, label, name, required=False, placeholder='', value=''):
         template = self.jinja.from_string('''
             <div class="form-group">
                 <label class="line-height" for="${name}">${label}</label>
-                <textarea class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">
+                <textarea rows="10" class="form-control" name="${name}" {% if required %}required{% endif %} placeholder="${placeholder}">${value}</textarea>
               </div>
         ''')
-        content = template.render(label=label, name=name, required=required, placeholder=placeholder)
+        content = template.render(label=label, name=name, required=required, value=escape_html(value), placeholder=placeholder)
         self.widgets.append(content)
 
     def addNumber(self, label, name, required=False):
