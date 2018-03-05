@@ -9,6 +9,7 @@ monkey.patch_time()
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+import time
 
 import os
 import subprocess
@@ -17,6 +18,9 @@ import JumpScale.portal
 
 if __name__ == '__main__':
     if 'PORTAL_MAIN' in os.environ:
+        while not j.clients.redis.isRunning('system'):
+            time.sleep(1)
+            print "cannot connect to redis system, will keep on trying forever, please start redis system"
         args=sys.argv
         instance=args[1]
 
