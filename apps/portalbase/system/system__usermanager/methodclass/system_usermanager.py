@@ -87,7 +87,14 @@ class system_usermanager(j.code.classGetBase()):
 
     @auth(['admin'])
     def deleteGroup(self, id, **kwargs):
+        self._get_group(id)
         self.modelGroup.delete(id)
+
+    def _get_group(self, name):
+        group = self.modelGroup.searchOne({'id': name})
+        if not group:
+            raise exceptions.NotFound("Group with name %s does not exists" % name)
+        return group
 
     @auth(['admin'])
     def createGroup(self, name, domain, description, **args):
@@ -118,11 +125,7 @@ class system_usermanager(j.code.classGetBase()):
         result bool
 
         """
-        groups = self.modelGroup.search({'id': name})[1:]
-        if not groups:
-            raise exceptions.NotFound("Group with name %s does not exists" % name)
-        else:
-            group = groups[0]
+        group = self._get_group(name)
         if users and isinstance(users, basestring):
             users = users.split(',')
         if not users:
