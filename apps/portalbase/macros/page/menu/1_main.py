@@ -58,7 +58,7 @@ def main(j, args, params, tags, tasklet):
     if page.logo != "":
         # will be logo
         T = T.replace(
-            "{brand}", "<a class=\"brand\" href=\"/home\"><img style=\"margin-top: -5px;\" src=\"%s\" alt=\"home\" title=\"home\"></a>" % page.logo)
+            "{brand}", "<a class=\"brand\" href=\"/home\"><img style=\"margin-top: -5px; max-width: 120px; max-height: 120px;\" src=\"%s\" alt=\"home\" title=\"home\"></a>" % page.logo)
     elif page.projectname != "":
         T = T.replace("{brand}", "<a class=\"brand\" href=\"/%s\">%s</a>" % (args.doc.getSpaceName(), page.projectname))
     else:
