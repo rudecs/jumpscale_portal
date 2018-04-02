@@ -56,6 +56,14 @@ class Events(object):
         def runner():
             try:
                 func(*args, **kwargs)
+            except exceptions.Error as e:
+                if errorcb:
+                    try:
+                        errorcb(None)
+                    except:
+                        pass
+                self.sendMessage(title, e.msg, 'error', hide=False)
+                return
             except (Exception, exceptions.BaseError),  e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 if errorcb:
