@@ -1,4 +1,5 @@
 from JumpScale import j
+from functools import partial
 import re
 import os
 import jinja2
@@ -276,11 +277,14 @@ class Doc(object):
             self.content = content
         return content
 
-    def applyTemplate(self, params, escape=False):
+    def applyTemplate(self, params, escape=False, characters=None):
         appliedparams = copy.deepcopy(params)
         if escape:
             ws = j.core.portal.active
-            appliedparams = _escape(appliedparams, ws.confluence2htmlconvertor.escape)
+            escapemethod = ws.confluence2htmlconvertor.escape
+            if characters:
+                escapemethod = partial(ws.confluence2htmlconvertor.escape, characters=characters)
+            appliedparams = _escape(appliedparams, escapemethod)
 
         self.appliedparams.update(appliedparams)
         self.content = self.jenv.from_string(self.content).render(**appliedparams)

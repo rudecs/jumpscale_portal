@@ -1,4 +1,3 @@
-
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
@@ -10,7 +9,6 @@ def main(j, args, params, tags, tasklet):
     if not jsid:
         doc.applyTemplate({})
         return params
-
     osis = j.clients.osis.getNamespace('system')
     try:
         obj = osis.jumpscript.get(int(jsid)).__dict__
@@ -32,7 +30,8 @@ def main(j, args, params, tags, tasklet):
                 vstr.replace("[", "\[")
                 vstr.replace("]", "\]")
             jumpscript[k.capitalize()] = vstr.replace('\n', '') if vstr else vstr
-        doc.applyTemplate({'jumpscript': jumpscript, 'source': obj['source'], 'name': obj['name'], 'args': args})
+        doc.applyTemplate({'jumpscript': jumpscript, 'source': obj['source'], 'name': obj['name'], 'args': args},
+                          escape=True, characters='{}')
     except:
         doc.applyTemplate({})
 
