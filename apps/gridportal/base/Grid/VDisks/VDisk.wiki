@@ -7,7 +7,7 @@ h2. VDisk
 |*Node*|[$$nid|grid node?id=$$nid&gid=$$gid]|
 |*Grid ID*|[$$gid|grid?id=$$gid]|
 |*Name*|$$devicename|
-|*Machine ID*|[$$machineid|machine?id=$$machineid]|
+|*Machine ID*|[$$machineid|Virtual Machine?guid=$$machineid]|
 |*Active*|$$active|
 |*Path*|$$path|
 |*Backing Path*|$$backingpath|
