@@ -25,8 +25,8 @@ def main(j, args, params, tags, tasklet):
         obj['gridname'] = 'Not Found'
     obj['epoch'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['epoch']
     obj['lasttime'] = "{{div: class=jstimestamp|data-ts=%s}}{{div}}" % obj['lasttime']
-    for attr in ['errormessage', 'errormessagePub']:
-        obj[attr] = j.html.escape(obj[attr])
+    for attr in ['errormessage', 'errormessagePub', 'backtrace', 'backtraceDetailed']:
+        obj[attr] = j.core.portal.active.confluence2htmlconvertor.escape(obj[attr], "`*_+-?^[{()}]")
     for attr in ['jid']:
         obj['jid'] = '[%(jid)s|job?id=%(jid)s]|' % obj if obj[attr] != 0 else 'N/A'
     obj['id'] = id
