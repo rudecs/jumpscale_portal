@@ -25,6 +25,11 @@ def main(j, args, params, tags, tasklet):
         link = "[%s|/grid/audit?id=%s]" % (time, row['guid'])
         return link
 
+    def responsetime(row, field):
+        if row[field]:
+            return '%.3f' % row[field]
+        return ''
+
     fields = [
         {'name': 'Time',
          'type': 'date',
@@ -40,7 +45,7 @@ def main(j, args, params, tags, tasklet):
          'id': 'responsetime',
          'type': 'int',
          'filterable': False,
-         'value': '%(responsetime).3f seconds'},
+         'value': responsetime},
         {'name': 'Status Code',
          'id': 'statuscode',
          'type': 'int',

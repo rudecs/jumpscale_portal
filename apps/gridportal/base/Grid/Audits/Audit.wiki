@@ -27,6 +27,9 @@ h3. Result:
 ${result}
 }}
 
+h3. Linked Jobs:
+{{jobs tags:'requestid:${guid}'}}
+
 {% else %}
 
 Invalid audit id

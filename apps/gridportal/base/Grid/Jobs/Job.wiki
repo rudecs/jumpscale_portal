@@ -13,6 +13,7 @@ h2. Job Details
 | *Stop* | {{div: data-ts=${timeStop}|class=jstimestamp}}{{div}} |
 | *Queue* | ${queue} |
 | *State* | ${state} |
+| *Tags* | ${', '.join(tags or [])} |
 
 
 h3. Job Params

@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import ujson as json
+from functools import partial
 import time
 import types
 
@@ -14,32 +15,37 @@ def getClient(namespace):
     return clients[namespace]
 
 
-def doAudit(user, path, kwargs, responsetime, statuscode, result,  tags):
-    client = getClient('system')
-    audit = client.audit.new()
-    audit.user = user
-    audit.call = path
-    audit.statuscode = statuscode
-    audit.tags = tags
-    audit.args = json.dumps([])  # we dont want to log self
-    auditkwargs = kwargs.copy()
-    auditkwargs.pop('ctx', None)
-    audit.kwargs = json.dumps(auditkwargs)
+def get_result(result):
     try:
         if not isinstance(result, types.GeneratorType):
-            audit.result = json.dumps(result)
+            return json.dumps(result)
         else:
-            audit.result = json.dumps('Result of type generator')
+            return json.dumps('Result of type generator')
     except:
-        audit.result = json.dumps('binary data')
-
-    audit.responsetime = responsetime
-    client.audit.set(audit)
+        return json.dumps('binary data')
 
 
 class AuditMiddleWare(object):
     def __init__(self, app):
         self.app = app
+        self.client = getClient('system')
+
+    def write_audit(self, env, result=None, responsetime=None, statuscode=None):
+        audit = self.client.audit.new()
+        audit.user = env['beaker.session'].get('user', 'Unknown')
+        audit.call = env['PATH_INFO']
+        audit.tags = env['tags']
+        audit.args = json.dumps([])  # we dont want to log self
+        ctx = env.get('JS_CTX')
+        kwargs = ctx.params.copy() if ctx else {}
+        auditkwargs = kwargs.copy()
+        auditkwargs.pop('ctx', None)
+        audit.kwargs = json.dumps(auditkwargs)
+        audit.result = get_result(result)
+        audit.responsetime = responsetime
+        audit.statuscode = statuscode
+        key, _, _ = self.client.audit.set(audit)
+        env['JS_AUDITKEY'] = key
 
     def __call__(self, env, start_response):
         statinfo = {'status': 200}
@@ -49,16 +55,21 @@ class AuditMiddleWare(object):
 
         start = time.time()
         env['tags'] = ""
+        env['write_audit'] = partial(self.write_audit, env)
         result = self.app(env, my_response)
         responsetime = time.time() - start
-        audit = env.get('JS_AUDIT')
-        if audit or statinfo['status'] >= 400:
-            ctx = env.get('JS_CTX')
+        if 'JS_AUDITKEY' in env:
             tags = env.get('tags', '')
-            user = env['beaker.session'].get('user', 'Unknown')
-            kwargs = ctx.params.copy() if ctx else {}
-            if j.core.portal.active.authentication_method:
-                doAudit(user, env['PATH_INFO'], kwargs, responsetime, statinfo['status'], result, tags)
+            self.client.audit.updateSearch({'guid': env['JS_AUDITKEY']}, {
+                '$set': {
+                    'tags': tags,
+                    'result': get_result(result),
+                    'responsetime': responsetime,
+                    'statuscode': statinfo['status']
+                }
+            })
+        elif statinfo['status'] >= 400:
+            self.write_audit(env, result, responsetime, statinfo['status'])
         return result
 
 class auth(object):
@@ -92,6 +103,7 @@ class auth(object):
                 if not groups.intersection(self.groups):
                     raise exceptions.Forbidden('User %s has no access. If you would like to gain access please contact your adminstrator' % user)
 
-            ctx.env['JS_AUDIT'] = self.audit
+            if self.audit:
+                ctx.env['write_audit']()
             return func(*args, **kwargs)
         return wrapper
