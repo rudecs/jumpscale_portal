@@ -120,7 +120,7 @@ class Confluence2HTML():
 
     def escape(self, content, characters="`*_+-?^[{(" ):
         for char in characters:
-            content = content.replace(char, '\\' + char)
+            content = content.replace(char, '&#{0};'.format(ord(char)))
         return content
 
     def convert(self, content, page=None, doc=None, requestContext=None, paramsExtra={}):
@@ -475,13 +475,6 @@ class Confluence2HTML():
                     arg = "container-fluid"
                 page.addMessage("<div class=\"%s\">" % arg)
                 page.divlevel += 1
-
-            # check params
-            if state == "start" and line.find("@params") == 0:
-                params = line.replace("@params", "").strip()
-                from JumpScale.core.Shell import ipshell
-                print("DEBUG NOW params, not implemented")
-                ipshell()
 
             if state == "start" and line.find("||") == 0:
                 # beginning of table
