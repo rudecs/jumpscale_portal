@@ -118,6 +118,24 @@ class PageHTML(Page):
         if message != "":
             self.body = "%s%s\n" % (self.body, message)
 
+    def getActionHtml(self, action, tags, action_class='', deleterow='false', label=''):
+        extradata = {}
+        for tagname, tagvalue in tags.iteritems():
+            if tagname.startswith('data-'):
+                extradata[tagname[5:]] = tagvalue
+
+        data = json.dumps(extradata)
+
+        if action_class:
+            label = "<span class='%s'></span> %s" % (action_class, label)
+        element_data = (action, data, deleterow, label)
+        element = "<a class='js_action'" \
+                " data-action='%s'" \
+                " data-extradata='%s'" \
+                " data-deleterow='%s'" \
+                "href='javascript:void(0);'>%s</a>" % element_data
+        return element
+
     def addParagraph(self, message):
         self.addMessage(message, isElement=False)
 

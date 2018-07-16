@@ -1,6 +1,6 @@
 $(
 function () {
-    $('.js_action').click(function(){
+    $(document).on('click', '.js_action', function(){
         var $this = $(this);
         var action = $this.data('action');
         var modal = $("#"+action);

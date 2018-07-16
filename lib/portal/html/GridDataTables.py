@@ -48,9 +48,9 @@ class GridDataTables:
         tableid = 'table_%s_%s' % (namespace, category)
         return self.addTableFromURLFields(url, fields, tableid, selectable)
 
-    def addTableFromModel(self, namespace, category, fields, filters=None, nativequery=None, selectable=False):
+    def addTableFromModel(self, namespace, category, fields, filters=None, nativequery=None, selectable=False, tableid=None):
         key = j.apps.system.contentmanager.extensions.datatables.storInCache(fields=fields, nativequery=nativequery, filters=filters)
-        tableid = 'table_%s_%s' % (namespace, category)
+        tableid = tableid or 'table_%s_%s' % (namespace, category)
         url = "/restmachine/system/contentmanager/modelobjectlist?namespace=%s&category=%s&key=%s" % (namespace, category, key)
         return self.addTableFromURLFields(url, fields, tableid, selectable)
 

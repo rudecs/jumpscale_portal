@@ -11,6 +11,7 @@ h2. Monitoring Status
 
 h4. ${gridname}: ${nodename} ([$$gid:$$nid|/grid/grid node?id=$$nid&gid=$$gid])
 
+{% if status == 'ENABLED' %}
 h3. Actions
 
 {{actions:
@@ -35,6 +36,11 @@ h3. Actions
 
 {{monitorstatus nid:$$nid}}
 
+{% else %}
+
+ *No data to show. Node is not enabled.*
+
+{% endif %}
 {{cssstyle
 	.table-condensed>tbody>tr>td{
 		width: 75%;
