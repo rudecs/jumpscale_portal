@@ -33,6 +33,11 @@ def main(j, args, params, tags, tasklet):
     except:
         obj['args'] = {}
 
+    if not obj['jscriptid']:
+        jumpscript = scl.jumpscript.searchOne({'name': obj['cmd'], 'organization': obj['category']})
+        if jumpscript:
+            obj['jscriptid'] = jumpscript['id']
+
     if obj["state"] in ["ERROR", "TIMEOUT"]:
         obj['state'] = "FAILED"
         try:
@@ -61,7 +66,11 @@ def main(j, args, params, tags, tasklet):
         obj['organization'], obj['cmd'] = obj['cmd'].split('/')
     else:
         obj['organization'] = obj['category']
-   
+
+
+    for tag in obj.get('tags', []) or []:
+        if tag.startswith('requestid'):
+            obj['audit'] = tag.split(':', 1)[1]
 
     args.doc.applyTemplate(obj)
 

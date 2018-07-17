@@ -8,12 +8,17 @@ h2. Job Details
 | *Grid ID* | ${gid} |
 | *Node* | [${node.name}|/grid/grid node?id=${nid}&gid=${gid}] |
 | *Roles* | ${roles} |
+{% if jscriptid -%}
 | *Jumpscript* | [${organization}:${cmd}|jumpscript?id=${jscriptid}] | 
+{% endif -%}
 | *Start* | {{div: data-ts=${timeStart}|class=jstimestamp}}{{div}} (*Timeout*: ${timeout}) |
 | *Stop* | {{div: data-ts=${timeStop}|class=jstimestamp}}{{div}} |
 | *Queue* | ${queue} |
 | *State* | ${state} |
 | *Tags* | ${', '.join(tags or [])} |
+{% if audit -%}
+| *Audit* | [request|/grid/audit?id=${audit}] |
+{% endif -%}
 
 
 h3. Job Params
