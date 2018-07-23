@@ -886,8 +886,11 @@ class PortalServer:
             return CONTENT_TYPE_PNG, result
 
         if "CONTENT_TYPE" not in ctx.env:
-            ctx.env['CONTENT_TYPE'] = CONTENT_TYPE_PLAIN
-
+            if ctx.env['PATH_INFO'].startswith('/restmachine'):
+                ctx.env['CONTENT_TYPE'] = CONTENT_TYPE_JSON
+            else:
+                ctx.env['CONTENT_TYPE'] = CONTENT_TYPE_PLAIN
+                
         if ctx.env['CONTENT_TYPE'].find("form-") != -1:
             ctx.env['CONTENT_TYPE'] = CONTENT_TYPE_PLAIN
         # normally HTTP_ACCEPT defines the return type we should rewrite this
