@@ -99,7 +99,10 @@ class system_oauth(j.code.classGetBase()):
         user = j.clients.osis.getCategory(osis, "system", "user")
 
         if cache_result['type'] != 'oauth':
-            userid = '{}@{}'.format(userinfo.username, cache_result['type'])
+            if cache_result['type'].startswith('itsyouonline'):
+                userid = '{}@itsyouonline'.format(userinfo.username)
+            else:
+                userid = '{}@{}'.format(userinfo.username, cache_result['type'])
         else:
             userid = userinfo.username
 
