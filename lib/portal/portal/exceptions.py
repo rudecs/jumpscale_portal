@@ -68,6 +68,9 @@ class Conflict(Error):
 class PreconditionFailed(Error):
     CODE = 412
 
+class AuthenticationTimeout(Error):
+    CODE = 419
+
 
 class NotImplemented(Error):
     CODE = 501

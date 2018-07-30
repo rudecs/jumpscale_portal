@@ -935,8 +935,7 @@ class PortalServer:
                     session['user'] = username
                     session.save()
                 else:
-                    ctx.start_response('419 Authentication Timeout', [])
-                    return False, [str(self.returnDoc(ctx, "system", "accessdenied", extraParams={"path": path}))]
+                    raise exceptions.AuthenticationTimeout('key not valid or expired')
 
         # validate JWT token
         if 'HTTP_AUTHORIZATION' in ctx.env:
