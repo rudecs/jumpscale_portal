@@ -27,7 +27,7 @@ class system_agentcontroller(j.code.classGetBase()):
         """
         schedules jumpscripts for execution
         """
-        args = args if args else dict()
+        args = args or {}
         jumpscript = self.scl.jumpscript.searchOne({'name': name, 'organization': organization})
         if not jumpscript:
             raise exceptions.BadRequest("Clould not find JumpScript {}:{}".format(organization, name))
@@ -47,7 +47,7 @@ class system_agentcontroller(j.code.classGetBase()):
 
         for arg, value in kwargs.items():
             if arg.startswith('args_'):
-                args[arg.strip('args_')] = value
+                args[arg.split('args_')[-1]] = value
         if isinstance(args, basestring):
             args = json.loads(args)
         job = self.ac.executeJumpscript(organization, name, nid, role, args, all_,

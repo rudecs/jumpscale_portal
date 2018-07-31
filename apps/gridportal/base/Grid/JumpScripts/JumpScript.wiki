@@ -21,7 +21,7 @@ h5. JumpScript Details
     label: NodeId 
     placeholder: leave empty if you want to execute on roles
     type: number
-  - name: roles
+  - name: role
     label: role 
     placeholder: leave empty if you want to execute on nid
     type: text
@@ -44,7 +44,7 @@ ${source}
 }}
 
 h5. Jobs that have executed this Jumpscript
-{{jobs: organization:$$organization jsname:$$jsname}}
+{{jobs: organization:${jumpscript.Organization} jsname:${jumpscript.Name}}}
 
 {% else %}
 Invalid jumpscript parameters
