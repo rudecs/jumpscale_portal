@@ -14,13 +14,14 @@ def main(j, args, params, tags, tasklet):
                 'HALTED': 'danger',
                 'ERROR': 'danger'}
 
-    def makeStatusLabel(status, cmd=None, direction='left'):
+    def makeStatusLabel(status, eid=None, cmd=None, direction='left'):
         html = '<span class="label label-%s pull-%s status-label">%s</span>' % (
             classmap.get(status, 'default'), direction, status)
         if cmd:
             jobcategory, jobcmd = cmd.split('_', 1)
             html = '<a href="/grid/jobs?nid={nid}&cmd={cmd}&category={category}">{html}</a>'.format(
-                nid=nid, cmd=jobcmd, category=jobcategory, html=html)
+                nid=eid or nid, cmd=jobcmd, category=jobcategory, html=html
+            )
         return html
 
     def addAction(cmd):
@@ -49,13 +50,14 @@ def main(j, args, params, tags, tasklet):
                 message = dataitem.get('message', '')
                 lastchecked = dataitem.get('lastchecked', '')
                 lasterror = dataitem.get('lasterror', '') or ''
+                eid = dataitem.get('eid', None)
                 if status == 'SKIPPED':
                     skipcount += 1
                 if categorystatus != 'ERROR' and status not in ['OK', 'SKIPPED']:
                     categorystatus = status
                 if lasterror:
                     lasterror = '%s ago' % j.base.time.getSecondsInHR(now - lasterror)
-                status = makeStatusLabel(status, cmd)
+                status = makeStatusLabel(status, eid=eid, cmd=cmd)
                 if lastchecked:
                     lastchecked = '%s ago' % j.base.time.getSecondsInHR(now - lastchecked)
                 interval = dataitem.get('interval')
