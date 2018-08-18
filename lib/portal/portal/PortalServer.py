@@ -1066,6 +1066,7 @@ class PortalServer:
 
         contentype = env.get('CONTENT_TYPE', '')
         pragma = env.get('HTTP_PRAGMA', '')
+        env['is_stream'] = False
         if 'stream' not in pragma and env["REQUEST_METHOD"] in ("POST", "PUT") and hasSupportedContentType(contentype, ('application/json', 'www-form-urlencoded', 'multipart/form-data', '')):
             if contentype.find("application/json") != -1:
                 postData = env["wsgi.input"].read()
@@ -1082,11 +1083,13 @@ class PortalServer:
                 params.update(dict(urlparse.parse_qs(postData, 1)))
                 return simpleParams(params)
             elif contentype.find("multipart/form-data") != -1 and env.get('HTTP_TRANSFER_ENCODING') != 'chunked':
+                env['is_stream'] = True
                 forms, files = multipart.parse_form_data(ctx.env)
                 params.update(forms)
                 for key, value in files.items():
                     params.setdefault(key, dict())[value.filename] = value.file
             elif env.get('HTTP_TRANSFER_ENCODING') == 'chunked':
+                env['is_stream'] = True
                 from JumpScale.portal.html.multipart2.multipart import parse_options_header
                 content_type, parameters = parse_options_header(env.get('CONTENT_TYPE'))
                 boundary = parameters.get(b'boundary')

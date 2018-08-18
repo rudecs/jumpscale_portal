@@ -40,7 +40,10 @@ class AuditMiddleWare(object):
         kwargs = ctx.params.copy() if ctx else {}
         auditkwargs = kwargs.copy()
         auditkwargs.pop('ctx', None)
-        audit.kwargs = json.dumps(auditkwargs)
+        if ctx.env['is_stream']:
+            audit.kwargs = json.dumps({})
+        else:
+            audit.kwargs = get_result(auditkwargs)
         audit.result = get_result(result)
         audit.responsetime = responsetime
         audit.statuscode = statuscode
