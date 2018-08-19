@@ -26,6 +26,15 @@ class PortalFactoryClient(object):
         secret = hrd.getStr('instance.param.secret')
         return self.get(addr, port, secret)
 
+    def getByInstance2(self, instance=None):
+        if not instance:
+            instance = j.application.hrdinstance.get('portal.connection')
+        hrd = j.application.getAppInstanceHRD(name="portal_client",instance=instance)
+        addr = hrd.get('instance.param.addr')
+        port = hrd.getInt('instance.param.port')
+        secret = hrd.getStr('instance.param.secret')
+        return self.get2(addr, port, secret)
+
     def get(self, ip="localhost", port=9900, secret=None):
         """
         return client to manipulate & access a running application server (out of process)
