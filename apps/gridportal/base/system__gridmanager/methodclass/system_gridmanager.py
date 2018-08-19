@@ -117,9 +117,11 @@ class system_gridmanager(j.code.classGetBase()):
         lastcheckFrom = self._getEpoch(lastcheckFrom)
         lastcheckTo = self._getEpoch(lastcheckTo)
         queries = []
-        for name in ['gid', 'guid', 'name', 'active']:
+        for name in ['gid', 'guid', 'name']:
             if args[name] is not None:
                 queries.append({name: args[name]})
+        if active:
+            queries.append({'status': 'ENABLED'})
         if roles:
             rolequery = []
             for role in roles.split(','):
