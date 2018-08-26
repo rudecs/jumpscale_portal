@@ -1,3 +1,4 @@
+{{logo:/cbgrid/.files/green.png}}
 
 {{title:Home}}
 
@@ -8,6 +9,8 @@
 Help:https://github.com/Jumpscale7/jumpscale_core7/wiki:target=_blank
 }}
 
+{{grid.healthmenu}}
+{{grid.searchbox}}
 {{menuadmin:}}
 
 @block

@@ -43,6 +43,7 @@ def main(j, args, params, tags, tasklet):
                    <ul class="nav pull-left">
                    $$$menuleft
                    {items}
+                   $$$searchbox
                    $$$menuright
                    </ul>
                    {login}

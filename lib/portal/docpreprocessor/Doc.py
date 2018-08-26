@@ -225,6 +225,7 @@ class Doc(object):
             # "querystr": ctx.env['QUERY_STRING'],
             "querystr": "",
             "$menuright": "",
+            "$searchbox": "",
             "$menuleft": ""
         }
         page.body = j.tools.docpreprocessor.replace_params(page.body, replace_obj)
@@ -285,7 +286,7 @@ class Doc(object):
             if characters:
                 escapemethod = partial(ws.confluence2htmlconvertor.escape, characters=characters)
             appliedparams = _escape(appliedparams, escapemethod)
-
+    
         self.appliedparams.update(appliedparams)
         self.content = self.jenv.from_string(self.content).render(**appliedparams)
         self.title = self.jenv.from_string(self.title).render(**params)
