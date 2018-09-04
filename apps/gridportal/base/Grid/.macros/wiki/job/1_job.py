@@ -33,7 +33,7 @@ def main(j, args, params, tags, tasklet):
     except:
         obj['args'] = {}
 
-    if not obj['jscriptid']:
+    if not obj.get('jscriptid'):
         jumpscript = scl.jumpscript.searchOne({'name': obj['cmd'], 'organization': obj['category']})
         if jumpscript:
             obj['jscriptid'] = jumpscript['id']
