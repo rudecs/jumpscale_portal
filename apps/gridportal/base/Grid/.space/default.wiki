@@ -1,5 +1,6 @@
 
 {{title:Grid $$page}}
+{{logo:/cbgrid/.files/green.png}}
 {{ApplyFlatTheme}}
 
 {{PortalsHamburgerMenu}}
@@ -8,7 +9,7 @@
 Grid Portal:/grid
 }}
 {{grid.healthmenu}}
-
+{{grid.searchbox}}
 {{menuadmin:
 }}
 
