@@ -13,8 +13,6 @@
 System Portal:/system
 }}
 
-{{grid.healthmenu}}
-{{grid.searchbox}}
 {{menuadmin:
 }}
 
