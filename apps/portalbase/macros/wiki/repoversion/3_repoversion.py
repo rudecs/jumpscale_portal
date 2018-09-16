@@ -10,7 +10,9 @@ def main(j, args, params, tags, tasklet):
     else:
         current = True
         version = scl.version.searchOne({'status':'CURRENT'})
-    
+        if not version:
+            version = scl.version.searchOne({'status':'ERROR'})
+
     if version:
         version['manifest'] = yaml.load(version['manifest'])
 
