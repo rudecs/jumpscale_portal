@@ -117,7 +117,7 @@ class system_gridmanager(j.code.classGetBase()):
         lastcheckFrom = self._getEpoch(lastcheckFrom)
         lastcheckTo = self._getEpoch(lastcheckTo)
         queries = []
-        for name in ['gid', 'guid', 'name']:
+        for name in ['gid', 'guid', 'name', 'id']:
             if args[name] is not None:
                 queries.append({name: args[name]})
         if active:
