@@ -39,7 +39,6 @@ def main(j, args, params, tags, tasklet):
             obj['jscriptid'] = jumpscript['id']
 
     if obj["state"] in ["ERROR", "TIMEOUT"]:
-        obj['state'] = "FAILED"
         try:
             eco = json.loads(obj['result'])
             if j.core.portal.active.osis.exists('system', 'eco', eco['guid']):
