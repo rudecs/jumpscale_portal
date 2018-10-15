@@ -72,7 +72,7 @@ def main(j, args, params, tags, tasklet):
 	"""
 
     body = """
-    <form id="loginform" class="form-signin container" method="post" action="/$$path$$querystr">
+    <form id="loginform" class="form-signin container" method="post" action="/system/login">
        <h4>Access Denied Please Login</h4>
        <div class="col-sm-offset-3 col-md-6 login-screen">
         <div class="login-form">
@@ -88,9 +88,9 @@ def main(j, args, params, tags, tasklet):
 
           <button class="btn btn-primary btn-lg btn-block mbm" type="submit">Sign in</button>"""
     
-    oauth_instances = j.application.getAppInstanceHRDs('oauth_client')
+    oauth_instances = j.core.config.list('oauth_client')
     for instance in oauth_instances:
-        name = instance.get('service.instance')
+        name = instance
         body += '''
         <a class="btn btn-block btn-social btn-%s" href=/restmachine/system/oauth/authenticate?type=%s>
           <i class="fa fa-%s"></i> <span>Login with %s</span>

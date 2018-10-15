@@ -1,3 +1,0 @@
-@usedefault
-
-{{templateshow domain:$$domain name:$$name aysid:$$aysid}}

@@ -51,7 +51,7 @@ class OsisBeaker(NamespaceManager):
         try:
             self._client.delete(categoryname=self._category, namespace=self._namespace, key=key)
         except RemoteException as error:
-            if error.eco.get('exceptionclassname') == 'KeyError' or error.eco['category'] == 'osis.objectnotfound':
+            if error.eco.exceptionclassname == 'KeyError' or error.eco.category == 'osis.objectnotfound':
                 return
             raise
 

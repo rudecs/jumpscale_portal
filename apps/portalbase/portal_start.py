@@ -24,7 +24,7 @@ if __name__ == '__main__':
         args=sys.argv
         instance=args[1]
 
-        j.application.instanceconfig = j.application.getAppInstanceHRD(name="portal",instance=instance)
+        j.application.instanceconfig = j.core.config.get("portal", instance)
 
         j.application.start("portal")
 

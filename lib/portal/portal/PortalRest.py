@@ -255,8 +255,8 @@ class PortalRest():
 
             return (True, result)
         except RemoteException as error:
-            if error.eco.get('exceptionclassname') == 'KeyError' or error.eco['category'] == 'osis.objectnotfound':
-                data = error.eco['data'] or {'categoryname': 'unknown', 'key': '-1'}
+            if error.eco.exceptionclassname == 'KeyError' or error.eco.category == 'osis.objectnotfound':
+                data = error.eco.data or {'categoryname': 'unknown', 'key': '-1'}
                 raise exceptions.NotFound("Could not find %(key)s of type %(categoryname)s" % data)
             raise
         except Exception as errorObject:

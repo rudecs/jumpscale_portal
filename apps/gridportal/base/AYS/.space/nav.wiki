@@ -1,3 +1,0 @@
-
-Services:/AYS/Services
-Templates:/AYS/Templates

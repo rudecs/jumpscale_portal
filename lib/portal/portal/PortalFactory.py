@@ -19,20 +19,20 @@ class PortalFactoryClient(object):
 
     def getByInstance(self, instance=None):
         if not instance:
-            instance = j.application.hrdinstance.get('portal.connection')
-        hrd = j.application.getAppInstanceHRD(name="portal_client",instance=instance)
-        addr = hrd.get('instance.param.addr')
-        port = hrd.getInt('instance.param.port')
-        secret = hrd.getStr('instance.param.secret')
+            instance = 'main'
+        config = j.core.config.get('portal_client', instance)
+        addr = config['addr']
+        port = config['port']
+        secret = config['secret']
         return self.get(addr, port, secret)
 
     def getByInstance2(self, instance=None):
         if not instance:
-            instance = j.application.hrdinstance.get('portal.connection')
-        hrd = j.application.getAppInstanceHRD(name="portal_client",instance=instance)
-        addr = hrd.get('instance.param.addr')
-        port = hrd.getInt('instance.param.port')
-        secret = hrd.getStr('instance.param.secret')
+            instance = 'main'
+        config = j.core.config.get('portal_client', instance)
+        addr = config['addr']
+        port = config['port']
+        secret = config['secret']
         return self.get2(addr, port, secret)
 
     def get(self, ip="localhost", port=9900, secret=None):

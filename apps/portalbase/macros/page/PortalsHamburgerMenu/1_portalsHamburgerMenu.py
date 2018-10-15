@@ -1,9 +1,9 @@
 def main(j, args, params, tags, tasklet):
     import copy
     page = args.page
-    hrd = j.application.instanceconfig
+    cfg = j.core.portal.active.cfg
 
-    menulinks = copy.deepcopy(hrd.getListFromPrefix('instance.navigationlinks'))
+    menulinks = copy.deepcopy(cfg.get('navigationlinks', []))
     if not menulinks:
         spacelinks = j.core.portal.active.getSpaceLinks(args.requestContext)
         menulinks = []
@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
     else:
         for section in menulinks:
             if 'children' in section:
-                children = hrd.getDict(section['children'])
+                children = section['children']
                 section['children'] = []
                 for key, value in children.iteritems():
                     section['children'].append({'url': value, 'name': key})
@@ -25,9 +25,9 @@ def main(j, args, params, tags, tasklet):
             continue
         if 'children' not in portal:
             portal['children'] = list()
-        external = portal.get('external', 'false').lower()
+        external = portal.get('external', False)
         portal['external'] = external
-        if external == 'false':
+        if not external:
             spacename = j.system.fs.getBaseName(portal['url']).lower()
             if spacename in j.core.portal.active.spacesloader.spaces:
                 space = j.core.portal.active.spacesloader.spaces[spacename]

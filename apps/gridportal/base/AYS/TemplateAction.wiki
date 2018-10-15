@@ -1,3 +1,0 @@
-@usedefault
-
-{{templateaction action:$$action aysid:$$aysid}}

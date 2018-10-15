@@ -98,8 +98,8 @@ class PortalAuthenticatorOSIS(object):
             self.osisuser.set(user)
             return user.id
         except RemoteException as e:
-            if e.eco['exceptionclassname'] == "ValueError":
-                raise exceptions.BadRequest(json.loads(e.eco['exceptioninfo'])['message'])
+            if e.eco.exceptionclassname == "ValueError":
+                raise exceptions.BadRequest(json.loads(e.eco.exceptioninfo)['message'])
             else:
                 raise
 

@@ -70,13 +70,12 @@ class PortalServer:
     # INIT
     def __init__(self):
 
-        self.hrd = j.application.instanceconfig
+        self.cfg = j.application.instanceconfig
 
         self.contentdirs = list()
         self.libpath = j.html.getHtmllibDir()
         self.started = False
         self.epoch = time.time()
-        self.cfg = self.hrd.getDictFromPrefix('instance.param.cfg')
         self.force_oauth_instance = self.cfg.get('force_oauth_instance', "")
         if self.force_oauth_instance:
             self.force_oauth_url = '%s?%s' % ('/restmachine/system/oauth/authenticate',
@@ -91,9 +90,12 @@ class PortalServer:
         self.routes = {}
         self.proxies = {}
 
-        self.authentication_method = self.cfg.get("authentication.method")
+        self.authentication_method = self.cfg.get("authentication_method")
+        secure = urlparse.urlparse(self.cfg['url']).scheme == 'https'
         session_opts = {
             'session.cookie_expires': False,
+            'session.httponly': True,
+            'session.secure': secure,
             'session.data_dir': '%s' % j.system.fs.joinPaths(j.dirs.varDir, "beakercache")
         }
 
@@ -109,7 +111,7 @@ class PortalServer:
             if self.authentication_method == 'gitlab':
                 self.auth = PortalAuthenticatorGitlab(instance=self.gitlabinstance)
             else:
-                self.osis = j.clients.osis.getByInstance(self.hrd.get('instance.param.osis.connection', 'main'))
+                self.osis = j.clients.osis.getByInstance(self.cfg.get('connections', {}).get('osis', 'main'))
                 osissession = {
                     'session.type': 'OsisBeaker',
                     'session.namespace_class': OsisBeaker,
@@ -185,7 +187,7 @@ class PortalServer:
         self.defaultspace = self.cfg.get('defaultspace', 'welcome')
         self.defaultpage = self.cfg.get('defaultpage', '')
 
-        self.gitlabinstance = self.cfg.get("gitlab.connection")
+        self.gitlabinstance = self.cfg.get('connections', {}).get('gitlab', 'main')
 
         self.logdir = j.system.fs.joinPaths(j.dirs.logDir, "portal", str(self.port))
         j.system.fs.createDir(self.logdir)
@@ -193,7 +195,7 @@ class PortalServer:
         self.getContentDirs()
 
         # load proxies
-        for _, proxy in self.hrd.getDictFromPrefix('instance.proxy').iteritems():
+        for proxy in self.cfg.get('proxies'):
             self.proxies[proxy['path']] = proxy
 
     def reset(self):
@@ -246,7 +248,7 @@ class PortalServer:
         """
         walk over known content dirs & execute loader on it
         """
-        contentdirs = self.cfg.get('contentdirs', '')
+        contentdirs = self.cfg.get('contentdirs', '') or ''
 
         def append(path):
             path = j.system.fs.pathNormalize(path)
@@ -946,9 +948,10 @@ class PortalServer:
                 payload = json.loads(jose.jwt.get_unverified_claims(token))
                 issuer = payload.get('iss', 'main')
                 payload['iss'] = issuer
-                for service in j.atyourservice.findServices(name='jwt_client', instance=issuer):
-                    secret = service.hrd.getStr('instance.jwt.secret')
-                    algo = service.hrd.getStr('instance.jwt.algo')
+                for instance in j.core.config.list('jwt_client'):
+                    jwtcfg = j.core.config.get('jwt_client', instance)
+                    secret = jwtcfg.get('secret')
+                    algo = jwtcfg.get('algo')
                     try:
                         jose.jwt.decode(token, secret, algorithms=[algo])
                     except (jose.JWTError, jose.JWSError):
@@ -1209,7 +1212,7 @@ class PortalServer:
         elif match == "restextmachine":
             if not self.authentication_method:
                 try:
-                    j.clients.osis.getByInstance(self.hrd.get('service.instance', 'main'))
+                    j.clients.osis.getByInstance(self.cfg.get('osis.connection', 'main'))
                 except Exception as e:
                     self.raiseError(ctx, msg="You have a minimal portal with no OSIS configured",
                                     msginfo="", errorObject=None, httpcode="500 Internal Server Error")
