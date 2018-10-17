@@ -4,7 +4,7 @@
 
 JumpScale Portal is a hybrid applicationserver + wiki engine.
 
-## Features
+## Features 
 
 * Supports rendering our custom wiki format
 * Supports rendering markdown
